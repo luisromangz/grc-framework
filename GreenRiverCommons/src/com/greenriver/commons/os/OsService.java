@@ -20,8 +20,12 @@ import com.greenriver.commons.log.SimplifiedFormater;
 import com.greenriver.commons.tasks.IterativeWorker;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
@@ -184,7 +188,7 @@ public abstract class OsService extends IterativeWorker {
         logger().setLevel(level);
     }
     private boolean daemon = false;
-    private File pidFile;
+	private PidFileHandler pidFileHandler;
     private File logFile;
     private OsServiceController controller;
     private SettingsProvider settings;
@@ -284,7 +288,11 @@ public abstract class OsService extends IterativeWorker {
      * @return the pidFile
      */
     public File getPidFile() {
-        return pidFile;
+		if (pidFileHandler != null) {
+			return pidFileHandler.getPidFile();
+		} else {
+			return null;
+		}
     }
 
     /**
@@ -398,6 +406,11 @@ public abstract class OsService extends IterativeWorker {
     protected void cleanup() {
         super.cleanup();
 
+		if (pidFileHandler != null) {
+			pidFileHandler.release();
+			pidFileHandler = null;
+		}
+
         if (logger != null) {
             logger.finer("Service cleanup.");
         }
@@ -419,7 +432,7 @@ public abstract class OsService extends IterativeWorker {
             }
         } catch (InterruptedException ex) {
             if (logger != null) {
-                logger().fine("Shutdown interrupted");
+                logger.fine("Shutdown interrupted");
             }
         }
 
@@ -482,23 +495,17 @@ public abstract class OsService extends IterativeWorker {
         //the file and is not convenient to assing it until it is valid.
         File tempFile = getPidFileForCreation();
 
-        if (tempFile.exists()) {
-            logger.severe("Existing pid file found, " +
+		if (!createPidFile(tempFile)) {
+			stop();
+			return;
+		}
+
+		if (!pidFileHandler.isValid()) {
+			logger.severe("Existing pid file found, " +
                     "this service is already running.");
-            logger.severe("If the service didn't ended properly remove " +
-                    "the file " + tempFile.getPath() + " and start it again.");
-
-            stop();
-        } else if (!createPidFile(tempFile)) {
-            logger.severe("Can't create pid file, service won't run ...");
-            stop();
-        }
-
-        if (isStopping()) {
-            return;
-        }
-
-        pidFile = tempFile;
+			stop();
+			return;
+		}
 
         //Our turn to check if we will detach and enable file logging
         if (isDaemon()) {
@@ -520,7 +527,8 @@ public abstract class OsService extends IterativeWorker {
         logger.finest("JAVAHOME: " + System.getProperty("java.home"));
         logger.finest("CLASSPATH: " + System.getProperty("java.class.path"));
         logger.finest("LIBPATH: " + System.getProperty("java.library.path"));
-        logger.finest("PIDFILE: " + pidFile.getAbsolutePath());
+        logger.finest("PIDFILE: " + getPidFile().getAbsolutePath());
+		
         if (logFile != null) {
             logger.finest("LOGFILE: " + logFile.getAbsolutePath());
         } else {
@@ -717,40 +725,22 @@ public abstract class OsService extends IterativeWorker {
     /**
      * Physically creates a pid file and writes into it the pid of this process.
      * The contents of the file are the pid process and a line feed character.
-     * @param pidF Full file path with extension
-     * @return the file created or null if it couldn't be created.
+     * @param pidFile Full file path with extension
+     * @return false if any exception was thrown or true if not.
      */
-    protected boolean createPidFile(File pidF) {
+    protected boolean createPidFile(File pidFile) {
+		pidFileHandler = new PidFileHandler(pidFile, getPid());
+		
+		try {
+			pidFileHandler.create();
+		} catch (IOException ex) {
+			if (logger != null) {
+				logger.log(Level.SEVERE, "Can't create pid file", ex);
+			}
+			return false;
+		}
 
-        if (!OsEnvironment.get().createFile(pidF, false, false)) {
-            logger.severe("Can't create pid file " + pidF.getPath());
-            return false;
-        }
-
-        FileWriter fw = null;
-        BufferedWriter writer = null;
-
-        try {
-            fw = new FileWriter(pidF);
-            writer = new BufferedWriter(fw);
-            writer.write("" + getPid() + "\n");
-            writer.flush();
-        } catch (IOException ex) {
-            logger.log(Level.SEVERE, "Can't write to " +
-                    "pid file " + pidF.getPath(), ex);
-            return false;
-        } finally {
-            try {
-                writer.close();
-                fw.close();
-            } catch (IOException ex) {
-            }
-        }
-
-        //Enable delete on exit by default.
-        pidF.deleteOnExit();
-
-        return true;
+		return true;
     }
 
     /**

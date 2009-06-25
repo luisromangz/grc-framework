@@ -128,10 +128,9 @@ public abstract class OsEnvironment {
      * any existing file if the overwrite flag is set.
      * @param file
      * @param overwrite
-     * @param append 
      * @return
      */
-    public boolean createFile(File file, boolean overwrite, boolean append) {
+    public boolean createFile(File file, boolean overwrite) {
 
         File directory = file.getParentFile();
 
@@ -142,8 +141,8 @@ public abstract class OsEnvironment {
             if (file.exists()) {
                 if (overwrite) {
                     file.delete();
-                } else if (append && !file.canWrite()) {
-                    return file.canWrite();
+                } else if (!file.canWrite()) {
+                    return false;
                 }
             } else {
                 return file.createNewFile();
