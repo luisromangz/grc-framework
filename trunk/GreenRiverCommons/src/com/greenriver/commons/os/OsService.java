@@ -18,14 +18,8 @@ import com.greenriver.commons.configuration.ApplicationSettingsProvider;
 import com.greenriver.commons.log.LogHandlerType;
 import com.greenriver.commons.log.SimplifiedFormater;
 import com.greenriver.commons.tasks.IterativeWorker;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.nio.channels.FileChannel;
-import java.nio.channels.FileLock;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
@@ -422,6 +416,7 @@ public abstract class OsService extends IterativeWorker {
      */
     @Override
     public synchronized void shutdown() {
+		//The parent impl tries to do a stop() and then a clean()
         super.shutdown();
 
         //Wait for the thread to end
