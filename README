@@ -1,0 +1,29 @@
+# Instrucciones #
+
+Para usar el proyecto con Netbeans hay que definir una serie de librerías. 
+Estas librerías hay que definirlas utilizando el menú Tools/Libraries de 
+Netbeans, con los nombres que aparecen tras los guiones, e incluyendo los jars 
+que van tras los puntos en la lista siguiente. Una vez hecho esto, la carga de
+los proyectos incluidos en Netbeans debe encontrar todos los jars necesarios.
+
+- SpringSecurity:
+  · spring-security-acl-2.0.4.jar,
+  · spring-security-core-2.0.4.jar,
+  · spring-security-core-tiger-2.0.4.jar,
+  · spring-security-taglibs-2.0.4.jar
+- JavaComm
+  . comm.jar
+- Log4j
+  . log4j.jar
+- AspectJ
+  · asjectjrt.jar
+  · aspectjweaver.jar
+
+Adicionalmente hay que incluir librerías ya provistas por Netbeans:
+
+- Spring Framework 2.5
+- Spring Web MVC 2.5
+
+Los Jars anteriormente mencionados se pueden obtener fácilmente del repositorio
+jarlib en el servidor de GRC.
+
