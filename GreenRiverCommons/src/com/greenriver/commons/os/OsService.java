@@ -432,7 +432,8 @@ public abstract class OsService extends IterativeWorker {
         }
 
         //If it haven't finished and nobody interrupted it let's do it
-        if (getThread().isAlive() && !getThread().isInterrupted()) {
+        if (getThread() != null && getThread().isAlive()
+				&& !getThread().isInterrupted()) {
             //This doesn't abort the thread but is all that we can do without
             //using deprecated methods.
             getThread().interrupt();

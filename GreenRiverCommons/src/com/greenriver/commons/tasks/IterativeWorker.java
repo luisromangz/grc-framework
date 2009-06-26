@@ -80,7 +80,9 @@ public abstract class IterativeWorker extends AbstractWorker
      */
     @Override
     protected void internalRun() {
-        while(retryCount <= maxRetries) {
+		boolean execute = true;
+        while(execute) {
+			execute = false;
             setStopping(false);
             setFinished(false);
             while(!isFinished() && !isStopping()) {
@@ -100,14 +102,16 @@ public abstract class IterativeWorker extends AbstractWorker
                 }
             }
 
-            if (isAborted() && retryCount <= maxRetries) {
+            if (isAborted() && retryCount < maxRetries) {
+				execute = true;
                 setAborted(false);
                 retryCount++;
+				
                 try {
                     restart();
                 } catch (RuntimeException ex) {
                     onRunAborted(ex);
-                    retryCount = maxRetries + 1;
+                    execute = false;
                     stop();
                 }
             }
