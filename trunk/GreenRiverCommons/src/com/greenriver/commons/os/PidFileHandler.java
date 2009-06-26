@@ -102,6 +102,7 @@ public class PidFileHandler {
 		} else {
 			rafile.writeBytes("" + pid + "");
 			channel.force(false);
+			pidFile.deleteOnExit();
 		}
 	}
 
@@ -134,7 +135,6 @@ public class PidFileHandler {
 		}
 
 		lock = null;
-
 		pidFile = null;
 	}
 
