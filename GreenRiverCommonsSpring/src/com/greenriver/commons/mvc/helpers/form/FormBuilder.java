@@ -1,6 +1,7 @@
 package com.greenriver.commons.mvc.helpers.form;
 import com.greenriver.commons.data.fieldProperties.FieldProperties;
 import java.util.List;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  * This interface define the contract a form builder should implement.
@@ -12,8 +13,9 @@ public interface FormBuilder {
      * Adds a form to the form collection, making it the form being edited
      * e. g. the form fields are being added to.
      * @param formId The new form's id.
+     * @param modelAndView The <c>ModelAndView</c> object the form will be added to.
      */
-    public void addForm(String formId);
+    public void addForm(String formId, ModelAndView modelAndView);
 
     /**
      * Gets the created forms.

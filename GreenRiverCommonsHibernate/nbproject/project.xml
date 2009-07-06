@@ -3,8 +3,7 @@
     <type>org.netbeans.modules.java.j2seproject</type>
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/j2se-project/3">
-            <name>GreenRiverCommonsSpring</name>
-            <minimum-ant-version>1.6.5</minimum-ant-version>
+            <name>GreenRiverCommonsHibernate</name>
             <source-roots>
                 <root id="src.dir"/>
             </source-roots>
@@ -22,9 +21,5 @@
                 <id>jar</id>
             </reference>
         </references>
-        <spring-data xmlns="http://www.netbeans.org/ns/spring-data/1">
-            <config-files/>
-            <config-file-groups/>
-        </spring-data>
     </configuration>
 </project>
