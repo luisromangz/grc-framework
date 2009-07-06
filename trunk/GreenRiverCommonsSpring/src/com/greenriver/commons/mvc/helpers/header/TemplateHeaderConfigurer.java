@@ -6,9 +6,7 @@
 package com.greenriver.commons.mvc.helpers.header;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
@@ -26,8 +24,7 @@ public class TemplateHeaderConfigurer implements HeaderConfigurer {
     private List<String> dwrFiles;
     private List<String> scripts;
     private List<String> dojoModules;
-    private List<String> onLoadScripts;
-    private Map<String,Object> objects;
+    private List<String> onLoadScripts;   
     private String title;
     private List<String> dojoBundles;
 
@@ -42,15 +39,13 @@ public class TemplateHeaderConfigurer implements HeaderConfigurer {
         onLoadScripts = new ArrayList<String>();
         dwrFiles = new ArrayList<String>();
         dojoBundles = new ArrayList<String>();
-
-        objects = new HashMap<String, Object>();
     }
 
-    public void useCssFile(String cssFilename) {
+    public void addCssFile(String cssFilename) {
         cssFiles.add(cssFilename);
     }
 
-    public void useJsFile(String jsFilename) {
+    public void addJavaScriptFile(String jsFilename) {
         jsFiles.add(jsFilename);
     }
 
@@ -100,15 +95,14 @@ public class TemplateHeaderConfigurer implements HeaderConfigurer {
        mav.addObject("dwrScripts", dwrFiles);
        mav.addObject("title", title);
        mav.addObject("dojoBundles", dojoBundles);
-
-       mav.addAllObjects(objects);
     }
+
 
     public List<String> getCssFiles() {
         return cssFiles;
     }
 
-    public List<String> getJsFiles() {
+    public List<String> getJavaScriptFiles() {
         return jsFiles;
     }
 
@@ -124,11 +118,11 @@ public class TemplateHeaderConfigurer implements HeaderConfigurer {
         return onLoadScripts;
     }
 
-    public void useDWRService(String name) {
+    public void addDWRService(String name) {
         dwrFiles.add(name);
     }
 
-    public List<String> getDwrScripts() {
+    public List<String> getDWRServices() {
         return dwrFiles;
     }
 
@@ -140,12 +134,39 @@ public class TemplateHeaderConfigurer implements HeaderConfigurer {
         return title;
     }
 
-    public void addObject(String identifier, Object object) {
-        objects.put(identifier, object);
-    }
-
     public void addDojoBundle(String bundleName) {
-        dojoBundles.add(bundleName);
+        this.dojoBundles.add(bundleName);
     }
 
+    public void setCssFiles(List<String> cssFiles) {
+        this.cssFiles = cssFiles;
+    }
+
+    public void setDWRServices(List<String> dwrServices) {
+        this.dwrFiles = dwrServices;
+    }
+
+    public void setDojoBundles(List<String> dojoBundles) {
+        this.dojoBundles = dojoBundles;
+    }
+
+    public void setDojoModules(List<String> dojoModules) {
+       this.dojoModules = dojoModules;
+    }
+
+    public void setJavaScriptFiles(List<String> javascriptFiles) {
+        this.jsFiles = javascriptFiles;
+    }
+
+    public void setOnLoadScripts(List<String> onLoadScripts) {
+        this.onLoadScripts = onLoadScripts;
+    }
+
+    public void setScripts(List<String> scripts) {
+        this.scripts = scripts;
+    }
+
+    public List<String> getDojoBundles() {
+        return this.dojoBundles;
+    }
 }

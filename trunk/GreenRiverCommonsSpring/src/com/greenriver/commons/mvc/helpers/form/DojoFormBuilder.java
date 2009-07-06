@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  * This class implements a form creator that will create
@@ -219,14 +220,14 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient {
         return this.headerConfigurer;
     }
 
-    public void addForm(String formId) {
+    public void addForm(String formId, ModelAndView modelAndView) {
         Form newForm = new Form();
         newForm.setId(formId);
 
+        modelAndView.addObject(formId, newForm);
+
         forms.add(newForm);
         lastForm = newForm;
-
-        headerConfigurer.addObject(formId, newForm);
     }
 
     private String createSelectionContents(Class fieldType, FieldProperties properties ) {
