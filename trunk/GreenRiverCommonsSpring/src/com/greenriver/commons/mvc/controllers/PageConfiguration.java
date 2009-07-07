@@ -10,7 +10,8 @@ import java.util.List;
  * to hold non-header realated page info.
  * @author luis
  */
-public class PageConfiguration extends PageHeaderConfiguration {
+public class PageConfiguration extends PageHeaderConfiguration
+        implements FormsConfiguration {
 
      private List<String> formEntities;
 

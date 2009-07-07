@@ -113,17 +113,49 @@ public interface HeaderConfiguration {
     void setTitle(String title);
 
 
+    /**
+     * Sets the CSS files loaded by the page.
+     * @param cssFiles A list of CSS file names, without extension.
+     */
     void setCssFiles(List<String> cssFiles);
 
+    /**
+     * Sets the names of the DWR services used by the page.
+     * @param dwrServices A list with the services' names, without extensions.
+     */
     void setDWRServices(List<String> dwrServices);
 
+    /**
+     * Sets the Dojo javascript bundles used by the page.
+     * @param dojoBundles A list containing the javascript Dojo bundles used,
+     * without extensions.
+     */
     void setDojoBundles(List<String> dojoBundles);
 
+    /**
+     * Sets the Dojo modules required by the page.
+     * @param dojoModules A list with the full name of the Dojo modules to be
+     * loaded (e.g. 'dijit.form.Button').
+     */
     void setDojoModules(List<String> dojoModules);
 
+    /**
+     * Sets the Javascript files to be loaded by the page.
+     * @param javascriptFiles A list with the names of the files to be loaded,
+     * without extension.
+     */
     void setJavaScriptFiles(List<String> javascriptFiles);
 
+    /**
+     * Sets the JavaScript pieces of code to be run after the page is loaded
+     * @param onLoadScripts A list of pieces of code to be run after the page
+     * is loaded.
+     */
     void setOnLoadScripts(List<String> onLoadScripts);
 
+    /**
+     * Sets the JavaScript pieces of code to be included in the page.
+     * @param scripts A list with of the pieces of code to be included.
+     */
     void setScripts(List<String> scripts);
 }
