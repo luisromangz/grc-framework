@@ -67,6 +67,10 @@ public class ConfigurablePageController extends AbstractController
         this.headerConfigurer = headerConfigurer;
     }
 
+    public HeaderConfigurer getHeaderConfigurer() {
+	return headerConfigurer;
+    }
+
     /**
      * @param formBuilder the formBuilder to set
      */
@@ -74,7 +78,9 @@ public class ConfigurablePageController extends AbstractController
         this.formBuilder = formBuilder;
     }
 
-   
+    public FormBuilder getFormBuilder() {
+	return formBuilder;
+    }
 
     /**
      * The name of the view that is used to render the page that is managed
