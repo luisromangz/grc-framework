@@ -1,9 +1,7 @@
 package com.greenriver.commons.mvc.controllers;
 
 import com.greenriver.commons.data.dao.UserDao;
-import com.greenriver.commons.mvc.helpers.form.FormBuilder;
 import com.greenriver.commons.mvc.helpers.form.FormBuilderClient;
-import com.greenriver.commons.mvc.helpers.header.HeaderConfigurer;
 import com.greenriver.commons.mvc.helpers.header.HeaderConfigurerClient;
 import com.greenriver.commons.session.InstallHelper;
 import java.util.Date;
@@ -11,17 +9,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.security.providers.encoding.PasswordEncoder;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.AbstractController;
 
 /**
  *
  * @author luis
  */
-public class InstallController extends AbstractController
+public class InstallController extends ConfigurablePageController
         implements HeaderConfigurerClient, FormBuilderClient {
 
-    private FormBuilder formBuilder;
-    private HeaderConfigurer headerConfigurer;
     private PasswordEncoder passwordEncoder;
     private UserDao userDao;
     private InstallHelper installHelper;
@@ -41,10 +36,10 @@ public class InstallController extends AbstractController
             return mav;
         }
 
-        headerConfigurer.setTitle("Sensis - Instalación");
-        headerConfigurer.addJavaScriptFile("install");
-        headerConfigurer.addCssFile("install");
-        headerConfigurer.addDWRService("installService");        
+        getHeaderConfigurer().setTitle("Sensis - Instalación");
+        getHeaderConfigurer().addJavaScriptFile("install");
+        getHeaderConfigurer().addCssFile("install");
+        getHeaderConfigurer().addDWRService("installService");
 
         Date now = new Date();
         String key = passwordEncoder.encodePassword(now.toString(), null);
@@ -57,30 +52,14 @@ public class InstallController extends AbstractController
         mav.addObject("keyPath",  path);
         mav.addObject("key", key);
 
-        formBuilder.addForm("adminForm",mav);
-        formBuilder.addFieldsFromModel(Class.forName(userClass));
-        formBuilder.removeField("roles");
-        formBuilder.removeField("enabled");
+        getFormBuilder().addForm("adminForm",mav);
+        getFormBuilder().addFieldsFromModel(Class.forName(userClass));
+        getFormBuilder().removeField("roles");
+        getFormBuilder().removeField("enabled");
 
-        headerConfigurer.configure(mav);
+        getHeaderConfigurer().configure(mav);
 
         return mav;
-    }
-
-    public void setHeaderConfigurer(HeaderConfigurer headerConfigurer) {
-        this.headerConfigurer = headerConfigurer;
-    }
-
-    public HeaderConfigurer getHeaderConfigurer() {
-        return this.headerConfigurer;
-    }
-
-    public FormBuilder getFormBuilder() {
-        return formBuilder;
-    }
-
-    public void setFormBuilder(FormBuilder formBuilder) {
-        this.formBuilder = formBuilder;
     }
 
     /**

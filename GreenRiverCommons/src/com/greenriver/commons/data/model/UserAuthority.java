@@ -45,7 +45,7 @@ public class UserAuthority implements Serializable {
 
     @Override
     public String toString() {
-        return "com.greenriver.sensis.model.userdata.UserAuthority[id=" + id + "]";
+        return "com.greenriver.commons.data.model.UserAuthority[id=" + id + "]";
     }
     
     public Long getId() {
