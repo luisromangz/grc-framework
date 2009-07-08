@@ -118,11 +118,11 @@ public class TemplateHeaderConfigurer implements HeaderConfigurer {
         return onLoadScripts;
     }
 
-    public void addDWRService(String name) {
+    public void addDwrService(String name) {
         dwrFiles.add(name);
     }
 
-    public List<String> getDWRServices() {
+    public List<String> getDwrServices() {
         return dwrFiles;
     }
 
@@ -142,7 +142,7 @@ public class TemplateHeaderConfigurer implements HeaderConfigurer {
         this.cssFiles = cssFiles;
     }
 
-    public void setDWRServices(List<String> dwrServices) {
+    public void setDwrServices(List<String> dwrServices) {
         this.dwrFiles = dwrServices;
     }
 

@@ -34,7 +34,7 @@ public class PageHeaderConfiguration implements HeaderConfiguration {
         cssFiles.add(cssFilename);
     }
 
-    public void addDWRService(String name) {
+    public void addDwrService(String name) {
         dwrServices.add(name);
     }
 
@@ -66,7 +66,7 @@ public class PageHeaderConfiguration implements HeaderConfiguration {
         return dojoModules;
     }
 
-    public List<String> getDWRServices() {
+    public List<String> getDwrServices() {
         return dwrServices;
     }
 
@@ -94,7 +94,7 @@ public class PageHeaderConfiguration implements HeaderConfiguration {
         this.cssFiles = cssFiles;
     }
 
-    public void setDWRServices(List<String> dwrServices) {
+    public void setDwrServices(List<String> dwrServices) {
         this.dwrServices = dwrServices;
     }
 

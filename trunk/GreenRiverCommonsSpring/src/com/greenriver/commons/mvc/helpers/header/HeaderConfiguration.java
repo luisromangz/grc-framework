@@ -25,7 +25,7 @@ public interface HeaderConfiguration {
      * Adds a DWR js file to the page's header.
      * @param name The file's name, without the extension.
      */
-    void addDWRService(String name);
+    void addDwrService(String name);
 
     /**
      * Adds a dojo bundle Javascript file for loading.
@@ -80,7 +80,7 @@ public interface HeaderConfiguration {
      * Get all the DWR javascript files used.
      * @return A <c>List</c> with the filenames.
      */
-    List<String> getDWRServices();
+    List<String> getDwrServices();
 
     /**
      * Get the included JavaScript files.
@@ -123,7 +123,7 @@ public interface HeaderConfiguration {
      * Sets the names of the DWR services used by the page.
      * @param dwrServices A list with the services' names, without extensions.
      */
-    void setDWRServices(List<String> dwrServices);
+    void setDwrServices(List<String> dwrServices);
 
     /**
      * Sets the Dojo javascript bundles used by the page.

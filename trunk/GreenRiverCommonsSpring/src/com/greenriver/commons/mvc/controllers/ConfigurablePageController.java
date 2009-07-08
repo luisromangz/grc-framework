@@ -43,7 +43,7 @@ public class ConfigurablePageController extends AbstractController
         headerConfigurer.setCssFiles(pageConfiguration.getCssFiles());
         headerConfigurer.setDojoBundles(pageConfiguration.getDojoBundles());
         headerConfigurer.setDojoModules(pageConfiguration.getDojoModules());
-        headerConfigurer.setDWRServices(pageConfiguration.getDWRServices());
+        headerConfigurer.setDwrServices(pageConfiguration.getDwrServices());
         headerConfigurer.setJavaScriptFiles(pageConfiguration.getJavaScriptFiles());
         headerConfigurer.setOnLoadScripts(pageConfiguration.getOnLoadScripts());
         headerConfigurer.setScripts(pageConfiguration.getScripts());
@@ -139,8 +139,8 @@ public class ConfigurablePageController extends AbstractController
      * the page.
      * @param name The name of the service.
      */
-    public void addDWRService(String name) {
-        pageConfiguration.addDWRService(name);
+    public void addDwrService(String name) {
+        pageConfiguration.addDwrService(name);
     }
 
     /**
@@ -214,8 +214,8 @@ public class ConfigurablePageController extends AbstractController
      * Gets the names of the DWR services that will be used by the page.
      * @return A list with the services' names.
      */
-    public List<String> getDWRServices() {
-        return pageConfiguration.getDWRServices();
+    public List<String> getDwrServices() {
+        return pageConfiguration.getDwrServices();
     }
 
     /**
@@ -271,8 +271,8 @@ public class ConfigurablePageController extends AbstractController
      * Sets the names of the DWR services to be used by the page.
      * @param dwrServices A list of the DWR service names.
      */
-    public void setDWRServices(List<String> dwrServices) {
-        pageConfiguration.setDWRServices(dwrServices);
+    public void setDwrServices(List<String> dwrServices) {
+        pageConfiguration.setDwrServices(dwrServices);
     }
 
     /**
