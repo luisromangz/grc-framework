@@ -14,7 +14,8 @@ import java.util.List;
  * DWR services that uses, etc.
  * @author luis
  */
-public class PageTaskInfo implements FormsConfiguration, HeaderConfiguration{
+public class PageTask  implements FormsConfiguration, HeaderConfiguration,
+        Comparable<PageTask>{
 
     // The page configuration needed by the task.
     private PageConfiguration pageConfiguration;
@@ -28,9 +29,12 @@ public class PageTaskInfo implements FormsConfiguration, HeaderConfiguration{
     // The name's task;
     private String taskName;
 
+    // The JSP file used to render the contents of the tasks contextual toolbar.
     private String toolbarJspFileName;
 
-    public PageTaskInfo() {
+    private boolean isStartTask;
+
+    public PageTask() {
         pageConfiguration = new PageConfiguration();       
     }
 
@@ -195,6 +199,38 @@ public class PageTaskInfo implements FormsConfiguration, HeaderConfiguration{
      */
     public void setToolbarJspFileName(String toolbarJspFileName) {
         this.toolbarJspFileName = toolbarJspFileName;
+    }
+
+    /**
+     * Defines an order for PageTasks based on the startTask attribute.
+     * @param o Another PageTask to compare.
+     * @return 0 if both tasks have the same startTask value; -1 if this page
+     * task object is the start task and the other isn't, and 1 if this page task
+     * is not the start one, and the other is.
+     */
+    public int compareTo(PageTask o) {
+        if(this.isStartTask == o.isStartTask) {
+            return 0;
+        } else if(this.isStartTask) {
+            return -1;
+        } else {
+            return 1;
+        }
+
+    }
+
+    /**
+     * @return the startTask
+     */
+    public boolean getIsStartTask() {
+        return isStartTask;
+    }
+
+    /**
+     * @param startTask the startTask to set
+     */
+    public void setIsStartTask(boolean startTask) {
+        this.isStartTask = startTask;
     }
 
 }
