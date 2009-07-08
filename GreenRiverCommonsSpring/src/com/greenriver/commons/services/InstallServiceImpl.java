@@ -44,6 +44,9 @@ public class InstallServiceImpl implements InstallService, Serializable {
             String readKey = "";
             try {
                 readKey = keyFile.readLine();
+		if (readKey != null) {
+		    readKey = readKey.trim();
+		}
                 keyFile.close();
             } catch (IOException ex) {
                 serviceResult.setSuccess(false);
@@ -76,7 +79,7 @@ public class InstallServiceImpl implements InstallService, Serializable {
         } else {
 
             // Needed to bypass validation.
-            adminUser.setRoles(new String[]{"ROLE_USER"});
+            //adminUser.setRoles(new String[]{"ROLE_USER"});
             FieldsValidationResult validationResult =
                     fieldsValidator.validate(adminUser);
 
