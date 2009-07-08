@@ -25,6 +25,14 @@ public class InstallController extends ConfigurablePageController
     public InstallController() {
     }
 
+    /**
+     * 
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception
+     */
+    @Override
     protected ModelAndView handleRequestInternal(
             HttpServletRequest request,
             HttpServletResponse response) throws Exception {
