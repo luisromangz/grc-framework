@@ -39,7 +39,7 @@ public class InstallController extends ConfigurablePageController
         getHeaderConfigurer().setTitle("Sensis - Instalación");
         getHeaderConfigurer().addJavaScriptFile("install");
         getHeaderConfigurer().addCssFile("install");
-        getHeaderConfigurer().addDWRService("installService");
+        getHeaderConfigurer().addDwrService("installService");
 
         Date now = new Date();
         String key = passwordEncoder.encodePassword(now.toString(), null);

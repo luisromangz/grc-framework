@@ -47,8 +47,8 @@ public class PageTaskInfo implements FormsConfiguration, HeaderConfiguration{
         pageConfiguration.addCssFile(cssFilename);
     }
 
-    public void addDWRService(String name) {
-        pageConfiguration.addDWRService(name);
+    public void addDwrService(String name) {
+        pageConfiguration.addDwrService(name);
     }
 
     public void addDojoBundle(String bundleName) {
@@ -83,8 +83,8 @@ public class PageTaskInfo implements FormsConfiguration, HeaderConfiguration{
         return pageConfiguration.getDojoBundles();
     }
 
-    public List<String> getDWRServices() {
-        return pageConfiguration.getDWRServices();
+    public List<String> getDwrServices() {
+        return pageConfiguration.getDwrServices();
     }
 
     public List<String> getJavaScriptFiles() {
@@ -111,8 +111,8 @@ public class PageTaskInfo implements FormsConfiguration, HeaderConfiguration{
         pageConfiguration.setCssFiles(cssFiles);
     }
 
-    public void setDWRServices(List<String> dwrServices) {
-        pageConfiguration.setDWRServices(dwrServices);
+    public void setDwrServices(List<String> dwrServices) {
+        pageConfiguration.setDwrServices(dwrServices);
     }
 
     public void setDojoBundles(List<String> dojoBundles) {
