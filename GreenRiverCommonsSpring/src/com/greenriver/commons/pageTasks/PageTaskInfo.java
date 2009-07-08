@@ -4,6 +4,7 @@ package com.greenriver.commons.pageTasks;
 import com.greenriver.commons.mvc.controllers.FormsConfiguration;
 import com.greenriver.commons.mvc.controllers.PageConfiguration;
 import com.greenriver.commons.mvc.helpers.header.HeaderConfiguration;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,13 +23,15 @@ public class PageTaskInfo implements FormsConfiguration, HeaderConfiguration{
     private String[] allowedRoles = {"ROLE_USER"};
 
     // The name of the main JSP file.
-    private String mainJSPFileName;
+    private String mainJspFileName;
 
     // The name's task;
     private String taskName;
 
+    private String toolbarJspFileName;
+
     public PageTaskInfo() {
-        pageConfiguration = new PageConfiguration();
+        pageConfiguration = new PageConfiguration();       
     }
 
     public void addFormEntity(String entityName) {
@@ -151,20 +154,6 @@ public class PageTaskInfo implements FormsConfiguration, HeaderConfiguration{
     }
 
     /**
-     * @return the mainJSPFileName
-     */
-    public String getMainJSPFileName() {
-        return mainJSPFileName;
-    }
-
-    /**
-     * @param mainJSPFileName the mainJSPFileName to set
-     */
-    public void setMainJSPFileName(String mainJSPFileName) {
-        this.mainJSPFileName = mainJSPFileName;
-    }
-
-    /**
      * @return the taskName
      */
     public String getTaskName() {
@@ -176,6 +165,36 @@ public class PageTaskInfo implements FormsConfiguration, HeaderConfiguration{
      */
     public void setTaskName(String taskName) {
         this.taskName = taskName;
+    }
+
+   
+
+    /**
+     * @return the mainJspFileName
+     */
+    public String getMainJspFileName() {
+        return mainJspFileName;
+    }
+
+    /**
+     * @param mainJspFileName the mainJspFileName to set
+     */
+    public void setMainJspFileName(String mainJspFileName) {
+        this.mainJspFileName = mainJspFileName;
+    }
+
+    /**
+     * @return the toolbarJspFileName
+     */
+    public String getToolbarJspFileName() {
+        return toolbarJspFileName;
+    }
+
+    /**
+     * @param toolbarJspFileName the toolbarJspFileName to set
+     */
+    public void setToolbarJspFileName(String toolbarJspFileName) {
+        this.toolbarJspFileName = toolbarJspFileName;
     }
 
 }

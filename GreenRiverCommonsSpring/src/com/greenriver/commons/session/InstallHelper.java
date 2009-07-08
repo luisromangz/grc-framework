@@ -43,5 +43,5 @@ public interface InstallHelper extends Serializable {
      * Sets the path to the key file
      * @param path Absolute path to the key file
      */
-    void setKeyFilePath(String path);
+    void setKeyFilePath(String path);   
 }

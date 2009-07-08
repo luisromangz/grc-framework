@@ -17,12 +17,17 @@ import org.springframework.web.servlet.ModelAndView;
 public class InstallController extends ConfigurablePageController
         implements HeaderConfigurerClient, FormBuilderClient {
 
+    // Its used to generate the key not a password xD
     private PasswordEncoder passwordEncoder;
     private UserDao userDao;
     private InstallHelper installHelper;
-    private String userClass;
+    private String userClass;    
+    private String pageToRedirectIfInstalled;
+    private String keyFileName;
 
     public InstallController() {
+        keyFileName = "key.txt";
+        pageToRedirectIfInstalled="login.htm";
     }
 
     /**
@@ -37,17 +42,13 @@ public class InstallController extends ConfigurablePageController
             HttpServletRequest request,
             HttpServletResponse response) throws Exception {
 
-        ModelAndView mav = new ModelAndView("install");
+        // We call to the parent's method;
+        ModelAndView mav = super.handleRequestInternal(request, response);
 
         if(userDao.getUserCount()>0) {
-            response.sendRedirect("login.htm");
+            response.sendRedirect(this.pageToRedirectIfInstalled);
             return mav;
         }
-
-        getHeaderConfigurer().setTitle("Sensis - Instalación");
-        getHeaderConfigurer().addJavaScriptFile("install");
-        getHeaderConfigurer().addCssFile("install");
-        getHeaderConfigurer().addDwrService("installService");
 
         Date now = new Date();
         String key = passwordEncoder.encodePassword(now.toString(), null);
@@ -55,7 +56,7 @@ public class InstallController extends ConfigurablePageController
         installHelper.setKey(key);
 
         String path = request.getSession().getServletContext().getRealPath("");
-        installHelper.setKeyFilePath(path+"/key.txt");
+        installHelper.setKeyFilePath(path+"/"+ keyFileName);
 
         mav.addObject("keyPath",  path);
         mav.addObject("key", key);
@@ -97,5 +98,33 @@ public class InstallController extends ConfigurablePageController
 
     public void setUserClass(String userClass) {
 	this.userClass = userClass;
+    }
+
+    /**
+     * @return the keyFileName
+     */
+    public String getKeyFileName() {
+        return keyFileName;
+    }
+
+    /**
+     * @param keyFileName the keyFileName to set
+     */
+    public void setKeyFileName(String keyFileName) {
+        this.keyFileName = keyFileName.trim();
+    }
+
+    /**
+     * @return the pageToRedirectIfInstalled
+     */
+    public String getPageToRedirectIfInstalled() {
+        return pageToRedirectIfInstalled;
+    }
+
+    /**
+     * @param pageToRedirectIfInstalled the pageToRedirectIfInstalled to set
+     */
+    public void setPageToRedirectIfInstalled(String pageToRedirectIfInstalled) {
+        this.pageToRedirectIfInstalled = pageToRedirectIfInstalled.trim();
     }
 }
