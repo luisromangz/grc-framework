@@ -1,6 +1,7 @@
 
 package com.greenriver.commons.pageTasks;
 
+import com.greenriver.commons.collections.SortedArrayList;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,29 +11,31 @@ import java.util.List;
  */
 public class PageTaskManager {
 
-    // The tasks to be managed.
-    private List<PageTaskInfo> tasks;
+    // The tasks to be managed, which will be ordered by the criteria defined
+    // for the PageTaks instances.
+    private SortedArrayList<PageTask> tasks;
 
     public PageTaskManager () {
-        tasks = new ArrayList<PageTaskInfo>();
+        tasks = new SortedArrayList<PageTask>();
     }
 
     /**
      * @return the tasks
      */
     public // The tasks to be managed.
-    List<PageTaskInfo> getTasks() {
+    List<PageTask> getTasks() {
         return tasks;
     }
 
     /**
      * @param tasks the tasks to set
      */
-    public void setTasks(List<PageTaskInfo> tasks) {
-        this.tasks = tasks;
+    public void setTasks(List<PageTask> tasks) {
+        this.tasks = new SortedArrayList<PageTask>();
+        this.tasks.addAll(tasks);
     }
 
-    public void addTask(PageTaskInfo task) {
+    public void addTask(PageTask task) {
         this.tasks.add(task);
     }
 
