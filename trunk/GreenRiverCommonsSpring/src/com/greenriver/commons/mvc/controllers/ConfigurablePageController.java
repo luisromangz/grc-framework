@@ -36,8 +36,8 @@ public class ConfigurablePageController extends AbstractController
     }
 
     @Override
-    protected ModelAndView handleRequestInternal(HttpServletRequest arg0,
-            HttpServletResponse arg1)
+    protected ModelAndView handleRequestInternal(HttpServletRequest request,
+            HttpServletResponse response)
             throws Exception {
         
         ModelAndView mav = new ModelAndView(viewName);
@@ -64,7 +64,14 @@ public class ConfigurablePageController extends AbstractController
             mav.addObject("userSessionInfo",this.userSessionInfo);
         }
 
+	customHandleRequest(request, response, mav);
+
         return mav;
+    }
+
+    protected void customHandleRequest(HttpServletRequest request,
+	    HttpServletResponse response, ModelAndView mav) throws Exception{
+	
     }
 
     /**

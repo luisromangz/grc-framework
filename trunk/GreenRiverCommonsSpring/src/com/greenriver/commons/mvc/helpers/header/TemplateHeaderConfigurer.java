@@ -139,31 +139,31 @@ public class TemplateHeaderConfigurer implements HeaderConfigurer {
     }
 
     public void setCssFiles(List<String> cssFiles) {
-        this.cssFiles = cssFiles;
+        this.cssFiles = new ArrayList(cssFiles);
     }
 
     public void setDwrServices(List<String> dwrServices) {
-        this.dwrFiles = dwrServices;
+        this.dwrFiles = new ArrayList(dwrServices);
     }
 
     public void setDojoBundles(List<String> dojoBundles) {
-        this.dojoBundles = dojoBundles;
+        this.dojoBundles = new ArrayList(dojoBundles);
     }
 
     public void setDojoModules(List<String> dojoModules) {
-       this.dojoModules = dojoModules;
+       this.dojoModules = new ArrayList(dojoModules);
     }
 
     public void setJavaScriptFiles(List<String> javascriptFiles) {
-        this.jsFiles = javascriptFiles;
+        this.jsFiles = new ArrayList(javascriptFiles);
     }
 
     public void setOnLoadScripts(List<String> onLoadScripts) {
-        this.onLoadScripts = onLoadScripts;
+        this.onLoadScripts = new ArrayList(onLoadScripts);
     }
 
     public void setScripts(List<String> scripts) {
-        this.scripts = scripts;
+        this.scripts = new ArrayList(scripts);
     }
 
     public List<String> getDojoBundles() {
