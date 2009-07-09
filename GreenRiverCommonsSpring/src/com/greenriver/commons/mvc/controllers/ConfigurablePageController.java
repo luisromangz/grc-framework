@@ -56,7 +56,7 @@ public class ConfigurablePageController extends AbstractController
 
         for(String entityName : pageConfiguration.getFormEntities()) {
             Class entityClass = Class.forName(entityName);
-            formBuilder.addForm(entityClass.getSimpleName() + "-editform", mav);
+            formBuilder.addForm(entityClass.getSimpleName() + "_editform", mav);
             formBuilder.addFieldsFromModel(entityClass);
         }
 

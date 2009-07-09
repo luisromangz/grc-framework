@@ -82,7 +82,7 @@ public class PageTasksController extends ConfigurablePageController{
            Class entityClass = Class.forName(entityName);
 
            getFormBuilder().addForm(
-                   String.format("%s-%s-EditForm",
+                   String.format("%s_%s_EditForm",
                         pageTask.getTaskName(),
                         entityClass.getSimpleName()).toLowerCase(),
                    mav);

@@ -2,9 +2,7 @@
 package com.greenriver.commons.pageTasks;
 
 import com.greenriver.commons.collections.SortedArrayList;
-import java.util.ArrayList;
 import java.util.List;
-
 /**
  *
  * @author luis
