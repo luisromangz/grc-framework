@@ -61,6 +61,8 @@ public class PageTasksController extends ConfigurablePageController{
             ModelAndView mav) {
        String taskName = pageTask.getTaskName();
 
+       // The properties that are files need to have their path relative
+       // to the task's name.
        headerConfigurer.getJavaScriptFiles().addAll(
                addTaskNameToFileNames(taskName,pageTask.getJavaScriptFiles()));
 
@@ -70,17 +72,10 @@ public class PageTasksController extends ConfigurablePageController{
        headerConfigurer.getDojoBundles().addAll(
                addTaskNameToFileNames(taskName, pageTask.getDojoBundles()));
 
-       headerConfigurer.getDojoModules().addAll(
-               addTaskNameToFileNames(taskName,pageTask.getDojoModules()));
-
-       headerConfigurer.getDwrServices().addAll(
-               addTaskNameToFileNames(taskName, pageTask.getDwrServices()));
-
-       headerConfigurer.getOnLoadScripts().addAll(
-               addTaskNameToFileNames(taskName,pageTask.getOnLoadScripts()));
-
-       headerConfigurer.getScripts().addAll(
-               addTaskNameToFileNames(taskName, pageTask.getScripts()));
+       headerConfigurer.getDojoModules().addAll(pageTask.getDojoModules());
+       headerConfigurer.getDwrServices().addAll(pageTask.getDwrServices());
+       headerConfigurer.getOnLoadScripts().addAll(pageTask.getOnLoadScripts());
+       headerConfigurer.getScripts().addAll(pageTask.getScripts());
 
         // We add the forms defined in the task.
        for(String entityName : pageTask.getFormEntities()) {
