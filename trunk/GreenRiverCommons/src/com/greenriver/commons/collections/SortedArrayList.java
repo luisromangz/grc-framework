@@ -13,6 +13,7 @@ Author: mangelp
 package com.greenriver.commons.collections;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 
@@ -78,4 +79,19 @@ public class SortedArrayList<T> extends ArrayList<T> {
             return true;
         }
     }
+
+    @Override
+    public boolean addAll(Collection<? extends T> collection) {
+
+       boolean result = false;
+       for(T element : collection) {
+            if(this.add(element)) {
+                result = true;
+            }            
+        }
+
+        return result;
+    }
+
+    
 }

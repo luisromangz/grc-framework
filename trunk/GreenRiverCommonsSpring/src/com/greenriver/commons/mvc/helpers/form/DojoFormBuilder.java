@@ -172,7 +172,9 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient {
             String confirmId = fieldId + "_confirm";
             String validationFunction =
                     String.format(
-                    "function %s_validate (value) {" + "return dijit.byId(\"%s\").getValue() == value;}",
+                    "var %s_validate = function (value) {\n"
+                    + "return dijit.byId(\"%s\").getValue() == value;\n"
+                    +"}",
                     confirmId, fieldId);
 
             String validationFunctionConnector =
