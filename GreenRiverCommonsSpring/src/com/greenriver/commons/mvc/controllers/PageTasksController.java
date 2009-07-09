@@ -26,10 +26,9 @@ public class PageTasksController extends ConfigurablePageController{
     }
 
     @Override
-    public ModelAndView handleRequestInternal (HttpServletRequest request,
-        HttpServletResponse response) throws Exception {
+    protected void customHandleRequest (HttpServletRequest request,
+        HttpServletResponse response, ModelAndView modelAndView) throws Exception{
 
-        ModelAndView mav = super.handleRequestInternal(request, response);
         HeaderConfigurer headerConfigurer = this.getHeaderConfigurer();
 
         // Configuration at the header level and the form level is done here,
@@ -41,19 +40,17 @@ public class PageTasksController extends ConfigurablePageController{
            // We have to add to the previously configured properties,
            // that had been configured in the page level, not the task level
            // as we are doing it now.
-           configurePageProperties(pageTask, headerConfigurer,mav);
+           configurePageProperties(pageTask, headerConfigurer,modelAndView);
         }
 
         // The configuration was done in the call to super.handleRequestInternal,
         // but must be redone now as we have to add all the things we have included
         // for the tasks.
-        headerConfigurer.configure(mav);
+        headerConfigurer.configure(modelAndView);
 
         // We add the tasks info to the ModelAndView object so we can access
         // it in the view so the tasks and toolbar can be rendered.
-        mav.addObject("pageTasksInfo", getPageTaskManager().getTasks());
-
-        return mav;
+        modelAndView.addObject("pageTasksInfo", getPageTaskManager().getTasks());
     }
 
     private void configurePageProperties(PageTask pageTask,
@@ -85,7 +82,7 @@ public class PageTasksController extends ConfigurablePageController{
            Class entityClass = Class.forName(entityName);
 
            getFormBuilder().addForm(
-                   String.format("{0}-{1}-EditForm",
+                   String.format("%s-%s-EditForm",
                         pageTask.getTaskName(),
                         entityClass.getSimpleName()).toLowerCase(),
                    mav);
@@ -99,7 +96,7 @@ public class PageTasksController extends ConfigurablePageController{
         ArrayList<String> taskedFileNames = new ArrayList<String>();
 
         for(String fileName : filenames) {
-            taskedFileNames.add(String.format("{0}/{1}", taskName, fileName));
+            taskedFileNames.add(String.format("%s/%s", taskName, fileName));
         }
 
         return taskedFileNames;
