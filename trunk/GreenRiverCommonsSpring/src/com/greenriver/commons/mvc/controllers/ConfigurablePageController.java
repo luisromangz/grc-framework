@@ -3,6 +3,7 @@ package com.greenriver.commons.mvc.controllers;
 import com.greenriver.commons.mvc.helpers.form.FormBuilder;
 import com.greenriver.commons.mvc.helpers.header.HeaderConfiguration;
 import com.greenriver.commons.mvc.helpers.header.HeaderConfigurer;
+import com.greenriver.commons.session.UserSessionInfo;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,6 +27,7 @@ public class ConfigurablePageController extends AbstractController
     private FormBuilder formBuilder;
     private PageConfiguration pageConfiguration;
     private String viewName;
+    private UserSessionInfo userSessionInfo;
 
 
     public ConfigurablePageController () {
@@ -55,6 +57,10 @@ public class ConfigurablePageController extends AbstractController
         for(String entityName : pageConfiguration.getFormEntities()) {
             formBuilder.addForm(entityName + "Form", mav);
             formBuilder.addFieldsFromModel(Class.forName(entityName));
+        }
+
+        if(this.userSessionInfo != null) {
+            mav.addObject("userSessionInfo",this.userSessionInfo);
         }
 
         return mav;
@@ -318,5 +324,19 @@ public class ConfigurablePageController extends AbstractController
      */
     public void setScripts(List<String> scripts) {
         pageConfiguration.setScripts(scripts);
+    }
+
+    /**
+     * @return the userSessionInfo
+     */
+    public UserSessionInfo getUserSessionInfo() {
+        return userSessionInfo;
+    }
+
+    /**
+     * @param userSessionInfo the userSessionInfo to set
+     */
+    public void setUserSessionInfo(UserSessionInfo userSessionInfo) {
+        this.userSessionInfo = userSessionInfo;
     }
 }
