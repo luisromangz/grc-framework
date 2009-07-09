@@ -58,7 +58,7 @@ public class PageTasksController extends ConfigurablePageController{
 
     private void configurePageProperties(PageTask pageTask,
             HeaderConfigurer headerConfigurer,
-            ModelAndView mav) {
+            ModelAndView mav) throws ClassNotFoundException {
        String taskName = pageTask.getTaskName();
 
        // The properties that are files need to have their path relative
@@ -81,11 +81,15 @@ public class PageTasksController extends ConfigurablePageController{
        for(String entityName : pageTask.getFormEntities()) {
            // Form id creation: e.g. taskname-user-editform,
            // being taskName the task's name, and User the entity's.
+
+           Class entityClass = Class.forName(entityName);
+
            getFormBuilder().addForm(
                    String.format("{0}-{1}-EditForm",
                         pageTask.getTaskName(),
-                        entityName).toLowerCase(),
+                        entityClass.getSimpleName()).toLowerCase(),
                    mav);
+           getFormBuilder().addFieldsFromModel(entityClass);
        }
     }
 
