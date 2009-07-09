@@ -34,20 +34,19 @@ public class InstallController extends ConfigurablePageController
      * 
      * @param request
      * @param response
+     * @param modelAndView
      * @return
      * @throws Exception
      */
     @Override
-    protected ModelAndView handleRequestInternal(
+    protected void customHandleRequest(
             HttpServletRequest request,
-            HttpServletResponse response) throws Exception {
-
-        // We call to the parent's method;
-        ModelAndView mav = super.handleRequestInternal(request, response);
+            HttpServletResponse response,
+            ModelAndView modelAndView) throws Exception {
 
         if(userDao.getUserCount()>0) {
             response.sendRedirect(this.pageToRedirectIfInstalled);
-            return mav;
+            return ;
         }
 
         Date now = new Date();
@@ -58,17 +57,15 @@ public class InstallController extends ConfigurablePageController
         String path = request.getSession().getServletContext().getRealPath("");
         installHelper.setKeyFilePath(path+"/"+ keyFileName);
 
-        mav.addObject("keyPath",  path);
-        mav.addObject("key", key);
+        modelAndView.addObject("keyPath",  path);
+        modelAndView.addObject("key", key);
 
-        getFormBuilder().addForm("adminForm",mav);
+        getFormBuilder().addForm("adminForm",modelAndView);
         getFormBuilder().addFieldsFromModel(Class.forName(userClass));
         getFormBuilder().removeField("roles");
         getFormBuilder().removeField("enabled");
 
-        getHeaderConfigurer().configure(mav);
-
-        return mav;
+        getHeaderConfigurer().configure(modelAndView);
     }
 
     /**

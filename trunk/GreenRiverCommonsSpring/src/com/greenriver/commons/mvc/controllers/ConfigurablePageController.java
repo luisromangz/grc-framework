@@ -36,7 +36,7 @@ public class ConfigurablePageController extends AbstractController
     }
 
     @Override
-    protected ModelAndView handleRequestInternal(HttpServletRequest request,
+    protected final ModelAndView handleRequestInternal(HttpServletRequest request,
             HttpServletResponse response)
             throws Exception {
         
