@@ -3,6 +3,7 @@ package com.greenriver.commons.data.dao;
 
 import com.greenriver.commons.data.model.User;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Dao operations for user entities
@@ -41,4 +42,10 @@ public interface UserDao extends Serializable {
      * @param encodedPassword String with the hash of the password to be stored.
      */
     public void save(User user, String encodedPassword);
+
+    /**
+     * Gets all the users
+     * @return a list of users
+     */
+    public List<User> getAllUsers();
 }
