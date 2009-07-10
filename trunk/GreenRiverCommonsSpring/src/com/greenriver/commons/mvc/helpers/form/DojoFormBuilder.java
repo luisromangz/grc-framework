@@ -5,11 +5,12 @@ import com.greenriver.commons.data.fieldProperties.FieldPropertiesValidator;
 import com.greenriver.commons.data.fieldProperties.FieldType;
 import com.greenriver.commons.mvc.helpers.header.HeaderConfigurer;
 import com.greenriver.commons.mvc.helpers.header.HeaderConfigurerClient;
+import com.greenriver.commons.roleManagement.RoleManager;
+import com.greenriver.commons.roleManagement.RoleManagerClient;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.springframework.web.servlet.ModelAndView;
@@ -19,10 +20,12 @@ import org.springframework.web.servlet.ModelAndView;
  * Dojo-aware widget info.
  * @author luis
  */
-public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient {
+public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
+    RoleManagerClient {
 
     private List<Form> forms;
     private Form lastForm;
+    private RoleManager roleManager;
 
     public DojoFormBuilder() {
         forms = new ArrayList<Form>();
@@ -37,164 +40,26 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient {
 
         String fieldId = lastForm.getId() + "_" + id;
 
-        Properties props = new Properties();
-        String elementType = "input";
-        String contents = "";
+        HtmlFormElementInfo formFieldElement = new HtmlFormElementInfo(fieldId);
 
-        if (properties.required()) {
-            props.setProperty("required", "true");
-        }
+        setupFieldElement(formFieldElement, fieldType, properties);
 
-
-        props.setProperty("intermediateChanges", "true");
-        props.setProperty("unit", properties.unit());
-
-        switch (properties.type()) {
-            case TEXT:
-                props.setProperty("type", "text");
-                props.setProperty("dojoType", "dijit.form.ValidationTextBox");
-                props.setProperty("trim", "true");
-                break;
-            case PASSWORD:
-            case PASSWORDEDITOR:
-                props.setProperty("type", "password");
-                props.setProperty("dojoType", "dijit.form.ValidationTextBox");
-                props.setProperty("regExp",
-                        FieldPropertiesValidator.PASSWORD_PATTERN.pattern());
-                props.setProperty("invalidMessage",
-                        "La contraseña debe tener al menos 6 carácteres.");
-                break;
-            case LONGTEXT:
-                props.setProperty("dojoType", "dijit.form.Textarea");
-                elementType = "textarea";
-                break;
-            case RICHTEXT:
-                props.setProperty("dojoType", "dijit.form.Editor");
-                elementType = "textarea";
-                headerConfigurer.addDojoModule("dijit.form.Editor");
-                break;
-            case NUMBER:
-                props.setProperty("dojoType", "dijit.form.NumberSpinner");
-                headerConfigurer.addDojoModule("dijit.form.NumberSpinner");
-                break;
-            case BOOLEAN:
-                props.setProperty("dojoType", "dijit.form.CheckBox");
-                props.setProperty("type", "checkbox");
-                headerConfigurer.addDojoModule("dijit.form.CheckBox");
-                break;
-            case EMAIL:
-                props.setProperty("type", "text");
-                props.setProperty("dojoType", "dijit.form.ValidationTextBox");
-                break;
-            case IPADDRESS:
-                props.setProperty("type", "text");
-                props.setProperty("regExpGen", "dojox.regexp.ipAddress");
-                props.setProperty("dojoType", "dijit.form.ValidationTextBox");
-                props.setProperty("constraints",
-                        "{allowIPv6:false,allowHybrid:false, allowDecimal:false}");
-                props.setProperty("invalidMessage", "Dirección IP inválida.");
-                headerConfigurer.addDojoModule("dojox.validate.regexp");
-                break;
-            case SELECTION:
-                props.setProperty("dojoType", "dijit.form.FilteringSelect");
-                elementType = "select";
-
-                contents = createSelectionContents(fieldType, properties);
-
-                break;
-            case MULTISELECTION:
-                headerConfigurer.addDojoModule("dojox.form.CheckedMultiSelect");
-                props.setProperty("dojoType", "dojox.form.CheckedMultiSelect");
-                props.setProperty("multiple", "true");
-                elementType = "select";
-
-                contents = createSelectionContents(fieldType, properties);
-                break;
-            case COLOR:
-                elementType = "div";
-                props.setProperty("dojoType", "dijit.form.DropDownButton");
-                headerConfigurer.addDojoModule("dojox.widget.ColorPicker");
-
-                contents +=
-                        "<span><div id=\"" + fieldId + "_colorViewer\" style=\"width:1em; height:1em; border: 1px solid #7EABCD;\"></div></span>";
-                contents +=
-                        "<div dojoType=\"dijit.TooltipDialog\">" + "<div id=\"" + fieldId + "\" dojoType=\"dojox.widget.ColorPicker\" liveUpdate=\"true\"></div>" + "</div>";
-
-                String colorSelectionScript =
-                        String.format(
-                        "dojo.connect(dijit.byId('%s'),'onChange',function(newValue) {dojo.style(dojo.byId('%1$s_colorViewer'),'background',newValue);});",
-                        fieldId);
-
-                headerConfigurer.addOnLoadScript(colorSelectionScript);
-
-
-                fieldId = fieldId + "_dropDownButton";
-                break;
-        }
-
-        // Custom options are set now.
-        if (!properties.invalidMessage().isEmpty()) {
-            props.setProperty("invalidMessage", properties.invalidMessage());
-        }
-
-        if (!properties.rangeMessage().isEmpty()) {
-            props.setProperty("rangeMessage", properties.rangeMessage());
-        }
-
-        if (!properties.customRegExp().isEmpty()) {
-            props.setProperty("regExp", properties.customRegExp());
-        }
-
-        if (!properties.editable()) {
-            props.setProperty("disabled", "true");
-        }
-
-
-        props.setProperty(
-                "constraints",
-                String.format("{min: %s, max: %s}", properties.minValue(),
-                properties.maxValue()));
-
+        setFieldProperties(properties, formFieldElement);
 
         // The field is added to the form.
         FormField field =
-                new FormField(fieldId, elementType, properties.label(), contents,
-                props);
+                new FormField(fieldId, formFieldElement.getElementType(),
+                properties.label(),
+                formFieldElement.getContents(),
+                formFieldElement.getAttributes());
 
         lastForm.addField(field);
 
         if (properties.type() == FieldType.PASSWORDEDITOR) {
             // If the field is a password editor, then we need to add a second
             // widget so the user has to write the password twice.
-
-            props.setProperty("invalidMessage", "Las contraseñas no coinciden.");
-            props.remove("regExp");
-            String confirmId = fieldId + "_confirm";
-            String validationFunction =
-                    String.format(
-                    "var %s_validate = function (value) {\n"
-                    + "return dijit.byId(\"%s\").getValue() == value;\n"
-                    +"}",
-                    confirmId, fieldId);
-
-            String validationFunctionConnector =
-                    String.format(
-                    "dijit.byId(\'%s\').validator = %1$s_validate;",
-                    confirmId);
-
-            headerConfigurer.addScript(validationFunction);
-            headerConfigurer.addOnLoadScript(
-                    String.format(
-                    "dojo.connect(dijit.byId('%s'),'onChange',function(){dijit.byId('%s').validate();});",
-                    fieldId, confirmId));
-
-            headerConfigurer.addOnLoadScript(validationFunctionConnector);
-
-            field = new FormField(confirmId, elementType,
-                    "Confirmar " + properties.label().toLowerCase(),
-                    contents, props);
-
-            lastForm.addField(field);
+            createPasswordConfirmationFormField(formFieldElement,
+                    properties.label());
         }
     }
 
@@ -232,7 +97,8 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient {
         lastForm = newForm;
     }
 
-    private String createSelectionContents(Class fieldType, FieldProperties properties ) {
+    private String createSelectionContents(Class fieldType,
+            String[] possibleValues, String[] possibleValueLabels) {
 
         String contents = "";
         ArrayList<String> values = new ArrayList<String>();
@@ -240,12 +106,9 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient {
 
         if (fieldType.isEnum()) {
             // We have to extract the values from the Enum;
-
             for (Object constant : fieldType.getEnumConstants()) {
                 try {
-
-                    String name =
-                            (String) constant.getClass().getDeclaredMethod(
+                    String name = (String) constant.getClass().getDeclaredMethod(
                             "getName").invoke(constant);
 
                     values.add(constant.toString());
@@ -259,8 +122,8 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient {
 
         } else {
 
-            values.addAll(Arrays.asList(properties.possibleValues()));
-            labels.addAll(Arrays.asList(properties.possibleValueLabels()));
+            values.addAll(Arrays.asList(possibleValues));
+            labels.addAll(Arrays.asList(possibleValueLabels));
 
             if (values.size() != labels.size()) {
                 values = labels;
@@ -282,5 +145,247 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient {
 
     public void removeField(String fieldId) {
         lastForm.removeField(fieldId);
+    }
+
+    private void setupTextField(HtmlFormElementInfo element) {
+        element.getAttributes().setProperty("type", "text");
+        element.getAttributes().setProperty("dojoType",
+                "dijit.form.ValidationTextBox");
+        element.getAttributes().setProperty("trim", "true");
+    }
+
+    private void setupPasswordField(HtmlFormElementInfo element) {
+        element.getAttributes().setProperty("type", "password");
+        element.getAttributes().setProperty("dojoType",
+                "dijit.form.ValidationTextBox");
+        element.getAttributes().setProperty("regExp",
+                FieldPropertiesValidator.PASSWORD_PATTERN.pattern());
+        element.getAttributes().setProperty("invalidMessage",
+                "La contraseña debe tener al menos 6 carácteres.");
+    }
+
+    private void setupLongTextField(HtmlFormElementInfo element) {
+        element.getAttributes().setProperty("dojoType", "dijit.form.Textarea");
+        element.setElementType("textarea");
+    }
+
+    private void setupRichTextField(HtmlFormElementInfo element) {
+        element.getAttributes().setProperty("dojoType", "dijit.form.Editor");
+        element.setElementType("textarea");
+        headerConfigurer.addDojoModule("dijit.form.Editor");
+    }
+
+    private void setupNumberField(HtmlFormElementInfo element) {
+        element.getAttributes().setProperty("dojoType",
+                "dijit.form.NumberSpinner");
+        headerConfigurer.addDojoModule("dijit.form.NumberSpinner");
+    }
+
+    private void setupBooleanField(HtmlFormElementInfo element) {
+        element.getAttributes().setProperty("dojoType", "dijit.form.CheckBox");
+        element.getAttributes().setProperty("type", "checkbox");
+        headerConfigurer.addDojoModule("dijit.form.CheckBox");
+    }
+
+    private void setupEmailField(HtmlFormElementInfo element) {
+        element.getAttributes().setProperty("type", "text");
+        element.getAttributes().setProperty("dojoType",
+                "dijit.form.ValidationTextBox");
+
+    }
+
+    private void setupIpAddressField(HtmlFormElementInfo element) {
+        element.getAttributes().setProperty("type", "text");
+        element.getAttributes().setProperty("regExpGen",
+                "dojox.regexp.ipAddress");
+        element.getAttributes().setProperty("dojoType",
+                "dijit.form.ValidationTextBox");
+        element.getAttributes().setProperty("constraints",
+                "{allowIPv6:false,allowHybrid:false, allowDecimal:false}");
+        element.getAttributes().setProperty("invalidMessage",
+                "Dirección IP inválida.");
+        headerConfigurer.addDojoModule("dojox.validate.regexp");
+    }
+
+    private void setupSelectionField(HtmlFormElementInfo element, Class fieldType,
+            FieldProperties properties) {
+        element.getAttributes().setProperty("dojoType",
+                "dijit.form.FilteringSelect");
+        element.setElementType("select");
+
+        element.setContents(createSelectionContents(fieldType,
+                properties.possibleValues(), properties.possibleValueLabels()));
+    }
+
+    private void setupMultiSelectionField(HtmlFormElementInfo element,
+            Class fieldType, FieldProperties properties) {
+        headerConfigurer.addDojoModule("dojox.form.CheckedMultiSelect");
+        element.getAttributes().setProperty("dojoType",
+                "dojox.form.CheckedMultiSelect");
+        element.getAttributes().setProperty("multiple", "true");
+        element.setElementType("select");
+
+        element.setContents(createSelectionContents(fieldType,
+                properties.possibleValues(), properties.possibleValueLabels()));
+    }
+
+    private void setupColorField(HtmlFormElementInfo element) {
+        element.setElementType("div");
+        element.getAttributes().setProperty(
+                "dojoType", "dijit.form.DropDownButton");
+        headerConfigurer.addDojoModule("dojox.widget.ColorPicker");
+
+        String colorSelectionScript =
+                String.format(
+                "dojo.connect(dijit.byId('%s'),'onChange',function(newValue) {dojo.style(dojo.byId('%1$s_colorViewer'),'background',newValue);});",
+                element.getId());
+
+        headerConfigurer.addOnLoadScript(colorSelectionScript);
+
+
+        String contents = String.format(
+                "<span><div id=\"%s_colorViewer\" style=\"width:1em; height:1em; border: 1px solid #7EABCD;\"></div></span>",
+                element.getId());
+        contents += String.format(
+                "<div dojoType=\"dijit.TooltipDialog\"><div id=\"%s\" dojoType=\"dojox.widget.ColorPicker\" liveUpdate=\"true\"></div></div>",
+                element.getId());
+
+        element.setContents(contents);
+        element.setId(element.getId() + "_dropDownButton");
+    }
+
+    private void setFieldProperties(FieldProperties properties, HtmlFormElementInfo element) {
+        if (properties.required()) {
+            element.getAttributes().setProperty("required", "true");
+        }
+
+        element.getAttributes().setProperty("intermediateChanges", "true");
+        element.getAttributes().setProperty("unit", properties.unit());
+
+        // Custom options are set now.
+        if (!properties.invalidMessage().isEmpty()) {
+            element.getAttributes().setProperty("invalidMessage",
+                    properties.invalidMessage());
+        }
+
+        if (!properties.rangeMessage().isEmpty()) {
+            element.getAttributes().setProperty("rangeMessage",
+                    properties.rangeMessage());
+        }
+
+        if (!properties.customRegExp().isEmpty()) {
+            element.getAttributes().setProperty("regExp",
+                    properties.customRegExp());
+        }
+
+        if (!properties.editable()) {
+            element.getAttributes().setProperty("disabled", "true");
+        }
+
+
+        element.getAttributes().setProperty(
+                "constraints",
+                String.format("{min: %s, max: %s}", properties.minValue(),
+                properties.maxValue()));
+    }
+
+    private void createPasswordConfirmationFormField(
+            HtmlFormElementInfo formFieldElement, String label) {
+
+        formFieldElement.getAttributes().setProperty("invalidMessage",
+                "Las contraseñas no coinciden.");
+        formFieldElement.getAttributes().remove("regExp");
+        String confirmId = formFieldElement.getId() + "_confirm";
+        String validationFunction =
+                String.format(
+                "var %s_validate = function (value) {\n" + "return dijit.byId(\"%s\").getValue() == value;\n" + "}",
+                confirmId, formFieldElement.getId());
+
+        String validationFunctionConnector =
+                String.format(
+                "dijit.byId(\'%s\').validator = %1$s_validate;",
+                confirmId);
+
+        headerConfigurer.addScript(validationFunction);
+        headerConfigurer.addOnLoadScript(
+                String.format(
+                "dojo.connect(dijit.byId('%s'),'onChange',function(){dijit.byId('%s').validate();});",
+                formFieldElement.getId(), confirmId));
+
+        headerConfigurer.addOnLoadScript(validationFunctionConnector);
+
+        FormField field = new FormField(confirmId,
+                formFieldElement.getElementType(),
+                "Confirmar " + label.toLowerCase(),
+                "", formFieldElement.getAttributes());
+
+        lastForm.addField(field);
+    }
+
+    private void setupFieldElement(HtmlFormElementInfo formFieldElement, Class fieldType, FieldProperties properties) {
+        switch (properties.type()) {
+            case TEXT:
+                setupTextField(formFieldElement);
+                break;
+            case PASSWORD:
+            case PASSWORDEDITOR:
+                setupPasswordField(formFieldElement);
+                break;
+            case LONGTEXT:
+                setupLongTextField(formFieldElement);
+                break;
+            case RICHTEXT:
+                setupRichTextField(formFieldElement);
+                break;
+            case NUMBER:
+                setupNumberField(formFieldElement);
+                break;
+            case BOOLEAN:
+                setupBooleanField(formFieldElement);
+                break;
+            case EMAIL:
+                setupEmailField(formFieldElement);
+                break;
+            case IPADDRESS:
+                setupIpAddressField(formFieldElement);
+                break;
+            case SELECTION:
+                setupSelectionField(formFieldElement, fieldType, properties);
+                break;
+            case MULTISELECTION:
+                setupMultiSelectionField(formFieldElement, fieldType, properties);
+                break;
+            case COLOR:
+                setupColorField(formFieldElement);
+                break;
+            case ROLESELECTOR:
+                setupRoleSelectionField(formFieldElement, fieldType);
+        }
+    }
+
+    private void setupRoleSelectionField(HtmlFormElementInfo formFieldElement,
+            Class fieldType) {
+        headerConfigurer.addDojoModule("dojox.form.CheckedMultiSelect");
+        formFieldElement.getAttributes().setProperty("dojoType",
+                "dojox.form.CheckedMultiSelect");
+        formFieldElement.getAttributes().setProperty("multiple", "true");
+        formFieldElement.setElementType("select");
+
+        formFieldElement.setContents(createSelectionContents(fieldType,
+                roleManager.getRoleNames(), roleManager.getRoleLabels()));
+    }
+
+    /**
+     * @return the roleManager
+     */
+    public RoleManager getRoleManager() {
+        return roleManager;
+    }
+
+    /**
+     * @param roleManager the roleManager to set
+     */
+    public void setRoleManager(RoleManager roleManager) {
+        this.roleManager = roleManager;
     }
 }
