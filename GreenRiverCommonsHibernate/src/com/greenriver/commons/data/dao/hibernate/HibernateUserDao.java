@@ -3,6 +3,7 @@ package com.greenriver.commons.data.dao.hibernate;
 import com.greenriver.commons.data.dao.UserDao;
 import com.greenriver.commons.data.model.User;
 import com.greenriver.commons.data.model.UserAuthority;
+import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.Projections;
@@ -92,5 +93,11 @@ public class HibernateUserDao extends HibernateDaoBase implements UserDao {
         crit.add(Restrictions.eq("username", username));
         User user = (User) crit.uniqueResult();
         return user;
+    }
+
+    public List<User> getAllUsers() {
+	String hql = "FROM "+User.class.getSimpleName()+"";
+	Query query = getCurrentSession().createQuery(hql);
+	return query.list();
     }
 }
