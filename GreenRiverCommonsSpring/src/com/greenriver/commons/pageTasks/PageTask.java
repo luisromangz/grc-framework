@@ -32,7 +32,12 @@ public class PageTask  implements FormsConfiguration, HeaderConfiguration,
     // The JSP file used to render the contents of the tasks contextual toolbar.
     private String toolbarJspFileName;
 
+    // Tells if the task is the start one, which provides access to the other
+    // tasks.
     private boolean isStartTask;
+
+    // The image that is shown as icon for the task in the taskSelector.
+    private String imageFileName;
 
     public PageTask() {
         pageConfiguration = new PageConfiguration();       
@@ -231,6 +236,20 @@ public class PageTask  implements FormsConfiguration, HeaderConfiguration,
      */
     public void setIsStartTask(boolean startTask) {
         this.isStartTask = startTask;
+    }
+
+    /**
+     * @return the imageFileName
+     */
+    public String getImageFileName() {
+        return imageFileName;
+    }
+
+    /**
+     * @param imageFileName the imageFileName to set
+     */
+    public void setImageFileName(String imageFileName) {
+        this.imageFileName = imageFileName;
     }
 
 }
