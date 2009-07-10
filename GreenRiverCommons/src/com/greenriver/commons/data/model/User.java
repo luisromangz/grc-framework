@@ -33,7 +33,7 @@ public class User implements Serializable, Comparable<User> {
     @FieldProperties(label="Contraseña", type = FieldType.PASSWORDEDITOR)
     private String password;
 
-    @FieldProperties(label = "Permisos", type = FieldType.MULTISELECTION, required=false)
+    @FieldProperties(label = "Permisos", type = FieldType.ROLESELECTOR, required=false)
     private String[] roles;
 
     public boolean hasRole(String role) {

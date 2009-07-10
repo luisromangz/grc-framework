@@ -67,6 +67,11 @@ public enum FieldType {
     MULTISELECTION,
 
     /**
+     * Shows a role selector.
+     */
+    ROLESELECTOR,
+
+    /**
      * A color chooser.
      */
     COLOR

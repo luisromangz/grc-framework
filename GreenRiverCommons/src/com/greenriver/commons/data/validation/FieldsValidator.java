@@ -5,10 +5,13 @@
 
 package com.greenriver.commons.data.validation;
 
+import com.greenriver.commons.roleManagement.RoleManagerClient;
+
 /**
  *
  * @author luis
  */
-public interface FieldsValidator {
+public interface FieldsValidator extends RoleManagerClient {
     public FieldsValidationResult validate(Object object);
+    
 }
