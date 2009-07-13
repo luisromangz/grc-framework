@@ -1,6 +1,8 @@
 
 package com.greenriver.commons.roleManagement;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -53,5 +55,10 @@ public class HashRoleManager implements RoleManager {
 
     public String[] getRoleLabels() {
         return rolesInfo.values().toArray(new String[]{});
+    }
+
+    public Map<String, String> getRoleMap() {
+	//Return new instance to avoid this one to be accidentally changed
+	return new HashMap<String, String>(rolesInfo);
     }
 }
