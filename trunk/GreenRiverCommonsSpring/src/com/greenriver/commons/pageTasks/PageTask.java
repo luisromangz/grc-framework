@@ -44,7 +44,8 @@ public class PageTask  implements FormsConfiguration, HeaderConfiguration,
     private String taskResetCallback;
 
     public PageTask() {
-        pageConfiguration = new PageConfiguration();       
+        pageConfiguration = new PageConfiguration();
+        taskResetCallback = "false";
     }
 
     public void addFormEntity(String entityName) {
