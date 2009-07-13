@@ -74,8 +74,11 @@ public enum FieldType {
     /**
      * A color chooser.
      */
-    COLOR
+    COLOR,
 
-
+    /**
+     * A float number selector
+     */
+    DECIMAL
 
 }
