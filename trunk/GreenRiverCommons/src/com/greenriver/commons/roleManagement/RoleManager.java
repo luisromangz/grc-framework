@@ -5,6 +5,8 @@
 
 package com.greenriver.commons.roleManagement;
 
+import java.util.Map;
+
 /**
  *
  * @author luis
@@ -20,4 +22,10 @@ public interface RoleManager {
     String[] getRoleLabelsForRoles(String[] roleNames);
 
     String[] getRoleNames();
+
+    /**
+     * Gets a map with all the role names as keys and role labels as values
+     * @return a map
+     */
+    Map<String, String> getRoleMap();
 }
