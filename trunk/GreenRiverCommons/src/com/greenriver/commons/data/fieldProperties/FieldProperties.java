@@ -113,4 +113,10 @@ public @interface FieldProperties {
      * @return
      */
     public String unit() default "";
+
+    public String fromService() default "";
+
+    public String fromServiceMethod() default "";
+
+    public String fromEnumMethod() default "getName";
 }

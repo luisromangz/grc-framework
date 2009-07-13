@@ -39,6 +39,10 @@ public class PageTask  implements FormsConfiguration, HeaderConfiguration,
     // The image that is shown as icon for the task in the taskSelector.
     private String imageFileName;
 
+    // A function name that must be called when showing a task to re initialize
+    // it.
+    private String taskResetCallback;
+
     public PageTask() {
         pageConfiguration = new PageConfiguration();       
     }
@@ -250,6 +254,20 @@ public class PageTask  implements FormsConfiguration, HeaderConfiguration,
      */
     public void setImageFileName(String imageFileName) {
         this.imageFileName = imageFileName;
+    }
+
+    /**
+     * @return the taskResetCallback
+     */
+    public String getTaskResetCallback() {
+        return taskResetCallback;
+    }
+
+    /**
+     * @param taskResetCallback the taskResetCallback to set
+     */
+    public void setTaskResetCallback(String taskResetCallback) {
+        this.taskResetCallback = taskResetCallback;
     }
 
 }

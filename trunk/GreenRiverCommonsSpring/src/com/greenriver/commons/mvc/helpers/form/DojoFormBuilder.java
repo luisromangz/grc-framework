@@ -97,7 +97,7 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
         lastForm = newForm;
     }
 
-    private String createSelectionContents(Class fieldType,
+    private String createSelectionContents(Class fieldType, FieldProperties properties,
             String[] possibleValues, String[] possibleValueLabels) {
 
         String contents = "";
@@ -109,7 +109,7 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
             for (Object constant : fieldType.getEnumConstants()) {
                 try {
                     String name = (String) constant.getClass().getDeclaredMethod(
-                            "getName").invoke(constant);
+                            properties.fromEnumMethod()).invoke(constant);
 
                     values.add(constant.toString());
                     labels.add(name);
@@ -213,7 +213,7 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
                 "dijit.form.FilteringSelect");
         element.setElementType("select");
 
-        element.setContents(createSelectionContents(fieldType,
+        element.setContents(createSelectionContents(fieldType, properties,
                 properties.possibleValues(), properties.possibleValueLabels()));
     }
 
@@ -225,7 +225,7 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
         element.getAttributes().setProperty("multiple", "true");
         element.setElementType("select");
 
-        element.setContents(createSelectionContents(fieldType,
+        element.setContents(createSelectionContents(fieldType, properties,
                 properties.possibleValues(), properties.possibleValueLabels()));
     }
 
@@ -359,19 +359,19 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
                 setupColorField(formFieldElement);
                 break;
             case ROLESELECTOR:
-                setupRoleSelectionField(formFieldElement, fieldType);
+                setupRoleSelectionField(formFieldElement, fieldType, properties);
         }
     }
 
     private void setupRoleSelectionField(HtmlFormElementInfo formFieldElement,
-            Class fieldType) {
+            Class fieldType, FieldProperties properties) {
         headerConfigurer.addDojoModule("dojox.form.CheckedMultiSelect");
         formFieldElement.getAttributes().setProperty("dojoType",
                 "dojox.form.CheckedMultiSelect");
         formFieldElement.getAttributes().setProperty("multiple", "true");
         formFieldElement.setElementType("select");
 
-        formFieldElement.setContents(createSelectionContents(fieldType,
+        formFieldElement.setContents(createSelectionContents(fieldType, properties,
                 roleManager.getRoleNames(), roleManager.getRoleLabels()));
     }
 
