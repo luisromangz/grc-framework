@@ -55,13 +55,13 @@ public @interface FieldProperties {
      * El minimum numeric value the field allows.
      * @return 
      */
-    int minValue() default Integer.MIN_VALUE;
+    double minValue() default Integer.MIN_VALUE;
 
     /**
      * The max numeric value the field allows.
      * @return
      */
-    int maxValue() default Integer.MAX_VALUE;
+    double maxValue() default Integer.MAX_VALUE;
     
     /**
      * The field's type, that will determinate input type and the validation
