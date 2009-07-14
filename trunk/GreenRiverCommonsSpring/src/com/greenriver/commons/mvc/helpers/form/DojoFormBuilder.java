@@ -254,6 +254,21 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
         element.setId(element.getId() + "_dropDownButton");
     }
 
+    private void setupDecimalField(HtmlFormElementInfo element) {
+        element.getAttributes().setProperty("dojoType",
+                "dijit.form.NumberSpinner");
+        headerConfigurer.addDojoModule("dijit.form.NumberSpinner");
+    }
+
+    private void setupAutocompletionField(HtmlFormElementInfo element) {
+	element.getAttributes().setProperty("dojoType",
+                "dijit.form.ComboBox");
+        headerConfigurer.addDojoModule("dijit.form.ComboBox");
+	//TODO: value(selected value), store(data source), searchAttr(if the
+	//store gets an array of objects this specifies the name of the
+	//property whose value is used for autocompletion search.
+    }
+
     private void setFieldProperties(FieldProperties properties, HtmlFormElementInfo element) {
         if (properties.required()) {
             element.getAttributes().setProperty("required", "true");
@@ -282,7 +297,8 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
             element.getAttributes().setProperty("disabled", "true");
         }
 
-
+	//Here we set the range, note that if min or max are float it must
+	//use a dot as decimal separator.
         element.getAttributes().setProperty(
                 "constraints",
                 String.format("{min: %s, max: %s}", properties.minValue(),
@@ -360,6 +376,13 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
                 break;
             case ROLESELECTOR:
                 setupRoleSelectionField(formFieldElement, fieldType, properties);
+		break;
+	    case DECIMAL:
+		setupDecimalField(formFieldElement);
+		break;
+	    case AUTOCOMPLETION:
+		setupAutocompletionField(formFieldElement);
+		break;
         }
     }
 
