@@ -79,6 +79,11 @@ public enum FieldType {
     /**
      * A float number selector
      */
-    DECIMAL
+    DECIMAL,
 
+    /**
+     * An autocompleted text input. It shows a list of available completions
+     * but allows to add any custom value.
+     */
+    AUTOCOMPLETION
 }

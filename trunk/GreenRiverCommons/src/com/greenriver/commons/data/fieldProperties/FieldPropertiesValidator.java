@@ -269,6 +269,24 @@ public class FieldPropertiesValidator implements FieldsValidator {
         }
     }
 
+    private void validateDecimal(Object value, FieldProperties properties, List<String> validationStrings ) {
+        double decimal = Double.parseDouble(value.toString());
+
+        if (properties.maxValue() < decimal) {
+            validationStrings.add(
+                    "El valor del campo «" + properties.label() + "» supera el máximo permitido (" + properties.maxValue() + ").");
+        }
+
+        if (properties.minValue() > decimal) {
+            validationStrings.add(
+                    "El valor del campo «" + properties.label() + "» es menor que el mímimo permitido (" + properties.minValue() + ").");
+        }
+    }
+
+    private void validateAutocompletion(Object value, FieldProperties properties, List<String> validationStrings ) {
+	//TODO: Is there any validation required?
+    }
+
     private void validateFieldType(Object value, FieldProperties properties, List<String> validationStrings) {
         switch (properties.type()) {
             case BOOLEAN:
@@ -304,6 +322,12 @@ public class FieldPropertiesValidator implements FieldsValidator {
                 // is in the GUI.
                 validatePassword(value, properties, validationStrings);
                 break;
+	    case DECIMAL:
+		validateDecimal(value, properties, validationStrings);
+		break;
+	    case AUTOCOMPLETION:
+		validateAutocompletion(value, properties, validationStrings);
+		break;
         }
     }
 
