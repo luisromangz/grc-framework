@@ -282,6 +282,8 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
 	element.setContents(createSelectionContents(fieldType, properties,
                 properties.possibleValues(), properties.possibleValueLabels()));
 
+        element.getAttributes().setProperty("class", "backgroundlessComboBoxButton");
+
 	headerConfigurer.addDojoModule("dijit.form.ComboBox");
     }
 
