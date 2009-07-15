@@ -16,8 +16,9 @@ import java.util.logging.Logger;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
- * This class implements a form creator that will create
- * Dojo-aware widget info.
+ * This class implements a form creator that will create Dojo-aware widget info.
+ * Note that this class should be configured in spring with a request scope as
+ * it has state.
  * @author luis
  */
 public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
@@ -36,8 +37,6 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
     }
 
     public void addField(String id, FieldProperties properties, Class fieldType) {
-
-
         String fieldId = lastForm.getId() + "_" + id;
 
         HtmlFormElementInfo formFieldElement = new HtmlFormElementInfo(fieldId);
@@ -175,10 +174,17 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
         headerConfigurer.addDojoModule("dijit.form.Editor");
     }
 
-    private void setupNumberField(HtmlFormElementInfo element) {
+    private void setupNumberField(HtmlFormElementInfo element, Class fieldType, FieldProperties properties) {
         element.getAttributes().setProperty("dojoType",
                 "dijit.form.NumberSpinner");
         headerConfigurer.addDojoModule("dijit.form.NumberSpinner");
+
+	String min = properties.minValue() + "";
+	String max = properties.maxValue() + "";
+
+        element.getAttributes().setProperty(
+                "constraints",
+                String.format("{min: %s, max: %s, places:0}", min, max));
     }
 
     private void setupBooleanField(HtmlFormElementInfo element) {
@@ -191,7 +197,6 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
         element.getAttributes().setProperty("type", "text");
         element.getAttributes().setProperty("dojoType",
                 "dijit.form.ValidationTextBox");
-
     }
 
     private void setupIpAddressField(HtmlFormElementInfo element) {
@@ -254,10 +259,20 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
         element.setId(element.getId() + "_dropDownButton");
     }
 
-    private void setupDecimalField(HtmlFormElementInfo element) {
+    private void setupDecimalField(HtmlFormElementInfo element, Class FieldType, FieldProperties properties) {
         element.getAttributes().setProperty("dojoType",
                 "dijit.form.NumberSpinner");
         headerConfigurer.addDojoModule("dijit.form.NumberSpinner");
+
+	//Here we set the range, note that if min or max are float it must
+	//use a dot as decimal separator (representation independent in javascript).
+	String min = properties.minValue() + "";
+	String max = properties.maxValue() + "";
+	String places = properties.decimalPlaces() + "";
+	
+        element.getAttributes().setProperty(
+                "constraints",
+                String.format("{min: %s, max: %s, places:%s}", min, max, places));
     }
 
     private void setupAutocompletionField(HtmlFormElementInfo element) {
@@ -269,6 +284,12 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
 	//property whose value is used for autocompletion search.
     }
 
+    /**
+     * Sets generic properties for a field. Handle custom properties in each
+     * field concrete setup.
+     * @param properties
+     * @param element
+     */
     private void setFieldProperties(FieldProperties properties, HtmlFormElementInfo element) {
         if (properties.required()) {
             element.getAttributes().setProperty("required", "true");
@@ -296,13 +317,6 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
         if (!properties.editable()) {
             element.getAttributes().setProperty("disabled", "true");
         }
-
-	//Here we set the range, note that if min or max are float it must
-	//use a dot as decimal separator.
-        element.getAttributes().setProperty(
-                "constraints",
-                String.format("{min: %s, max: %s}", properties.minValue(),
-                properties.maxValue()));
     }
 
     private void createPasswordConfirmationFormField(
@@ -354,7 +368,7 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
                 setupRichTextField(formFieldElement);
                 break;
             case NUMBER:
-                setupNumberField(formFieldElement);
+                setupNumberField(formFieldElement, fieldType, properties);
                 break;
             case BOOLEAN:
                 setupBooleanField(formFieldElement);
@@ -378,7 +392,7 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
                 setupRoleSelectionField(formFieldElement, fieldType, properties);
 		break;
 	    case DECIMAL:
-		setupDecimalField(formFieldElement);
+		setupDecimalField(formFieldElement, fieldType, properties);
 		break;
 	    case AUTOCOMPLETION:
 		setupAutocompletionField(formFieldElement);
