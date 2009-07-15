@@ -46,19 +46,21 @@ public @interface FieldProperties {
     boolean required() default true;
 
     /**
-     * A regular expresion used to validate the field.
+     * A custom regular expresion used to validate the field.
      * @return
      */
     String customRegExp() default "";
 
     /**
-     * El minimum numeric value the field allows.
+     * The minimum numeric value the field allows. Only for DECIMAL or NUMBER
+     * field types.
      * @return 
      */
     double minValue() default Integer.MIN_VALUE;
 
     /**
-     * The max numeric value the field allows.
+     * The max numeric value the field allows. Only for DECIMAL or NUMBER field
+     * types.
      * @return
      */
     double maxValue() default Integer.MAX_VALUE;
@@ -114,9 +116,15 @@ public @interface FieldProperties {
      */
     public String unit() default "";
 
-    public String fromService() default "";
-
-    public String fromServiceMethod() default "";
-
+    /**
+     * Name of the method of an enum that returns the map of label/value to be
+     * used to allow editing of a field with enum type.
+     * @return the name of the method
+     */
     public String fromEnumMethod() default "getName";
+
+    /**
+     * Number of decimal places to be shown if the field is of type DECIMAL.
+     */
+    public int decimalPlaces() default 3;
 }
