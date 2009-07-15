@@ -119,7 +119,7 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
                 }
             }
 
-        } else {
+        } else if (!properties.externalValues()) {
 
             values.addAll(Arrays.asList(possibleValues));
             labels.addAll(Arrays.asList(possibleValueLabels));
@@ -275,13 +275,14 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
                 String.format("{min: %s, max: %s, places:%s}", min, max, places));
     }
 
-    private void setupAutocompletionField(HtmlFormElementInfo element) {
+    private void setupAutocompletionField(HtmlFormElementInfo element, Class fieldType, FieldProperties properties) {
 	element.getAttributes().setProperty("dojoType",
                 "dijit.form.ComboBox");
-        headerConfigurer.addDojoModule("dijit.form.ComboBox");
-	//TODO: value(selected value), store(data source), searchAttr(if the
-	//store gets an array of objects this specifies the name of the
-	//property whose value is used for autocompletion search.
+	element.setElementType("select");
+	element.setContents(createSelectionContents(fieldType, properties,
+                properties.possibleValues(), properties.possibleValueLabels()));
+
+	headerConfigurer.addDojoModule("dijit.form.ComboBox");
     }
 
     /**
@@ -395,7 +396,7 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
 		setupDecimalField(formFieldElement, fieldType, properties);
 		break;
 	    case AUTOCOMPLETION:
-		setupAutocompletionField(formFieldElement);
+		setupAutocompletionField(formFieldElement, fieldType, properties);
 		break;
         }
     }
