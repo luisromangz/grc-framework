@@ -1,6 +1,5 @@
 package com.greenriver.commons.mvc.controllers;
 
-import com.greenriver.commons.mvc.helpers.header.HeaderConfigurer;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.ModelAndView;
@@ -9,13 +8,14 @@ import org.springframework.web.servlet.ModelAndView;
  *
  * @author luis
  */
-public class LoginController extends ConfigurablePageController {
+public class LoginController extends ConfigurablePageController
+        implements CustomizableHandleRequest {
 
     public LoginController() {
     }
 
     @Override
-    protected void customHandleRequest(
+    public void customHandleRequest(
             HttpServletRequest request,
             HttpServletResponse response,
             ModelAndView modelAndView) throws Exception {
