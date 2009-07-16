@@ -26,19 +26,19 @@ public @interface FieldProperties {
      * @return
      */
     public boolean visible() default true;
-
-
     
     /**
      * The field's associated label.
      * @return
      */
     String label();
+    
     /**
      * The field's descrition.
      * @return
      */
     String description() default "";
+
     /**
      * Tells if the field is required or not.
      * @return
@@ -56,14 +56,14 @@ public @interface FieldProperties {
      * field types.
      * @return 
      */
-    double minValue() default Integer.MIN_VALUE;
+    double minValue() default Double.MIN_VALUE;
 
     /**
      * The max numeric value the field allows. Only for DECIMAL or NUMBER field
      * types.
      * @return
      */
-    double maxValue() default Integer.MAX_VALUE;
+    double maxValue() default Double.MAX_VALUE;
     
     /**
      * The field's type, that will determinate input type and the validation
@@ -71,6 +71,7 @@ public @interface FieldProperties {
      * @return
      */
     FieldType type() default FieldType.TEXT;
+    
     /**
      * The possible options that should accept the field.
      * @return
@@ -83,10 +84,11 @@ public @interface FieldProperties {
      */
     String[] possibleValueLabels() default {};
 
-
     /**
-     * The possible values for a selection field aren't defined here but
-     * somewhere else.
+     * If true the possible values for a selection field aren't defined in this
+     * annotation, if false the possible values must be defined in this
+     * annotation or the property must be of type enum and have a method to
+     * retrieve the values.
      * @return
      */
     boolean externalValues() default false;
@@ -109,7 +111,6 @@ public @interface FieldProperties {
      */
     boolean editable() default true;
 
-
     /**
      * The unit the field values is measured in.
      * @return
@@ -125,6 +126,7 @@ public @interface FieldProperties {
 
     /**
      * Number of decimal places to be shown if the field is of type DECIMAL.
+     * @return number of decimal places
      */
     public int decimalPlaces() default 3;
 }
