@@ -75,16 +75,14 @@ public class PageTasksController extends ConfigurablePageController{
        headerConfigurer.getScripts().addAll(pageTask.getScripts());
 
         // We add the forms defined in the task.
-       for(String entityName : pageTask.getFormEntities()) {
+       for(String formId : pageTask.getFormEntities().keySet()) {
            // Form id creation: e.g. taskname-user-editform,
            // being taskName the task's name, and User the entity's.
-
-           Class entityClass = Class.forName(entityName);
+           String entityClassName = pageTask.getFormEntities().get(formId);
+           Class entityClass = Class.forName(entityClassName);
 
            getFormBuilder().addForm(
-                   String.format("%s_%s_EditForm",
-                        pageTask.getTaskName(),
-                        entityClass.getSimpleName()).toLowerCase(),
+                   String.format("%s_%s",pageTask.getTaskName(),formId),
                    mav);
            getFormBuilder().addFieldsFromModel(entityClass);
        }

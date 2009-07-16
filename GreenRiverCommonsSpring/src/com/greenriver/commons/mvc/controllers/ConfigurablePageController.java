@@ -5,6 +5,7 @@ import com.greenriver.commons.mvc.helpers.header.HeaderConfiguration;
 import com.greenriver.commons.mvc.helpers.header.HeaderConfigurer;
 import com.greenriver.commons.session.UserSessionInfo;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.ModelAndView;
@@ -54,9 +55,10 @@ public class ConfigurablePageController extends AbstractController
         headerConfigurer.configure(mav);
 
 
-        for(String entityName : pageConfiguration.getFormEntities()) {
-            Class entityClass = Class.forName(entityName);
-            formBuilder.addForm(entityClass.getSimpleName() + "_editform", mav);
+        for(String formId : pageConfiguration.getFormEntities().keySet()) {
+            String className = pageConfiguration.getFormEntities().get(formId);
+            Class entityClass = Class.forName(className);
+            formBuilder.addForm(formId, mav);
             formBuilder.addFieldsFromModel(entityClass);
         }
 
@@ -119,8 +121,8 @@ public class ConfigurablePageController extends AbstractController
      * automagically.
      * @param entityName The name of the entity the form will be created for.
      */
-    public void addFormEntity(String entityName) {
-        pageConfiguration.addFormEntity(entityName);
+    public void addFormEntity(String id, String entityName) {
+        pageConfiguration.addFormEntity(id, entityName);
     }
 
 
@@ -128,7 +130,7 @@ public class ConfigurablePageController extends AbstractController
      * Gets the names of the entities that will have editing forms created for.
      * @return A list containing the entity names.
      */
-    public List<String> getFormEntities() {
+    public Map<String,String> getFormEntities() {
         return pageConfiguration.getFormEntities();
     }
 
@@ -136,7 +138,7 @@ public class ConfigurablePageController extends AbstractController
      * Sets the list of entity names for which forms are going to be created.
      * @param formEntities A list of entity names.
      */
-    public void setFormEntities(List<String> formEntities) {
+    public void setFormEntities(Map<String,String> formEntities) {
         pageConfiguration.setFormEntities(formEntities);
     }
 
@@ -347,4 +349,6 @@ public class ConfigurablePageController extends AbstractController
     public void setUserSessionInfo(UserSessionInfo userSessionInfo) {
         this.userSessionInfo = userSessionInfo;
     }
+
+
 }

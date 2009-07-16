@@ -5,7 +5,7 @@
 
 package com.greenriver.commons.mvc.controllers;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * This interface defines a contract that implementing classes must fulfill
@@ -18,21 +18,22 @@ public interface FormsConfiguration {
     /**
      * Adds an entity name to the list of entity names for which forms have
      * to be created.
+     * @param id The form's id.
      * @param entityName The name of the entity a form will be created for.
      */
-    void addFormEntity(String entityName);
+    void addFormEntity(String id, String entityName);
 
     /**
      * Gets the names of the entities that will have a form created for edition
      * of their instances.
      * @return the formEntities
      */
-    List<String> getFormEntities();
+    Map<String,String> getFormEntities();
 
     /**
      * Sets the names of the entities a form will be created for.
      * @param formEntities the formEntities to set
      */
-    void setFormEntities(List<String> formEntities);
+    void setFormEntities(Map<String,String> formEntities);
 
 }

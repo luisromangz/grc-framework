@@ -4,8 +4,8 @@ package com.greenriver.commons.pageTasks;
 import com.greenriver.commons.mvc.controllers.FormsConfiguration;
 import com.greenriver.commons.mvc.controllers.PageConfiguration;
 import com.greenriver.commons.mvc.helpers.header.HeaderConfiguration;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Instances of this class hold the information about a task that will be
@@ -48,15 +48,15 @@ public class PageTask  implements FormsConfiguration, HeaderConfiguration,
         taskResetCallback = "false";
     }
 
-    public void addFormEntity(String entityName) {
-        pageConfiguration.addFormEntity(entityName);
+    public void addFormEntity(String id,String entityName) {
+        pageConfiguration.addFormEntity(id, entityName);
     }
 
-    public List<String> getFormEntities() {
+    public Map<String,String> getFormEntities() {
         return pageConfiguration.getFormEntities();
     }
 
-    public void setFormEntities(List<String> formEntities) {
+    public void setFormEntities(Map<String,String> formEntities) {
         pageConfiguration.setFormEntities(formEntities);
     }
 
