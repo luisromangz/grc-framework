@@ -26,7 +26,7 @@ public class PageTasksController extends ConfigurablePageController{
     }
 
     @Override
-    protected void customHandleRequest (HttpServletRequest request,
+    public void customHandleRequest (HttpServletRequest request,
         HttpServletResponse response, ModelAndView modelAndView) throws Exception{
 
         HeaderConfigurer headerConfigurer = this.getHeaderConfigurer();
@@ -76,8 +76,7 @@ public class PageTasksController extends ConfigurablePageController{
 
         // We add the forms defined in the task.
        for(String formId : pageTask.getFormEntities().keySet()) {
-           // Form id creation: e.g. taskname-user-editform,
-           // being taskName the task's name, and User the entity's.
+           // Form id creation: e.g. taskName-id.
            String entityClassName = pageTask.getFormEntities().get(formId);
            Class entityClass = Class.forName(entityClassName);
 

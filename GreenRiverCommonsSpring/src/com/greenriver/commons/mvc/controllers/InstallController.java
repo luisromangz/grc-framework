@@ -39,7 +39,7 @@ public class InstallController extends ConfigurablePageController
      * @throws Exception
      */
     @Override
-    protected void customHandleRequest(
+    public void customHandleRequest(
             HttpServletRequest request,
             HttpServletResponse response,
             ModelAndView modelAndView) throws Exception {

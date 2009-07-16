@@ -22,7 +22,7 @@ import org.springframework.web.servlet.mvc.AbstractController;
  * @author luis
  */
 public class ConfigurablePageController extends AbstractController
-    implements FormsConfiguration, HeaderConfiguration {
+    implements FormsConfiguration, HeaderConfiguration ,CustomizableHandleRequest  {
 
     private HeaderConfigurer headerConfigurer;
     private FormBuilder formBuilder;
@@ -37,7 +37,7 @@ public class ConfigurablePageController extends AbstractController
     }
 
     @Override
-    protected final ModelAndView handleRequestInternal(HttpServletRequest request,
+    protected ModelAndView handleRequestInternal(HttpServletRequest request,
             HttpServletResponse response)
             throws Exception {
         
@@ -71,7 +71,7 @@ public class ConfigurablePageController extends AbstractController
         return mav;
     }
 
-    protected void customHandleRequest(HttpServletRequest request,
+    public void customHandleRequest(HttpServletRequest request,
 	    HttpServletResponse response, ModelAndView mav) throws Exception{
 	
     }
