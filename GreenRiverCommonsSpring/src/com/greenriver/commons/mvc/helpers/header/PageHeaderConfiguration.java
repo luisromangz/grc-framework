@@ -91,31 +91,31 @@ public class PageHeaderConfiguration implements HeaderConfiguration {
     }
 
     public void setCssFiles(List<String> cssFiles) {
-        this.cssFiles = cssFiles;
+        this.cssFiles = new ArrayList<String>(cssFiles);
     }
 
     public void setDwrServices(List<String> dwrServices) {
-        this.dwrServices = dwrServices;
+        this.dwrServices = new ArrayList<String>(dwrServices);
     }
 
     public void setDojoBundles(List<String> dojoBundles) {
-        this.dojoBundles = dojoBundles;
+        this.dojoBundles = new ArrayList<String>(dojoBundles);
     }
 
     public void setDojoModules(List<String> dojoModules) {
-        this.dojoModules = dojoModules;
+        this.dojoModules = new ArrayList<String>(dojoModules);
     }
 
     public void setJavaScriptFiles(List<String> javascriptFiles) {
-        this.javascriptFiles = javascriptFiles;
+        this.javascriptFiles = new ArrayList<String>(javascriptFiles);
     }
 
     public void setOnLoadScripts(List<String> onLoadScripts) {
-        this.onLoadScripts = onLoadScripts;
+        this.onLoadScripts = new ArrayList<String>(onLoadScripts);
     }
 
     public void setScripts(List<String> scripts) {
-        this.scripts = scripts;
+        this.scripts = new ArrayList<String>(scripts);
     }
 
     public List<String> getDojoBundles() {
