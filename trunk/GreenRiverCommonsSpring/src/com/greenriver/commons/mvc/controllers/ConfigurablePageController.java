@@ -178,13 +178,12 @@ public class ConfigurablePageController extends AbstractController
         pageConfiguration.addDojoModule(dojoModule);
     }
 
-
     /**
      * Adds a JavaScript file name so the file is loaded by the page.
      * @param jsFilename The name of the Javascript file, without extension.
      */
     public void addJavaScriptFile(String jsFilename) {
-        pageConfiguration.addScript(jsFilename);
+        pageConfiguration.addJavaScriptFile(jsFilename);
     }
 
     /**
