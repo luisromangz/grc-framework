@@ -1,5 +1,6 @@
 
 package com.greenriver.commons.mvc.controllers;
+import com.greenriver.commons.data.transactions.AutomaticTransactionManagement;
 import com.greenriver.commons.mvc.helpers.form.FormBuilder;
 import com.greenriver.commons.mvc.helpers.header.HeaderConfiguration;
 import com.greenriver.commons.mvc.helpers.header.HeaderConfigurer;
@@ -37,7 +38,7 @@ public class ConfigurablePageController extends AbstractController
     }
 
     @Override
-    protected ModelAndView handleRequestInternal(HttpServletRequest request,
+    public ModelAndView handleRequestInternal(HttpServletRequest request,
             HttpServletResponse response)
             throws Exception {
         
