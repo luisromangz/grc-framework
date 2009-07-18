@@ -13,7 +13,7 @@ Author: mangelp
 package com.greenriver.commons.tasks;
 
 /**
- *
+ * Descriptor with all the information needed to run a task.
  * @author mangelp
  */
 public interface TaskDescriptor {
