@@ -192,4 +192,25 @@ public class Dates {
 
         return result;
     }
+
+    /**
+     * Gets if a date is in a range, including the start and end dates.
+     * @param date
+     * @param start
+     * @param end
+     * @return
+     */
+    public static boolean inRange(Date date, Date start, Date end) {
+	if (date == null || start == null || end == null) {
+	    throw new IllegalArgumentException("Null date not allowed");
+	}
+	
+	return (date.before(end) && date.after(start)) ||
+		date.equals(start) || date.equals(end);
+    }
+
+    public static boolean inRange(Date startA, Date endA, Date startB, Date endB) {
+	return inRange(startA, startB, endB) &&
+		inRange(endA, startB, endB);
+    }
 }

@@ -22,4 +22,11 @@ public interface AccountedStream {
      * @return the number of bytes read or write from or to an stream.
      */
     long getByteCount();
+
+    /**
+     * Return the count of bytes read or write by the stream.
+     * @param reset If true the count is reset
+     * @return the number of bytes read or write from or to an stream.
+     */
+    long getByteCount(boolean reset);
 }

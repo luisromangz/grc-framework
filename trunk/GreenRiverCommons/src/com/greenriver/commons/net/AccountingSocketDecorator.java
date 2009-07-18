@@ -39,20 +39,28 @@ public class AccountingSocketDecorator extends Socket {
         }
     }
 
-    public long getInputByteCount() {
+    public long getInputByteCount(boolean reset) {
         if (inputDecorator != null) {
-            return inputDecorator.getByteCount();
+            return inputDecorator.getByteCount(reset);
         }
 
         return 0L;
     }
 
-    public long getOutputByteCount() {
+    public long getOutputByteCount(boolean reset) {
         if (outputDecorator != null) {
-            return outputDecorator.getByteCount();
+            return outputDecorator.getByteCount(reset);
         }
 
         return 0L;
+    }
+
+    public long getInputByteCount() {
+        return getInputByteCount(false);
+    }
+
+    public long getOutputByteCount() {
+        return getOutputByteCount(false);
     }
 
     @Override
