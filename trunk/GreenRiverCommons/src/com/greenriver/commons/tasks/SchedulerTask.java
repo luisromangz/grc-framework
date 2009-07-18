@@ -13,9 +13,8 @@ Author: mangelp
 package com.greenriver.commons.tasks;
 
 /**
- * Task that is executed one or more times
- * @param <D> Type of the descriptor for the task with aditional task properties
+ * Task
  */
-public interface SchedulerTask<D extends TaskDescriptor> {
-    D getDescriptor();
+public interface SchedulerTask {
+
 }

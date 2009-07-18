@@ -44,20 +44,21 @@ public interface TaskScheduler<T extends SchedulerTask> {
     public boolean hasTask(T task);
 
     /**
-     * Returns a logger for the tasks
-     * @return a logger
+     * Returns the logger in use by the scheduler if any
+     * @return a logger or null if no logging is being done.
      */
     public Logger getLogger();
 
     /**
-     * Notifies the scheduler that a command have been finished.
+     * Notifies the scheduler that a command have been finished. This will
+     * update properly any internal information about the task.
      * @param task
      */
     void notifyFinished(T task);
 
     /**
      * Returns the interval of time that the scheduler sleeps between
-     * executions
+     * schedule executions.
      * @return interval time of scheduler executions.
      */
     long getInterval();

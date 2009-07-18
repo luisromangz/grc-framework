@@ -15,7 +15,7 @@ package com.greenriver.commons.tasks;
 import com.greenriver.commons.events.ObserverArgs;
 
 /**
- *
+ * Arguments to send information about a task that finished an execution
  */
 public class ExecutionFinishedObserverArgs extends ObserverArgs {
 

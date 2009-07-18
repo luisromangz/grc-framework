@@ -17,11 +17,17 @@ package com.greenriver.commons.tasks;
  */
 public abstract class AbstractWorker {
 
+    //If true the work finished successfully
     private boolean finished;
+    //If true the worker is running
     private boolean running;
+    //If the worker is going to stop is set to true, if not is set to false
     private boolean stopping;
+    //If true the work was interrupted (usually by an exception)
     private boolean aborted;
+    //Name for the worker
     private String name;
+    //Current thread when the run method was invoked
     private Thread thread;
 
     /**

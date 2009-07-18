@@ -18,15 +18,15 @@ package com.greenriver.commons.tasks;
  */
 public enum TaskStatus {
     /**
-     * Task was interrupted abruptly while executing
+     * Task was interrupted abruptly while executing.
      */
     ABORTED,
     /**
-     * The active flag of the task was turned off
+     * The task is not active.
      */
     DISABLED,
     /**
-     * Task is being executed
+     * Task is being executed.
      */
     EXECUTING,
     /**
@@ -34,11 +34,12 @@ public enum TaskStatus {
      */
     EXECUTED,
     /**
-     * Task has not information about where it is or where it goes.
+     * Task has not information about where it is or where it goes. This
+     * must be the default value when initiallizing a variable of this type.
      */
     NONE,
     /**
-     * Task is waiting to execute
+     * Task is waiting to execute.
      */
     WAITING
 }

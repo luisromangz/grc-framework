@@ -14,7 +14,8 @@ package com.greenriver.commons.tasks;
 
 /**
  * Exception to be thrown when a task can't continue nor handle the error. It's
- * a runtime exception so it don't force to be catched but you may pay attention.
+ * a runtime exception so it don't force to be catched but you may pay attention
+ * to do a cleanup in the task.
  */
 public class TaskException extends RuntimeException {
 

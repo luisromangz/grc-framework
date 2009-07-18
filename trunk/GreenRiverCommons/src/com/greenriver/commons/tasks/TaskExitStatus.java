@@ -26,18 +26,11 @@ public enum TaskExitStatus {
      */
     WARNING,
     /**
-     * Task didn't succeed, there was an error but it was handled. Maybe the
-     * task execution throwed an exception of type TaskException to be catched
-     * upstream.
+     * Task didn't succeed, The task execution throwed an exception.
      */
     ERROR,
     /**
-     * Task didn't succeed, there was an error that where undhandled and
-     * the exception was catched upstream.
-     */
-    ERROR_OTHER,
-    /**
-     * No result available. Task was not executed.
+     * No result available. Task is executing or waiting, but haven't finished.
      */
     NONE
 }
