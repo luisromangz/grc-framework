@@ -10,7 +10,7 @@ http://www.greenriverconsulting.es/licensing/greenriverlicense
 Author: mangelp
 ###################################################################*/
 
-package com.greenriver.commons;
+package com.greenriver.commons.collections;
 
 import java.util.List;
 
