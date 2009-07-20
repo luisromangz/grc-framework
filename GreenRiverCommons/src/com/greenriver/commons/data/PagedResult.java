@@ -2,6 +2,7 @@ package com.greenriver.commons.data;
 
 
 /**
+ * @param <T> Type of the result
  * @author mangelp
  */
 public class PagedResult<T> {
