@@ -9,20 +9,20 @@ package com.greenriver.commons.services;
  */
 public class PagedServiceResult<T> extends ServiceResult<T> {
 
-    private int numPages;
+    private int totalPages;
 
     /**
      * @return the numPages
      */
-    public int getNumPages() {
-	return numPages;
+    public int getTotalPages() {
+	return totalPages;
     }
 
     /**
      * @param numPages the numPages to set
      */
-    public void setNumPages(int numPages) {
-	this.numPages = numPages;
+    public void setTotalPages(int numPages) {
+	this.totalPages = numPages;
     }
 
     public PagedServiceResult() {
