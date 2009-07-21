@@ -6,21 +6,21 @@ package com.greenriver.commons.data;
  * @author mangelp
  */
 public class PagedResult<T> {
-    private int numPages;
+    private int totalPages;
     private T result;
 
     /**
      * @return the numPages
      */
-    public int getNumPages() {
-	return numPages;
+    public int getTotalPages() {
+	return totalPages;
     }
 
     /**
-     * @param numPages the numPages to set
+     * @param totalPages the numPages to set
      */
-    public void setNumPages(int numPages) {
-	this.numPages = numPages;
+    public void setTotalPages(int totalPages) {
+	this.totalPages = totalPages;
     }
 
     /**
