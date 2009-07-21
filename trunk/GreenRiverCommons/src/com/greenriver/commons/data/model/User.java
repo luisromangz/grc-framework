@@ -4,6 +4,7 @@ import com.greenriver.commons.data.fieldProperties.FieldProperties;
 import com.greenriver.commons.data.fieldProperties.FieldType;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -38,6 +39,18 @@ public class User implements Serializable, Comparable<User> {
 
     public boolean hasRole(String role) {
         return Arrays.asList(this.roles).contains(role);
+    }
+
+    public boolean hasAnyRole(String[] roles) {
+	List<String> curRoles = Arrays.asList(this.roles);
+	
+	for (String role : roles) {
+	    if (curRoles.contains(role)) {
+		return true;
+	    }
+	}
+
+	return false;
     }
 
     @Override

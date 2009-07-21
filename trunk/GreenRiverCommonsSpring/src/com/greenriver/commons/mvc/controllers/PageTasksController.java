@@ -1,6 +1,6 @@
-
 package com.greenriver.commons.mvc.controllers;
 
+import com.greenriver.commons.data.model.User;
 import com.greenriver.commons.mvc.helpers.header.HeaderConfigurer;
 import com.greenriver.commons.pageTasks.PageTask;
 import com.greenriver.commons.pageTasks.PageTaskManager;
@@ -10,106 +10,128 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.ModelAndView;
 
-
 /**
  *
  * @author luis
  */
-public class PageTasksController extends ConfigurablePageController{
+public class PageTasksController extends ConfigurablePageController {
 
     // The TaskManager object holding the tasks.
     private PageTaskManager pageTaskManager;
-   
 
     public PageTasksController() {
-        super();
+	super();
     }
 
     @Override
-    public void customHandleRequest (HttpServletRequest request,
-        HttpServletResponse response, ModelAndView modelAndView) throws Exception{
+    public void customHandleRequest(HttpServletRequest request,
+	    HttpServletResponse response, ModelAndView modelAndView) throws Exception {
 
-        HeaderConfigurer headerConfigurer = this.getHeaderConfigurer();
+	HeaderConfigurer headerConfigurer = this.getHeaderConfigurer();
+	List<PageTask> allowedTasks = new ArrayList<PageTask>();
 
-        // Configuration at the header level and the form level is done here,
-        // but inclussion of the required jsp templates and other things must
-        // be done in a page-task-oriented jsp file defined in the app.
+	// Configuration at the header level and the form level is done here,
+	// but inclussion of the required jsp templates and other things must
+	// be done in a page-task-oriented jsp file defined in the app.
 
-        // We add all the included elements in the header configurer.
-        for(PageTask pageTask : getPageTaskManager().getTasks()) {
-           // We have to add to the previously configured properties,
-           // that had been configured in the page level, not the task level
-           // as we are doing it now.
-           configurePageProperties(pageTask, headerConfigurer,modelAndView);
-        }
+	// We add all the included elements in the header configurer.
+	for (PageTask pageTask : getPageTaskManager().getTasks()) {
+	    // We need to check if the current user has permissions to see the
+	    // task, if not we will not configure it. If allowed is added to
+	    // the list of tasks
+	    if (!isAllowedTaskForUser(pageTask)) {
+		continue;
+	    } else {
+		allowedTasks.add(pageTask);
+	    }
 
-        // The configuration was done in the call to super.handleRequestInternal,
-        // but must be redone now as we have to add all the things we have included
-        // for the tasks.
-        headerConfigurer.configure(modelAndView);
+	    // We have to add to the previously configured properties,
+	    // that had been configured in the page level, not the task level
+	    // as we are doing it now.
+	    configurePageProperties(pageTask, headerConfigurer, modelAndView);
+	}
 
-        // We add the tasks info to the ModelAndView object so we can access
-        // it in the view so the tasks and toolbar can be rendered.
-        modelAndView.addObject("pageTasksInfo", getPageTaskManager().getTasks());
+	// The configuration was done in the call to super.handleRequestInternal,
+	// but must be redone now as we have to add all the things we have included
+	// for the tasks.
+	headerConfigurer.configure(modelAndView);
+
+	// We add the tasks info to the ModelAndView object so we can access
+	// it in the view so the tasks and toolbar can be rendered.
+	// Be careful
+	modelAndView.addObject("pageTasksInfo", allowedTasks);
+    }
+
+    /**
+     * Gets if a task is allowed for the current user.
+     * @param pageTask
+     * @return if the current user is allowed or not.
+     */
+    private boolean isAllowedTaskForUser(PageTask pageTask) {
+	User user = getUserSessionInfo().getCurrentUser();
+	
+	boolean result = user.hasAnyRole(pageTask.getAllowedRoles());
+	return result;
     }
 
     private void configurePageProperties(PageTask pageTask,
-            HeaderConfigurer headerConfigurer,
-            ModelAndView mav) throws ClassNotFoundException {
-       String taskName = pageTask.getTaskName();
+	    HeaderConfigurer headerConfigurer,
+	    ModelAndView mav) throws ClassNotFoundException {
 
-       // The properties that are files need to have their path relative
-       // to the task's name.
-       headerConfigurer.getJavaScriptFiles().addAll(
-               addTaskNameToFileNames(taskName,pageTask.getJavaScriptFiles()));
+	String taskName = pageTask.getTaskName();
 
-       headerConfigurer.getCssFiles().addAll(
-               addTaskNameToFileNames(taskName, pageTask.getCssFiles()));
+	// The properties that are files need to have their path relative
+	// to the task's name.
+	headerConfigurer.getJavaScriptFiles().addAll(
+		addTaskNameToFileNames(taskName, pageTask.getJavaScriptFiles()));
 
-       headerConfigurer.getDojoBundles().addAll(
-               addTaskNameToFileNames(taskName, pageTask.getDojoBundles()));
+	headerConfigurer.getCssFiles().addAll(
+		addTaskNameToFileNames(taskName, pageTask.getCssFiles()));
 
-       headerConfigurer.getDojoModules().addAll(pageTask.getDojoModules());
-       headerConfigurer.getDwrServices().addAll(pageTask.getDwrServices());
-       headerConfigurer.getOnLoadScripts().addAll(pageTask.getOnLoadScripts());
-       headerConfigurer.getScripts().addAll(pageTask.getScripts());
+	headerConfigurer.getDojoBundles().addAll(
+		addTaskNameToFileNames(taskName, pageTask.getDojoBundles()));
 
-        // We add the forms defined in the task.
-       for(String formId : pageTask.getFormEntities().keySet()) {
-           // Form id creation: e.g. taskName-id.
-           String entityClassName = pageTask.getFormEntities().get(formId);
-           Class entityClass = Class.forName(entityClassName);
+	headerConfigurer.getDojoModules().addAll(pageTask.getDojoModules());
+	headerConfigurer.getDwrServices().addAll(pageTask.getDwrServices());
+	headerConfigurer.getOnLoadScripts().addAll(pageTask.getOnLoadScripts());
+	headerConfigurer.getScripts().addAll(pageTask.getScripts());
 
-           getFormBuilder().addForm(
-                   String.format("%s_%s",pageTask.getTaskName(),formId),
-                   mav);
-           getFormBuilder().addFieldsFromModel(entityClass);
-       }
+	// We add the forms defined in the task.
+	for (String formId : pageTask.getFormEntities().keySet()) {
+	    // Form id creation: e.g. taskName-id.
+	    String entityClassName = pageTask.getFormEntities().get(formId);
+	    Class entityClass = Class.forName(entityClassName);
+
+	    getFormBuilder().addForm(
+		    String.format("%s_%s", pageTask.getTaskName(), formId),
+		    mav);
+	    getFormBuilder().addFieldsFromModel(entityClass);
+	}
     }
 
-    private List<String> addTaskNameToFileNames(String taskName, 
-            List<String> filenames) {
+    private List<String> addTaskNameToFileNames(String taskName,
+	    List<String> filenames) {
 
-        ArrayList<String> taskedFileNames = new ArrayList<String>();
+	ArrayList<String> taskedFileNames = new ArrayList<String>();
 
-        for(String fileName : filenames) {
-            taskedFileNames.add(String.format("%s/%s", taskName, fileName));
-        }
+	for (String fileName : filenames) {
+	    taskedFileNames.add(String.format("%s/%s", taskName, fileName));
+	}
 
-        return taskedFileNames;
+	return taskedFileNames;
     }
 
     /**
      * @return the pageTaskManager
      */
     public PageTaskManager getPageTaskManager() {
-        return pageTaskManager;
+	return pageTaskManager;
     }
 
     /**
      * @param pageTaskManager the pageTaskManager to set
      */
     public void setPageTaskManager(PageTaskManager pageTaskManager) {
-        this.pageTaskManager = pageTaskManager;
+	this.pageTaskManager = pageTaskManager;
     }
 }
