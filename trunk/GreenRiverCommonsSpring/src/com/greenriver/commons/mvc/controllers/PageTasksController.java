@@ -112,7 +112,8 @@ public class PageTasksController extends ConfigurablePageController {
 	configureFormEntities(pageTask.getFormEntities(), mav,
 		pageTask.getTaskName() + "_");
 
-	configurePropertiesView(pageTask.getPropertiesView(), mav);
+	configurePropertiesView(pageTask.getPropertiesView(), mav,
+		pageTask.getTaskName() + "_");
     }
 
     private List<String> addTaskNameToFileNames(String taskName,

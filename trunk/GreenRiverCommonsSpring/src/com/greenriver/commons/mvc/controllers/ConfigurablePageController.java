@@ -59,7 +59,8 @@ public class ConfigurablePageController extends AbstractController
 
 	configurePropertiesView(
 		pageConfiguration.getPropertiesView(),
-		mav);
+		mav,
+		null);
 
 	if (this.userSessionInfo != null) {
 	    mav.addObject("userSessionInfo", this.userSessionInfo);
@@ -105,9 +106,10 @@ public class ConfigurablePageController extends AbstractController
      * Configures properties view from a map
      * @param configuration
      * @param mav
+     * @param prefix Name prefix for the generated elements
      */
     protected void configurePropertiesView(Map<String, Object> configuration,
-	    ModelAndView mav) {
+	    ModelAndView mav, String prefix) {
 	Object value = null;
 
 	if (propertiesViewBuilder == null && configuration.size() > 0) {
@@ -115,8 +117,12 @@ public class ConfigurablePageController extends AbstractController
 		    "Must configure propertiesViewBuilder for this controller.");
 	}
 
+	if (prefix == null) {
+	    prefix = "";
+	}
+
 	for (String propsViewId : configuration.keySet()) {
-	    propertiesViewBuilder.addPropertiesView(propsViewId, mav);
+	    propertiesViewBuilder.addPropertiesView(prefix + propsViewId, mav);
 	    value = configuration.get(propsViewId);
 	    
 	    if (value instanceof String) {
