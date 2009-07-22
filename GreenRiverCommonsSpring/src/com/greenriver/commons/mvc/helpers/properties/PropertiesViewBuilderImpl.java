@@ -105,7 +105,7 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
 		    ex);
 	}
 
-	addPropertyViewsFromModel(modelClass);
+	addPropertyViewsFromModel(modelClass, propertiesToShow);
     }
 
     public void addPropertyViewsFromModel(Class modelClass) {

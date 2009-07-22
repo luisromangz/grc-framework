@@ -26,7 +26,7 @@ public class PropertiesView {
      * Gets an array with all the properties
      * @return
      */
-    public SinglePropertyView[] getPropertyViews() {
+    public SinglePropertyView[] getProperties() {
 	SinglePropertyView[] result = new SinglePropertyView[properties.size()];
 	return properties.toArray(result);
     }
