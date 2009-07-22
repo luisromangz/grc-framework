@@ -11,14 +11,16 @@ import java.util.Map;
  * @author luis
  */
 public class PageConfiguration extends PageHeaderConfiguration
-        implements FormsConfiguration {
+        implements FormsConfiguration, PropertiesViewConfiguration{
 
      private Map<String,String> formEntities;
+     private Map<String, Object> propertiesViewConfiguration;
 
      public PageConfiguration () {
          super();
 
          formEntities = new Hashtable<String, String>();
+	 propertiesViewConfiguration = new Hashtable<String, Object>();
      }
 
     /**
@@ -46,5 +48,20 @@ public class PageConfiguration extends PageHeaderConfiguration
      */
     public void addFormEntity(String id, String entityName) {
         this.formEntities.put(id, entityName);
+    }
+
+    public void addPropertiesView(String id,
+	    Object configuration) {
+	this.propertiesViewConfiguration.put(id, configuration);
+    }
+
+    public void setPropertiesView(
+	    Map<String, Object> configuration) {
+	this.propertiesViewConfiguration =
+		new Hashtable<String, Object>(configuration);
+    }
+
+    public Map<String, Object> getPropertiesView() {
+	return this.propertiesViewConfiguration;
     }
 }
