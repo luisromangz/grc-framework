@@ -3,6 +3,7 @@ package com.greenriver.commons.pageTasks;
 
 import com.greenriver.commons.mvc.controllers.FormsConfiguration;
 import com.greenriver.commons.mvc.controllers.PageConfiguration;
+import com.greenriver.commons.mvc.controllers.PropertiesViewConfiguration;
 import com.greenriver.commons.mvc.helpers.header.HeaderConfiguration;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +16,7 @@ import java.util.Map;
  * @author luis
  */
 public class PageTask  implements FormsConfiguration, HeaderConfiguration,
-        Comparable<PageTask>{
+        Comparable<PageTask>, PropertiesViewConfiguration {
 
     // The page configuration needed by the task.
     private PageConfiguration pageConfiguration;
@@ -269,6 +270,18 @@ public class PageTask  implements FormsConfiguration, HeaderConfiguration,
      */
     public void setTaskResetCallback(String taskResetCallback) {
         this.taskResetCallback = taskResetCallback;
+    }
+
+    public void addPropertiesView(String id, Object configuration) {
+	pageConfiguration.addPropertiesView(id, configuration);
+    }
+
+    public void setPropertiesView(Map<String, Object> configuration) {
+	pageConfiguration.setPropertiesView(configuration);
+    }
+
+    public Map<String, Object> getPropertiesView() {
+	return pageConfiguration.getPropertiesView();
     }
 
 }
