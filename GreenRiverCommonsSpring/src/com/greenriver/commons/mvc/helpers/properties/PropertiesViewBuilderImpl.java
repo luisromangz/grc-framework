@@ -2,6 +2,7 @@ package com.greenriver.commons.mvc.helpers.properties;
 
 import com.greenriver.commons.Strings;
 import com.greenriver.commons.data.fieldProperties.FieldProperties;
+import com.greenriver.commons.mvc.helpers.HtmlElementInfo;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -62,7 +63,8 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
 	this.currentPropertiesView = propertiesView;
     }
 
-    public SinglePropertyView addPropertyView(String id, FieldProperties properties,
+    public SinglePropertyView addPropertyView(String id,
+	    FieldProperties properties,
 	    Class modelClass) {
 
 	if (properties == null) {
@@ -123,7 +125,7 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
 		    !propertiesToShow.contains(field.getName())) {
 		continue;
 	    }
-	    
+
 	    FieldProperties props = field.getAnnotation(FieldProperties.class);
 	    if (props != null && props.visible()) {
 		this.addPropertyView(field.getName(), props, field.getType());
@@ -148,15 +150,15 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
 		    "' key with the entity full name as value");
 	}
 
-	entityName = (String)obj;
+	entityName = (String) obj;
 	obj = config.get(key_properties);
 
-	if(obj != null && !(obj instanceof List)) {
+	if (obj != null && !(obj instanceof List)) {
 	    throw new IllegalArgumentException(
 		    "The configuration includes key '" + key_properties +
 		    "' but the value is not a list.");
 	} else if (obj != null) {
-	    properties = (List<String>)obj;
+	    properties = (List<String>) obj;
 	    addPropertyViewsFromModel(entityName, properties);
 	} else {
 	    addPropertyViewsFromModel(entityName);
@@ -187,12 +189,38 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
 
 	switch (properties.type()) {
 	    //TODO: Concrete initiallization for anybody?
+	    default:
+		return setupFieldGenericView(propView, properties, modelClass);
 	}
+    }
+
+    /**
+     * Setups a generic field
+     * @param propView
+     * @param properties
+     * @param modelClass
+     * @return
+     */
+    private boolean setupFieldGenericView(SinglePropertyView propView,
+	    FieldProperties properties,
+	    Class modelClass) {
+	//all the view are the same, an span for the value and another one
+	//for the unit
+	String format =
+		"<span id=\"%1$s\"></span><span id=\"%1$s_unit\">%2$s</span>";
+	String unit = properties.unit();
+	//If no unit put an empty string
+	if (unit == null) {
+	    unit = "";
+	}
+
+	propView.setValueElement(
+		String.format(format, propView.getId(), unit));
 
 	return true;
     }
+
     //TODO: To handle more or less complex setups for other properties
     //add new methods here with the same parameters as the setupPropertiesView
     //method.
-    //private boolean setupFieldTypeView(propView, properteis, modelClass);
 }

@@ -21,7 +21,7 @@ public class SinglePropertyView implements Comparable<SinglePropertyView> {
      * Html element with the code for the viewing the value of the property in
      * an html document.
      */
-    private HtmlElementInfo valueElement;
+    private String valueElement;
 
     public String getId() {
 	return id;
@@ -39,18 +39,16 @@ public class SinglePropertyView implements Comparable<SinglePropertyView> {
      * Gets the value of the property wrapped into some markup
      * @return
      */
-    public HtmlElementInfo getValueElement() {
+    public String getValueElement() {
 	return valueElement;
     }
 
-    public void setValueElement(HtmlElementInfo valueElement) {
+    public void setValueElement(String valueElement) {
 	this.valueElement = valueElement;
     }
 
     public SinglePropertyView(String id) {
 	this.id = id;
-	valueElement = new HtmlElementInfo(id);
-	valueElement.setElementType("span");
     }
 
     public int compareTo(SinglePropertyView o) {
