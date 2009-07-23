@@ -75,30 +75,36 @@ public class HtmlElementInfo {
 	    throw new IllegalArgumentException(
 		    "The name can't be null or empty");
 	}
-	
+
 	if (name.equalsIgnoreCase("id")) {
 	    throw new IllegalArgumentException(
 		    "The id property can't be set.");
 	}
-	
+
 	attributes.put(name, value);
     }
 
     public void toString(StringBuilder sb) {
-	sb.append(String.format("<%s id=\"%s\"", elementType.toLowerCase(), getId()));
-	
-	for (String key : attributes.stringPropertyNames()) {
-	    if (key.equalsIgnoreCase("id")) {
-		continue;
+	if (Strings.isNullOrEmpty(elementType)) {
+	    //If there is not an element type we simply put the contents in
+	    //the output string.
+	    sb.append(getContents());
+	} else {
+	    sb.append(String.format("<%s id=\"%s\"", elementType.toLowerCase(), getId()));
+
+	    for (String key : attributes.stringPropertyNames()) {
+		if (key.equalsIgnoreCase("id")) {
+		    continue;
+		}
+
+		sb.append(String.format(" %s=\"%s\"", key,
+			attributes.getProperty(key)));
 	    }
-	    
-	    sb.append(String.format(" %s=\"%s\"", key,
-		    attributes.getProperty(key)));
+
+	    sb.append(">");
+	    sb.append(getContents());
+	    sb.append("</" + elementType.toLowerCase() + ">");
 	}
-	
-	sb.append(">");
-	sb.append(getContents());
-	sb.append("</" + elementType.toLowerCase() + ">");
     }
 
     @Override
@@ -114,7 +120,7 @@ public class HtmlElementInfo {
 	    return false;
 	}
 
-	return Strings.equals(id, ((HtmlElementInfo)obj).id);
+	return Strings.equals(id, ((HtmlElementInfo) obj).id);
     }
 
     @Override
