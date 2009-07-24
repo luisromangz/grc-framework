@@ -78,10 +78,6 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
 
         assertCurrent();
 
-        if (!properties.visible()) {
-            return null;
-        }
-
         SinglePropertyView propView = new SinglePropertyView(
                 this.currentPropertiesView.getId() + "_" + id);
         propView.setLabel(properties.label());
@@ -128,7 +124,8 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
             }
 
             FieldProperties props = field.getAnnotation(FieldProperties.class);
-            if (props != null && props.visible()) {
+            if(props!=null) {
+                // We only add the field if was annotated.
                 this.addPropertyView(field.getName(), props, field.getType());
             }
         }
@@ -202,7 +199,8 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
      * @param modelClass
      * @return
      */
-    private boolean setupFieldGenericView(SinglePropertyView propView,
+    private boolean setupFieldGenericView(
+            SinglePropertyView propView,
             FieldProperties properties,
             Class modelClass) {
         //all the view are the same, an span for the value and another one

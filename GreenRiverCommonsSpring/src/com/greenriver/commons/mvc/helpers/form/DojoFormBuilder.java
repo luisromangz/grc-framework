@@ -132,7 +132,7 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
 		throw new FormBuildingException(
 			"Error procesing element " + elementId + ". " +
 			"Enum field type is incompatible with externalValues flag");
-	    } else if (Strings.isNullOrEmpty(properties.fromEnumMethod())) {
+	    } else if (Strings.isNullOrEmpty(properties.enumLabelMethod())) {
 		throw new FormBuildingException(
 			"Error procesing element " + elementId + ". " +
 			"Enum method name required but not specified");
@@ -150,7 +150,7 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
 	    for (Object constant : fieldType.getEnumConstants()) {
 		try {
 		    String name = (String) constant.getClass().getDeclaredMethod(
-			    properties.fromEnumMethod()).invoke(constant);
+			    properties.enumLabelMethod()).invoke(constant);
 
 		    values.add(constant.toString());
 		    labels.add(name);
@@ -201,7 +201,7 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
      * values. These parameters are minValue, maxValue and decimalPlaces.
      */
     private void assertNotNumber(FieldProperties properties) {
-	if (properties.minValue() != Double.MIN_VALUE) {
+	if (properties.minValue() != -Double.MAX_VALUE) {
 	    throw new FormBuildingException("Min value specified but property is not a number.");
 	}
 
@@ -231,12 +231,12 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
 
     /**
      * Asserts that no selection-related parameters are changed from default
-     * values. These parameters are fromEnumMethod, possibleValueLabels and
+     * values. These parameters are enumLabelMethod, possibleValueLabels and
      * possibleValues.
      * @param properties
      */
     private void assertNotSelection(FieldProperties properties) {
-	if (!"getName".equals(properties.fromEnumMethod())) {
+	if (!"getName".equals(properties.enumLabelMethod())) {
 	    throw new FormBuildingException("Enum method name specified but property is not a selection.");
 	}
 
