@@ -22,7 +22,7 @@ import java.lang.annotation.Target;
 public @interface FieldProperties {
 
     /**
-     * Is the field visible in the GUI?
+     * Is the field visible in the edit form?
      * @return
      */
     public boolean visible() default true;
@@ -56,7 +56,7 @@ public @interface FieldProperties {
      * field types.
      * @return 
      */
-    double minValue() default Double.MIN_VALUE;
+    double minValue() default -Double.MAX_VALUE;
 
     /**
      * The max numeric value the field allows. Only for DECIMAL or NUMBER field
@@ -122,7 +122,7 @@ public @interface FieldProperties {
      * used to allow editing of a field with enum type.
      * @return the name of the method
      */
-    public String fromEnumMethod() default "getName";
+    public String enumLabelMethod() default "getName";
 
     /**
      * Number of decimal places to be shown if the field is of type DECIMAL.
