@@ -64,13 +64,6 @@ public interface SettingsStorage {
     public boolean hasKey(String key);
 
     /**
-     * Adds a new key-value
-     * @param key
-     * @param value
-     */
-    public void add(String key, String value);
-
-    /**
      * Gets a key value
      * @param key
      * @param defaultValue
@@ -84,13 +77,6 @@ public interface SettingsStorage {
      * @param value
      */
     public void set(String key, String value);
-
-    /**
-     * Adds a new key and some subkeys
-     * @param key
-     * @param subKeys
-     */
-    public void add(String key, String[] subKeys);
 
     /**
      * Gets all subkey names if key matches a node. If not returns an empty array.

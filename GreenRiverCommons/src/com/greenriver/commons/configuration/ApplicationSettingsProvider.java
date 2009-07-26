@@ -12,6 +12,7 @@ Author: mangelp
 package com.greenriver.commons.configuration;
 
 import com.greenriver.commons.Strings;
+import com.greenriver.commons.collections.Lists;
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,15 +22,58 @@ import java.util.List;
  * global object and then is rooted into "app" key. <br/><br/>To properly use
  * a configuration storage throught a provider the key hierarchy introduced by
  * the provider must be follow or the client that is reading this configuration
- * won't find the keys. This means to use all the methods of this provider to
- * get or set values. You can set them in the storage but prefixing the keys
- * with the proper 'superkey.sperkeysubkey' hierarchy. The client reading the
- * keys must use the prefix or will be unable to read the configuration values.
+ * won't find the keys. <br/> If the methods of this provider are used the
+ * root key prefix is appended to each key before trying to get it. <br/>
+ * If the storage is accessed directly the client must supply the right key
+ * prefixing it with the root key prefix of the provider.
  */
 public class ApplicationSettingsProvider implements SettingsProvider {
 
+    private static String keySeparator = ".";
+    private static String defaultRoot = "app";
+
+    /**
+     * Wraps a provider inside an ApplicationSettingsProvider using a key prefix
+     * (a root) appended to each accessed key.<br/>
+     * If the provider is already of type ApplicationSettingsProvider the new
+     * provider wraps the storage of the first one using the root key resulting
+     * of adding to the root key of the first provider the new subkey root.
+     * @param settingsProvider
+     * @param subKeyRoot
+     * @return a new ApplicationSettingsProvider instance
+     */
+    public static ApplicationSettingsProvider wrapProvider(
+	    SettingsProvider settingsProvider,
+	    String subKeyRoot) {
+	ApplicationSettingsProvider other = null;
+	SettingsStorage storage = null;
+	boolean end = false;
+
+	//If the another instance is the same type as this we can avoid
+	//wrap overhead.
+	while (!end && settingsProvider instanceof ApplicationSettingsProvider) {
+	    other = (ApplicationSettingsProvider) settingsProvider;
+	    
+	    if (other.getParent() != null) {
+		subKeyRoot = other.getRoot() + keySeparator + subKeyRoot;
+		settingsProvider = other.getParent();
+	    } else {
+		storage = other.getStorage();
+		end = true;
+	    }
+	}
+
+	//If there is an storage we can create the new provider to use it, if
+	//not we must create our provider over an existing one.
+	if (storage == null) {
+	    return new ApplicationSettingsProvider(settingsProvider, subKeyRoot);
+	} else {
+	    return new ApplicationSettingsProvider(storage, subKeyRoot);
+	}
+    }
+    
     private SettingsStorage storage;
-    private String root = "app";
+    private String root = defaultRoot;
     private SettingsProvider parent;
 
     /**
@@ -37,7 +81,7 @@ public class ApplicationSettingsProvider implements SettingsProvider {
      * @return the parent provider.
      */
     public SettingsProvider getParent() {
-        return parent;
+	return parent;
     }
 
     /**
@@ -47,7 +91,7 @@ public class ApplicationSettingsProvider implements SettingsProvider {
      * @return provider root.
      */
     public String getRoot() {
-        return root;
+	return root;
     }
 
     /**
@@ -55,7 +99,7 @@ public class ApplicationSettingsProvider implements SettingsProvider {
      * @param storage
      */
     public void setStorage(SettingsStorage storage) {
-        this.storage = storage;
+	this.storage = storage;
     }
 
     /**
@@ -63,7 +107,7 @@ public class ApplicationSettingsProvider implements SettingsProvider {
      * @return
      */
     public SettingsStorage getStorage() {
-        return storage;
+	return storage;
     }
 
     /**
@@ -73,25 +117,27 @@ public class ApplicationSettingsProvider implements SettingsProvider {
      * @param subKeyRoot subkey under the root of the other provider.
      */
     public ApplicationSettingsProvider(
-            SettingsProvider provider, String subKeyRoot) {
-        this(provider.getStorage());
-        if (Strings.isNullOrEmpty(subKeyRoot)) {
-            throw new IllegalArgumentException(
-                    "SubKeyRoot cannot be null nor empty.");
-        }
+	    SettingsProvider provider, String subKeyRoot) {
+	
+	this(provider.getStorage());
 
-        if (!Strings.isNullOrEmpty(provider.getRoot())) {
-            root = provider.getRoot() + "." + subKeyRoot;
-        }
+	if (Strings.isNullOrEmpty(subKeyRoot)) {
+	    throw new IllegalArgumentException(
+		    "SubKeyRoot cannot be null nor empty.");
+	}
 
-        this.parent = provider;
+	if (!Strings.isNullOrEmpty(provider.getRoot())) {
+	    root = provider.getRoot() + keySeparator + subKeyRoot;
+	}
+
+	this.parent = provider;
     }
 
     /**
      * Initializes the provider with a new empty Dictionary storage.
      */
     public ApplicationSettingsProvider() {
-        this(new DictionarySettingsStorage());
+	this(new DictionarySettingsStorage());
     }
 
     /**
@@ -102,7 +148,7 @@ public class ApplicationSettingsProvider implements SettingsProvider {
      * a dot.
      */
     public ApplicationSettingsProvider(String root) {
-        this(new DictionarySettingsStorage(), root);
+	this(new DictionarySettingsStorage(), root);
     }
 
     /**
@@ -110,7 +156,7 @@ public class ApplicationSettingsProvider implements SettingsProvider {
      * @param storage 
      */
     public ApplicationSettingsProvider(SettingsStorage storage) {
-        this.storage = storage;
+	this.storage = storage;
     }
 
     /**
@@ -122,32 +168,32 @@ public class ApplicationSettingsProvider implements SettingsProvider {
      * a dot.
      */
     public ApplicationSettingsProvider(SettingsStorage storage, String root) {
-        this(storage);
+	this(storage);
 
-        if (Strings.isNullOrEmpty(root)) {
-            throw new IllegalArgumentException("Root cannot be null or empty");
-        }
+	if (Strings.isNullOrEmpty(root)) {
+	    throw new IllegalArgumentException("Root cannot be null or empty");
+	}
 
-        if (root.endsWith(".")) {
-            throw new IllegalArgumentException("Root cannot end with a dot.");
-        }
+	if (root.endsWith(".")) {
+	    throw new IllegalArgumentException("Root cannot end with a dot.");
+	}
 
-        this.root = root;
+	this.root = root;
     }
 
     /**
      * If the storage is null returns an exception and if not ensures that
      * is loaded.
      */
-    protected void assertStorage() {
-        if (storage == null) {
-            throw new IllegalStateException("No storage in use. " +
-                    "You must use one.");
-        }
+    protected void assertSettingsSource() {
+	if (storage == null && parent == null) {
+	    throw new IllegalStateException("No storage or parent provider" +
+		    " in use. You must use one.");
+	}
 
-        if (!storage.isLoaded()) {
-            storage.load();
-        }
+	if (storage != null && !storage.isLoaded()) {
+	    storage.load();
+	}
     }
 
     /**
@@ -158,47 +204,49 @@ public class ApplicationSettingsProvider implements SettingsProvider {
      * @return the value if the key is set or the default value if not.
      */
     public String get(String fullKey, String defaultValue) {
-        assertStorage();
-        if (!Strings.isNullOrEmpty(root)) {
-            fullKey = root + "." + fullKey;
-        }
-        return storage.get(fullKey, defaultValue);
+	assertSettingsSource();
+	
+	if (!Strings.isNullOrEmpty(root)) {
+	    fullKey = root + keySeparator + fullKey;
+	}
+
+	if (storage != null && storage.hasKey(fullKey)) {
+	    return storage.get(fullKey, defaultValue);
+	} else if (storage != null && parent != null) {
+	    return parent.get(fullKey, defaultValue);
+	} else {
+	    return defaultValue;
+	}
     }
 
     /**
      * Gets a value as an string. If the key is not set it returns a null.
+     * This method is equivalent to get(String, null).
      * @param fullKey Key for the value.
      * @return the value if the key is set or null if not.
      */
     public String get(String fullKey) {
-        assertStorage();
-        if (!Strings.isNullOrEmpty(root)) {
-            fullKey = root + "." + fullKey;
-        }
-        return storage.get(fullKey, null);
+	return get(fullKey, null);
     }
 
     /**
      * Gets a value converted to bool
      * @param fullKey
-     * @param defaultValue
+     * @param defValue
      * @return
      */
-    public boolean getBool(String fullKey, boolean defaultValue) {
-        assertStorage();
-        if (!Strings.isNullOrEmpty(root)) {
-            fullKey = root + "." + fullKey;
-        }
+    public boolean getBool(String fullKey, boolean defValue) {
+	String value = get(fullKey);
 
-        if (!storage.hasKey(fullKey)) {
-            return defaultValue;
-        }
-
-        try {
-            return Boolean.valueOf(storage.get(fullKey, ""));
-        } catch (Exception ex) {
-            return defaultValue;
-        }
+	if (value == null) {
+	    return defValue;
+	}
+	
+	try {
+	    return Boolean.valueOf(value);
+	} catch (RuntimeException ex) {
+	    return defValue;
+	}
     }
 
     /**
@@ -208,21 +256,17 @@ public class ApplicationSettingsProvider implements SettingsProvider {
      * @return
      */
     public int getInt(String fullKey, int defValue) {
-        assertStorage();
+	String value = get(fullKey);
 
-        if (!Strings.isNullOrEmpty(root)) {
-            fullKey = root + "." + fullKey;
-        }
+	if (value == null) {
+	    return defValue;
+	}
 
-        if (!storage.hasKey(fullKey)) {
-            return defValue;
-        }
-
-        try {
-            return Integer.parseInt(storage.get(fullKey, ""));
-        } catch (NumberFormatException ex) {
-            return defValue;
-        }
+	try {
+	    return Integer.parseInt(value);
+	} catch (NumberFormatException ex) {
+	    return defValue;
+	}
     }
 
     /**
@@ -232,21 +276,17 @@ public class ApplicationSettingsProvider implements SettingsProvider {
      * @return
      */
     public long getLong(String fullKey, long defValue) {
-        assertStorage();
+	String value = get(fullKey);
 
-        if (!Strings.isNullOrEmpty(root)) {
-            fullKey = root + "." + fullKey;
-        }
+	if (value == null) {
+	    return defValue;
+	}
 
-        if (!storage.hasKey(fullKey)) {
-            return defValue;
-        }
-
-        try {
-            return Long.parseLong(storage.get(fullKey, ""));
-        } catch (NumberFormatException ex) {
-            return defValue;
-        }
+	try {
+	    return Long.parseLong(value);
+	} catch (NumberFormatException ex) {
+	    return defValue;
+	}
     }
 
     /**
@@ -256,21 +296,17 @@ public class ApplicationSettingsProvider implements SettingsProvider {
      * @return
      */
     public byte getByte(String fullKey, byte defValue) {
-        assertStorage();
+	String value = get(fullKey);
 
-        if (!Strings.isNullOrEmpty(root)) {
-            fullKey = root + "." + fullKey;
-        }
+	if (value == null) {
+	    return defValue;
+	}
 
-        if (!storage.hasKey(fullKey)) {
-            return defValue;
-        }
-
-        try {
-            return Byte.parseByte(storage.get(fullKey, ""));
-        } catch (NumberFormatException ex) {
-            return defValue;
-        }
+	try {
+	    return Byte.parseByte(value);
+	} catch (NumberFormatException ex) {
+	    return defValue;
+	}
     }
 
     /**
@@ -280,21 +316,17 @@ public class ApplicationSettingsProvider implements SettingsProvider {
      * @return
      */
     public short getShort(String fullKey, short defValue) {
-        assertStorage();
+	String value = get(fullKey);
 
-        if (!Strings.isNullOrEmpty(root)) {
-            fullKey = root + "." + fullKey;
-        }
+	if (value == null) {
+	    return defValue;
+	}
 
-        if (!storage.hasKey(fullKey)) {
-            return defValue;
-        }
-
-        try {
-            return Short.parseShort(storage.get(fullKey, ""));
-        } catch (NumberFormatException ex) {
-            return defValue;
-        }
+	try {
+	    return Short.parseShort(value);
+	} catch (NumberFormatException ex) {
+	    return defValue;
+	}
     }
 
     /**
@@ -306,24 +338,14 @@ public class ApplicationSettingsProvider implements SettingsProvider {
      * @return a list of strings or the default value.
      */
     public List<String> getList(String fullKey, List<String> defValue,
-            String separator) {
-        assertStorage();
+	    String separator) {
+	String value = get(fullKey);
 
-        if (!Strings.isNullOrEmpty(root)) {
-            fullKey = root + "." + fullKey;
-        }
+	if (value == null) {
+	    return defValue;
+	}
 
-        if (!storage.hasKey(fullKey)) {
-            return defValue;
-        }
-
-        String value = storage.get(fullKey, null);
-
-        if (value == null) {
-            return defValue;
-        } else {
-            return Arrays.asList(value.split(separator));
-        }
+	return Arrays.asList(value.split(separator));
     }
 
     /**
@@ -335,44 +357,21 @@ public class ApplicationSettingsProvider implements SettingsProvider {
      * returned.
      * @param fullKey Key to get under the root of this provider.
      * @param defValue Default value of the enumeration. Can't be null.
+     * @param enumType Type of the enumeration
      * @return the key value converted to the enumeration or the default value.
      */
-    public Enum getEnum(String fullKey, Enum defValue) {
-        assertStorage();
+    public Object getEnum(String fullKey, Object defValue, Class enumType) {
+	String value = get(fullKey);
 
-        if (!Strings.isNullOrEmpty(root)) {
-            fullKey = root + "." + fullKey;
-        }
+	if (value == null) {
+	    return defValue;
+	}
 
-        if (!storage.hasKey(fullKey)) {
-            return defValue;
-        }
-
-        if (defValue == null) {
-            throw new IllegalArgumentException("Can't work with a null " +
-                    "default value. Must provide a valid one.");
-        }
-
-        //This won't return null as we have already checked that we have a
-        //value for it.
-        String value = storage.get(fullKey, null);
-        Enum result = null;
-        Class enumClass = defValue.getClass();
-
-        //If the value set is null we can't parse it.
-        if (value == null) {
-            return defValue;
-        } else {
-            value = value.toUpperCase();
-        }
-
-        try {
-            result = Enum.valueOf(enumClass, value);
-        } catch (RuntimeException ex) {
-            return defValue;
-        }
-
-        return result;
+	try {
+	    return Enum.valueOf(enumType, value);
+	} catch (RuntimeException ex) {
+	    return defValue;
+	}
     }
 
     /**
@@ -382,12 +381,40 @@ public class ApplicationSettingsProvider implements SettingsProvider {
      * @param value
      */
     public void set(String key, String value) {
-        assertStorage();
+	assertSettingsSource();
 
-        if (!Strings.isNullOrEmpty(root)) {
-            key = root + "." + key;
-        }
+	if (!Strings.isNullOrEmpty(root)) {
+	    key = root + keySeparator + key;
+	}
 
-        storage.set(key, value);
+	storage.set(key, value);
+    }
+
+    public void setBool(String key, boolean value) {
+	set(key, value ? "true" : "false");
+    }
+
+    public void setByte(String key, byte value) {
+	set(key, value + "");
+    }
+
+    public void setShort(String key, short value) {
+	set(key, value + "");
+    }
+
+    public void setInt(String key, int value) {
+	set(key, value + "");
+    }
+
+    public void setLong(String key, long value) {
+	set(key, value + "");
+    }
+
+    public void setList(String key, List<String> value, String separator) {
+	set(key, Lists.join(value, separator));
+    }
+
+    public void setEnum(String key, Enum value) {
+	set(key, value.name());
     }
 }

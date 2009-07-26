@@ -82,10 +82,6 @@ public class DictionarySettingsStorage implements SettingsStorage {
         data.put(key, value);
     }
 
-    public synchronized void add(String key, String value) {
-        data.put(key, value);
-    }
-
     public synchronized String get(String key, String defaultValue) {
         ensureLoad();
         if (data.containsKey(key)) {
@@ -93,10 +89,6 @@ public class DictionarySettingsStorage implements SettingsStorage {
         } else {
             return defaultValue;
         }
-    }
-
-    public synchronized void add(String key, String[] subKeys) {
-        throw new UnsupportedOperationException("Operation not supported");
     }
 
     public synchronized String[] getSubKeys(String key) {

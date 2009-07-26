@@ -80,80 +80,80 @@ public abstract class OsService extends IterativeWorker {
      */
     public enum Keys {
 
-        /**
-         * Tells if the service will run as a daemon (boolean). True detaches
-         * the service form console.
-         */
-        DAEMON("isDaemon"),
-        /**
-         * Way of logging things. Can be one of: file, console, default.
-         */
-        LOGHANDLER("logHandler"),
-        /**
-         * Log file name (with path). Defaults to OsEnvironment.getLogPath()
-         * using the name of the service as file name.
-         */
-        LOGFILE("logFile"),
-        /**
-         * Size of the log file before rotating (bytes).
-         */
-        LOGSIZE("logSize"),
-        /**
-         * Number of log files to keep (int)
-         */
-        LOGNUMBER("logNumber"),
-        /**
-         * Global logging level. One of: off, all, fine, finer, finest, info,
-         * warning, severe.
-         */
-        LOGLEVEL("logLevel"),
-        /**
-         * Maximum number of queued task that this service can have (int).
-         * If your service doesn't use this just ignore it.
-         */
-        MAXQUEUE("maxQueue"),
-        /**
-         * Maximum number of threads to use by the service (int). 
-         * If your service doesn't spawn threads just ignore this.
-         */
-        MAXTHREADS("maxThreads"),
-        /**
-         * Minimun number of threads to use by the service when working (int).
-         * If your service doesn't spawn threads just ignore this.
-         */
-        MINTHREADS("minThreads"),
-        /**
-         * Name for the service. Usually set to the script name IE dynipd.
-         */
-        NAME("name"),
-        /**
-         * Brief description of service purposse. Not really usefull.
-         */
-        DESCRIPTION("description"),
-        /**
-         * Pid file name. Defaults to OsEnvironment.getPidPath() using the name
-         * of the service as file name.
-         */
-        PIDFILE("pidFile"),
-        /**
-         * Maximum time a thread will last without being working(long msec). If
-         * your service doesn't use this just ignore it.
-         */
-        THREADTTL("threadTTL");
-        private String value;
+	/**
+	 * Tells if the service will run as a daemon (boolean). True detaches
+	 * the service form console.
+	 */
+	DAEMON("isDaemon"),
+	/**
+	 * Way of logging things. Can be one of: file, console, default.
+	 */
+	LOGHANDLER("logHandler"),
+	/**
+	 * Log file name (with path). Defaults to OsEnvironment.getLogPath()
+	 * using the name of the service as file name.
+	 */
+	LOGFILE("logFile"),
+	/**
+	 * Size of the log file before rotating (bytes).
+	 */
+	LOGSIZE("logSize"),
+	/**
+	 * Number of log files to keep (int)
+	 */
+	LOGNUMBER("logNumber"),
+	/**
+	 * Global logging level. One of: off, all, fine, finer, finest, info,
+	 * warning, severe.
+	 */
+	LOGLEVEL("logLevel"),
+	/**
+	 * Maximum number of queued task that this service can have (int).
+	 * If your service doesn't use this just ignore it.
+	 */
+	MAXQUEUE("maxQueue"),
+	/**
+	 * Maximum number of threads to use by the service (int).
+	 * If your service doesn't spawn threads just ignore this.
+	 */
+	MAXTHREADS("maxThreads"),
+	/**
+	 * Minimun number of threads to use by the service when working (int).
+	 * If your service doesn't spawn threads just ignore this.
+	 */
+	MINTHREADS("minThreads"),
+	/**
+	 * Name for the service. Usually set to the script name IE dynipd.
+	 */
+	NAME("name"),
+	/**
+	 * Brief description of service purposse. Not really usefull.
+	 */
+	DESCRIPTION("description"),
+	/**
+	 * Pid file name. Defaults to OsEnvironment.getPidPath() using the name
+	 * of the service as file name.
+	 */
+	PIDFILE("pidFile"),
+	/**
+	 * Maximum time a thread will last without being working(long msec). If
+	 * your service doesn't use this just ignore it.
+	 */
+	THREADTTL("threadTTL");
+	private String value;
 
-        public String getValue() {
-            return value;
-        }
+	public String getValue() {
+	    return value;
+	}
 
-        private Keys(String value) {
-            this.value = value;
-        }
+	private Keys(String value) {
+	    this.value = value;
+	}
 
-        @Override
-        public String toString() {
-            return value;
-        }
+	@Override
+	public String toString() {
+	    return value;
+	}
     }
 
     /**
@@ -161,9 +161,9 @@ public abstract class OsService extends IterativeWorker {
      */
     protected class OsServiceShutdownTask implements ShutdownManager {
 
-        public void run() {
-            shutdown();
-        }
+	public void run() {
+	    shutdown();
+	}
     }
 
     /**
@@ -171,7 +171,7 @@ public abstract class OsService extends IterativeWorker {
      * @return the logger instance
      */
     public static Logger logger() {
-        return Application.get().getLogger();
+	return Application.get().getLogger();
     }
 
     /**
@@ -179,10 +179,10 @@ public abstract class OsService extends IterativeWorker {
      * @param level
      */
     public static void setLogLevel(Level level) {
-        logger().setLevel(level);
+	logger().setLevel(level);
     }
     private boolean daemon = false;
-	private PidFileHandler pidFileHandler;
+    private PidFileHandler pidFileHandler;
     private File logFile;
     private OsServiceController controller;
     private SettingsProvider settings;
@@ -200,7 +200,7 @@ public abstract class OsService extends IterativeWorker {
      * @return
      */
     public Logger getLogger() {
-        return logger;
+	return logger;
     }
 
     /**
@@ -208,31 +208,31 @@ public abstract class OsService extends IterativeWorker {
      * @param logger
      */
     public void setLogger(Logger logger) {
-        this.logger = logger;
+	this.logger = logger;
     }
 
     @Override
     public String getName() {
-        if (settings != null) {
-            return settings.get(Keys.NAME.value, getClass().getSimpleName());
-        }
-        return null;
+	if (settings != null) {
+	    return settings.get(Keys.NAME.value, getClass().getSimpleName());
+	}
+	return null;
     }
 
     @Override
     public void setName(String name) {
-        if (settings == null) {
-            throw new IllegalStateException(
-                    "No settings available. Can't set name.");
-        }
-        settings.getStorage().set(Keys.NAME.value, name);
+	if (settings == null) {
+	    throw new IllegalStateException(
+		    "No settings available. Can't set name.");
+	}
+	settings.getStorage().set(Keys.NAME.value, name);
     }
 
     /**
      * @return the settings of this application
      */
     public SettingsProvider getSettings() {
-        return settings;
+	return settings;
     }
 
     /**
@@ -242,13 +242,13 @@ public abstract class OsService extends IterativeWorker {
      * @param settings application settings
      */
     public void setSettings(SettingsProvider settings) {
-        if (Application.isInitialized()) {
-            throw new IllegalStateException(
-                    "Can't set this property after the initiallization " +
-                    "(init method call). Try to set this before.");
-        }
+	if (Application.isInitialized()) {
+	    throw new IllegalStateException(
+		    "Can't set this property after the initiallization " +
+		    "(init method call). Try to set this before.");
+	}
 
-        this.settings = settings;
+	this.settings = settings;
     }
 
     /**
@@ -256,7 +256,7 @@ public abstract class OsService extends IterativeWorker {
      * @return
      */
     protected OsServiceController getController() {
-        return controller;
+	return controller;
     }
 
     /**
@@ -264,7 +264,7 @@ public abstract class OsService extends IterativeWorker {
      * @param controller
      */
     protected void setController(OsServiceController controller) {
-        this.controller = controller;
+	this.controller = controller;
     }
 
     /**
@@ -272,21 +272,21 @@ public abstract class OsService extends IterativeWorker {
      * @return the daemon flag
      */
     public boolean isDaemon() {
-        if (settings == null) {
-            return false;
-        }
-        return settings.getBool(Keys.DAEMON.value, false);
+	if (settings == null) {
+	    return false;
+	}
+	return settings.getBool(Keys.DAEMON.value, false);
     }
 
     /**
      * @return the pidFile
      */
     public File getPidFile() {
-		if (pidFileHandler != null) {
-			return pidFileHandler.getPidFile();
-		} else {
-			return null;
-		}
+	if (pidFileHandler != null) {
+	    return pidFileHandler.getPidFile();
+	} else {
+	    return null;
+	}
     }
 
     /**
@@ -296,7 +296,7 @@ public abstract class OsService extends IterativeWorker {
      * @return the pid of the current process on success, -1 on fail
      */
     public int getPid() {
-        return Application.get().getPid();
+	return Application.get().getPid();
     }
 
     /**
@@ -304,10 +304,10 @@ public abstract class OsService extends IterativeWorker {
      * registers this instance within the application shutdown manager.
      */
     public OsService() {
-        super();
-        this.settings = new ApplicationSettingsProvider();
-        shutdownManager = new OsServiceShutdownTask();
-        Application.registerShutdownManager(shutdownManager);
+	super();
+	this.settings = new ApplicationSettingsProvider();
+	shutdownManager = new OsServiceShutdownTask();
+	Application.registerShutdownManager(shutdownManager);
     }
 
     /**
@@ -315,24 +315,24 @@ public abstract class OsService extends IterativeWorker {
      * flag is set.
      */
     protected void detach() {
-        if (!daemon) {
-            return;
-        }
+	if (!daemon) {
+	    return;
+	}
 
-        if (logger != null) {
-            logger.log(Level.INFO, "Detaching from console");
-        }
+	if (logger != null) {
+	    logger.log(Level.INFO, "Detaching from console");
+	}
 
-        try {
-            System.in.close();
-        } catch (IOException ex) {
-            if (logger != null) {
-                logger.log(Level.SEVERE, "Error closing input", ex);
-            }
-        }
+	try {
+	    System.in.close();
+	} catch (IOException ex) {
+	    if (logger != null) {
+		logger.log(Level.SEVERE, "Error closing input", ex);
+	    }
+	}
 
-        System.out.close();
-        System.err.close();
+	System.out.close();
+	System.err.close();
     }
 
     /**
@@ -344,23 +344,23 @@ public abstract class OsService extends IterativeWorker {
      */
     @Override
     protected void internalRun() {
-        //If there is a controller put it to work
-        if (controller != null) {
-            try {
-                runController(controller);
-            } catch (Throwable t) {
-                if (logger != null) {
-                    logger.log(Level.SEVERE,
-                            "Controller run failed.", t);
-                } else {
-                    System.out.println("Controller run failed.");
-                    t.printStackTrace();
-                }
-            }
-        }
+	//If there is a controller put it to work
+	if (controller != null) {
+	    try {
+		runController(controller);
+	    } catch (Throwable t) {
+		if (logger != null) {
+		    logger.log(Level.SEVERE,
+			    "Controller run failed.", t);
+		} else {
+		    System.out.println("Controller run failed.");
+		    t.printStackTrace();
+		}
+	    }
+	}
 
-        //Let the party begin
-        super.internalRun();
+	//Let the party begin
+	super.internalRun();
     }
 
     /**
@@ -368,25 +368,25 @@ public abstract class OsService extends IterativeWorker {
      */
     @Override
     public synchronized void stop() {
-        super.stop();
+	super.stop();
 
-        //If there is a controller stop it too.
-        if (this.controller != null && !controllerStopLoop) {
-            try {
-                controllerStopLoop = true;
-                this.controller.stop();
-                controllerStopLoop = false;
-            } catch (Throwable t) {
-                if (logger != null) {
-                    logger.log(Level.WARNING, "Controller stop failed", t);
-                }
-            }
-            this.controller = null;
-        }
+	//If there is a controller stop it too.
+	if (this.controller != null && !controllerStopLoop) {
+	    try {
+		controllerStopLoop = true;
+		this.controller.stop();
+		controllerStopLoop = false;
+	    } catch (Throwable t) {
+		if (logger != null) {
+		    logger.log(Level.WARNING, "Controller stop failed", t);
+		}
+	    }
+	    this.controller = null;
+	}
 
-        if (logger != null) {
-            logger.finer("Service stop.");
-        }
+	if (logger != null) {
+	    logger.finer("Service stop.");
+	}
     }
 
     /**
@@ -398,16 +398,16 @@ public abstract class OsService extends IterativeWorker {
      */
     @Override
     protected void cleanup() {
-        super.cleanup();
+	super.cleanup();
 
-		if (pidFileHandler != null) {
-			pidFileHandler.release();
-			pidFileHandler = null;
-		}
+	if (pidFileHandler != null) {
+	    pidFileHandler.release();
+	    pidFileHandler = null;
+	}
 
-        if (logger != null) {
-            logger.finer("Service cleanup.");
-        }
+	if (logger != null) {
+	    logger.finer("Service cleanup.");
+	}
     }
 
     /**
@@ -416,38 +416,37 @@ public abstract class OsService extends IterativeWorker {
      */
     @Override
     public synchronized void shutdown() {
-		//The parent impl tries to do a stop() and then a clean()
-        super.shutdown();
+	//The parent impl tries to do a stop() and then a clean()
+	super.shutdown();
 
-        //Wait for the thread to end
-        try {
-            if (getThread() != null) {
-                //Wait our thread to cleanup
-                getThread().join(threadWaitTimeout);
-            }
-        } catch (InterruptedException ex) {
-            if (logger != null) {
-                logger.fine("Shutdown interrupted");
-            }
-        }
+	//Wait for the thread to end
+	try {
+	    if (getThread() != null) {
+		//Wait our thread to cleanup
+		getThread().join(threadWaitTimeout);
+	    }
+	} catch (InterruptedException ex) {
+	    if (logger != null) {
+		logger.fine("Shutdown interrupted");
+	    }
+	}
 
-        //If it haven't finished and nobody interrupted it let's do it
-        if (getThread() != null && getThread().isAlive()
-				&& !getThread().isInterrupted()) {
-            //This doesn't abort the thread but is all that we can do without
-            //using deprecated methods.
-            getThread().interrupt();
-        }
+	//If it haven't finished and nobody interrupted it let's do it
+	if (getThread() != null && getThread().isAlive() && !getThread().isInterrupted()) {
+	    //This doesn't abort the thread but is all that we can do without
+	    //using deprecated methods.
+	    getThread().interrupt();
+	}
 
-        if (logger != null) {
-            logger.info("Service shutdown.");
-        }
+	if (logger != null) {
+	    logger.info("Service shutdown.");
+	}
 
-        if (!Application.get().isShuttingDown()) {
-            //If this shutdown haven't been called by the application itself
-            //this will shut down everything.
-            Application.get().shutdown();
-        }
+	if (!Application.get().isShuttingDown()) {
+	    //If this shutdown haven't been called by the application itself
+	    //this will shut down everything.
+	    Application.get().shutdown();
+	}
     }
 
     /**
@@ -457,79 +456,79 @@ public abstract class OsService extends IterativeWorker {
      */
     @Override
     protected void init() {
-        //First of all configure logging so we can start using it.
-        configureLogging();
+	//First of all configure logging so we can start using it.
+	configureLogging();
 
-        //if the application is already configured by this service we don't go
-        //throught init again.
-        if (Application.isInitialized() &&
-                Application.get().getInitializer() == this) {
-            return;
-        } else if (Application.isInitialized()) {
-            throw new IllegalStateException("Application already initiallized");
-        }
+	//if the application is already configured by this service we don't go
+	//throught init again.
+	if (Application.isInitialized() &&
+		Application.get().getInitializer() == this) {
+	    return;
+	} else if (Application.isInitialized()) {
+	    throw new IllegalStateException("Application already initiallized");
+	}
 
-        //We need to get the name and description for this service to configure
-        //the application
+	//We need to get the name and description for this service to configure
+	//the application
 
-        Application.setup(
-                this,
-                getName(),
-                settings.get(Keys.DESCRIPTION.value, null),
-                logger);
+	Application.setup(
+		this,
+		getName(),
+		settings.get(Keys.DESCRIPTION.value, null),
+		logger);
 
-        //The settings for the application will be the ones we have if they
-        //are set if not we use Application settings.
-        if (settings != null) {
-            Application.configure(this, settings);
-        } else {
-            settings = Application.settings();
-        }
+	//The settings for the application will be the ones we have if they
+	//are set if not we use Application settings.
+	if (settings != null) {
+	    Application.configure(this, settings);
+	} else {
+	    settings = Application.settings();
+	}
 
-        //We use a temporal variable and if the pid file creates successfully
-        //then we assign it. This is because the stop method uses this to delete
-        //the file and is not convenient to assing it until it is valid.
-        File tempFile = getPidFileForCreation();
+	//We use a temporal variable and if the pid file creates successfully
+	//then we assign it. This is because the stop method uses this to delete
+	//the file and is not convenient to assing it until it is valid.
+	File tempFile = getPidFileForCreation();
 
-		if (!createPidFile(tempFile)) {
-			stop();
-			return;
-		}
+	if (!createPidFile(tempFile)) {
+	    stop();
+	    return;
+	}
 
-		if (!pidFileHandler.isValid()) {
-			logger.severe("Existing pid file found, " +
-                    "this service is already running.");
-			stop();
-			return;
-		}
+	if (!pidFileHandler.isValid()) {
+	    logger.severe("Existing pid file found, " +
+		    "this service is already running.");
+	    stop();
+	    return;
+	}
 
-        //Our turn to check if we will detach and enable file logging
-        if (isDaemon()) {
-            //Closing standard output, input and error, any message that
-            //goes to them will be now discarded
-            detach();
-        }
+	//Our turn to check if we will detach and enable file logging
+	if (isDaemon()) {
+	    //Closing standard output, input and error, any message that
+	    //goes to them will be now discarded
+	    detach();
+	}
 
-        logger.finest("OsService " + getName() + " running with pid " +
-                getPid() + (isDaemon() ? " as daemon." : "."));
-        logger.finest("Java version: " + System.getProperty("java.version") +
-                ", Vendor: " + System.getProperty("java.vendor") +
-                ", OS: " + System.getProperty("os.name") +
-                ", ARCH: " + System.getProperty("os.arch"));
-        logger.finest(
-                "VM version: " + System.getProperty("java.vm.version") +
-                ", VM vendor: " + System.getProperty("java.vm.vendor") +
-                ", VM name: " + System.getProperty("java.vm.name"));
-        logger.finest("JAVAHOME: " + System.getProperty("java.home"));
-        logger.finest("CLASSPATH: " + System.getProperty("java.class.path"));
-        logger.finest("LIBPATH: " + System.getProperty("java.library.path"));
-        logger.finest("PIDFILE: " + getPidFile().getAbsolutePath());
-		
-        if (logFile != null) {
-            logger.finest("LOGFILE: " + logFile.getAbsolutePath());
-        } else {
-            logger.finest("Logging to console.");
-        }
+	logger.finest("OsService " + getName() + " running with pid " +
+		getPid() + (isDaemon() ? " as daemon." : "."));
+	logger.finest("Java version: " + System.getProperty("java.version") +
+		", Vendor: " + System.getProperty("java.vendor") +
+		", OS: " + System.getProperty("os.name") +
+		", ARCH: " + System.getProperty("os.arch"));
+	logger.finest(
+		"VM version: " + System.getProperty("java.vm.version") +
+		", VM vendor: " + System.getProperty("java.vm.vendor") +
+		", VM name: " + System.getProperty("java.vm.name"));
+	logger.finest("JAVAHOME: " + System.getProperty("java.home"));
+	logger.finest("CLASSPATH: " + System.getProperty("java.class.path"));
+	logger.finest("LIBPATH: " + System.getProperty("java.library.path"));
+	logger.finest("PIDFILE: " + getPidFile().getAbsolutePath());
+
+	if (logFile != null) {
+	    logger.finest("LOGFILE: " + logFile.getAbsolutePath());
+	} else {
+	    logger.finest("Logging to console.");
+	}
     }
 
     /**
@@ -543,20 +542,20 @@ public abstract class OsService extends IterativeWorker {
      * @return true if the log was successfully set or false if not
      */
     protected File getLogFileForCreation() {
-        File resultLogFile = null;
+	File resultLogFile = null;
 
-        String logPath = settings.get(
-                Keys.LOGFILE.value,
-                null);
+	String logPath = settings.get(
+		Keys.LOGFILE.value,
+		null);
 
-        if (logPath != null) {
-            resultLogFile = new File(logPath);
-        } else {
-            resultLogFile = new File(
-                    OsEnvironment.get().getLogPath(), getName() + ".log");
-        }
+	if (logPath != null) {
+	    resultLogFile = new File(logPath);
+	} else {
+	    resultLogFile = new File(
+		    OsEnvironment.get().getLogPath(), getName() + ".log");
+	}
 
-        return resultLogFile;
+	return resultLogFile;
     }
 
     /**
@@ -572,47 +571,47 @@ public abstract class OsService extends IterativeWorker {
      * @throws NullPointerException If the log file
      */
     protected FileHandler createLogFileHandler(File logFile, int logSize,
-            int logNum) {
+	    int logNum) {
 
-        if (logger == null) {
-            throw new IllegalStateException("Logging not initiallized");
-        }
+	if (logger == null) {
+	    throw new IllegalStateException("Logging not initiallized");
+	}
 
-        if (logSize <= 0) {
-            throw new IllegalArgumentException(
-                    "File size can't be zero or less");
-        }
+	if (logSize <= 0) {
+	    throw new IllegalArgumentException(
+		    "File size can't be zero or less");
+	}
 
-        if (logNum <= 0) {
-            logNum = 1;
-        }
+	if (logNum <= 0) {
+	    logNum = 1;
+	}
 
-        if (logFile == null) {
-            throw new NullPointerException("File is null");
-        }
+	if (logFile == null) {
+	    throw new NullPointerException("File is null");
+	}
 
-        if (!OsEnvironment.get().ensurePath(logFile.getParentFile())) {
-            logger.severe("Can't write to log file folder " +
-                    logFile.getParentFile().getPath());
-            return null;
-        }
+	if (!OsEnvironment.get().ensurePath(logFile.getParentFile())) {
+	    logger.severe("Can't write to log file folder " +
+		    logFile.getParentFile().getPath());
+	    return null;
+	}
 
-        //Before detach create the log
-        FileHandler handler = null;
+	//Before detach create the log
+	FileHandler handler = null;
 
-        try {
-            handler = new FileHandler(
-                    logFile.getPath(),
-                    logSize,
-                    logNum,
-                    true);
-        } catch (IOException ex) {
-            logger.log(Level.SEVERE, "Can't create log file: " + ex.getMessage(), ex);
-        } catch (SecurityException ex) {
-            logger.log(Level.SEVERE, "Can't create log file: " + ex.getMessage(), ex);
-        }
+	try {
+	    handler = new FileHandler(
+		    logFile.getPath(),
+		    logSize,
+		    logNum,
+		    true);
+	} catch (IOException ex) {
+	    logger.log(Level.SEVERE, "Can't create log file: " + ex.getMessage(), ex);
+	} catch (SecurityException ex) {
+	    logger.log(Level.SEVERE, "Can't create log file: " + ex.getMessage(), ex);
+	}
 
-        return handler;
+	return handler;
     }
 
     /**
@@ -621,76 +620,76 @@ public abstract class OsService extends IterativeWorker {
      * logger and to initialize the logger from Appplication static property.
      */
     protected void configureLogging() {
-        Level logLevel = null;
-        LogHandlerType type = null;
-        Handler handler = null;
+	Level logLevel = null;
+	LogHandlerType type = null;
+	Handler handler = null;
 
-        //If there is a logger no configuration is done.
+	//If there is a logger no configuration is done.
 
-        if (logger != null) {
-            return;
-        }
+	if (logger != null) {
+	    return;
+	}
 
-        //We don't have a logger. we must create one
-        logger = Logger.getLogger(getName());
+	//We don't have a logger. we must create one
+	logger = Logger.getLogger(getName());
 
-        //Now we must configure our logger but first we must get some
-        //configuration variables.
+	//Now we must configure our logger but first we must get some
+	//configuration variables.
 
-        try {
-            logLevel = Level.parse(
-                    settings.get(Keys.LOGLEVEL.value, "INFO").toUpperCase());
-        } catch (IllegalArgumentException ex) {
-            logLevel = Level.INFO;
-        }
+	try {
+	    logLevel = Level.parse(
+		    settings.get(Keys.LOGLEVEL.value, "INFO").toUpperCase());
+	} catch (IllegalArgumentException ex) {
+	    logLevel = Level.INFO;
+	}
 
-        logger.setLevel(logLevel);
+	logger.setLevel(logLevel);
 
-        try {
-            type = LogHandlerType.valueOf(
-                    settings.get(Keys.LOGHANDLER.value, "DEFAULT").toUpperCase());
-        } catch (IllegalArgumentException ex) {
-            type = LogHandlerType.DEFAULT;
-        }
+	try {
+	    type = LogHandlerType.valueOf(
+		    settings.get(Keys.LOGHANDLER.value, "DEFAULT").toUpperCase());
+	} catch (IllegalArgumentException ex) {
+	    type = LogHandlerType.DEFAULT;
+	}
 
-        //Create the handler
-        switch (type) {
-            case CONSOLE:
-                handler = new ConsoleHandler();
-                logger.setUseParentHandlers(false);
-                break;
-            case FILE:
-                //Defaults to files of 750K.
-                int logSize = settings.getInt(Keys.LOGSIZE.value, 768000);
-                int logNum = settings.getInt(Keys.LOGNUMBER.value, 4);
-                logFile = getLogFileForCreation();
+	//Create the handler
+	switch (type) {
+	    case CONSOLE:
+		handler = new ConsoleHandler();
+		logger.setUseParentHandlers(false);
+		break;
+	    case FILE:
+		//Defaults to files of 750K.
+		int logSize = settings.getInt(Keys.LOGSIZE.value, 768000);
+		int logNum = settings.getInt(Keys.LOGNUMBER.value, 4);
+		logFile = getLogFileForCreation();
 
-                handler = createLogFileHandler(logFile, logSize, logNum);
+		handler = createLogFileHandler(logFile, logSize, logNum);
 
-                if (handler == null) {
-                    throw new IllegalArgumentException(
-                            "Can't create log file handler for file " +
-                            logFile.getAbsolutePath());
-                } else {
-                    System.out.println(
-                            "Using log file: " + logFile.getAbsolutePath());
-                }
+		if (handler == null) {
+		    throw new IllegalArgumentException(
+			    "Can't create log file handler for file " +
+			    logFile.getAbsolutePath());
+		} else {
+		    System.out.println(
+			    "Using log file: " + logFile.getAbsolutePath());
+		}
 
-                logger.setUseParentHandlers(false);
-                break;
-            case DEFAULT:
-                logger.setUseParentHandlers(true);
-                break;
-            default:
-                throw new IllegalArgumentException(
-                        "Logging method " + type + " not supported.");
-        }
+		logger.setUseParentHandlers(false);
+		break;
+	    case DEFAULT:
+		logger.setUseParentHandlers(true);
+		break;
+	    default:
+		throw new IllegalArgumentException(
+			"Logging method " + type + " not supported.");
+	}
 
-        if (handler != null) {
-            handler.setLevel(Level.ALL);
-            handler.setFormatter(new SimplifiedFormater(true));
-            logger.addHandler(handler);
-        }
+	if (handler != null) {
+	    handler.setLevel(Level.ALL);
+	    handler.setFormatter(new SimplifiedFormater(true));
+	    logger.addHandler(handler);
+	}
     }
 
     /**
@@ -702,20 +701,20 @@ public abstract class OsService extends IterativeWorker {
      */
     protected File getPidFileForCreation() {
 
-        File resultPidFile = null;
+	File resultPidFile = null;
 
-        String pidPath = settings.get(
-                Keys.PIDFILE.value,
-                null);
+	String pidPath = settings.get(
+		Keys.PIDFILE.value,
+		null);
 
-        if (pidPath != null) {
-            resultPidFile = new File(pidPath);
-        } else {
-            resultPidFile = new File(
-                    OsEnvironment.get().getPidPath(), getName() + ".pid");
-        }
+	if (pidPath != null) {
+	    resultPidFile = new File(pidPath);
+	} else {
+	    resultPidFile = new File(
+		    OsEnvironment.get().getPidPath(), getName() + ".pid");
+	}
 
-        return resultPidFile;
+	return resultPidFile;
     }
 
     /**
@@ -725,18 +724,18 @@ public abstract class OsService extends IterativeWorker {
      * @return false if any exception was thrown or true if not.
      */
     protected boolean createPidFile(File pidFile) {
-		pidFileHandler = new PidFileHandler(pidFile, getPid());
-		
-		try {
-			pidFileHandler.create();
-		} catch (IOException ex) {
-			if (logger != null) {
-				logger.log(Level.SEVERE, "Can't create pid file", ex);
-			}
-			return false;
-		}
+	pidFileHandler = new PidFileHandler(pidFile, getPid());
 
-		return true;
+	try {
+	    pidFileHandler.create();
+	} catch (IOException ex) {
+	    if (logger != null) {
+		logger.log(Level.SEVERE, "Can't create pid file", ex);
+	    }
+	    return false;
+	}
+
+	return true;
     }
 
     /**
@@ -754,10 +753,10 @@ public abstract class OsService extends IterativeWorker {
 
     @Override
     protected void onRunAborted(RuntimeException ex) {
-        if (logger != null) {
-            logger.log(Level.SEVERE, "Error ", ex);
-        } else {
-            ex.printStackTrace();
-        }
+	if (logger != null) {
+	    logger.log(Level.SEVERE, "Error ", ex);
+	} else {
+	    ex.printStackTrace();
+	}
     }
 }
