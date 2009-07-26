@@ -12,6 +12,8 @@ Author: mangelp
 
 package com.greenriver.commons.configuration;
 
+import java.util.List;
+
 /**
  * Source of configuration for hierarchical settings.
  *
@@ -106,4 +108,48 @@ public interface SettingsProvider {
      * @return the root key.
      */
     String getRoot();
+
+    /**
+     * Gets a key converting the value to an enumeration constant.
+     * If the conversion fails the default value (that can't be null) is
+     * returned.
+     * @param fullKey Key to get under the root of this provider.
+     * @param defValue Default value of the enumeration. Can't be null.
+     * @param enumType 
+     * @return the key value converted to the enumeration or the default value.
+     */
+    Object getEnum(String fullKey, Object defValue, Class enumType);
+
+    /**
+     * Gets a value converted into a list of strings. The strings are separated
+     * using split() method without no further checks.
+     * @param fullKey
+     * @param defValue
+     * @param separator String item separator
+     * @return a list of strings or the default value.
+     */
+    List<String> getList(String fullKey, List<String> defValue,
+	    String separator);
+
+    /**
+     * Sets a key and the value. This implementation is simply a wrapper to
+     * the same method in the storage implementation.
+     * @param key
+     * @param value
+     */
+    void set(String key, String value);
+
+    void setBool(String key, boolean value);
+
+    void setByte(String key, byte value);
+
+    void setEnum(String key, Enum value);
+
+    void setInt(String key, int value);
+
+    void setList(String key, List<String> value, String separator);
+
+    void setLong(String key, long value);
+
+    void setShort(String key, short value);
 }

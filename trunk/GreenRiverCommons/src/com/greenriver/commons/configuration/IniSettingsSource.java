@@ -129,7 +129,7 @@ public class IniSettingsSource implements SettingsSource,
 
         //First create a root key and set it, then we can start to parse lines
         //and add pairs key-value
-        storage.add("app", "app");
+        storage.set("app", "app");
 
 
         line = reader.readLine();
@@ -157,7 +157,7 @@ public class IniSettingsSource implements SettingsSource,
                                 "Keys must start with app. prefix");
                     }
                     value = line.substring(sepPos + 1).trim();
-                    storage.add(key, value);
+                    storage.set(key, value);
                 }
             }
             line = reader.readLine();
