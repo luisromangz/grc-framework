@@ -184,7 +184,6 @@ public abstract class OsService extends IterativeWorker {
     private boolean daemon = false;
     private PidFileHandler pidFileHandler;
     private File logFile;
-    private OsServiceController controller;
     private SettingsProvider settings;
     /**
      * Time to wait on shutdown for the thread to cleanup by itself.
@@ -249,22 +248,6 @@ public abstract class OsService extends IterativeWorker {
 	}
 
 	this.settings = settings;
-    }
-
-    /**
-     * Gets the controller for this service
-     * @return
-     */
-    protected OsServiceController getController() {
-	return controller;
-    }
-
-    /**
-     * Sets the controller to use in this service
-     * @param controller
-     */
-    protected void setController(OsServiceController controller) {
-	this.controller = controller;
     }
 
     /**
@@ -336,60 +319,6 @@ public abstract class OsService extends IterativeWorker {
     }
 
     /**
-     * Runs the service process and keeps working until stop() is called or the
-     * flag stopRun is set internally.
-     * <br/><br/>
-     * Child classes can override this but is discouraged as a lot of exception
-     * handling is done here to try to shut down things properly.
-     */
-    @Override
-    protected void internalRun() {
-	//If there is a controller put it to work
-	if (controller != null) {
-	    try {
-		runController(controller);
-	    } catch (Throwable t) {
-		if (logger != null) {
-		    logger.log(Level.SEVERE,
-			    "Controller run failed.", t);
-		} else {
-		    System.out.println("Controller run failed.");
-		    t.printStackTrace();
-		}
-	    }
-	}
-
-	//Let the party begin
-	super.internalRun();
-    }
-
-    /**
-     * Enables the flag that stops this daemon after the next sleep
-     */
-    @Override
-    public synchronized void stop() {
-	super.stop();
-
-	//If there is a controller stop it too.
-	if (this.controller != null && !controllerStopLoop) {
-	    try {
-		controllerStopLoop = true;
-		this.controller.stop();
-		controllerStopLoop = false;
-	    } catch (Throwable t) {
-		if (logger != null) {
-		    logger.log(Level.WARNING, "Controller stop failed", t);
-		}
-	    }
-	    this.controller = null;
-	}
-
-	if (logger != null) {
-	    logger.finer("Service stop.");
-	}
-    }
-
-    /**
      * Called after working loop has finished. Cleanup for the service.
      *
      * This implementation cares only about removing the pid file, if you
@@ -403,10 +332,6 @@ public abstract class OsService extends IterativeWorker {
 	if (pidFileHandler != null) {
 	    pidFileHandler.release();
 	    pidFileHandler = null;
-	}
-
-	if (logger != null) {
-	    logger.finer("Service cleanup.");
 	}
     }
 
@@ -436,10 +361,6 @@ public abstract class OsService extends IterativeWorker {
 	    //This doesn't abort the thread but is all that we can do without
 	    //using deprecated methods.
 	    getThread().interrupt();
-	}
-
-	if (logger != null) {
-	    logger.info("Service shutdown.");
 	}
 
 	if (!Application.get().isShuttingDown()) {
@@ -509,26 +430,30 @@ public abstract class OsService extends IterativeWorker {
 	    detach();
 	}
 
-	logger.finest("OsService " + getName() + " running with pid " +
+	StringBuilder sb = new StringBuilder();
+
+	sb.append("OsService " + getName() + " running with pid " +
 		getPid() + (isDaemon() ? " as daemon." : "."));
-	logger.finest("Java version: " + System.getProperty("java.version") +
+	sb.append("Java version: " + System.getProperty("java.version") +
 		", Vendor: " + System.getProperty("java.vendor") +
 		", OS: " + System.getProperty("os.name") +
 		", ARCH: " + System.getProperty("os.arch"));
-	logger.finest(
+	sb.append(
 		"VM version: " + System.getProperty("java.vm.version") +
 		", VM vendor: " + System.getProperty("java.vm.vendor") +
 		", VM name: " + System.getProperty("java.vm.name"));
-	logger.finest("JAVAHOME: " + System.getProperty("java.home"));
-	logger.finest("CLASSPATH: " + System.getProperty("java.class.path"));
-	logger.finest("LIBPATH: " + System.getProperty("java.library.path"));
-	logger.finest("PIDFILE: " + getPidFile().getAbsolutePath());
+	sb.append("JAVAHOME: " + System.getProperty("java.home"));
+	sb.append("CLASSPATH: " + System.getProperty("java.class.path"));
+	sb.append("LIBPATH: " + System.getProperty("java.library.path"));
+	sb.append("PIDFILE: " + getPidFile().getAbsolutePath());
 
 	if (logFile != null) {
-	    logger.finest("LOGFILE: " + logFile.getAbsolutePath());
+	    sb.append("LOGFILE: " + logFile.getAbsolutePath());
 	} else {
-	    logger.finest("Logging to console.");
+	    sb.append("Logging to console.");
 	}
+
+	logger.fine(sb.toString());
     }
 
     /**
@@ -744,15 +669,9 @@ public abstract class OsService extends IterativeWorker {
      */
     protected abstract void work();
 
-    /**
-     * Starts the controller work. This implementation does nothing.
-     * @param controller
-     */
-    protected void runController(OsServiceController controller) {
-    }
-
     @Override
     protected void onRunAborted(RuntimeException ex) {
+	//Here we log the exception or we put it in the standard output.
 	if (logger != null) {
 	    logger.log(Level.SEVERE, "Error ", ex);
 	} else {

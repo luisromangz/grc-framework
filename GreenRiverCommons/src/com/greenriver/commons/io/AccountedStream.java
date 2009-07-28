@@ -13,7 +13,7 @@ Author: mangelp
 package com.greenriver.commons.io;
 
 /**
- *
+ * Operations for those streams that counts the bytes that get throught them
  * @author mangelp
  */
 public interface AccountedStream {

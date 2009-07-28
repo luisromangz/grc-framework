@@ -207,8 +207,6 @@ public class SortedListTest {
 	list.add(new ComparableTestElement(7));
 	list.add(new ComparableTestElement(13));
 
-	printList(list);
-
 	ComparableTestElement previous = list.get(0);
 	ComparableTestElement current = null;
 
