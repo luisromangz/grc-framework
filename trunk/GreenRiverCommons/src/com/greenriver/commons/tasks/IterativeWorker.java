@@ -13,9 +13,8 @@ Author: mangelp
 package com.greenriver.commons.tasks;
 
 /**
- * Repeatable work unit to be executed at regular intervals as a runable into
- * a thread or as a timed event. This implementation also supports retrying the
- * task if it fails.
+ * Repeatable work unit to be executed at regular intervals. This implementation
+ * also supports retrying the task if it fails.
  */
 public abstract class IterativeWorker extends AbstractWorker
         implements Runnable {
