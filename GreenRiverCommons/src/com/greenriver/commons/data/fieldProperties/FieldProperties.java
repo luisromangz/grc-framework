@@ -125,4 +125,10 @@ public @interface FieldProperties {
      * @return number of decimal places
      */
     public int decimalPlaces() default 3;
+
+    /**
+     * The prefix used by the getter method.
+     * @return the prefix used in the getter's name.
+     */
+    public String getterPrefix() default "get";
 }
