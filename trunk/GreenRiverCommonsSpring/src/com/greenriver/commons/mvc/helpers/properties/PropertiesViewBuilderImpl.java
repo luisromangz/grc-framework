@@ -76,11 +76,7 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
             throw new IllegalArgumentException("Id can't be null nor empty.");
         }
 
-        //If the property is not visible don't add nothing.
-        if (!properties.visible()) {
-            return null;
-        }
-
+       
         assertCurrent();
 
         SinglePropertyView propView = new SinglePropertyView(
@@ -130,7 +126,7 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
             }
 
             FieldProperties props = field.getAnnotation(FieldProperties.class);
-            if (props != null && props.visible()) {
+            if (props != null) {
                 // We only add the field if was annotated and the property is
                 //marked as visible.
                 this.addPropertyView(field.getName(), props, field.getType());
