@@ -42,4 +42,13 @@ public class Lists {
 
 	return sb.toString();
     }
+
+    /**
+     * Gets if a list is null or if it has zero elements.
+     * @param list
+     * @return true if the list is null or if there are no elements.
+     */
+    public static boolean isNullOrEmpty(List list) {
+        return list == null || list.isEmpty();
+    }
 }

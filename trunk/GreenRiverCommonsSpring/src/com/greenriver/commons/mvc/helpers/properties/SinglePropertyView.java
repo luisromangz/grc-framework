@@ -1,6 +1,7 @@
 
 package com.greenriver.commons.mvc.helpers.properties;
 
+import com.greenriver.commons.Strings;
 import com.greenriver.commons.mvc.helpers.HtmlElementInfo;
 
 /**
@@ -58,5 +59,21 @@ public class SinglePropertyView implements Comparable<SinglePropertyView> {
 
 	return getId().compareTo(o.getId());
     }
-    
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null ||
+                !(SinglePropertyView.class.isAssignableFrom(obj.getClass()))) {
+            return false;
+        }
+
+        //Two views are the same if they have the same id.
+        return Strings.equals(id, ((SinglePropertyView)obj).id);
+    }
+
+    @Override
+    public int hashCode() {
+        String strCode = "" + id;
+        return 23 + strCode.hashCode();
+    }
 }
