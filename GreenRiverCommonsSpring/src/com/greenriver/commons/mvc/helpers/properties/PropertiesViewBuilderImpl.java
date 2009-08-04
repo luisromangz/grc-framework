@@ -1,10 +1,14 @@
 package com.greenriver.commons.mvc.helpers.properties;
 
 import com.greenriver.commons.Strings;
+import com.greenriver.commons.collections.Lists;
+import com.greenriver.commons.collections.Maps;
 import com.greenriver.commons.data.fieldProperties.FieldProperties;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.web.servlet.ModelAndView;
@@ -14,13 +18,44 @@ import org.springframework.web.servlet.ModelAndView;
  */
 public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
 
-    private static final String key_model = "model";
-    private static final String key_properties = "properties";
+    /**
+     * Configuration key name to set the class name of the model (fully
+     * qualified name).<br/>
+     * The value must be a string with the fully qualified name of the class.
+     */
+    public static final String KEY_MODEL = "model";
+    /**
+     * Configuration key name to set the list of properties to be included.
+     * These properties must be defined in the model. Any property not defined
+     * in the model is ignored.<br/><br/>
+     * Can be a list of property names, or a string of property names
+     * separated with commas.
+     */
+    public static final String KEY_PROPERTIES = "properties";
+    /**
+     * Configuration key name to set a list of properties to be included but
+     * that doesn't exists in the model. These properties will be generated
+     * as generic properties.<br/><br/>
+     * Can be a map (keys are property names and values are property labels) or
+     * an string using a ; as pair separator and a = as
+     * propertyName-propertyLabel separator.
+     */
+    public static final String KEY_VIRTUAL_PROPERTIES = "virtualProperties";
+    /**
+     * Configuration key name to set a list of properties to be ignored.
+     * Properties listed are not used.<br/><br/>
+     * Can be a list of property names, or a string of property names
+     * separated with commas.
+     */
+    public static final String KEY_IGNORE_PROPERTIES = "ignoreProperties";
+    
     private List<PropertiesView> propertiesViews;
     private PropertiesView currentPropertiesView;
+    private Map<String, Class> classCache;
 
     public PropertiesViewBuilderImpl() {
         propertiesViews = new ArrayList<PropertiesView>();
+        classCache = new HashMap<String, Class>();
     }
 
     private void assertCurrent() {
@@ -76,14 +111,48 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
             throw new IllegalArgumentException("Id can't be null nor empty.");
         }
 
-       
         assertCurrent();
 
+        if (currentPropertiesView.containsPropertyViewForName(id)) {
+            return null;
+        }
+
         SinglePropertyView propView = new SinglePropertyView(
-                this.currentPropertiesView.getId() + "_" + id);
+                currentPropertiesView.getPropertyViewName(id));
+
         propView.setLabel(properties.label());
 
         if (setupPropertyView(propView, properties, modelClass)) {
+            this.currentPropertiesView.addPropertyView(propView);
+        }
+
+        return propView;
+    }
+
+    /**
+     * Adds a generic property view with only the property name and the
+     * property label value.
+     * @param id
+     * @param label
+     * @return The created property view or null if it was not added.
+     */
+    public SinglePropertyView addPropertyView(String id, String label) {
+        if (Strings.isNullOrEmpty(id)) {
+            throw new IllegalArgumentException("Id can't be null nor empty.");
+        }
+
+        assertCurrent();
+
+        if (currentPropertiesView.containsPropertyViewForName(id)) {
+            return null;
+        }
+
+        SinglePropertyView propView = new SinglePropertyView(
+                currentPropertiesView.getPropertyViewName(id));
+
+        propView.setLabel(label);
+
+        if (setupFieldGenericView(propView, null, null)) {
             this.currentPropertiesView.addPropertyView(propView);
         }
 
@@ -94,75 +163,113 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
         addPropertyViewsFromModel(entityFullName, null);
     }
 
-    public void addPropertyViewsFromModel(String entityFullName, List<String> propertiesToShow) {
-        Class modelClass = null;
-
-        try {
-            modelClass = Class.forName(entityFullName);
-        } catch (ClassNotFoundException ex) {
-            throw new IllegalArgumentException(
-                    "Entity class '" + entityFullName + "' can't be loaded.",
-                    ex);
-        }
-
-        addPropertyViewsFromModel(modelClass, propertiesToShow);
+    public void addPropertyViewsFromModel(String entityFullName, 
+            List<String> propertiesToShow) {
+        
+        addPropertyViewsFromModel(
+                getClassFromName(entityFullName),
+                propertiesToShow);
     }
 
     public void addPropertyViewsFromModel(Class modelClass) {
         addPropertyViewsFromModel(modelClass, null);
     }
 
-    public void addPropertyViewsFromModel(Class modelClass, List<String> propertiesToShow) {
+    public void addPropertyViewsFromModel(Class modelClass,
+            List<String> propertiesToShow) {
+
+        Field classField = null;
+        FieldProperties fieldProperties = null;
+
         assertCurrent();
 
-        Field[] classFields = modelClass.getDeclaredFields();
+        if (Lists.isNullOrEmpty(propertiesToShow)) {
+            propertiesToShow = generatePropertyList(modelClass);
+        }
 
-        for (Field field : classFields) {
-            //If there is a list of properties we only are going through those
-            //properties in the list.
-            if (propertiesToShow != null &&
-                    !propertiesToShow.contains(field.getName())) {
-                continue;
+        for (String propName : propertiesToShow) {
+            try {
+                classField = modelClass.getDeclaredField(propName);
+            } catch (NoSuchFieldException ex) {
+                throw new IllegalArgumentException("Field '" + propName + 
+                        "' not defined in model entity " + modelClass.getName());
             }
 
-            FieldProperties props = field.getAnnotation(FieldProperties.class);
-            if (props != null) {
-                // We only add the field if was annotated and the property is
-                //marked as visible.
-                this.addPropertyView(field.getName(), props, field.getType());
+            fieldProperties = classField.getAnnotation(FieldProperties.class);
+
+            //Only go ahead if there is a field property
+            if (fieldProperties != null) {
+                addPropertyView(propName, fieldProperties, classField.getType());
             }
         }
     }
 
+    /**
+     * Configures the views from a map.
+     * @param config Map with configuration key values.
+     */
     public void addPropertyViewFromConfiguration(Map<String, Object> config) {
-        if (!config.containsKey(key_model)) {
+        if (!config.containsKey(KEY_MODEL)) {
             throw new IllegalArgumentException(
-                    "The configuration must include '" + key_model +
+                    "The configuration must include '" + KEY_MODEL +
                     "' key with the entity full name as value");
         }
 
-        Object obj = config.get(key_model);
+        //Temporal object to put values got from the map.
+        Object obj = config.get(KEY_MODEL);
+        //Name of the entity's class
         String entityName = null;
-        List<String> properties = null;
+        Class entityClass = null;
+        //List of properties to be added to the view.
+        List<String> properties = new ArrayList<String>();
+        Map<String, String> virtualProperties = new HashMap<String, String>();
 
         if (obj == null || !(obj instanceof String)) {
             throw new IllegalArgumentException(
-                    "The configuration must include '" + key_model +
+                    "The configuration must include '" + KEY_MODEL +
                     "' key with the entity full name as value");
         }
 
         entityName = (String) obj;
-        obj = config.get(key_properties);
-
-        if (obj != null && !(obj instanceof List)) {
-            throw new IllegalArgumentException(
-                    "The configuration includes key '" + key_properties +
-                    "' but the value is not a list.");
-        } else if (obj != null) {
-            properties = (List<String>) obj;
-            addPropertyViewsFromModel(entityName, properties);
+        entityClass = getClassFromName(entityName);
+        
+        //We process the properties key if set
+        if (config.containsKey(KEY_PROPERTIES)) {
+            processPropertiesListObject(
+                    config.get(KEY_PROPERTIES),
+                    false,
+                    properties);
         } else {
-            addPropertyViewsFromModel(entityName);
+            properties.addAll(generatePropertyList(entityClass));
+        }
+
+        if (config.containsKey(KEY_IGNORE_PROPERTIES)) {
+            processPropertiesListObject(
+                    config.get(KEY_IGNORE_PROPERTIES),
+                    true,
+                    properties);
+        }
+
+        addPropertyViewsFromModel(entityClass, properties);
+
+        if (config.containsKey(KEY_VIRTUAL_PROPERTIES)) {
+            processPropertiesMapObject(
+                    config.get(KEY_VIRTUAL_PROPERTIES),
+                    virtualProperties);
+        }
+
+        addVirtualPropertyViews(virtualProperties);
+    }
+
+    /**
+     * Adds properties from a map where the keys are property names and the
+     * values are the labels for the properties. The generated views will be
+     * the most simple and generic ones.
+     * @param virtualProperties Map with pairs propertyName-propertyLabel.
+     */
+    public void addVirtualPropertyViews(Map<String, String> virtualProperties) {
+        for (String propName : virtualProperties.keySet()) {
+            addPropertyView(propName, virtualProperties.get(propName));
         }
     }
 
@@ -174,11 +281,108 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
         currentPropertiesView.removePropertyView(propView);
     }
 
+    private Class getClassFromName(String classFullName) {
+        if (classCache.containsKey(classFullName)) {
+            return classCache.get(classFullName);
+        }
+        
+        Class result = null;
+
+        try {
+            result = Class.forName(classFullName);
+        } catch (ClassNotFoundException ex) {
+            throw new IllegalArgumentException(
+                    "Entity class '" + classFullName + "' can't be loaded.",
+                    ex);
+        }
+
+        classCache.put(classFullName, result);
+
+        return result;
+    }
+
+    /**
+     * Generates a list with all the annotated properties in the class.
+     * (The annotation to find is FieldProperties).
+     * @param entityClass
+     * @return a list of properties
+     */
+    private List<String> generatePropertyList(Class entityClass) {
+        
+        Field[] classFields = entityClass.getDeclaredFields();
+        List<String> result = new ArrayList<String>();
+
+        for (Field field : classFields) {
+            FieldProperties props = field.getAnnotation(FieldProperties.class);
+
+            if (props != null) {
+                // We only add the field if was annotated
+                result.add(field.getName());
+            }
+        }
+
+        return result;
+    }
+
+    private void processPropertiesMapObject(Object obj,
+            Map<String, String> result) {
+        if (obj == null) {
+            return;
+        }
+
+        Map<String, String> propMap = new HashMap<String, String>(0);
+
+        if (obj instanceof String) {
+            propMap = Maps.fromString(((String) obj), ";", "=");
+        } else if (obj instanceof Map) {
+            propMap = (Map<String, String>) obj;
+        } else {
+            throw new IllegalArgumentException("Invalid value format. " +
+                    "Can't hangle type " + obj.getClass());
+        }
+
+        result.putAll(propMap);
+    }
+
+    private void processPropertiesListObject(Object obj, boolean ignore,
+            List<String> result) {
+
+        if (obj == null) {
+            return;
+        }
+
+        List<String> propsList = null;
+
+        if (obj instanceof String) {
+            String[] propsArr = ((String) obj).split(",");
+
+            if (propsArr.length > 1) {
+                propsList = Arrays.asList(propsArr);
+            } else if (propsArr.length == 1) {
+                propsList = new ArrayList<String>();
+                propsList.add(propsArr[1]);
+            } else {
+                throw new IllegalArgumentException("Invalid value: " + obj);
+            }
+
+        } else if (obj instanceof List) {
+            propsList = (List<String>) obj;
+        }
+
+        if (ignore) {
+            result.removeAll(propsList);
+        } else {
+            result.addAll(propsList);
+        }
+    }
+
     /**
      * Setups a property view with extra attributes. If the setup is succesful
      * this method must return true, if not this method must return false and
      * the property view will not be added to the final list and thus not
-     * rendered to the interface.
+     * rendered to the interface.<br/><br/>
+     * This method doesn't need to set the label, that is already done by the
+     * caller of this one, but if needed it can be done here too.
      * @param propView
      * @param properties
      * @param modelClass
@@ -196,7 +400,8 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
     }
 
     /**
-     * Setups a generic field
+     * Setups a generic field. The properties and modelClass parameters should
+     * be allowed to be null.
      * @param propView
      * @param properties
      * @param modelClass
@@ -208,21 +413,23 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
             Class modelClass) {
         //all the view are the same, an span for the value and another one
         //for the unit
-        String format = "<span id=\"%1$s\"></span>";
-        format +=
+        String format = "<span id=\"%1$s\"></span>" +
                 "<span style=\"margin-left:5px\" id=\"%1$s_unit\">%2$s</span>";
+        String unit = "";
 
-        String unit = properties.unit();
-        //If no unit put an empty string
-        if (unit == null) {
-            unit = "";
+        if (properties != null) {
+            if (properties.unit() != null) {
+                unit = properties.unit();
+            }
         }
 
+        //We only need to set the value here as the label should be already set
         propView.setValueElement(
                 String.format(format, propView.getId(), unit));
 
         return true;
     }
+    
     //TODO: To handle more or less complex setups for other properties
     //add new methods here with the same parameters as the setupPropertiesView
     //method.

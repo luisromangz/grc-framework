@@ -8,9 +8,7 @@ import java.util.List;
 /**
  * Models a collection of properties that are the view of the properties of
  * an entity.
- *
- *
- * @author mangelp
+ * @author Miguel Angel
  */
 public class PropertiesView {
     //Id of the view. There is no setter as we are using the id to do the
@@ -44,12 +42,51 @@ public class PropertiesView {
 	this.properties = new ArrayList<SinglePropertyView>();
     }
 
+    /**
+     * Adds a view
+     * @param propView
+     * @return
+     */
     public boolean addPropertyView(SinglePropertyView propView) {
 	return properties.add(propView);
     }
 
+    /**
+     * Removes a view
+     * @param propView
+     * @return
+     */
     public boolean removePropertyView(SinglePropertyView propView) {
 	return properties.remove(propView);
+    }
+
+    /**
+     * Gets if a view is already added
+     * @param propView
+     * @return
+     */
+    public boolean containsView(SinglePropertyView propView) {
+        return properties.contains(propView);
+    }
+
+    /**
+     * Gets if a view for a property name is already added
+     * @param propName
+     * @return
+     */
+    public boolean containsPropertyViewForName(String propName) {
+        SinglePropertyView testView =
+                new SinglePropertyView(getPropertyViewName(propName));
+        return properties.contains(testView);
+    }
+
+    /**
+     * Gets a name for a property view from the property name
+     * @param propName
+     * @return
+     */
+    public String getPropertyViewName(String propName) {
+        return id + '_' + propName;
     }
 
     public void clear() {

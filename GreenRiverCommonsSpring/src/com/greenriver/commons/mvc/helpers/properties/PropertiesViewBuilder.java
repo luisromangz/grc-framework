@@ -91,4 +91,21 @@ public interface PropertiesViewBuilder {
      * @param id
      */
     void removePropertyView(String id);
+
+    /**
+     * Adds properties from a map where the keys are property names and the
+     * values are the labels for the properties. The generated views will be
+     * the most simple and generic ones.
+     * @param virtualProperties Map with pairs propertyName-propertyLabel.
+     */
+    void addVirtualPropertyViews(Map<String, String> virtualProperties);
+
+    /**
+     * Adds a generic property view with only the property name and the
+     * property label value.
+     * @param id
+     * @param label
+     * @return The created property view or null if it was not added.
+     */
+    SinglePropertyView addPropertyView(String id, String label);
 }
