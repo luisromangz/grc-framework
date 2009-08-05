@@ -1,5 +1,6 @@
 package com.greenriver.commons.log.spring;
 
+import com.greenriver.commons.log.Log4jLogger;
 import org.apache.log4j.Logger;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.springframework.security.Authentication;
@@ -7,12 +8,14 @@ import org.springframework.security.BadCredentialsException;
 import org.springframework.util.StringUtils;
 
 /**
+ * This class both extends Log4jLogger and implements AuthenticationLoggerAdvisor,
+ * thus providing a Log4j based system to log a webapp's login process in an
+ * aspect oriented way.
  *
  * @author luis
  */
-public class Log4jAuthenticationLoggingAdvisor implements AuthenticationLoggingAdvisor {
-
-    private String componentName;
+public class Log4jAuthenticationLoggingAdvisor extends Log4jLogger
+        implements AuthenticationLoggingAdvisor {
 
     /**
      * Wraps a call to Spring Security's
@@ -20,12 +23,7 @@ public class Log4jAuthenticationLoggingAdvisor implements AuthenticationLoggingA
      */
     public Object logAuth(ProceedingJoinPoint call) throws Throwable {
 
-        Logger authLog;
-        if (StringUtils.hasText(componentName)) {
-            authLog = Logger.getLogger(componentName);
-        } else {
-            authLog = Logger.getRootLogger();
-        }
+        Logger authLog = this.getLogger();
 
         Authentication result;
         String user = "UNKNOWN";
@@ -42,12 +40,17 @@ public class Log4jAuthenticationLoggingAdvisor implements AuthenticationLoggingA
         } catch (BadCredentialsException bce) {
             // The user doesn't exists of didn't write its password correctly,
             // no reason to complain about.
-            authLog.info("auth=fail;user=" + user+";cause="+bce.toString());
+            authLog.info("auth=fail;user=" + user + ";cause=" + bce.toString());
             throw bce;
         } catch (Exception e) {
             // A real error happened
-            authLog.error("auth=fail;user=" + user+";cause="+e.toString());
+            if (!getIgnoredExceptions().contains(e.getClass().getName())) {
+                // If the exception is not ignored, we log it.
+                authLog.error(
+                        "auth=fail;user=" + user + ";cause=" + e.toString());
+            }
             throw e;
+
         }
 
         if (result != null) {
@@ -55,20 +58,6 @@ public class Log4jAuthenticationLoggingAdvisor implements AuthenticationLoggingA
         }
 
         return result;
-    }
-
-    /**
-     * @return the componentName
-     */
-    public String getComponentName() {
-        return componentName;
-    }
-
-    /**
-     * @param componentName the componentName to set
-     */
-    public void setComponentName(String componentName) {
-        this.componentName = componentName;
     }
 }
 
