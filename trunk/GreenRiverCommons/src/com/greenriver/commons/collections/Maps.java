@@ -70,11 +70,13 @@ public class Maps {
             piece = piece.trim();
             keyVal = piece.split(valueSeparator);
 
-            if (keyVal.length != 2) {
+            if (keyVal.length == 2) {
+                result.put(keyVal[0].trim(), keyVal[1].trim());
+            } else if (keyVal.length == 1) {
+                result.put(keyVal[0].trim(), "");
+            } else {
                 throw new IllegalArgumentException("The string is not parseable");
             }
-
-            result.put(keyVal[0].trim(), keyVal[1].trim());
         }
 
         return result;

@@ -133,12 +133,17 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
      * Adds a generic property view with only the property name and the
      * property label value.
      * @param id
-     * @param label
+     * @param label Label for the element. Can be an empty string but not null.
      * @return The created property view or null if it was not added.
      */
     public SinglePropertyView addPropertyView(String id, String label) {
         if (Strings.isNullOrEmpty(id)) {
             throw new IllegalArgumentException("Id can't be null nor empty.");
+        }
+
+        if (label == null) {
+            throw new IllegalArgumentException("Label parameter can be empty" +
+                    " but not null");
         }
 
         assertCurrent();
@@ -354,13 +359,13 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
         List<String> propsList = null;
 
         if (obj instanceof String) {
-            String[] propsArr = ((String) obj).split(",");
+            String[] propsArr = ((String) obj).split(";");
 
             if (propsArr.length > 1) {
                 propsList = Arrays.asList(propsArr);
             } else if (propsArr.length == 1) {
                 propsList = new ArrayList<String>();
-                propsList.add(propsArr[1]);
+                propsList.add(propsArr[0]);
             } else {
                 throw new IllegalArgumentException("Invalid value: " + obj);
             }
