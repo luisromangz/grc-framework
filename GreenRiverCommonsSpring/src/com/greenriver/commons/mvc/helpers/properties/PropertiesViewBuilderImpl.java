@@ -48,6 +48,10 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
      * separated with commas.
      */
     public static final String KEY_IGNORE_PROPERTIES = "ignoreProperties";
+
+    private static final String labelFormat = "<span id=\"%1$s_label\">%2$s</span>";
+    private static final String valueFormat = "<span id=\"%1$s\"></span>" +
+                "<span style=\"margin-left:5px\" id=\"%1$s_unit\">%2$s</span>";
     
     private List<PropertiesView> propertiesViews;
     private PropertiesView currentPropertiesView;
@@ -156,6 +160,8 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
                 currentPropertiesView.getPropertyViewName(id));
 
         propView.setLabel(label);
+        propView.setLabelElement(
+                String.format(labelFormat, propView.getId(), label));
 
         if (setupFieldGenericView(propView, null, null)) {
             this.currentPropertiesView.addPropertyView(propView);
@@ -418,19 +424,25 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
             Class modelClass) {
         //all the view are the same, an span for the value and another one
         //for the unit
-        String format = "<span id=\"%1$s\"></span>" +
-                "<span style=\"margin-left:5px\" id=\"%1$s_unit\">%2$s</span>";
         String unit = "";
+        String label = "";
 
         if (properties != null) {
             if (properties.unit() != null) {
                 unit = properties.unit();
             }
+            
+            if (properties.label() != null) {
+                label = properties.label();
+            }
         }
 
         //We only need to set the value here as the label should be already set
         propView.setValueElement(
-                String.format(format, propView.getId(), unit));
+                String.format(valueFormat, propView.getId(), unit));
+
+        propView.setLabelElement(
+                String.format(labelFormat, propView.getId(), label));
 
         return true;
     }
