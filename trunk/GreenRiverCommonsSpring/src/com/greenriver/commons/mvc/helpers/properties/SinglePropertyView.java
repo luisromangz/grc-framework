@@ -17,23 +17,37 @@ public class SinglePropertyView implements Comparable<SinglePropertyView> {
     /**
      * Label for this property view
      */
+    @Deprecated
     private String label;
     /**
-     * Html element with the code for the viewing the value of the property in
-     * an html document.
+     * Html element with the code for viewing the value of the property as html.
      */
     private String valueElement;
+    /**
+     * Html element with the code for viewing the value of the property as html.
+     */
+    private String labelElement;
 
     public String getId() {
 	return id;
     }
 
+    @Deprecated
     public String getLabel() {
 	return label;
     }
 
+    @Deprecated
     public void setLabel(String label) {
 	this.label = label;
+    }
+
+    public String getLabelElement() {
+        return labelElement;
+    }
+
+    public void setLabelElement(String labelElement) {
+        this.labelElement = labelElement;
     }
 
     /**
