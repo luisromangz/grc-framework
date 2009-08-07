@@ -2,7 +2,6 @@
 package com.greenriver.commons.mvc.helpers.properties;
 
 import com.greenriver.commons.Strings;
-import com.greenriver.commons.mvc.helpers.HtmlElementInfo;
 
 /**
  * @author mangelp
