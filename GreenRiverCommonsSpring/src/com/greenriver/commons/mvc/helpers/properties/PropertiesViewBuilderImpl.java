@@ -1,5 +1,6 @@
 package com.greenriver.commons.mvc.helpers.properties;
 
+import com.greenriver.commons.mvc.helpers.PropertyOptions;
 import com.greenriver.commons.Strings;
 import com.greenriver.commons.collections.Lists;
 import com.greenriver.commons.collections.Maps;
@@ -117,17 +118,19 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
 
         assertCurrent();
 
-        if (currentPropertiesView.containsPropertyViewForName(id)) {
+        PropertyOptions options = PropertyOptions.parseString(id);
+
+        if (currentPropertiesView.containsPropertyViewForName(options.getPropName())) {
             return null;
         }
 
         SinglePropertyView propView = new SinglePropertyView(
-                currentPropertiesView.getPropertyViewName(id));
+                currentPropertiesView.getPropertyViewName(options.getPropName()));
 
         propView.setLabel(properties.label());
 
         if (setupPropertyView(propView, properties, modelClass)) {
-            this.currentPropertiesView.addPropertyView(propView);
+            this.currentPropertiesView.addPropertyView(propView, options);
         }
 
         return propView;
@@ -152,19 +155,21 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
 
         assertCurrent();
 
-        if (currentPropertiesView.containsPropertyViewForName(id)) {
+        PropertyOptions options = PropertyOptions.parseString(id);
+
+        if (currentPropertiesView.containsPropertyViewForName(options.getPropName())) {
             return null;
         }
 
         SinglePropertyView propView = new SinglePropertyView(
-                currentPropertiesView.getPropertyViewName(id));
+                currentPropertiesView.getPropertyViewName(options.getPropName()));
 
         propView.setLabel(label);
         propView.setLabelElement(
                 String.format(labelFormat, propView.getId(), label));
 
         if (setupFieldGenericView(propView, null, null)) {
-            this.currentPropertiesView.addPropertyView(propView);
+            this.currentPropertiesView.addPropertyView(propView, options);
         }
 
         return propView;
