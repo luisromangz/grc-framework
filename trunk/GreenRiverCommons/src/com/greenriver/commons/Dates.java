@@ -12,8 +12,13 @@ Author: mangelp
 package com.greenriver.commons;
 
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.FieldPosition;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import javax.swing.text.DateFormatter;
 
 /**
  * Date handling utilities.
@@ -106,7 +111,7 @@ public class Dates {
      *   <li> yyyy/MM/dd-hh:mm:ss</li>
      *   <li> yyyy/MM/dd-hh:mm:ss.nanos</li>
      * </ul>
-     * In all the cases the date returned will be a subtime of date,
+     * In all the cases the date returned will be a subtipe of date,
      * java.util.sql.Timestamp, that supports nanosecond precision.
      * @param date
      * @return
@@ -212,5 +217,15 @@ public class Dates {
     public static boolean inRange(Date startA, Date endA, Date startB, Date endB) {
 	return inRange(startA, startB, endB) &&
 		inRange(endA, startB, endB);
+    }
+
+    /**
+     * Formats the date
+     * @param date
+     * @return
+     */
+    public static String formatAsMysqlDate(Date date) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return formatter.format(date);
     }
 }
