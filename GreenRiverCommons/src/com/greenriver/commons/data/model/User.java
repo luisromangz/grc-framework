@@ -93,7 +93,8 @@ public class User implements Serializable, Comparable<User> {
     }
 
     /**
-     * @return the name
+     * Gets the user real name
+     * @return the full user name
      */
     public String getName() {
         return name;
@@ -107,6 +108,7 @@ public class User implements Serializable, Comparable<User> {
     }
 
     /**
+     * Gets the name of the user in the system. This name must be unique.
      * @return the username
      */
     public String getUsername() {
