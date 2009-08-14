@@ -21,15 +21,12 @@ public interface PropertiesViewConfiguration {
      * property names to show separated by semicolons.</li>
      * <li><strong>ignoredProperties (optional): </strong>
      * List of the property names to be ignored from those that are set with a
-     * notation. Also accepts a string with the property names to show
-     * separated by commas.</li>
+     * notation. Also accepts a string in the same format like the properties
+     * key.</li>
      * <li><strong>virtualProperties (optional): </strong>
-     * Map of propertyName-propertyLabel pairs to generate property views of
-     * properties that didn't really exists, but that may be helpfull when
-     * customizing a view. It also accepts a string using a semicolon as pairs
-     * separator and an equal sign (=) as the separator between the property
-     * name and the label. It's also allowed to omit the value and the equal
-     * sing separator, setting the label to an empty value.</li>
+     * List of the property names to be added and that are not part of the
+     * model. Also accepts a string in the same format like the properties
+     * key.</li>
      * </ul>
      * <br/>
      * When configuring the list of properties to show the ignoredProperties

@@ -238,7 +238,7 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
         Class entityClass = null;
         //List of properties to be added to the view.
         List<String> properties = new ArrayList<String>();
-        Map<String, String> virtualProperties = new HashMap<String, String>();
+        List<String> virtualProperties = new ArrayList<String>();
 
         if (obj == null || !(obj instanceof String)) {
             throw new IllegalArgumentException(
@@ -269,8 +269,9 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
         addPropertyViewsFromModel(entityClass, properties);
 
         if (config.containsKey(KEY_VIRTUAL_PROPERTIES)) {
-            processPropertiesMapObject(
+            processPropertiesListObject(
                     config.get(KEY_VIRTUAL_PROPERTIES),
+                    false,
                     virtualProperties);
         }
 
@@ -283,9 +284,9 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
      * the most simple and generic ones.
      * @param virtualProperties Map with pairs propertyName-propertyLabel.
      */
-    public void addVirtualPropertyViews(Map<String, String> virtualProperties) {
-        for (String propName : virtualProperties.keySet()) {
-            addPropertyView(propName, virtualProperties.get(propName));
+    public void addVirtualPropertyViews(List<String> virtualProperties) {
+        for (String propName : virtualProperties) {
+            addPropertyView(propName, "");
         }
     }
 
@@ -340,26 +341,13 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
         return result;
     }
 
-    private void processPropertiesMapObject(Object obj,
-            Map<String, String> result) {
-        if (obj == null) {
-            return;
-        }
-
-        Map<String, String> propMap = new HashMap<String, String>(0);
-
-        if (obj instanceof String) {
-            propMap = Maps.fromString(((String) obj), ";", "=");
-        } else if (obj instanceof Map) {
-            propMap = (Map<String, String>) obj;
-        } else {
-            throw new IllegalArgumentException("Invalid value format. " +
-                    "Can't hangle type " + obj.getClass());
-        }
-
-        result.putAll(propMap);
-    }
-
+    /**
+     * 
+     * @param obj
+     * @param ignore If true the properties are removed from the current list
+     * of properties instead of being added.
+     * @param result
+     */
     private void processPropertiesListObject(Object obj, boolean ignore,
             List<String> result) {
 
