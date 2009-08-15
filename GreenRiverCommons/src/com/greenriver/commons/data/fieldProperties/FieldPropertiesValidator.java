@@ -38,8 +38,10 @@ public class FieldPropertiesValidator implements FieldsValidator {
             if (properties != null) {
                 // The field has FieldProperties annotation, so it can be validated.
 
-                List<String> fieldErrorMessages = this.validateField(field,
-                        properties, object);
+                List<String> fieldErrorMessages = this.validateField(
+                        field,
+                        properties,
+                        object);
                 if (!fieldErrorMessages.isEmpty()) {
                     result.addErrorMessages(fieldErrorMessages);
                 }
@@ -50,12 +52,15 @@ public class FieldPropertiesValidator implements FieldsValidator {
     }
 
     @SuppressWarnings("unchecked")
-    private List<String> validateField(Field field, FieldProperties properties, Object object) {
-        List<String> validationStrings = new ArrayList<String>();
+    private List<String> validateField(
+            Field field,
+            FieldProperties properties,
+            Object object) {
+        List<String> validationMessages = new ArrayList<String>();
 
         if (!(properties.visible() && properties.editable())) {
             // There wasn't user input, so there is nothing to validate.
-            return validationStrings;
+            return validationMessages;
         }
 
         String methodName = field.getName();
@@ -72,20 +77,21 @@ public class FieldPropertiesValidator implements FieldsValidator {
         try {
             value = object.getClass().getMethod(methodName).invoke(object);
         } catch (Exception ex) {
-            validationStrings.add(
-                    "Ocurrió una excepción al recuperar el valor de un campo: " + ex.getLocalizedMessage());
-            return validationStrings;
+            validationMessages.add(
+                    "Ocurrió una excepción al recuperar el valor de un campo: "
+                    + ex.getLocalizedMessage());
+            return validationMessages;
         }
 
         if (properties.required() && value == null) {
-            validationStrings.add(String.format(
+            validationMessages.add(String.format(
                     "El valor del campo «%s» es obligatorio.",
                     properties.label()));
         } else if (value != null) {
-            validateFieldType(value, properties, validationStrings);
+            validateFieldType(value, properties, validationMessages);
         }
 
-        return validationStrings;
+        return validationMessages;
     }
 
     public void setRoleManager(RoleManager roleManager) {
@@ -96,19 +102,23 @@ public class FieldPropertiesValidator implements FieldsValidator {
         return this.roleManager;
     }
 
-    private void validateMultiSelection(Object value,
+    private void validateMultiSelection(
+            Object value,
             FieldProperties properties,
-            List<String> validationStrings) {
-        validateMultiSelectorHelper(value, properties, validationStrings,
+            List<String> validationMessages) {
+        validateMultiSelectorHelper(value, properties, validationMessages,
                 properties.possibleValues());
 
     }
 
-    private void validateText(Object value, FieldProperties properties, List<String> validationStrings) {
+    private void validateText(
+            Object value,
+            FieldProperties properties,
+            List<String> validationMessages) {
         String text = (String) value;
         if (properties.required() && text.isEmpty()) {
-            validationStrings.add(String.format(
-                    "El valor del campo «%s» es obligatorio.",
+            validationMessages.add(String.format(
+                    "Es necesario rellenar el campo «%s».",
                     properties.label()));
             return;
         } else if (!properties.required() && Strings.isNullOrEmpty(
@@ -123,19 +133,24 @@ public class FieldPropertiesValidator implements FieldsValidator {
             CharSequence seq =
                     text.subSequence(0, text.length());
             if (!textPattern.matcher(seq).matches()) {
-                validationStrings.add(
-                        "El campo «" + properties.label() + "» no tiene un formato válido.");
+                validationMessages.add(
+                        "El campo «"
+                        + properties.label()
+                        + "» no tiene un formato válido.");
             }
         }
     }
 
-    private void validateColor(Object value, FieldProperties properties,
-            List<String> validationStrings) {
+    private void validateColor(
+            Object value,
+            FieldProperties properties,
+            List<String> validationMessages) {
+
         String colorValue = (String) value;
 
         if (properties.required() && colorValue.isEmpty()) {
-            validationStrings.add(String.format(
-                    "El valor del campo «%s» es obligatorio.",
+            validationMessages.add(String.format(
+                    "Es necesario rellenar el campo «%s».",
                     properties.label()));
             return;
         } else if (!properties.required() && Strings.isNullOrEmpty(
@@ -148,33 +163,47 @@ public class FieldPropertiesValidator implements FieldsValidator {
                 colorValue.length());
 
         if (!COLOR_PATTERN.matcher(sequence).matches()) {
-            validationStrings.add(
-                    "El campo «" + properties.label() + "» no tiene formato de color RGB hexadecimal.");
+            validationMessages.add(
+                    "El campo «" 
+                    + properties.label()
+                    + "» no tiene formato de color RGB hexadecimal.");
         }
     }
 
-    private void validateNumber(Object value, FieldProperties properties, List<String> validationStrings) {
+    private void validateNumber(
+            Object value,
+            FieldProperties properties,
+            List<String> validationMessages) {
         // We parse the number so we don't need to deal with
         // diferent integer types.
         Integer number = Integer.parseInt(value.toString());
 
 
         if (properties.maxValue() < number) {
-            validationStrings.add(
-                    "El valor del campo «" + properties.label() + "» supera el máximo permitido (" + properties.maxValue() + ").");
+            validationMessages.add(
+                    "El valor del campo «"
+                    + properties.label()
+                    + "» supera el máximo permitido (" + properties.maxValue() + ").");
         }
 
         if (properties.minValue() > number) {
-            validationStrings.add(
-                    "El valor del campo «" + properties.label() + "» es menor que el mímimo permitido (" + properties.minValue() + ").");
+            validationMessages.add(
+                    "El valor del campo «"
+                    + properties.label()
+                    + "» es menor que el mímimo permitido ("
+                    + properties.minValue() + ").");
         }
     }
 
-    private void validatePassword(Object value, FieldProperties properties, List<String> validationStrings) {
+    private void validatePassword(
+            Object value,
+            FieldProperties properties,
+            List<String> validationMessages) {
+
         String password = value.toString();
         if (properties.required() && password.isEmpty()) {
-            validationStrings.add(String.format(
-                    "El valor del campo «%s» es obligatorio.",
+            validationMessages.add(String.format(
+                    "Es necesario rellenar el campo «%s».",
                     properties.label()));
             return;
         }
@@ -183,17 +212,20 @@ public class FieldPropertiesValidator implements FieldsValidator {
         CharSequence sequence1 = password.subSequence(0,
                 password.length());
         if (!PASSWORD_PATTERN.matcher(sequence1).matches()) {
-            validationStrings.add(String.format(
+            validationMessages.add(String.format(
                     "El campo «%s» no tiene la longitud adecuada.",
                     properties.label()));
         }
     }
 
-    private void validateIpAddress(Object value, FieldProperties properties, List<String> validationStrings) {
+    private void validateIpAddress(
+            Object value,
+            FieldProperties properties,
+            List<String> validationMessages) {
         String ipAddress = value.toString();
         if (properties.required() && ipAddress.isEmpty()) {
-            validationStrings.add(String.format(
-                    "El valor del campo «%s» es obligatorio.",
+            validationMessages.add(String.format(
+                    "Es necesario rellenar el campo «%s».",
                     properties.label()));
             return;
         } else if (!properties.required() && Strings.isNullOrEmpty(
@@ -204,7 +236,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
 
         String[] ipAddressPieces = ipAddress.split("\\.");
         if (ipAddressPieces.length != 4) {
-            validationStrings.add(String.format(
+            validationMessages.add(String.format(
                     "El campo «%s» no es una dirección IP válida.",
                     properties.label()));
         } else {
@@ -212,7 +244,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
                 Integer pieceNumber = Integer.parseInt(ipPiece);
 
                 if (pieceNumber < 0 || pieceNumber > 255) {
-                    validationStrings.add(String.format(
+                    validationMessages.add(String.format(
                             "El campo «%s» no es una dirección IP válida.",
                             properties.label()));
                     return;
@@ -221,12 +253,14 @@ public class FieldPropertiesValidator implements FieldsValidator {
         }
     }
 
-    private void validateEmail(Object value, FieldProperties properties,
-            List<String> validationStrings) {
+    private void validateEmail(
+            Object value,
+            FieldProperties properties,
+            List<String> validationMessages) {
         String email = value.toString();
         if (properties.required() && email.isEmpty()) {
-            validationStrings.add(String.format(
-                    "El valor del campo «%s» es obligatorio.",
+            validationMessages.add(String.format(
+                    "Es necesario rellenar el campo «%s».",
                     properties.label()));
             return;
         } else if (!properties.required() && Strings.isNullOrEmpty(
@@ -238,18 +272,22 @@ public class FieldPropertiesValidator implements FieldsValidator {
         if (!EMAIL_PATTERN.matcher(email.subSequence(0,
                 email.length() - 1)).matches()) {
             // The passed value isn't an email.
-            validationStrings.add(
-                    "El valor del campo «" + properties.label() + "» no es uno de los permitidos.");
+            validationMessages.add(
+                    "El valor del campo «"
+                    + properties.label()
+                    + "» no es uno de los permitidos.");
         }
     }
 
-    private void validateSelection(Object value, FieldProperties properties,
-            List<String> validationStrings) {
+    private void validateSelection(
+            Object value,
+            FieldProperties properties,
+            List<String> validationMessages) {
         if (!value.getClass().isEnum()) {
             String selection = value.toString();
             if (properties.required() && selection.isEmpty()) {
-                validationStrings.add(String.format(
-                        "El valor del campo «%s» es obligatorio.",
+                validationMessages.add(String.format(
+                        "Es necesario rellenar el campo «%s».",
                         properties.label()));
                 return;
             } else if (!properties.required() && Strings.isNullOrEmpty(
@@ -264,91 +302,111 @@ public class FieldPropertiesValidator implements FieldsValidator {
             // If external values is set, we cannot validate here
             if (!properties.externalValues() && !possibleValueList.contains(
                     selection)) {
-                validationStrings.add(String.format(
+                validationMessages.add(String.format(
                         "El valor del campo «%s» no es uno de los permitidos.",
                         properties.label()));
             }
         }
     }
 
-    private void validateDecimal(Object value, FieldProperties properties, List<String> validationStrings) {
+    private void validateDecimal(
+            Object value,
+            FieldProperties properties,
+            List<String> validationMessages) {
         String valStr = value + "";
         double decimal = Double.parseDouble(valStr);
         //Ensure that is formatted with a dot as decimal separator
         valStr = DecimalFormat.getNumberInstance(Locale.ENGLISH).format(decimal);
 
         if (properties.maxValue() < decimal) {
-            validationStrings.add(
-                    "El valor del campo «" + properties.label() + "» supera el máximo permitido (" + properties.maxValue() + ").");
+            validationMessages.add(
+                    "El valor del campo «"
+                    + properties.label()
+                    + "» supera el máximo permitido ("
+                    + properties.maxValue() + ").");
         }
 
         if (properties.minValue() > decimal) {
-            validationStrings.add(
-                    "El valor del campo «" + properties.label() + "» es menor que el mímimo permitido (" + properties.minValue() + ").");
+            validationMessages.add(
+                    "El valor del campo «"
+                    + properties.label()
+                    + "» es menor que el mímimo permitido ("
+                    + properties.minValue() + ").");
         }
 
         //Check decimal places
         int pos = valStr.indexOf(".");
 
         if (pos >= 0 && (valStr.length() - pos - 1) > properties.decimalPlaces()) {
-            validationStrings.add(
-                    "El valor del campo «" + properties.label() + "» debe tener " + properties.decimalPlaces() + " dígitos decimales como máximo.");
+            validationMessages.add(
+                    "El valor del campo «" 
+                    + properties.label()
+                    + "» debe tener "
+                    + properties.decimalPlaces()
+                    + " dígitos decimales como máximo.");
         }
     }
 
-    private void validateAutocompletion(Object value, FieldProperties properties, List<String> validationStrings) {
+    private void validateAutocompletion(Object value, FieldProperties properties, List<String> validationMessages) {
         //This field works like a combobox for autocompletion but allow the
         //user to input anything they want so it also works as a textbox.
         //Then the validation applied is the one supported by the textbox
-        validateText(value, properties, validationStrings);
+        validateText(value, properties, validationMessages);
     }
 
-    private void validateFieldType(Object value, FieldProperties properties, List<String> validationStrings) {
+    private void validateFieldType(
+            Object value,
+            FieldProperties properties,
+            List<String> validationMessages) {
+        
         switch (properties.type()) {
             case BOOLEAN:
                 break;
             case TEXT:
             case LONGTEXT:
-                validateText(value, properties, validationStrings);
+                validateText(value, properties, validationMessages);
                 break;
             case COLOR:
-                validateColor(value, properties, validationStrings);
+                validateColor(value, properties, validationMessages);
                 break;
             case NUMBER:
-                validateNumber(value, properties, validationStrings);
+                validateNumber(value, properties, validationMessages);
                 break;
             case SELECTION:
-                validateSelection(value, properties, validationStrings);
+                validateSelection(value, properties, validationMessages);
                 break;
             case MULTISELECTION:
-                validateMultiSelection(value, properties, validationStrings);
+                validateMultiSelection(value, properties, validationMessages);
                 break;
             case EMAIL:
-                validateEmail(value, properties, validationStrings);
+                validateEmail(value, properties, validationMessages);
                 break;
             case IPADDRESS:
-                validateIpAddress(value, properties, validationStrings);
+                validateIpAddress(value, properties, validationMessages);
                 break;
             case ROLESELECTOR:
-                validateRoleSelector(value, properties, validationStrings);
+                validateRoleSelector(value, properties, validationMessages);
                 break;
             case PASSWORD:
             case PASSWORDEDITOR:
                 // These two types are processed together as their only difference
                 // is in the GUI.
-                validatePassword(value, properties, validationStrings);
+                validatePassword(value, properties, validationMessages);
                 break;
             case DECIMAL:
-                validateDecimal(value, properties, validationStrings);
+                validateDecimal(value, properties, validationMessages);
                 break;
             case AUTOCOMPLETION:
-                validateAutocompletion(value, properties, validationStrings);
+                validateAutocompletion(value, properties, validationMessages);
+                break;
+            case FILE:
+                validateFile(value, properties, validationMessages);
                 break;
         }
     }
 
     private void validateMultiSelectorHelper(Object value, FieldProperties properties,
-            List<String> validationStrings, String[] possibleValues) {
+            List<String> validationMessages, String[] possibleValues) {
         String[] selections = null;
 
         if (value.getClass() == String.class) {
@@ -356,8 +414,8 @@ public class FieldPropertiesValidator implements FieldsValidator {
             String valueString = value.toString();
 
             if (properties.required() && valueString.isEmpty()) {
-                validationStrings.add(String.format(
-                        "El valor del campo «%s» es obligatorio.",
+                validationMessages.add(String.format(
+                        "Es necesario rellenar el campo «%s».",
                         properties.label()));
                 return;
             } else if (!properties.required() && Strings.isNullOrEmpty(
@@ -371,8 +429,8 @@ public class FieldPropertiesValidator implements FieldsValidator {
             // We have a value list.
             selections = (String[]) value;
             if (selections.length == 0 && properties.required()) {
-                validationStrings.add(String.format(
-                        "El valor del campo «%s» es obligatorio.",
+                validationMessages.add(String.format(
+                        "Es necesario rellenar el campo «%s».",
                         properties.label()));
                 return;
             } else if (selections.length == 0 && !properties.required()) {
@@ -388,7 +446,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
                 // If external values is set, we cannot validate here
                 if (!properties.externalValues() && !possibleValueList.contains(
                         selection)) {
-                    validationStrings.add(String.format(
+                    validationMessages.add(String.format(
                             "Uno de los valores del campo «%s» no es uno de los permitidos.",
                             properties.label()));
                     break;
@@ -397,9 +455,29 @@ public class FieldPropertiesValidator implements FieldsValidator {
         }
     }
 
-    private void validateRoleSelector(Object value, FieldProperties properties,
-            List<String> validationStrings) {
-        validateMultiSelectorHelper(value, properties, validationStrings,
+    private void validateRoleSelector(
+            Object value,
+            FieldProperties properties,
+            List<String> validationMessages) {
+
+        validateMultiSelectorHelper(
+                value,
+                properties,
+                validationMessages,
                 roleManager.getRoleNames());
+    }
+
+    private void validateFile(
+            Object value,
+            FieldProperties properties,
+            List<String> validationMessages) {
+        
+        if(properties.required() && value == null) {
+            validationMessages.add(String.format(
+                    "Es necesario seleccionar un archivo para el campo «%s»."));
+            return;
+        }
+
+        return;
     }
 }

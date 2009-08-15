@@ -85,5 +85,10 @@ public enum FieldType {
      * An autocompleted text input. It shows a list of available completions
      * but allows to add any custom value.
      */
-    AUTOCOMPLETION
+    AUTOCOMPLETION,
+
+    /**
+     * A field used to hold a file.
+     */
+    FILE
 }
