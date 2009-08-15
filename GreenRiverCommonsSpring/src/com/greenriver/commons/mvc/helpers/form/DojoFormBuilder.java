@@ -608,6 +608,24 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
 	    case AUTOCOMPLETION:
 		setupAutocompletionField(formFieldElement, fieldType, properties);
 		break;
+            case FILE:
+                setupFileInputField(formFieldElement, fieldType, properties);
+                break;
 	}
+    }
+
+    private void setupFileInputField(
+            HtmlFormElementInfo formFieldElement,
+            Class fieldType,
+            FieldProperties properties) {
+        
+        // We impor dojo file input's replacement.
+        headerConfigurer.addDojoModule("dojox.form.FileInput");
+
+        formFieldElement.setAttribute("dojoType", "dojox.form.FileInput");
+
+        // This is a hack, should have i18n.
+        formFieldElement.setAttribute("label", "Explorar...");
+        formFieldElement.setAttribute("cancelText", "Quitar");
     }
 }
