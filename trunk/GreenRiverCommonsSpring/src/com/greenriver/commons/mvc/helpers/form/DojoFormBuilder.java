@@ -620,9 +620,9 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
             FieldProperties properties) {
         
         // We impor dojo file input's replacement.
-        headerConfigurer.addDojoModule("dojox.form.FileInput");
+        headerConfigurer.addDojoModule("grc.dijit.form.FileInput");
 
-        formFieldElement.setAttribute("dojoType", "dojox.form.FileInput");
+        formFieldElement.setAttribute("dojoType", "grc.dijit.form.FileInput");
 
         // This is a hack, should have i18n.
         formFieldElement.setAttribute("label", "Explorar...");
