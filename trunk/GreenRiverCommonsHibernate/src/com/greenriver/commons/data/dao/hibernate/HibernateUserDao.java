@@ -82,7 +82,7 @@ public class HibernateUserDao extends HibernateDaoBase implements UserDao {
 
     private void removeAuthoritiesForUser(User user) {
         Query q = getCurrentSession().createQuery(
-                "DELETE FROM " + UserAuthority.class + " WHERE user=:user");
+                "DELETE FROM " + UserAuthority.class.getSimpleName() + " WHERE user=:user");
         q.setParameter("user", user);
 
         q.executeUpdate();
