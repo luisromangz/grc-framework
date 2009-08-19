@@ -37,6 +37,11 @@ public class User implements Serializable, Comparable<User> {
     @FieldProperties(label = "Permisos", type = FieldType.ROLESELECTOR, required=false)
     private String[] roles;
 
+    // This flag tells if the user have been deleted or not. A deleted user
+    // is kept for history purposses in the system but is not shown nor allowed
+    // to log in.
+    private Boolean deleted = false;
+
     public boolean hasRole(String role) {
         return Arrays.asList(this.roles).contains(role);
     }
@@ -148,5 +153,13 @@ public class User implements Serializable, Comparable<User> {
      */
     public void setRoles(String[] roles) {
         this.roles = roles;
-    }   
+    }
+
+    public Boolean isDeleted() {
+        return deleted != null && deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
+    }
 }

@@ -31,7 +31,8 @@ public interface UserDao extends Serializable {
     public int getUserCount();
 
     /**
-     * Removes the user
+     * Removes the user. This is not the same as setting the deleted flag in
+     * the user as this removes the user from db and cannot be undo.
      * @param user User to be removed
      */
     public void remove(User user);
@@ -44,7 +45,13 @@ public interface UserDao extends Serializable {
     public void save(User user, String encodedPassword);
 
     /**
-     * Gets all the users
+     * Gets all the users that are not marked as deleted
+     * @return a list of users not deleted
+     */
+    public List<User> getAllNotDeletedUsers();
+
+    /**
+     * Gets all the users (including those marked as deleted).
      * @return a list of users
      */
     public List<User> getAllUsers();
