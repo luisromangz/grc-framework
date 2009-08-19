@@ -1,5 +1,6 @@
 package com.greenriver.commons.data.dao.hibernate;
 
+import com.greenriver.commons.Strings;
 import com.greenriver.commons.data.dao.UserDao;
 import com.greenriver.commons.data.model.User;
 import com.greenriver.commons.data.model.UserAuthority;
@@ -28,7 +29,12 @@ public class HibernateUserDao extends HibernateDaoBase implements UserDao {
         if (existingUser == null
             || !existingUser.getPassword().equals(user.getPassword())) {
             // If the user is a new one or the password has changed,
-            // we have to set the encoded password.           
+            // we have to set the encoded password.
+
+            if (Strings.isNullOrEmpty(encodedPassword)) {
+                throw new IllegalArgumentException(
+                        "Provided encoded password parameter is not valid.");
+            }
 
             user.setPassword(encodedPassword);
         }
@@ -76,7 +82,7 @@ public class HibernateUserDao extends HibernateDaoBase implements UserDao {
 
     private void removeAuthoritiesForUser(User user) {
         Query q = getCurrentSession().createQuery(
-                "delete from UserAuthority where user=:user");
+                "DELETE FROM " + UserAuthority.class + " WHERE user=:user");
         q.setParameter("user", user);
 
         q.executeUpdate();
@@ -95,9 +101,15 @@ public class HibernateUserDao extends HibernateDaoBase implements UserDao {
         return user;
     }
 
-    public List<User> getAllUsers() {
-	String hql = "FROM "+User.class.getSimpleName()+"";
+    public List<User> getAllNotDeletedUsers() {
+	String hql = "FROM " + User.class.getSimpleName() +
+                " WHERE deleted is null OR deleted = false";
 	Query query = getCurrentSession().createQuery(hql);
 	return query.list();
+    }
+
+    public List<User> getAllUsers() {
+        Criteria crit = getCurrentSession().createCriteria(User.class);
+        return crit.list();
     }
 }
