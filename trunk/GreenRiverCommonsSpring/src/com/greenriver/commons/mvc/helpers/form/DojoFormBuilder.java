@@ -209,10 +209,6 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
 	    throw new FormBuildingException("Min value specified but property is not a number.");
 	}
 
-	if (properties.decimalPlaces() != 3) {
-	    throw new FormBuildingException("Decimal places specified but property is not a number.");
-	}
-
 	if (!"".equals(properties.rangeMessage())) {
 	    throw new FormBuildingException("A range error message have been specified but property is not a number.");
 	}
