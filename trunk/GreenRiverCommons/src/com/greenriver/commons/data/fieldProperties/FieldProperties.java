@@ -124,7 +124,7 @@ public @interface FieldProperties {
      * Number of decimal places to be shown if the field is of type DECIMAL.
      * @return number of decimal places
      */
-    public int decimalPlaces() default 3;
+    public int decimalPlaces() default 2;
 
     /**
      * The prefix used by the getter method.
