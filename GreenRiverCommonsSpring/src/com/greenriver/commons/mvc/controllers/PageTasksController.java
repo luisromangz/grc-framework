@@ -85,8 +85,9 @@ public class PageTasksController extends ConfigurablePageController {
 
 	// The properties that are files need to have their path relative
 	// to the task's name, and inside a "js" folder.
-	headerConfigurer.getJavaScriptFiles().addAll(
-		addTaskNameToFileNames("js//"+taskName, pageTask.getJavaScriptFiles()));
+	headerConfigurer.getJavaScriptFiles().addAll(addTaskNameToFileNames(
+                "tasks//"+taskName,
+                pageTask.getJavaScriptFiles()));
 
 	headerConfigurer.getCssFiles().addAll(
 		addTaskNameToFileNames(taskName, pageTask.getCssFiles()));
