@@ -11,7 +11,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
- *
+ * This class implements a controller meant to be configured through the Spring
+ * dependency inyection system, receiving descriptions of the tasks that the
+ * page must undertake.
+ * 
  * @author luis
  */
 public class PageTasksController extends ConfigurablePageController {
@@ -81,9 +84,9 @@ public class PageTasksController extends ConfigurablePageController {
 	String taskName = pageTask.getTaskName();
 
 	// The properties that are files need to have their path relative
-	// to the task's name.
+	// to the task's name, and inside a "js" folder.
 	headerConfigurer.getJavaScriptFiles().addAll(
-		addTaskNameToFileNames(taskName, pageTask.getJavaScriptFiles()));
+		addTaskNameToFileNames("js//"+taskName, pageTask.getJavaScriptFiles()));
 
 	headerConfigurer.getCssFiles().addAll(
 		addTaskNameToFileNames(taskName, pageTask.getCssFiles()));
@@ -95,18 +98,6 @@ public class PageTasksController extends ConfigurablePageController {
 	headerConfigurer.getDwrServices().addAll(pageTask.getDwrServices());
 	headerConfigurer.getOnLoadScripts().addAll(pageTask.getOnLoadScripts());
 	headerConfigurer.getScripts().addAll(pageTask.getScripts());
-
-//	// We add the forms defined in the task.
-//	for (String formId : pageTask.getFormEntities().keySet()) {
-//	    // Form id creation: e.g. taskName-id.
-//	    String entityClassName = pageTask.getFormEntities().get(formId);
-//	    Class entityClass = Class.forName(entityClassName);
-//
-//	    getFormBuilder().addForm(
-//		    String.format("%s_%s", pageTask.getTaskName(), formId),
-//		    mav);
-//	    getFormBuilder().addFieldsFromModel(entityClass);
-//	}
 
 	//Forms ids are prefixed with the task name
 	configureFormEntities(pageTask.getFormEntities(), mav,
