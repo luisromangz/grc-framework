@@ -1,5 +1,5 @@
 
-package com.greenriver.commons.pageTasks;
+package com.greenriver.commons.mvc.pageTasks;
 
 import com.greenriver.commons.collections.SortedArrayList;
 import java.util.List;

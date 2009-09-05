@@ -3,6 +3,7 @@ package com.greenriver.commons.mvc.helpers.header;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  * Instances of this class hold the configuration of a page's header.
@@ -27,6 +28,19 @@ public class PageHeaderConfiguration implements HeaderConfiguration {
         javascriptFiles = new ArrayList<String>();
         onLoadScripts = new ArrayList<String>();
         scripts = new ArrayList<String>();
+    }
+
+    public void configure(HeaderConfigurer headerConfigurer, ModelAndView mav) {
+        headerConfigurer.setCssFiles(this.getCssFiles());
+        headerConfigurer.setDojoBundles(this.getDojoBundles());
+        headerConfigurer.setDojoModules(this.getDojoModules());
+        headerConfigurer.setDwrServices(this.getDwrServices());
+        headerConfigurer.setJavaScriptFiles(this.getJavaScriptFiles());
+        headerConfigurer.setOnLoadScripts(this.getOnLoadScripts());
+        headerConfigurer.setScripts(this.getScripts());
+        headerConfigurer.setTitle(this.getTitle());
+
+        headerConfigurer.configure(mav);
     }
 
 

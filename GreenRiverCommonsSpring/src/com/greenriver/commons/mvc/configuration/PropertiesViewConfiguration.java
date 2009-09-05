@@ -1,4 +1,4 @@
-package com.greenriver.commons.mvc.controllers;
+package com.greenriver.commons.mvc.configuration;
 
 import java.util.Map;
 

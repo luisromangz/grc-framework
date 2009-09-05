@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package com.greenriver.commons.mvc.controllers;
+package com.greenriver.commons.mvc.configuration;
 
 import java.util.Map;
 
