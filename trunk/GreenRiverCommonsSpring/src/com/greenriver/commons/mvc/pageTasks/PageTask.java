@@ -1,9 +1,9 @@
 
-package com.greenriver.commons.pageTasks;
+package com.greenriver.commons.mvc.pageTasks;
 
-import com.greenriver.commons.mvc.controllers.FormsConfiguration;
-import com.greenriver.commons.mvc.controllers.PageConfiguration;
-import com.greenriver.commons.mvc.controllers.PropertiesViewConfiguration;
+import com.greenriver.commons.mvc.configuration.FormsConfiguration;
+import com.greenriver.commons.mvc.configuration.PageConfiguration;
+import com.greenriver.commons.mvc.configuration.PropertiesViewConfiguration;
 import com.greenriver.commons.mvc.helpers.header.HeaderConfiguration;
 import java.util.List;
 import java.util.Map;

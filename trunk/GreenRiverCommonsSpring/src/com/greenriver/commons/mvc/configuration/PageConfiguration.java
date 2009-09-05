@@ -1,8 +1,11 @@
 
-package com.greenriver.commons.mvc.controllers;
+package com.greenriver.commons.mvc.configuration;
 
 import com.greenriver.commons.mvc.helpers.header.PageHeaderConfiguration;
+import com.greenriver.commons.mvc.pageTools.PageTool;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -11,24 +14,27 @@ import java.util.Map;
  * @author luis
  */
 public class PageConfiguration extends PageHeaderConfiguration
-        implements FormsConfiguration, PropertiesViewConfiguration{
+        implements FormsConfiguration, PropertiesViewConfiguration, PageToolsConfiguration{
 
      private Map<String,String> formEntities;
      private Map<String, Object> propertiesViewConfiguration;
+     private List<PageTool> pageTools;
 
      public PageConfiguration () {
          super();
 
          formEntities = new Hashtable<String, String>();
 	 propertiesViewConfiguration = new Hashtable<String, Object>();
+         pageTools =  new ArrayList<PageTool>();
      }
 
+    // <editor-fold defaultstate="collapsed" desc="Form entities">
     /**
      * Gets the names of the entities that will have a form created for edition
      * of their instances.
      * @return the formEntities
      */
-    public Map<String,String> getFormEntities() {
+    public Map<String, String> getFormEntities() {
         return formEntities;
     }
 
@@ -36,7 +42,7 @@ public class PageConfiguration extends PageHeaderConfiguration
      * Sets the names of the entities a form will be created for.
      * @param formEntities the formEntities to set
      */
-    public void setFormEntities(Map<String,String> formEntities) {
+    public void setFormEntities(Map<String, String> formEntities) {
         this.formEntities = new Hashtable<String, String>(formEntities);
     }
 
@@ -48,20 +54,34 @@ public class PageConfiguration extends PageHeaderConfiguration
      */
     public void addFormEntity(String id, String entityName) {
         this.formEntities.put(id, entityName);
-    }
+    }// </editor-fold>
 
+    // <editor-fold defaultstate="collapsed" desc="Properties view">
     public void addPropertiesView(String id,
-	    Object configuration) {
-	this.propertiesViewConfiguration.put(id, configuration);
+            Object configuration) {
+        this.propertiesViewConfiguration.put(id, configuration);
     }
 
     public void setPropertiesView(
-	    Map<String, Object> configuration) {
-	this.propertiesViewConfiguration =
-		new Hashtable<String, Object>(configuration);
+            Map<String, Object> configuration) {
+        this.propertiesViewConfiguration =
+                new Hashtable<String, Object>(configuration);
     }
 
     public Map<String, Object> getPropertiesView() {
-	return this.propertiesViewConfiguration;
+        return this.propertiesViewConfiguration;
+    }// </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="Page tools">
+    public void setPageTools(List<PageTool> pageTools) {
+        this.pageTools = pageTools;
     }
+
+    public List<PageTool> getPageTools() {
+        return this.pageTools;
+    }
+
+    public void addPageTool(PageTool pageTool) {
+        pageTools.add(pageTool);
+    }// </editor-fold>
 }

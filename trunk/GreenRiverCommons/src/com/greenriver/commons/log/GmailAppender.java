@@ -73,11 +73,12 @@ public class GmailAppender extends SMTPAppender {
 
             MimeMessage message = new MimeMessage(session);
             try {
-                message.setFrom(new InternetAddress(username));
+                message.setFrom();
                 message.setRecipient(RecipientType.TO, new InternetAddress(
                         getTo()));
                 message.setText(event.getRenderedMessage());
                 message.setSubject(event.getLevel() + " on " + hostname);
+                
             } catch (MessagingException ex) {
                 Logger.getLogger(GmailAppender.class.getName()).log(Level.SEVERE,
                         null, ex);
