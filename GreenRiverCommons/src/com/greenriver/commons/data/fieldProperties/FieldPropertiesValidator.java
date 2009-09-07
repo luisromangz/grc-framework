@@ -4,6 +4,7 @@ import com.greenriver.commons.Strings;
 import com.greenriver.commons.data.validation.FieldsValidationResult;
 import com.greenriver.commons.data.validation.FieldsValidator;
 import com.greenriver.commons.roleManagement.RoleManager;
+import java.io.ByteArrayInputStream;
 import java.lang.reflect.Field;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -78,8 +79,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
             value = object.getClass().getMethod(methodName).invoke(object);
         } catch (Exception ex) {
             validationMessages.add(
-                    "Ocurrió una excepción al recuperar el valor de un campo: "
-                    + ex.getLocalizedMessage());
+                    "Ocurrió una excepción al recuperar el valor de un campo: " + ex.getLocalizedMessage());
             return validationMessages;
         }
 
@@ -134,9 +134,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
                     text.subSequence(0, text.length());
             if (!textPattern.matcher(seq).matches()) {
                 validationMessages.add(
-                        "El campo «"
-                        + properties.label()
-                        + "» no tiene un formato válido.");
+                        "El campo «" + properties.label() + "» no tiene un formato válido.");
             }
         }
     }
@@ -164,9 +162,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
 
         if (!COLOR_PATTERN.matcher(sequence).matches()) {
             validationMessages.add(
-                    "El campo «" 
-                    + properties.label()
-                    + "» no tiene formato de color RGB hexadecimal.");
+                    "El campo «" + properties.label() + "» no tiene formato de color RGB hexadecimal.");
         }
     }
 
@@ -181,17 +177,12 @@ public class FieldPropertiesValidator implements FieldsValidator {
 
         if (properties.maxValue() < number) {
             validationMessages.add(
-                    "El valor del campo «"
-                    + properties.label()
-                    + "» supera el máximo permitido (" + properties.maxValue() + ").");
+                    "El valor del campo «" + properties.label() + "» supera el máximo permitido (" + properties.maxValue() + ").");
         }
 
         if (properties.minValue() > number) {
             validationMessages.add(
-                    "El valor del campo «"
-                    + properties.label()
-                    + "» es menor que el mímimo permitido ("
-                    + properties.minValue() + ").");
+                    "El valor del campo «" + properties.label() + "» es menor que el mímimo permitido (" + properties.minValue() + ").");
         }
     }
 
@@ -273,9 +264,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
                 email.length() - 1)).matches()) {
             // The passed value isn't an email.
             validationMessages.add(
-                    "El valor del campo «"
-                    + properties.label()
-                    + "» no es uno de los permitidos.");
+                    "El valor del campo «" + properties.label() + "» no es uno de los permitidos.");
         }
     }
 
@@ -320,18 +309,12 @@ public class FieldPropertiesValidator implements FieldsValidator {
 
         if (properties.maxValue() < decimal) {
             validationMessages.add(
-                    "El valor del campo «"
-                    + properties.label()
-                    + "» supera el máximo permitido ("
-                    + properties.maxValue() + ").");
+                    "El valor del campo «" + properties.label() + "» supera el máximo permitido (" + properties.maxValue() + ").");
         }
 
         if (properties.minValue() > decimal) {
             validationMessages.add(
-                    "El valor del campo «"
-                    + properties.label()
-                    + "» es menor que el mímimo permitido ("
-                    + properties.minValue() + ").");
+                    "El valor del campo «" + properties.label() + "» es menor que el mímimo permitido (" + properties.minValue() + ").");
         }
 
         //Check decimal places
@@ -339,11 +322,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
 
         if (pos >= 0 && (valStr.length() - pos - 1) > properties.decimalPlaces()) {
             validationMessages.add(
-                    "El valor del campo «" 
-                    + properties.label()
-                    + "» debe tener "
-                    + properties.decimalPlaces()
-                    + " dígitos decimales como máximo.");
+                    "El valor del campo «" + properties.label() + "» debe tener " + properties.decimalPlaces() + " dígitos decimales como máximo.");
         }
     }
 
@@ -358,7 +337,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
             Object value,
             FieldProperties properties,
             List<String> validationMessages) {
-        
+
         switch (properties.type()) {
             case BOOLEAN:
                 break;
@@ -471,13 +450,36 @@ public class FieldPropertiesValidator implements FieldsValidator {
             Object value,
             FieldProperties properties,
             List<String> validationMessages) {
-        
-        if(properties.required() && value == null) {
+
+        ByteArrayInputStream stream = (ByteArrayInputStream) value;
+
+        if (properties.required() && value == null) {
             validationMessages.add(String.format(
-                    "Es necesario seleccionar un archivo para el campo «%s»."));
+                    "Es necesario seleccionar un archivo para el campo «%s».",
+                    properties.label()));
             return;
         }
 
-        return;
+        if (properties.minSize() != 0 || properties.maxSize() != Integer.MAX_VALUE) {
+            int size = stream.available();
+            boolean minSizeErr = properties.minSize() > 0 && size < properties.minSize();
+            boolean maxSizeErr = properties.maxSize() < Integer.MAX_VALUE && size > properties.maxSize();
+
+            if (minSizeErr && maxSizeErr) {
+                validationMessages.add(String.format(
+                        "El tamaño del archivo tiene que estar entre «%s» y «%s» bytes inclusives.", properties.minSize(), properties.maxSize()));
+                return;
+            } else if (minSizeErr) {
+                validationMessages.add(String.format(
+                        "El tamaño del archivo tiene que ser superior a «%s» bytes.", properties.minSize()));
+                return;
+            } else {
+                validationMessages.add(String.format(
+                        "El tamaño del archivo tiene que ser inferior a «%s» bytes.", properties.maxSize()));
+                return;
+            }
+        }
+
+        //TODO: check file type
     }
 }

@@ -17,6 +17,7 @@ import java.util.List;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 
 /**
  * String utilities
@@ -188,5 +189,9 @@ public class Strings {
     public static byte[] toAscii(String str) {
         ByteBuffer bb = asciiCharset.encode(str);
         return bb.array();
+    }
+
+    public static boolean contains(String[] haystack, String needle) {
+        return Arrays.asList(haystack).contains(needle);
     }
 }
