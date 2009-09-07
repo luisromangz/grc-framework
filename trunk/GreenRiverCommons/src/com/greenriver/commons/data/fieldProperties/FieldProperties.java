@@ -131,4 +131,21 @@ public @interface FieldProperties {
      * @return the prefix used in the getter's name.
      */
     public String getterPrefix() default "get";
+
+    /**
+     * Minimum size of a field value. For file fields this is the file size.
+     * @return the minimum allowed size for a field value
+     */
+    public int minSize() default 0;
+    
+    /**
+     * Maximum size of a field value. For file fields this is the file size.
+     * @return the maximum allowed size for a field value
+     */
+    public int maxSize() default Integer.MAX_VALUE;
+    /**
+     * List of allowed file types.
+     * @return an array with all the allowed file types.
+     */
+    public String[] allowedFileTypes() default {};
 }
