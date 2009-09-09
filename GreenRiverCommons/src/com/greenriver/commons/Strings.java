@@ -194,4 +194,58 @@ public class Strings {
     public static boolean contains(String[] haystack, String needle) {
         return Arrays.asList(haystack).contains(needle);
     }
+
+    public static boolean startsWith(String prefix, String target) {
+        return startsWith(prefix, target, false);
+    }
+
+    public static boolean startsWith(String prefix, String target, boolean caseInsensitive) {
+        if (prefix == null || 
+                (prefix.length() == 0 && target != null)) {
+            return true;
+        } else if (target == null) {
+            return false;
+        } else if (prefix.length() > target.length()) {
+            return false;
+        } else if (prefix.length() == target.length()) {
+            target = target.substring(0, prefix.length());
+            return (caseInsensitive && Strings.equalsIgnoreCase(prefix, target)) ||
+                    (!caseInsensitive && Strings.equals(prefix, target));
+        }
+
+        target = target.substring(0, prefix.length());
+        
+        if (!caseInsensitive) {
+            return Strings.equals(prefix, target);
+        } else {
+            return Strings.equalsIgnoreCase(prefix, target);
+        }
+    }
+
+    public static boolean endsWith(String suffix, String target) {
+        return endsWith(suffix, target, false);
+    }
+
+    public static boolean endsWith(String suffix, String target, boolean caseInsensitive) {
+        if (suffix == null ||
+                (suffix.length() == 0 && target != null)) {
+            return true;
+        } else if (target == null) {
+            return false;
+        } else if (suffix.length() > target.length()) {
+            return false;
+        } else if (suffix.length() == target.length()) {
+            target = target.substring(0, suffix.length());
+            return (caseInsensitive && Strings.equalsIgnoreCase(suffix, target)) ||
+                    (!caseInsensitive && Strings.equals(suffix, target));
+        }
+
+        target = target.substring(target.length() - suffix.length());
+
+        if (!caseInsensitive) {
+            return Strings.equals(suffix, target);
+        } else {
+            return Strings.equalsIgnoreCase(suffix, target);
+        }
+    }
 }
