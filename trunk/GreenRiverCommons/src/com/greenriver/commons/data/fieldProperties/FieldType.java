@@ -90,5 +90,15 @@ public enum FieldType {
     /**
      * A field used to hold a file.
      */
-    FILE
+    FILE,
+
+    /**
+     * A field used to select a year day, e.g. the 53th day of the year.
+     */
+    YEAR_DAY,
+
+    /**
+     * A field used to select a time.
+     */
+    TIME
 }

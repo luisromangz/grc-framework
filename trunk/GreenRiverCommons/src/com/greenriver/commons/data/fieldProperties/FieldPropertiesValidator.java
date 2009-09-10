@@ -6,6 +6,7 @@ import com.greenriver.commons.data.validation.FieldsValidator;
 import com.greenriver.commons.roleManagement.RoleManager;
 import java.io.ByteArrayInputStream;
 import java.lang.reflect.Field;
+import java.sql.Time;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -381,6 +382,12 @@ public class FieldPropertiesValidator implements FieldsValidator {
             case FILE:
                 validateFile(value, properties, validationMessages);
                 break;
+            case YEAR_DAY:
+                validateYearDay(value, properties, validationMessages);
+                break;
+            case TIME:
+                validateTime(value, properties, validationMessages);
+                break;
         }
     }
 
@@ -462,24 +469,75 @@ public class FieldPropertiesValidator implements FieldsValidator {
 
         if (properties.minSize() != 0 || properties.maxSize() != Integer.MAX_VALUE) {
             int size = stream.available();
-            boolean minSizeErr = properties.minSize() > 0 && size < properties.minSize();
-            boolean maxSizeErr = properties.maxSize() < Integer.MAX_VALUE && size > properties.maxSize();
+            boolean minSizeErr =
+                    properties.minSize() > 0 && size < properties.minSize();
+            boolean maxSizeErr =
+                    properties.maxSize() < Integer.MAX_VALUE && size > properties.maxSize();
 
             if (minSizeErr && maxSizeErr) {
                 validationMessages.add(String.format(
-                        "El tamaño del archivo tiene que estar entre «%s» y «%s» bytes inclusives.", properties.minSize(), properties.maxSize()));
+                        "El tamaño del archivo tiene que estar entre «%s» y «%s» bytes inclusives.",
+                        properties.minSize(), properties.maxSize()));
                 return;
             } else if (minSizeErr) {
                 validationMessages.add(String.format(
-                        "El tamaño del archivo tiene que ser superior a «%s» bytes.", properties.minSize()));
+                        "El tamaño del archivo tiene que ser superior a «%s» bytes.",
+                        properties.minSize()));
                 return;
             } else {
                 validationMessages.add(String.format(
-                        "El tamaño del archivo tiene que ser inferior a «%s» bytes.", properties.maxSize()));
+                        "El tamaño del archivo tiene que ser inferior a «%s» bytes.",
+                        properties.maxSize()));
                 return;
             }
         }
 
         //TODO: check file type
+    }
+
+    private void validateYearDay(
+            Object value,
+            FieldProperties properties,
+            List<String> validationMessages) {
+
+        if (value == null) {
+            if (properties.required()) {
+                validationMessages.add(String.format(
+                        "Es necesario rellenar el campo «%s».",
+                        properties.label()));
+            }
+            return;
+        }
+
+        int day = 0;
+        try {
+            day = (Integer) value;
+        } catch (ClassCastException e) {
+            validationMessages.add(String.format(
+                    "El valor del campo «%s» no es un número entero.",
+                    properties.label()));
+            return;
+        }
+
+        if (day < 1 || day > 365) {
+            validationMessages.add(String.format(
+                    "El valor del campo «%s» debe estar entre 1 y 365",
+                    properties.label()));
+        }
+    }
+
+    private void validateTime(
+            Object value,
+            FieldProperties properties,
+            List<String> validationMessages) {
+        if (properties.required()) {
+            if (value == null) {
+                validationMessages.add(String.format(
+                        "El valor del campo «%s» es requerido.",
+                        properties.label()));
+            }
+            return;
+        }
+
     }
 }
