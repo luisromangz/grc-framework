@@ -203,15 +203,18 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
      */
     private void assertNotNumber(FieldProperties properties) {
         if (properties.minValue() != -Double.MAX_VALUE) {
-            throw new FormBuildingException("Min value specified but property is not a number.");
+            throw new FormBuildingException(
+                    "Min value specified but property is not a number.");
         }
 
         if (properties.maxValue() != Double.MAX_VALUE) {
-            throw new FormBuildingException("Min value specified but property is not a number.");
+            throw new FormBuildingException(
+                    "Min value specified but property is not a number.");
         }
 
         if (!"".equals(properties.rangeMessage())) {
-            throw new FormBuildingException("A range error message have been specified but property is not a number.");
+            throw new FormBuildingException(
+                    "A range error message have been specified but property is not a number.");
         }
     }
 
@@ -222,7 +225,8 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
      */
     private void assertNotText(FieldProperties properties) {
         if (!"".equals(properties.customRegExp())) {
-            throw new FormBuildingException("Custom regular expression specified but property is not a text.");
+            throw new FormBuildingException(
+                    "Custom regular expression specified but property is not a text.");
         }
     }
 
@@ -234,15 +238,18 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
      */
     private void assertNotSelection(FieldProperties properties) {
         if (!"getName".equals(properties.enumLabelMethod())) {
-            throw new FormBuildingException("Enum method name specified but property is not a selection.");
+            throw new FormBuildingException(
+                    "Enum method name specified but property is not a selection.");
         }
 
         if (properties.possibleValueLabels().length != 0) {
-            throw new FormBuildingException("Posible value labels specified but property is not a selection.");
+            throw new FormBuildingException(
+                    "Posible value labels specified but property is not a selection.");
         }
 
         if (properties.possibleValues().length != 0) {
-            throw new FormBuildingException("Posible values specified but property is not a selection.");
+            throw new FormBuildingException(
+                    "Posible values specified but property is not a selection.");
         }
     }
 
@@ -253,15 +260,18 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
      */
     private void assertNotFile(FieldProperties properties) {
         if (properties.allowedFileTypes().length != 0) {
-            throw new FormBuildingException("Allowed file types specified but property is not a file.");
+            throw new FormBuildingException(
+                    "Allowed file types specified but property is not a file.");
         }
 
         if (properties.minSize() != 0) {
-            throw new FormBuildingException("Minimum size set but property is not a file.");
+            throw new FormBuildingException(
+                    "Minimum size set but property is not a file.");
         }
 
         if (properties.maxSize() != Integer.MAX_VALUE) {
-            throw new FormBuildingException("Maximum size set but property is not a file.");
+            throw new FormBuildingException(
+                    "Maximum size set but property is not a file.");
         }
     }
 
@@ -483,7 +493,8 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
         element.getAttributes().setProperty("dojoType",
                 "dijit.form.ComboBox");
         element.setElementType("select");
-        element.getAttributes().setProperty("class", "backgroundlessComboBoxButton");
+        element.getAttributes().setProperty("class",
+                "backgroundlessComboBoxButton");
 
         try {
             element.setContents(createSelectionContents(fieldType, properties,
@@ -677,6 +688,27 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
             case FILE:
                 setupFileInputField(formFieldElement, fieldType, properties);
                 break;
+            case YEAR_DAY:
+                setupYearDayField(formFieldElement, fieldType, properties);
+                break;
+            case TIME:
+                setupTimeField(formFieldElement, fieldType, properties);
         }
+    }
+
+    private void setupYearDayField(
+            HtmlFormElementInfo formFieldElement,
+            Class fieldType,
+            FieldProperties properties) {
+        headerConfigurer.addDojoModule("grc.dijit.form.YearDayTextBox");
+        formFieldElement.setAttribute("dojoType", "grc.dijit.form.YearDayTextBox");
+    }
+
+    private void setupTimeField(
+            HtmlFormElementInfo formFieldElement,
+            Class fieldType,
+            FieldProperties properties) {
+        headerConfigurer.addDojoModule("dijit.form.TimeTextBox");
+        formFieldElement.setAttribute("dojoType", "dijit.form.TimeTextBox");
     }
 }
