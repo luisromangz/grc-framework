@@ -367,8 +367,13 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
         assertNotFile(properties);
 
         element.getAttributes().setProperty("type", "text");
-        element.getAttributes().setProperty("dojoType",
+        element.getAttributes().setProperty(
+                "dojoType",
                 "dijit.form.ValidationTextBox");
+        element.getAttributes().setProperty(
+                "regExp",
+                "[\\w\\d._%+-]+@[\\w\\d.-]+\\.[\\w]{2,6}");
+        headerConfigurer.addDojoModule("dojox.validate.regexp");
     }
 
     private void setupIpAddressField(HtmlFormElementInfo element,
