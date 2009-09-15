@@ -9,6 +9,7 @@ import com.greenriver.commons.mvc.helpers.header.HeaderConfiguration;
 import com.greenriver.commons.mvc.helpers.header.HeaderConfigurer;
 import com.greenriver.commons.mvc.helpers.properties.PropertiesViewBuilder;
 import com.greenriver.commons.mvc.pageTools.PageTool;
+import com.greenriver.commons.mvc.pageTools.PageToolManager;
 import com.greenriver.commons.session.UserSessionInfo;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +43,7 @@ public class ConfigurablePageController extends AbstractController
     private PageConfiguration pageConfiguration;
     private String viewName;
     private UserSessionInfo userSessionInfo;
+    private PageToolManager pageToolManager;
     // </editor-fold>
 
     public ConfigurablePageController() {
@@ -158,24 +160,29 @@ public class ConfigurablePageController extends AbstractController
     private void configurePageTools(ModelAndView mav) {
         List<String> dialogJspFiles = new ArrayList<String>();
         List<String> setupJspFiles = new ArrayList<String>();
-        for (PageTool tool : this.getPageTools()) {
-            for (String javascriptFileName : tool.getJavaScriptFiles()) {
-                headerConfigurer.addJavaScriptFile(String.format(
-                        "tools/%s/%s.js",
-                        tool.getName(), javascriptFileName));
+
+        if (pageToolManager != null) {
+
+            for (PageTool tool : this.pageToolManager.getTools()) {
+                for (String javascriptFileName : tool.getJavaScriptFiles()) {
+                    headerConfigurer.addJavaScriptFile(String.format(
+                            "tools/%s/%s.js",
+                            tool.getName(), javascriptFileName));
+                }
+
+                for (String dialogJspFile : tool.getDialogJspFiles()) {
+                    dialogJspFiles.add(String.format(
+                            "tools/%s/%s",
+                            tool.getName(), dialogJspFile));
+                }
+
+                for (String setupJspFile : tool.getSetupPaneJspFiles()) {
+                    setupJspFiles.add(String.format(
+                            "tools/%s/%s",
+                            tool.getName(), setupJspFile));
+                }
             }
 
-            for(String dialogJspFile : tool.getDialogJspFiles()) {
-                dialogJspFiles.add(String.format(
-                        "tools/%s/%s",
-                        tool.getName(), dialogJspFile));
-            }
-
-            for(String setupJspFile : tool.getSetupPaneJspFiles()) {
-                setupJspFiles.add(String.format(
-                        "tools/%s/%s",
-                        tool.getName(), setupJspFile));
-            }
         }
 
         mav.addObject("toolsDialogJspFiles", dialogJspFiles);
@@ -464,18 +471,6 @@ public class ConfigurablePageController extends AbstractController
         this.userSessionInfo = userSessionInfo;
     }
 
-    public void addPageTool(PageTool pageTool) {
-        pageConfiguration.addPageTool(pageTool);
-    }
-
-    public List<PageTool> getPageTools() {
-        return pageConfiguration.getPageTools();
-    }
-
-    public void setPageTools(List<PageTool> pageTools) {
-        this.pageConfiguration.setPageTools(pageTools);
-    }
-
     public void addPropertiesView(String id, Object configuration) {
         this.pageConfiguration.addPropertiesView(id, configuration);
     }
@@ -486,6 +481,20 @@ public class ConfigurablePageController extends AbstractController
 
     public Map<String, Object> getPropertiesView() {
         return pageConfiguration.getPropertiesView();
+    }
+
+    /**
+     * @return the pageToolManager
+     */
+    public PageToolManager getPageToolManager() {
+        return pageToolManager;
+    }
+
+    /**
+     * @param pageToolManager the pageToolManager to set
+     */
+    public void setPageToolManager(PageToolManager pageToolManager) {
+        this.pageToolManager = pageToolManager;
     }
     // </editor-fold>
 }
