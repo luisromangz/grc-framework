@@ -6,7 +6,6 @@ import com.greenriver.commons.data.validation.FieldsValidator;
 import com.greenriver.commons.roleManagement.RoleManager;
 import java.io.ByteArrayInputStream;
 import java.lang.reflect.Field;
-import java.sql.Time;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,7 +23,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
             "^#[0-9[A-F]]{6}$",
             Pattern.CASE_INSENSITIVE);
     public static final Pattern EMAIL_PATTERN = Pattern.compile(
-            "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$",
+            "^[\\w\\d._%+-]+@[\\w\\d.-]+\\.[\\w]{2,6}$",
             Pattern.CASE_INSENSITIVE);
     public static final Pattern PASSWORD_PATTERN =
             Pattern.compile("^\\w{6,}$");
