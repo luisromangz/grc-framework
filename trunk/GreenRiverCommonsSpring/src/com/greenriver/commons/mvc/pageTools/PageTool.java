@@ -1,14 +1,20 @@
 package com.greenriver.commons.mvc.pageTools;
 
+import com.greenriver.commons.mvc.configuration.FormsConfiguration;
+import com.greenriver.commons.mvc.configuration.PageConfiguration;
+import com.greenriver.commons.mvc.configuration.PropertiesViewConfiguration;
+import com.greenriver.commons.mvc.helpers.header.HeaderConfiguration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class' instances contain information about tools meant to be used
  * system wide.
  * @author luis
  */
-public class PageTool {
+public class PageTool implements FormsConfiguration,
+        PropertiesViewConfiguration,HeaderConfiguration{
 
     // <editor-fold defaultstate="collapsed" desc="Attributes">
     /**
@@ -23,17 +29,15 @@ public class PageTool {
      * The JSP files used as panes in the config area of the app.
      */
     private List<String> setupPaneJspFiles;
-    /**
-     * The JavaScript files provided by the tool.
-     */
-    private List<String> javaScriptFiles;
+
+    private PageConfiguration pageConfiguration;
     // </editor-fold>
 
     public PageTool() {
         name="Unnamed tool";
         dialogJspFiles = new ArrayList<String>();
         setupPaneJspFiles = new ArrayList<String>();
-        javaScriptFiles = new ArrayList<String>();
+        pageConfiguration = new PageConfiguration();
     }
 
     // <editor-fold defaultstate="collapsed" desc="Getters & setters">
@@ -80,14 +84,122 @@ public class PageTool {
     }
 
     public List<String> getJavaScriptFiles() {
-        return this.javaScriptFiles;
+        return this.pageConfiguration.getJavaScriptFiles();
     }
 
     /**
      * @param javaScriptFiles the javaScriptFiles to set
      */
     public void setJavaScriptFiles(List<String> javaScriptFiles) {
-        this.javaScriptFiles = javaScriptFiles;
+        this.pageConfiguration.setJavaScriptFiles(javaScriptFiles);
+    }
+
+    public void addFormEntity(String id, String entityName) {
+        this.pageConfiguration.addFormEntity(id, entityName);
+    }
+
+    public Map<String, String> getFormEntities() {
+        return pageConfiguration.getFormEntities();
+    }
+
+    public void setFormEntities(Map<String, String> formEntities) {
+        pageConfiguration.setFormEntities(formEntities);
+    }
+
+    public void addPropertiesView(String id, Object configuration) {
+        pageConfiguration.addPropertiesView(id, configuration);
+    }
+
+    public void setPropertiesView(Map<String, Object> configuration) {
+        pageConfiguration.setPropertiesView(configuration);
+    }
+
+    public Map<String, Object> getPropertiesView() {
+        return pageConfiguration.getPropertiesView();
+    }
+
+    public void addCssFile(String cssFilename) {
+        pageConfiguration.addCssFile(cssFilename);
+    }
+
+    public void addDwrService(String name) {
+        pageConfiguration.addDwrService(name);
+    }
+
+    public void addDojoBundle(String bundleName) {
+        pageConfiguration.addDojoBundle(bundleName);
+    }
+
+    public void addDojoModule(String dojoModule) {
+        pageConfiguration.addDojoModule(dojoModule);
+    }
+
+    public void addJavaScriptFile(String jsFilename) {
+        pageConfiguration.addJavaScriptFile(jsFilename);
+    }
+
+    public void addOnLoadScript(String code) {
+        pageConfiguration.addOnLoadScript(code);
+    }
+
+    public void addScript(String script) {
+        pageConfiguration.addScript(script);
+    }
+
+    public List<String> getCssFiles() {
+        return pageConfiguration.getCssFiles();
+    }
+
+    public List<String> getDojoModules() {
+        return pageConfiguration.getDojoModules();
+    }
+
+    public List<String> getDojoBundles() {
+        return pageConfiguration.getDojoBundles();
+    }
+
+    public List<String> getDwrServices() {
+        return pageConfiguration.getDwrServices();
+    }
+
+    public List<String> getOnLoadScripts() {
+        return pageConfiguration.getOnLoadScripts();
+    }
+
+    public List<String> getScripts() {
+        return pageConfiguration.getScripts();
+    }
+
+    public String getTitle() {
+        return pageConfiguration.getTitle();
+    }
+
+    public void setTitle(String title) {
+        pageConfiguration.setTitle(title);
+    }
+
+    public void setCssFiles(List<String> cssFiles) {
+        pageConfiguration.setCssFiles(cssFiles);
+    }
+
+    public void setDwrServices(List<String> dwrServices) {
+        pageConfiguration.setDwrServices(dwrServices);
+    }
+
+    public void setDojoBundles(List<String> dojoBundles) {
+        pageConfiguration.setDojoBundles(dojoBundles);
+    }
+
+    public void setDojoModules(List<String> dojoModules) {
+        pageConfiguration.setDojoModules(dojoModules);
+    }
+
+    public void setOnLoadScripts(List<String> onLoadScripts) {
+        pageConfiguration.setOnLoadScripts(onLoadScripts);
+    }
+
+    public void setScripts(List<String> scripts) {
+        pageConfiguration.setScripts(scripts);
     }
     // </editor-fold>
 }

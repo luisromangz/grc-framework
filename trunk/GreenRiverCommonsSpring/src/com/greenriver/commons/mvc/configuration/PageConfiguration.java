@@ -14,7 +14,7 @@ import java.util.Map;
  * @author luis
  */
 public class PageConfiguration extends PageHeaderConfiguration
-        implements FormsConfiguration, PropertiesViewConfiguration, PageToolsConfiguration{
+        implements FormsConfiguration, PropertiesViewConfiguration {
 
      private Map<String,String> formEntities;
      private Map<String, Object> propertiesViewConfiguration;
