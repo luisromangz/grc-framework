@@ -116,13 +116,12 @@ public class FieldPropertiesValidator implements FieldsValidator {
             FieldProperties properties,
             List<String> validationMessages) {
         String text = (String) value;
-        if (properties.required() && text.isEmpty()) {
+        if (properties.required() && Strings.isNullOrEmpty(text)) {
             validationMessages.add(String.format(
                     "Es necesario rellenar el campo «%s».",
                     properties.label()));
             return;
-        } else if (!properties.required() && Strings.isNullOrEmpty(
-                text)) {
+        } else if (!properties.required() && Strings.isNullOrEmpty(text)) {
             // We don't have to validate this.
             return;
         }
@@ -135,7 +134,27 @@ public class FieldPropertiesValidator implements FieldsValidator {
             if (!textPattern.matcher(seq).matches()) {
                 validationMessages.add(
                         "El campo «" + properties.label() + "» no tiene un formato válido.");
+                return;
             }
+        }
+        
+        if (properties.minSize() > text.length() && properties.maxSize() < text.length()) {
+            validationMessages.add(String.format(
+                    "El campo «%0$s» tiene que tener un tamaño entre %1$d y %1$d caracteres.",
+                    properties.label(),
+                    properties.minSize(),
+                    properties.maxSize()));
+            return;
+        } else if (properties.minSize() > text.length()) {
+                        validationMessages.add(String.format(
+                    "El campo «%0$s» tiene que tener un tamaño mayor o igual a %1$d caracteres.",
+                    properties.label(),
+                    properties.minSize()));
+        } else if (properties.minSize() > text.length()) {
+                        validationMessages.add(String.format(
+                    "El campo «%0$s» tiene que tener un tamaño menor o igual a %1$d caracteres.",
+                    properties.label(),
+                    properties.maxSize()));
         }
     }
 

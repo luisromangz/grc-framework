@@ -133,7 +133,9 @@ public @interface FieldProperties {
     public String getterPrefix() default "get";
 
     /**
-     * Minimum size of a field value. For file fields this is the file size.
+     * Minimum size of a field value. For file fields this is the file size and
+     * for text fields this is the length of the string. The default value is
+     * zero and negative values have no sense.
      * @return the minimum allowed size for a field value
      */
     public int minSize() default 0;
