@@ -12,13 +12,9 @@ Author: mangelp
 package com.greenriver.commons;
 
 import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.FieldPosition;
-import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import javax.swing.text.DateFormatter;
 
 /**
  * Date handling utilities.
