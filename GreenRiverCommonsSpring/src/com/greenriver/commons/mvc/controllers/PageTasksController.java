@@ -105,16 +105,14 @@ public class PageTasksController extends ConfigurablePageController implements P
 
         // The properties that are files need to have their path relative
         // to the task's name, and inside a "js" folder.
-        headerConfigurer.getJavaScriptFiles().addAll(addTaskNameToFileNames(
+        headerConfigurer.getJavaScriptFiles().addAll(addPathPrefixToFileNames(
                 "tasks//" + taskName,
                 pageTask.getJavaScriptFiles()));
 
         headerConfigurer.getCssFiles().addAll(
-                addTaskNameToFileNames(taskName, pageTask.getCssFiles()));
+                addPathPrefixToFileNames(taskName, pageTask.getCssFiles()));
 
-        headerConfigurer.getDojoBundles().addAll(
-                addTaskNameToFileNames(taskName, pageTask.getDojoBundles()));
-
+        headerConfigurer.getDojoBundles().addAll(pageTask.getDojoBundles());
         headerConfigurer.getDojoModules().addAll(pageTask.getDojoModules());
         headerConfigurer.getDwrServices().addAll(pageTask.getDwrServices());
         headerConfigurer.getOnLoadScripts().addAll(pageTask.getOnLoadScripts());
@@ -128,18 +126,7 @@ public class PageTasksController extends ConfigurablePageController implements P
                 pageTask.getTaskName() + "_");
     }
 
-    private List<String> addTaskNameToFileNames(String taskName,
-            List<String> filenames) {
-
-        ArrayList<String> taskedFileNames = new ArrayList<String>();
-
-        for (String fileName : filenames) {
-            taskedFileNames.add(String.format("%s/%s", taskName, fileName));
-        }
-
-        return taskedFileNames;
-    }
-
+  
 
 
 }
