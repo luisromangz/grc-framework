@@ -157,30 +157,47 @@ public class ConfigurablePageController extends AbstractController
         }
     }
 
-    private void configurePageTools(ModelAndView mav) {
+    private void configurePageTools(ModelAndView mav) throws ClassNotFoundException {
         List<String> dialogJspFiles = new ArrayList<String>();
         List<String> setupJspFiles = new ArrayList<String>();
 
         if (pageToolManager != null) {
 
-            for (PageTool tool : this.pageToolManager.getTools()) {
-                for (String javascriptFileName : tool.getJavaScriptFiles()) {
-                    headerConfigurer.addJavaScriptFile(String.format(
-                            "tools/%s/%s.js",
-                            tool.getName(), javascriptFileName));
-                }
+            for (PageTool pageTool : this.pageToolManager.getTools()) {
 
-                for (String dialogJspFile : tool.getDialogJspFiles()) {
-                    dialogJspFiles.add(String.format(
-                            "tools/%s/%s",
-                            tool.getName(), dialogJspFile));
-                }
+                dialogJspFiles.addAll(addPathPrefixToFileNames(
+                        "tools/"+pageTool.getName(),
+                        pageTool.getDialogJspFiles()));
 
-                for (String setupJspFile : tool.getSetupPaneJspFiles()) {
-                    setupJspFiles.add(String.format(
-                            "tools/%s/%s",
-                            tool.getName(), setupJspFile));
-                }
+                dialogJspFiles.addAll(addPathPrefixToFileNames(
+                        "tools/"+pageTool.getName(),
+                        pageTool.getSetupPaneJspFiles()));
+
+                headerConfigurer.getJavaScriptFiles().addAll(addPathPrefixToFileNames(
+                        "tools/" + pageTool.getName(),
+                        pageTool.getJavaScriptFiles()));
+
+                headerConfigurer.getCssFiles().addAll(addPathPrefixToFileNames(
+                        pageTool.getName(),
+                        pageTool.getCssFiles()));
+
+                headerConfigurer.getDojoBundles().addAll(
+                        pageTool.getDojoBundles());
+
+                headerConfigurer.getDojoModules().addAll(
+                        pageTool.getDojoModules());
+                headerConfigurer.getDwrServices().addAll(
+                        pageTool.getDwrServices());
+                headerConfigurer.getOnLoadScripts().addAll(
+                        pageTool.getOnLoadScripts());
+                headerConfigurer.getScripts().addAll(pageTool.getScripts());
+
+                //Forms ids are prefixed with the task name
+                configureFormEntities(pageTool.getFormEntities(), mav,
+                        pageTool.getName() + "_");
+
+                configurePropertiesView(pageTool.getPropertiesView(), mav,
+                        pageTool.getName() + "_");
             }
 
         }
@@ -495,6 +512,21 @@ public class ConfigurablePageController extends AbstractController
      */
     public void setPageToolManager(PageToolManager pageToolManager) {
         this.pageToolManager = pageToolManager;
+    }
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="Auxiliary methods">
+    protected List<String> addPathPrefixToFileNames(
+            String path,
+            List<String> filenames) {
+
+        ArrayList<String> prefixedFileNames = new ArrayList<String>();
+
+        for (String fileName : filenames) {
+            prefixedFileNames.add(String.format("%s/%s", path, fileName));
+        }
+
+        return prefixedFileNames;
     }
     // </editor-fold>
 }
