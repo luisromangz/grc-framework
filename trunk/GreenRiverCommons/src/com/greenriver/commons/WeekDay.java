@@ -9,20 +9,21 @@ import java.text.DateFormatSymbols;
  * @author luis
  */
 public enum WeekDay {
+    SUNDAY,
     MONDAY,
     TUESDAY,
     WEDNESDAY,
     THURSDAY,
     FRIDAY,
-    SATURDAY,
-    SUNDAY;
+    SATURDAY;
+    
 
     /**
      * Gets the localized label for the day of the week.
      * @return
      */
     public String getLabel() {
-        return DateFormatSymbols.getInstance().getWeekdays()[this.ordinal()];
+        return DateFormatSymbols.getInstance().getWeekdays()[this.ordinal() +1];
     }
 
     /**
@@ -30,6 +31,6 @@ public enum WeekDay {
      * @return
      */
     public String getShortLabel() {
-        return DateFormatSymbols.getInstance().getShortWeekdays()[this.ordinal()];
+        return DateFormatSymbols.getInstance().getShortWeekdays()[this.ordinal() +1];
     }
 }
