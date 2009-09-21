@@ -6,6 +6,7 @@
 package com.greenriver.commons;
 
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -16,7 +17,7 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author mangelp
+ * @author Miguel Angel
  */
 public class DatesTest {
 
@@ -91,5 +92,118 @@ public class DatesTest {
         expResult.setNanos(555555555);
         Timestamp result = Dates.toTimestamp(millis, nanos);
         assertEquals(expResult, result);
+    }
+
+    @Test
+    public void testEquals() {
+        Date ref = new Date();
+        long monthLen = 20 * 24 * 60 * 60 * 1000;
+        long hourLen = 60 * 60 * 1000;
+        boolean result = false;
+
+        //Range from month and a hour in the past to a month in the past
+        DateRange rangeA = new DateRange(
+                ref.getTime() - monthLen - hourLen,
+                ref.getTime() - monthLen);
+        //Range from an hour in the past to the current time
+        DateRange rangeB = new DateRange(
+                ref.getTime() - hourLen,
+                ref.getTime());
+
+        result = rangeA.equals(rangeB);
+        assertFalse(result);
+
+        result = rangeA.equals(rangeA);
+        assertTrue(result);
+
+        result = rangeB.equals(rangeB);
+        assertTrue(result);
+
+        result = Dates.equals(rangeA.getMin(), rangeA.getMax());
+        assertFalse(result);
+
+        result = Dates.equals(rangeA.getMin(), rangeA.getMax(), DatePart.Date);
+        assertTrue(result);
+
+        result = Dates.equals(rangeA.getMin(), rangeA.getMax(), DatePart.Time);
+        assertFalse(result);
+    }
+
+    @Test
+    public void testIntersects () {
+        Date ref = new Date();
+        long monthLen = 20 * 24 * 60 * 60 * 1000;
+        long hourLen = 60 * 60 * 1000;
+        boolean result = false;
+
+        //Range from month and a hour in the past to a month in the past
+        DateRange rangeA = new DateRange(
+                ref.getTime() - monthLen - hourLen,
+                ref.getTime() - monthLen);
+        //Range from an hour in the past to the current time
+        DateRange rangeB = new DateRange(
+                ref.getTime() - hourLen,
+                ref.getTime());
+
+        result = rangeA.intersects(rangeB);
+        assertFalse(result);
+
+        rangeB.setMin(new Date(ref.getTime() - monthLen - 1000));
+
+        result = rangeA.intersects(rangeB);
+        assertTrue(result);
+
+        result = rangeA.intersects(rangeA);
+        assertTrue(result);
+
+        result = rangeA.intersects(rangeA, DatePart.Date);
+        assertTrue(result);
+
+        result = rangeA.intersects(rangeB, DatePart.Date);
+        assertTrue(result);
+
+        result = rangeA.intersects(rangeB, DatePart.Time);
+        assertTrue(result);
+
+        rangeB.setMin(new Date(ref.getTime() - monthLen + 1000));
+
+        result = rangeA.intersects(rangeB, DatePart.Date);
+        assertTrue(result);
+
+        result = rangeA.intersects(rangeB, DatePart.Time);
+        assertTrue(result);
+
+        rangeB.setMin(null);
+        result = rangeA.intersects(rangeB);
+        assertTrue(result);
+
+        rangeB = new DateRange();
+        result = rangeA.intersects(rangeB);
+        assertFalse(result);
+    }
+
+    @Test
+    public void testInRange () {
+        Date ref = new Date();
+        long monthLen = 20 * 24 * 60 * 60 * 1000;
+        long weekLen = 7 * 24 * 60 * 60 * 1000;
+        long hourLen = 60 * 60 * 1000;
+        boolean result = false;
+        Date test = new Date(ref.getTime() - monthLen - 1000);
+
+        //Range from month and a hour in the past to a month in the past
+        DateRange rangeA = new DateRange(
+                ref.getTime() - monthLen - hourLen,
+                ref.getTime() - monthLen);
+        //Range from an hour in the past to the current time
+        DateRange rangeB = new DateRange(
+                ref.getTime() - hourLen,
+                ref.getTime());
+
+        result = Dates.inRange(test, rangeA.getMin(), rangeA.getMax());
+        assertTrue(result);
+
+        result = Dates.inRange(test, rangeB.getMin(), rangeB.getMax());
+        assertFalse(result);
     }
 }

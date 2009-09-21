@@ -11,6 +11,7 @@ Author: mangelp
 ###################################################################*/
 package com.greenriver.commons;
 
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -37,11 +38,11 @@ public class Dates {
                     "Deviation is limited to up to (+/-)999999999 " +
                     "nanoseconds.");
         }
-        
+
         GregorianCalendar cal = null;
         Timestamp result = null;
         nanos += stamp.getNanos();
-        
+
         cal = (GregorianCalendar) GregorianCalendar.getInstance();
         cal.setTime(stamp);
 
@@ -165,33 +166,90 @@ public class Dates {
     }
 
     /**
-     * Gets if two date ranges intersects.
+     * Formats the date
+     * @param date
+     * @return
+     */
+    public static String formatAsMysqlDate(Date date) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return formatter.format(date);
+    }
+
+    public static boolean intersects(Date startA, Date endA, Date startB,
+            Date endB) {
+        
+        return intersects(startA, endA, startB, endB, DatePart.DateTime);
+    }
+
+    /**
+     * Returns only the date part without the time
+     * @param date
+     * @return
+     */
+    public static java.sql.Date getDatePart(Date date) {
+        return new java.sql.Date(getDatePart(date, DatePart.Date));
+    }
+
+    /**
+     * Returns only the time part without the date.
+     * @param date
+     * @return
+     */
+    public static java.sql.Time getTimePart(Date date) {
+        return new java.sql.Time(getDatePart(date, DatePart.Time));
+    }
+
+    protected static long getDatePart(Date date, DatePart part) {
+        if (part == DatePart.DateTime) {
+            return date.getTime();
+        }
+
+        GregorianCalendar cal = (GregorianCalendar) GregorianCalendar.getInstance();
+        cal.setTime(date);
+        long time = cal.get(GregorianCalendar.HOUR_OF_DAY) * 60 * 60 * 1000 +
+                        cal.get(GregorianCalendar.MINUTE) * 60 * 1000 +
+                        cal.get(GregorianCalendar.SECOND) * 1000 +
+                        cal.get(GregorianCalendar.MILLISECOND);
+
+        if (part == DatePart.Date) {
+            return date.getTime() - time;
+        } else {
+            return time;
+        }
+    }
+
+    /**
+     * Gets if two date ranges intersects at any point.
+     * Null dates are interpreted as the maximum value for the range part. For
+     * example a null startA will be a Long.MIN_VALUE and a null endA will be
+     * a Long.MAX_VALUE. But in case there is a range that is both null it will
+     * be considered an unexisting range and the method will return false.
      * @param startA
      * @param endA
      * @param startB
      * @param endB
+     * @param part Part of the dates to use in the comparison
      * @return
      */
     public static boolean intersects(Date startA, Date endA, Date startB,
-            Date endB) {
-        boolean result = false;
+            Date endB, DatePart part) {
 
-        if (startA == null || startB == null || endA == null || endB == null) {
-            throw new NullPointerException("Null is an invalid parameter");
-        }
-        if (!startA.before(startB) || !startB.before(endB)) {
-            throw new IllegalArgumentException("Invalid date ranges");
+        if ((startA == null && startB == null) ||
+                (startB == null && endB == null)) {
+            return false;
         }
 
-        if (startA.before(startB)) {
-            result = !endA.before(startB);
-        } else if (startB.before(startA)) {
-            result = !endB.before(startA);
-        } else {
-            return true;
-        }
+        long x1 = startA != null ? getDatePart(startA, part) : Long.MIN_VALUE;
+        long x2 = endA != null ? getDatePart(endA, part) : Long.MAX_VALUE;
+        long y1 = startB != null ? getDatePart(startB, part) : Long.MIN_VALUE;
+        long y2 = endB != null ? getDatePart(endB, part) : Long.MAX_VALUE;
 
-        return result;
+        return (x1 >= y1 && x1 <= y2) || (x2 >= y1 && x2 <= y2) ||
+                (y1 >= x1 && y1 <= x2) || (y2 >= x1 && y2 <= x2);
+    }
+
+    public static boolean inRange(Date date, Date start, Date end) {
+        return inRange(date, start, end, DatePart.DateTime);
     }
 
     /**
@@ -201,27 +259,52 @@ public class Dates {
      * @param end
      * @return
      */
-    public static boolean inRange(Date date, Date start, Date end) {
-	if (date == null || start == null || end == null) {
-	    throw new IllegalArgumentException("Null date not allowed");
-	}
-	
-	return (date.before(end) && date.after(start)) ||
-		date.equals(start) || date.equals(end);
+    public static boolean inRange(Date date, Date start, Date end, DatePart part) {
+
+        if (date == null ||
+                (start == null && end == null)) {
+            return false;
+        }
+
+        long x1 = start != null ? getDatePart(start, part) : Long.MIN_VALUE;
+        long x2 = end != null ? getDatePart(end, part) : Long.MAX_VALUE;
+        long time = getDatePart(date, part);
+
+        return time >= x1 && time <= x2;
     }
 
-    public static boolean inRange(Date startA, Date endA, Date startB, Date endB) {
-	return inRange(startA, startB, endB) &&
-		inRange(endA, startB, endB);
+    public static boolean equals(Date date1, Date date2) {
+        return equals(date1, date2, DatePart.DateTime);
     }
 
-    /**
-     * Formats the date
-     * @param date
-     * @return
-     */
-    public static String formatAsMysqlDate(Date date) {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return formatter.format(date);
+    public static boolean equals(Date date1, Date date2, DatePart part) {
+        return (date1 == null && date2 == null) ||
+                (date1 != null && date2 != null && getDatePart(date1, part) == getDatePart(date2, part));
+    }
+
+    public static boolean lessOrEqual(Date date1, Date date2, DatePart part) {
+        long x1 = date1 != null ? getDatePart(date1, part) : Long.MIN_VALUE;
+        long x2 = date2 != null ? getDatePart(date2, part) : Long.MAX_VALUE;
+
+        return x1 <= x2;
+    }
+
+    public static boolean greaterOrEqual(Date date1, Date date2, DatePart part) {
+        long x1 = date1 != null ? getDatePart(date1, part) : Long.MIN_VALUE;
+        long x2 = date2 != null ? getDatePart(date2, part) : Long.MAX_VALUE;
+
+        return x1 >= x2;
+    }
+
+    public static int getDayOfYear(Date date) {
+        GregorianCalendar cal = (GregorianCalendar) GregorianCalendar.getInstance();
+        cal.setTime(date);
+        return cal.get(GregorianCalendar.DAY_OF_YEAR);
+    }
+
+    public static Date setTime(Date date, int hour, int minutes, int seconds) {
+        long newTime = hour * 60 * 60 * 1000 + minutes * 60 * 1000 + seconds * 1000;
+        long oldTime = getTimePart(date).getTime();
+        return new Date(date.getTime() - oldTime + newTime);
     }
 }
