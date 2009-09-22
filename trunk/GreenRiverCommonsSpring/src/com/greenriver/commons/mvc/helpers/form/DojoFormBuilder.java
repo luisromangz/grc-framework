@@ -66,6 +66,11 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
     }
 
     public void addFieldsFromModel(Class modelClass) {
+        if(modelClass.getSuperclass()!=null) {
+            addFieldsFromModel(modelClass.getSuperclass());
+        }
+
+
         Field[] classFields = modelClass.getDeclaredFields();
 
         for (Field field : classFields) {
@@ -74,6 +79,8 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
                 this.addField(field.getName(), props, field.getType());
             }
         }
+
+        
     }
 
     public void setAction(String action) {
