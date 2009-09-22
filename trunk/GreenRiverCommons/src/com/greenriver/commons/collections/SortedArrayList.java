@@ -55,6 +55,10 @@ public class SortedArrayList<T> extends ArrayList<T> {
     private Comparator<T> comparator;
     private ComparableComparator<T> fallbackComparator;
 
+    protected void setComparator(Comparator<T> comparator) {
+        this.comparator = comparator;
+    }
+
     /**
      * Gets the comparator in use
      * @return
@@ -110,6 +114,20 @@ public class SortedArrayList<T> extends ArrayList<T> {
 	    super.add(pos, e);
 	    return true;
 	}
+    }
+
+    @Override
+    public void add(int index, T element) {
+        int pos = Collections.binarySearch(this, element, comparator);
+        if (pos < 0) {
+            pos = -(pos + 1);
+            if (pos == index) {
+                super.add(pos, element);
+            } else {
+                throw new IllegalArgumentException(
+                        "Inserting an element out of order is not allowed");
+            }
+        }
     }
 
     @Override
