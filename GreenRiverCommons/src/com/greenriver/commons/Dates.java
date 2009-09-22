@@ -182,21 +182,21 @@ public class Dates {
     }
 
     /**
-     * Returns only the date part without the time
+     * Returns only the date part without the time.
      * @param date
-     * @return
+     * @return a Date with only the date part
      */
-    public static java.sql.Date getDatePart(Date date) {
-        return new java.sql.Date(getDatePart(date, DatePart.Date));
+    public static Date getDatePart(Date date) {
+        return new Date(getDatePart(date, DatePart.Date));
     }
 
     /**
-     * Returns only the time part without the date.
+     * Returns only the time part without the date. The date is left as The Epoch.
      * @param date
-     * @return
+     * @return a Date with only the time part set
      */
-    public static java.sql.Time getTimePart(Date date) {
-        return new java.sql.Time(getDatePart(date, DatePart.Time));
+    public static Date getTimePart(Date date) {
+        return new Date(getDatePart(date, DatePart.Time));
     }
 
     protected static long getDatePart(Date date, DatePart part) {

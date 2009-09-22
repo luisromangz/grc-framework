@@ -6,7 +6,7 @@ import java.util.Date;
  * Date range.
  * @author Miguel Angel
  */
-public class DateRange {
+public class DateRange implements Comparable<DateRange>, Cloneable {
 
     private Date min;
     private Date max;
@@ -15,15 +15,14 @@ public class DateRange {
         return max;
     }
 
-    public void setMax(Date max) {
+    protected void setMax(Date max) {
         if (this.min == null && max == null) {
             throw new IllegalArgumentException("Both dates of the range can't be null");
         }
-        this.max = max;
-        if (this.max != null && this.min != null && this.min.after(this.max)) {
-            Date tmp = this.min;
-            this.min = this.max;
-            this.max = tmp;
+        if (max != null) {
+            this.max = new Date(max.getTime());
+        } else {
+            this.max = null;
         }
     }
 
@@ -31,11 +30,34 @@ public class DateRange {
         return min;
     }
 
-    public void setMin(Date min) {
+    protected void setMin(Date min) {
         if (this.max == null && min == null) {
             throw new IllegalArgumentException("Both dates of the range can't be null");
         }
-        this.min = min;
+        if (min != null) {
+            this.min = new Date(min.getTime());
+        } else {
+            this.min = null;
+        }
+    }
+
+    public void set(Date min, Date max) {
+        if (min == null && max == null) {
+            throw new IllegalArgumentException("Both dates of the range can't be null");
+        }
+        
+        if (min != null) {
+            this.min = new Date(min.getTime());
+        } else {
+            this.min = null;
+        }
+
+        if (max != null) {
+            this.max = new Date(max.getTime());
+        } else {
+            this.max = null;
+        }
+
         if (this.min != null && this.max != null && this.max.before(this.min)) {
             Date tmp = this.min;
             this.min = this.max;
@@ -47,21 +69,15 @@ public class DateRange {
         return min == null && max == null;
     }
 
+    public boolean isPartial() {
+        return (min == null || max == null) && !(min == null && max == null);
+    }
+
     public DateRange() {
     }
 
     public DateRange(Date min, Date max) {
-        if (min == null && max == null) {
-            throw new IllegalArgumentException("Both parameters can't be null");
-        }
-
-        if (min != null && max != null && min.after(max)) {
-            this.min = max;
-            this.max = min;
-        } else {
-            this.min = min;
-            this.max = max;
-        }
+        this(min.getTime(), max.getTime());
     }
 
     public DateRange(Long min, Long max) {
@@ -75,6 +91,12 @@ public class DateRange {
 
         if (max != null) {
             this.max = new Date(max);
+        }
+
+        if (this.min != null && this.max != null && this.min.after(this.max)) {
+            Date tmp = this.min;
+            this.min = this.max;
+            this.max = tmp;
         }
     }
 
@@ -111,5 +133,142 @@ public class DateRange {
         hash = 53 * hash + (this.min != null ? this.min.hashCode() : 0);
         hash = 53 * hash + (this.max != null ? this.max.hashCode() : 0);
         return hash;
+    }
+
+    private Date min(Date a, Date b, Date c) {
+        if (a.before(b)) {
+            if (a.before(c)) {
+                return a;
+            } else {
+                return c;
+            }
+        } else if (b.before(a)) {
+            if (b.before(c)) {
+                return b;
+            } else {
+                return c;
+            }
+        } else if (c.before(a)) {
+            if (c.before(b)) {
+                return c;
+            } else {
+                return b;
+            }
+        }
+
+        return a;
+    }
+
+    private Date max(Date a, Date b, Date c) {
+        if (a.after(b)) {
+            if (a.after(c)) {
+                return a;
+            } else {
+                return c;
+            }
+        } else if (b.after(a)) {
+            if (b.after(c)) {
+                return b;
+            } else {
+                return c;
+            }
+        } else if (c.after(a)) {
+            if (c.after(b)) {
+                return c;
+            } else {
+                return b;
+            }
+        }
+
+        return a;
+    }
+
+    /**
+     * Merges into this range another range. The other range must be consecutive
+     * or intersect with this one.
+     * @param dateRange
+     * @param part
+     */
+    public void merge(DateRange dateRange, DatePart part) {
+        if (this.isEmpty() || dateRange.isEmpty()) {
+            throw new IllegalArgumentException("Can't merge empty ranges");
+        }
+
+        //We must do a lot of cases before merging
+        if (this.isPartial() && dateRange.isPartial()) {
+            //Both ranges are partial (one of the sides is not set and thus infinite)
+            //The result will be a concrete range.
+            if (this.min == null && dateRange.min == null) {
+                this.set(this.max, dateRange.max);
+            } else if (this.max == null && dateRange.max == null) {
+                this.set(this.min, dateRange.min);
+            } else if (this.min == null && dateRange.max == null) {
+                this.set(dateRange.min, this.max);
+            } else {
+                this.set(this.min, dateRange.max);
+            }
+        } else if (this.isPartial() && !dateRange.isPartial()) {
+            //One range is partial and the other not. We need to get the min
+            //and max of the three dates for the merge.
+            if (this.min == null) {
+                this.set(min(this.max, dateRange.min, dateRange.max),
+                        max(this.max, dateRange.min, dateRange.max));
+            } else {
+                this.set(min(this.min, dateRange.min, dateRange.max),
+                        max(this.min, dateRange.min, dateRange.max));
+            }
+        } else if (!this.isPartial() && dateRange.isPartial()) {
+            //Same as above
+            if (dateRange.min == null) {
+                this.set(min(this.max, this.min, dateRange.max),
+                        max(this.max, this.min, dateRange.max));
+            } else {
+                this.set(min(this.max, this.min, dateRange.min),
+                        max(this.max, this.min, dateRange.min));
+            }
+        } else {
+            //No range is partial. We update the min and max of the current
+            //instance if the merged ones are better (lower or higher).
+            if (this.min.after(dateRange.min)) {
+                this.min = new Date(dateRange.min.getTime());
+            }
+
+            if (this.max.before(dateRange.max)) {
+                this.max = new Date(dateRange.max.getTime());
+            }
+        }
+    }
+
+    public boolean before(DateRange dateRange, DatePart part) {
+        return !Dates.greaterOrEqual(this.max, dateRange.min, part);
+    }
+
+    public boolean after(DateRange dateRange, DatePart part) {
+        return !Dates.lessOrEqual(this.min, dateRange.max, part);
+    }
+
+    public int compareTo(DateRange o, DatePart part) {
+        if (this.before(o, part)) {
+            return -1;
+        } else if (this.after(o, part)) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    public int compareTo(DateRange o) {
+        return this.compareTo(o, DatePart.DateTime);
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return new DateRange(this.min, this.max);
+    }
+
+    @Override
+    public String toString() {
+        return "(" + Dates.formatAsMysqlDate(min) + ", " +
+                Dates.formatAsMysqlDate(max) + ")";
     }
 }
