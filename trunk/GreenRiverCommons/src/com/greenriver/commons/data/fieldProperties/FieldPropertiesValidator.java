@@ -32,6 +32,20 @@ public class FieldPropertiesValidator implements FieldsValidator {
     public FieldsValidationResult validate(Object object) {
         FieldsValidationResult result = new FieldsValidationResult();
 
+        validateFieldsByClass(object, object.getClass(), result);
+
+        return result;
+    }
+
+    private void validateFieldsByClass(
+            Object object,
+            Class validationClass,
+            FieldsValidationResult result) {
+        // We want to validate the fields defined in a class superclass also.
+        if(validationClass.getSuperclass()!=null) {
+            validateFieldsByClass(object, validationClass.getSuperclass(),result);
+        }
+
         Field[] fields = object.getClass().getDeclaredFields();
         for (Field field : fields) {
             FieldProperties properties = field.getAnnotation(
@@ -48,8 +62,6 @@ public class FieldPropertiesValidator implements FieldsValidator {
                 }
             }
         }
-
-        return result;
     }
 
     @SuppressWarnings("unchecked")
@@ -137,7 +149,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
                 return;
             }
         }
-        
+
         if (properties.minSize() > text.length() && properties.maxSize() < text.length()) {
             validationMessages.add(String.format(
                     "El campo «%0$s» tiene que tener un tamaño entre %1$d y %1$d caracteres.",
@@ -146,12 +158,12 @@ public class FieldPropertiesValidator implements FieldsValidator {
                     properties.maxSize()));
             return;
         } else if (properties.minSize() > text.length()) {
-                        validationMessages.add(String.format(
+            validationMessages.add(String.format(
                     "El campo «%0$s» tiene que tener un tamaño mayor o igual a %1$d caracteres.",
                     properties.label(),
                     properties.minSize()));
         } else if (properties.minSize() > text.length()) {
-                        validationMessages.add(String.format(
+            validationMessages.add(String.format(
                     "El campo «%0$s» tiene que tener un tamaño menor o igual a %1$d caracteres.",
                     properties.label(),
                     properties.maxSize()));
