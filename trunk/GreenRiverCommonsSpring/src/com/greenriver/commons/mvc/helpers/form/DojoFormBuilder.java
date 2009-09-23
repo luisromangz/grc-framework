@@ -66,7 +66,7 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
     }
 
     public void addFieldsFromModel(Class modelClass) {
-        if(modelClass.getSuperclass()!=null) {
+        if (modelClass.getSuperclass() != null) {
             addFieldsFromModel(modelClass.getSuperclass());
         }
 
@@ -80,7 +80,7 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
             }
         }
 
-        
+
     }
 
     public void setAction(String action) {
@@ -317,9 +317,13 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
         assertNotNumber(properties);
         assertNotSelection(properties);
         assertNotFile(properties);
-
-        element.getAttributes().setProperty("dojoType", "dijit.form.Textarea");
+        headerConfigurer.addDojoModule("grc.dijit.form.DowngradableTextarea");
+        element.setAttribute(
+                "dojoType",
+                "grc.dijit.form.DowngradableTextarea");
         element.setElementType("textarea");
+        element.setAttribute("cols", "25");
+        element.setAttribute("style", "width:auto");
     }
 
     private void setupRichTextField(HtmlFormElementInfo element,
@@ -713,7 +717,8 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
             Class fieldType,
             FieldProperties properties) {
         headerConfigurer.addDojoModule("grc.dijit.form.YearDayTextBox");
-        formFieldElement.setAttribute("dojoType", "grc.dijit.form.YearDayTextBox");
+        formFieldElement.setAttribute("dojoType",
+                "grc.dijit.form.YearDayTextBox");
     }
 
     private void setupTimeField(
