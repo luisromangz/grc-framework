@@ -51,4 +51,64 @@ public class Lists {
     public static boolean isNullOrEmpty(List list) {
         return list == null || list.isEmpty();
     }
+
+
+    /**
+     * Returns the element of maximum value of a given list regarding to a
+     * defined criteria.
+     * @param <T> The type of the elements of the List.
+     * @param elements The list holding the elements from which the maximum will
+     * be searched.
+     * @param criteria The criteria used to determine the maximun value.
+     * @return The element of the list with the maximum value.
+     */
+    public static <T> T getMaxElement(List<T> elements, MinMaxCriteria<T> criteria) {
+
+        if(elements.isEmpty()) {
+            return null;
+        }
+        
+        float max = Float.NEGATIVE_INFINITY;
+        T returnedElement = null;
+
+        for(T element : elements) {
+            float criteriaValue = criteria.criteriaValue(element);
+            if(criteriaValue > max) {
+                max = criteriaValue;
+                returnedElement = element;
+            }
+        }
+
+        return returnedElement;
+    }
+
+    /**
+     * Returns the element of minimum value of a given list regarding to a
+     * defined criteria.
+     * @param <T> The type of the elements of the List.
+     * @param elements The list holding the elements from which the minimum will
+     * be searched.
+     * @param criteria The criteria used to determine the minimum value.
+     * @return The element of the list with the minimum value.
+     */
+    public static <T> T getMinElement(List<T> elements, MinMaxCriteria<T> criteria) {
+
+        if(elements.isEmpty()) {
+            return null;
+        }
+        
+
+        float min = Float.POSITIVE_INFINITY;
+        T returnedElement = null;
+
+        for(T element : elements) {
+            float criteriaValue = criteria.criteriaValue(element);
+            if(criteriaValue < min) {
+                min = criteriaValue;
+                returnedElement = element;
+            }
+        }
+
+        return returnedElement;
+    }
 }
