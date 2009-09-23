@@ -46,7 +46,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
             validateFieldsByClass(object, validationClass.getSuperclass(),result);
         }
 
-        Field[] fields = object.getClass().getDeclaredFields();
+        Field[] fields = validationClass.getDeclaredFields();
         for (Field field : fields) {
             FieldProperties properties = field.getAnnotation(
                     FieldProperties.class);
