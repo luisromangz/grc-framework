@@ -188,11 +188,19 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
     }
 
     public void addPropertyViewsFromModel(Class modelClass) {
+
         addPropertyViewsFromModel(modelClass, null);
     }
 
-    public void addPropertyViewsFromModel(Class modelClass,
+    public void addPropertyViewsFromModel(
+            Class modelClass,
             List<String> propertiesToShow) {
+
+        if(modelClass.getSuperclass() !=null) {
+            addPropertyViewsFromModel(
+                modelClass.getSuperclass(),
+                propertiesToShow);
+        }
 
         Field classField = null;
         FieldProperties fieldProperties = null;
@@ -207,8 +215,7 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
             try {
                 classField = modelClass.getDeclaredField(propName);
             } catch (NoSuchFieldException ex) {
-                throw new IllegalArgumentException("Field '" + propName + 
-                        "' not defined in model entity " + modelClass.getName());
+               continue;
             }
 
             fieldProperties = classField.getAnnotation(FieldProperties.class);
