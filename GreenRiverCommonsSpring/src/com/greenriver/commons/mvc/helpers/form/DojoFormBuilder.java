@@ -322,8 +322,6 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
                 "dojoType",
                 "grc.dijit.form.DowngradableTextarea");
         element.setElementType("textarea");
-        element.setAttribute("cols", "25");
-        element.setAttribute("style", "width:auto");
     }
 
     private void setupRichTextField(HtmlFormElementInfo element,
