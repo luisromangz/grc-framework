@@ -11,7 +11,6 @@ Author: mangelp
 ###################################################################*/
 package com.greenriver.commons;
 
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -23,6 +22,7 @@ import java.util.GregorianCalendar;
 public class Dates {
 
     public static final int MAX_NANOS = 999999999;
+    private static final Date EPOCH = new Date(0);
 
     /**
      * Applies an increment in the nanoseconds of a timestamp. The increment 
@@ -187,7 +187,7 @@ public class Dates {
      * @return a Date with only the date part
      */
     public static Date getDatePart(Date date) {
-        return new Date(getDatePart(date, DatePart.Date));
+        return new Date(getDateTimePart(date, DatePart.Date));
     }
 
     /**
@@ -196,26 +196,63 @@ public class Dates {
      * @return a Date with only the time part set
      */
     public static Date getTimePart(Date date) {
-        return new Date(getDatePart(date, DatePart.Time));
+        return new Date(getDateTimePart(date, DatePart.Time));
     }
 
-    protected static long getDatePart(Date date, DatePart part) {
+    public static java.sql.Time getSqlTime(Date date) {
+        return new java.sql.Time (getDateTimePart(date, DatePart.Time));
+    }
+
+    /**
+     * Gets a java.sql.Time instance with the number of milliseconds for the
+     * time part of the date fixing the date components to the epoch.
+     * @param hour 0-23 Hour (24h format).
+     * @param minutes 0-59 Minutes
+     * @param seconds 0-59 Seconds
+     * @return a java.sql.Time instance
+     */
+    public static java.sql.Time getSqlTime(int hour, int minutes, int seconds) {
+        GregorianCalendar cal = (GregorianCalendar) GregorianCalendar.getInstance();
+        cal.setTime(EPOCH);
+        cal.set(GregorianCalendar.HOUR_OF_DAY, hour);
+        cal.set(GregorianCalendar.MINUTE, minutes);
+        cal.set(GregorianCalendar.SECOND, seconds);
+        return new java.sql.Time(cal.getTimeInMillis());
+    }
+
+    public static java.sql.Date getSqlDate(Date date) {
+        return new java.sql.Date (getDateTimePart(date, DatePart.Date));
+    }
+
+    public static java.sql.Date getSqlDate(int year, int month, int day) {
+        GregorianCalendar cal = (GregorianCalendar) GregorianCalendar.getInstance();
+        cal.setTime(EPOCH);
+        cal.set(GregorianCalendar.YEAR, year);
+        cal.set(GregorianCalendar.MONTH, month);
+        cal.set(GregorianCalendar.DAY_OF_MONTH, day);
+        return new java.sql.Date(cal.getTimeInMillis());
+    }
+
+    protected static long getDateTimePart(Date date, DatePart part) {
         if (part == DatePart.DateTime) {
             return date.getTime();
         }
 
         GregorianCalendar cal = (GregorianCalendar) GregorianCalendar.getInstance();
         cal.setTime(date);
-        long time = cal.get(GregorianCalendar.HOUR_OF_DAY) * 60 * 60 * 1000 +
-                        cal.get(GregorianCalendar.MINUTE) * 60 * 1000 +
-                        cal.get(GregorianCalendar.SECOND) * 1000 +
-                        cal.get(GregorianCalendar.MILLISECOND);
 
         if (part == DatePart.Date) {
-            return date.getTime() - time;
-        } else {
-            return time;
+            cal.set(GregorianCalendar.HOUR_OF_DAY, 0);
+            cal.set(GregorianCalendar.MINUTE, 0);
+            cal.set(GregorianCalendar.SECOND, 0);
+            cal.set(GregorianCalendar.MILLISECOND, 0);
+        } else if (part == DatePart.Time) {
+            cal.set(GregorianCalendar.YEAR, 1970);
+            cal.set(GregorianCalendar.MONTH, 0);
+            cal.set(GregorianCalendar.DAY_OF_MONTH, 1);
         }
+
+        return cal.getTimeInMillis();
     }
 
     /**
@@ -239,10 +276,10 @@ public class Dates {
             return false;
         }
 
-        long x1 = startA != null ? getDatePart(startA, part) : Long.MIN_VALUE;
-        long x2 = endA != null ? getDatePart(endA, part) : Long.MAX_VALUE;
-        long y1 = startB != null ? getDatePart(startB, part) : Long.MIN_VALUE;
-        long y2 = endB != null ? getDatePart(endB, part) : Long.MAX_VALUE;
+        long x1 = startA != null ? getDateTimePart(startA, part) : Long.MIN_VALUE;
+        long x2 = endA != null ? getDateTimePart(endA, part) : Long.MAX_VALUE;
+        long y1 = startB != null ? getDateTimePart(startB, part) : Long.MIN_VALUE;
+        long y2 = endB != null ? getDateTimePart(endB, part) : Long.MAX_VALUE;
 
         return (x1 >= y1 && x1 <= y2) || (x2 >= y1 && x2 <= y2) ||
                 (y1 >= x1 && y1 <= x2) || (y2 >= x1 && y2 <= x2);
@@ -254,10 +291,11 @@ public class Dates {
 
     /**
      * Gets if a date is in a range, including the start and end dates.
-     * @param date
-     * @param start
-     * @param end
-     * @return
+     * @param date Date to check that is into the range
+     * @param start Start of the range (included)
+     * @param end End of the range (included)
+     * @param part Part of the date to check
+     * @return True if the date is in the range or false if not
      */
     public static boolean inRange(Date date, Date start, Date end, DatePart part) {
 
@@ -266,9 +304,9 @@ public class Dates {
             return false;
         }
 
-        long x1 = start != null ? getDatePart(start, part) : Long.MIN_VALUE;
-        long x2 = end != null ? getDatePart(end, part) : Long.MAX_VALUE;
-        long time = getDatePart(date, part);
+        long x1 = start != null ? getDateTimePart(start, part) : Long.MIN_VALUE;
+        long x2 = end != null ? getDateTimePart(end, part) : Long.MAX_VALUE;
+        long time = getDateTimePart(date, part);
 
         return time >= x1 && time <= x2;
     }
@@ -279,19 +317,19 @@ public class Dates {
 
     public static boolean equals(Date date1, Date date2, DatePart part) {
         return (date1 == null && date2 == null) ||
-                (date1 != null && date2 != null && getDatePart(date1, part) == getDatePart(date2, part));
+                (date1 != null && date2 != null && getDateTimePart(date1, part) == getDateTimePart(date2, part));
     }
 
     public static boolean lessOrEqual(Date date1, Date date2, DatePart part) {
-        long x1 = date1 != null ? getDatePart(date1, part) : Long.MIN_VALUE;
-        long x2 = date2 != null ? getDatePart(date2, part) : Long.MAX_VALUE;
+        long x1 = date1 != null ? getDateTimePart(date1, part) : Long.MIN_VALUE;
+        long x2 = date2 != null ? getDateTimePart(date2, part) : Long.MAX_VALUE;
 
         return x1 <= x2;
     }
 
     public static boolean greaterOrEqual(Date date1, Date date2, DatePart part) {
-        long x1 = date1 != null ? getDatePart(date1, part) : Long.MIN_VALUE;
-        long x2 = date2 != null ? getDatePart(date2, part) : Long.MAX_VALUE;
+        long x1 = date1 != null ? getDateTimePart(date1, part) : Long.MIN_VALUE;
+        long x2 = date2 != null ? getDateTimePart(date2, part) : Long.MAX_VALUE;
 
         return x1 >= x2;
     }
@@ -302,8 +340,16 @@ public class Dates {
         return cal.get(GregorianCalendar.DAY_OF_YEAR);
     }
 
+    /**
+     * Sets the time part of a date
+     * @param date Date
+     * @param hour 0-23 hour
+     * @param minutes 0-59
+     * @param seconds 059
+     * @return
+     */
     public static Date setTime(Date date, int hour, int minutes, int seconds) {
-        long newTime = hour * 60 * 60 * 1000 + minutes * 60 * 1000 + seconds * 1000;
+        long newTime = getSqlTime(hour, minutes, seconds).getTime();
         long oldTime = getTimePart(date).getTime();
         return new Date(date.getTime() - oldTime + newTime);
     }
