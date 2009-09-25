@@ -182,6 +182,29 @@ public class Dates {
     }
 
     /**
+     * Gets a date from the components of it
+     * @param year Full year
+     * @param month 0-11 Month order (0-based)
+     * @param day Day of month
+     * @param hour 0-23 hour
+     * @param minutes 0-59 minutes
+     * @param seconds 0-59 seconds
+     * @return
+     */
+    public static Date getDate(int year, int month, int day, int hour, int minutes, int seconds) {
+        GregorianCalendar cal = (GregorianCalendar)GregorianCalendar.getInstance();
+
+        cal.set(GregorianCalendar.YEAR, year);
+        cal.set(GregorianCalendar.MONTH, month);
+        cal.set(GregorianCalendar.DAY_OF_MONTH, day);
+        cal.set(GregorianCalendar.HOUR, hour);
+        cal.set(GregorianCalendar.MINUTE, minutes);
+        cal.set(GregorianCalendar.SECOND, seconds);
+
+        return cal.getTime();
+    }
+
+    /**
      * Returns only the date part without the time.
      * @param date
      * @return a Date with only the date part
@@ -224,6 +247,13 @@ public class Dates {
         return new java.sql.Date (getDateTimePart(date, DatePart.Date));
     }
 
+    /**
+     *
+     * @param year Full year
+     * @param month 0-11
+     * @param day Day of month
+     * @return
+     */
     public static java.sql.Date getSqlDate(int year, int month, int day) {
         GregorianCalendar cal = (GregorianCalendar) GregorianCalendar.getInstance();
         cal.setTime(EPOCH);
