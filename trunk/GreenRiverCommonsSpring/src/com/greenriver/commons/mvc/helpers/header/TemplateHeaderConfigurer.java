@@ -154,19 +154,30 @@ public class TemplateHeaderConfigurer implements HeaderConfigurer {
        this.dojoModules = new ArrayList(dojoModules);
     }
 
+    @SuppressWarnings("unchecked")
     public void setJavaScriptFiles(List<String> javascriptFiles) {
         this.jsFiles = new ArrayList(javascriptFiles);
     }
 
+    @SuppressWarnings("unchecked")
     public void setOnLoadScripts(List<String> onLoadScripts) {
         this.onLoadScripts = new ArrayList(onLoadScripts);
     }
 
+    @SuppressWarnings("unchecked")
     public void setScripts(List<String> scripts) {
         this.scripts = new ArrayList(scripts);
     }
 
     public List<String> getDojoBundles() {
         return this.dojoBundles;
+    }
+
+    public void addDojoBundles(List<String> dojoBundles) {
+        this.dojoBundles.addAll(dojoBundles);
+    }
+
+    public void addDojoModules(List<String> dojoModules) {
+       this.dojoModules.addAll(dojoModules);
     }
 }
