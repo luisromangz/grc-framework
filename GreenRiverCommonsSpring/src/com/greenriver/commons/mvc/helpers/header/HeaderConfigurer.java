@@ -5,6 +5,7 @@
 
 package com.greenriver.commons.mvc.helpers.header;
 
+import java.util.List;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
@@ -18,4 +19,6 @@ public interface HeaderConfigurer extends HeaderConfiguration {
       * @param mav The ModelAndView object that will carry the configuration.
       */
     public void configure(ModelAndView mav);
+
+    
 }

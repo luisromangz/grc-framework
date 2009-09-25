@@ -136,4 +136,12 @@ public class PageHeaderConfiguration implements HeaderConfiguration {
         return this.dojoBundles;
     }
 
+    public void addDojoBundles(List<String> dojoBundles) {
+        this.dojoBundles.addAll(dojoBundles);
+    }
+
+    public void addDojoModules(List<String> dojoModules) {
+        this.dojoModules.addAll(dojoModules);
+    }
+
 }

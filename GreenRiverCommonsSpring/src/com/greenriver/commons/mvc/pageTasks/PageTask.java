@@ -284,4 +284,12 @@ public class PageTask  implements FormsConfiguration, HeaderConfiguration,
 	return pageConfiguration.getPropertiesView();
     }
 
+    public void addDojoBundles(List<String> dojoBundles) {
+        pageConfiguration.addDojoBundles(dojoBundles);
+    }
+
+    public void addDojoModules(List<String> dojoModules) {
+         pageConfiguration.addDojoModules(dojoModules);
+    }
+
 }

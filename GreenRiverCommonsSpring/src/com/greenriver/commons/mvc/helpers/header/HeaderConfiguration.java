@@ -158,4 +158,8 @@ public interface HeaderConfiguration {
      * @param scripts A list with of the pieces of code to be included.
      */
     void setScripts(List<String> scripts);
+
+    public void addDojoBundles(List<String> dojoBundles);
+
+    public void addDojoModules(List<String> dojoModules);
 }

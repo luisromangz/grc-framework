@@ -1,5 +1,6 @@
 package com.greenriver.commons.mvc.controllers;
 
+import com.greenriver.commons.collections.Lists;
 import com.greenriver.commons.mvc.configuration.PageConfiguration;
 import com.greenriver.commons.mvc.configuration.FormsConfiguration;
 import com.greenriver.commons.mvc.configuration.PageToolsConfiguration;
@@ -11,6 +12,11 @@ import com.greenriver.commons.mvc.helpers.properties.PropertiesViewBuilder;
 import com.greenriver.commons.mvc.pageTools.PageTool;
 import com.greenriver.commons.mvc.pageTools.PageToolManager;
 import com.greenriver.commons.session.UserSessionInfo;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -59,8 +65,8 @@ public class ConfigurablePageController extends AbstractController
         ModelAndView mav = new ModelAndView(viewName);
 
         headerConfigurer.setCssFiles(pageConfiguration.getCssFiles());
-        headerConfigurer.setDojoBundles(pageConfiguration.getDojoBundles());
-        headerConfigurer.setDojoModules(pageConfiguration.getDojoModules());
+        headerConfigurer.addDojoBundles(pageConfiguration.getDojoBundles());
+        headerConfigurer.addDojoModules(pageConfiguration.getDojoModules());
         headerConfigurer.setDwrServices(pageConfiguration.getDwrServices());
         headerConfigurer.setJavaScriptFiles(
                 pageConfiguration.getJavaScriptFiles());
@@ -82,7 +88,35 @@ public class ConfigurablePageController extends AbstractController
 
         customHandleRequest(request, response, mav);
 
+        // We create the page's dojo-bundle profile.
+        createBundleProfile(request);
+
+
         return mav;
+    }
+
+    private void createBundleProfile(HttpServletRequest request) 
+            throws UnsupportedEncodingException, FileNotFoundException, IOException {
+        String path = request.getSession().getServletContext().getRealPath("");
+        path += "/" + request.getServletPath() + "-dojo-bundle.profile.js";
+
+        String profileContent =
+                "dependencies={\nstripConsole:'normal',\n" +
+                "layers:[{\nname:'%s',\n dependencies: [\n'%s'\n]\n}],\n " +
+                "prefixes:[\n['dijit','../dijit'],\n['dojox','../dojox'],\n['grc','../grc']\n]\n}";
+
+        // We remove the initial slash and replace the dots with hyphens.
+        String fileName = request.getServletPath().substring(1);
+        fileName = fileName.replace('.', '-');
+        profileContent = String.format(profileContent,
+                fileName+"-dojo-bundle.js",
+                Lists.join(headerConfigurer.getDojoModules(), "',\n'"));
+
+        OutputStreamWriter out = new OutputStreamWriter(
+                new FileOutputStream(path), "UTF-8");
+
+        out.write(profileContent);
+        out.close();
     }
 
     public void customHandleRequest(HttpServletRequest request,
@@ -166,11 +200,11 @@ public class ConfigurablePageController extends AbstractController
             for (PageTool pageTool : this.pageToolManager.getTools()) {
 
                 dialogJspFiles.addAll(addPathPrefixToFileNames(
-                        "tools/"+pageTool.getName(),
+                        "tools/" + pageTool.getName(),
                         pageTool.getDialogJspFiles()));
 
                 dialogJspFiles.addAll(addPathPrefixToFileNames(
-                        "tools/"+pageTool.getName(),
+                        "tools/" + pageTool.getName(),
                         pageTool.getSetupPaneJspFiles()));
 
                 headerConfigurer.getJavaScriptFiles().addAll(addPathPrefixToFileNames(
@@ -513,8 +547,12 @@ public class ConfigurablePageController extends AbstractController
     public void setPageToolManager(PageToolManager pageToolManager) {
         this.pageToolManager = pageToolManager;
     }
-    // </editor-fold>
 
+    public void addDojoBundles(List<String> dojoBundles) {
+        pageConfiguration.addDojoBundles(dojoBundles);
+    }
+
+    // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Auxiliary methods">
     protected List<String> addPathPrefixToFileNames(
             String path,
@@ -527,6 +565,10 @@ public class ConfigurablePageController extends AbstractController
         }
 
         return prefixedFileNames;
+    }
+
+    public void addDojoModules(List<String> dojoModules) {
+        pageConfiguration.addDojoModules(dojoModules);
     }
     // </editor-fold>
 }

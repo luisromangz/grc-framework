@@ -14,7 +14,7 @@ import java.util.Map;
  * @author luis
  */
 public class PageTool implements FormsConfiguration,
-        PropertiesViewConfiguration,HeaderConfiguration{
+        PropertiesViewConfiguration, HeaderConfiguration {
 
     // <editor-fold defaultstate="collapsed" desc="Attributes">
     /**
@@ -29,12 +29,11 @@ public class PageTool implements FormsConfiguration,
      * The JSP files used as panes in the config area of the app.
      */
     private List<String> setupPaneJspFiles;
-
     private PageConfiguration pageConfiguration;
     // </editor-fold>
 
     public PageTool() {
-        name="Unnamed tool";
+        name = "Unnamed tool";
         dialogJspFiles = new ArrayList<String>();
         setupPaneJspFiles = new ArrayList<String>();
         pageConfiguration = new PageConfiguration();
@@ -200,6 +199,14 @@ public class PageTool implements FormsConfiguration,
 
     public void setScripts(List<String> scripts) {
         pageConfiguration.setScripts(scripts);
+    }
+
+    public void addDojoBundles(List<String> dojoBundles) {
+        pageConfiguration.addDojoBundles(dojoBundles);
+    }
+
+    public void addDojoModules(List<String> dojoModules) {
+        pageConfiguration.addDojoModules(dojoModules);
     }
     // </editor-fold>
 }
