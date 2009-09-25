@@ -5,6 +5,7 @@
 
 package com.greenriver.commons;
 
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -205,5 +206,17 @@ public class DatesTest {
 
         result = Dates.inRange(test, rangeB.getMin(), rangeB.getMax());
         assertFalse(result);
+    }
+
+    @Test
+    public void testTime() {
+        java.sql.Time time = new Time(14, 0, 0);
+        java.sql.Time time2 = Dates.getSqlTime(14, 0, 0);
+        long timePart = Dates.getDateTimePart(time, DatePart.Time);
+        long timePart2 = Dates.getDateTimePart(time2, DatePart.Time);
+
+        assertEquals(time, time2);
+        assertEquals(time.getTime(), timePart);
+        assertEquals(timePart, timePart2);
     }
 }
