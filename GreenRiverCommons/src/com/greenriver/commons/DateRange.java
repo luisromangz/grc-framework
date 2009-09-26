@@ -1,12 +1,13 @@
 package com.greenriver.commons;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Date range.
  * @author Miguel Angel
  */
-public class DateRange implements Comparable<DateRange>, Cloneable {
+public class DateRange implements Comparable<DateRange>, Cloneable, Serializable {
 
     private Date min;
     private Date max;
@@ -15,7 +16,11 @@ public class DateRange implements Comparable<DateRange>, Cloneable {
         return max;
     }
 
-    protected void setMax(Date max) {
+    /**
+     * Sets the maximum value of the date range (included)
+     * @param max
+     */
+    public void setMax(Date max) {
         if (this.min == null && max == null) {
             throw new IllegalArgumentException("Both dates of the range can't be null");
         }
@@ -30,7 +35,11 @@ public class DateRange implements Comparable<DateRange>, Cloneable {
         return min;
     }
 
-    protected void setMin(Date min) {
+    /**
+     * Sets the minumum value of the date range (included)
+     * @param min
+     */
+    public void setMin(Date min) {
         if (this.max == null && min == null) {
             throw new IllegalArgumentException("Both dates of the range can't be null");
         }
@@ -45,7 +54,7 @@ public class DateRange implements Comparable<DateRange>, Cloneable {
         if (min == null && max == null) {
             throw new IllegalArgumentException("Both dates of the range can't be null");
         }
-        
+
         if (min != null) {
             this.min = new Date(min.getTime());
         } else {
@@ -69,8 +78,12 @@ public class DateRange implements Comparable<DateRange>, Cloneable {
         return min == null && max == null;
     }
 
-    public boolean isPartial() {
-        return (min == null || max == null) && !(min == null && max == null);
+    /**
+     * Gets if the range is infinite (has no lower or upper limit).
+     * @return
+     */
+    public boolean isInfinite() {
+        return (min == null && max != null) || (min != null && max == null);
     }
 
     public DateRange() {
@@ -195,7 +208,7 @@ public class DateRange implements Comparable<DateRange>, Cloneable {
         }
 
         //We must do a lot of cases before merging
-        if (this.isPartial() && dateRange.isPartial()) {
+        if (this.isInfinite() && dateRange.isInfinite()) {
             //Both ranges are partial (one of the sides is not set and thus infinite)
             //The result will be a concrete range.
             if (this.min == null && dateRange.min == null) {
@@ -207,7 +220,7 @@ public class DateRange implements Comparable<DateRange>, Cloneable {
             } else {
                 this.set(this.min, dateRange.max);
             }
-        } else if (this.isPartial() && !dateRange.isPartial()) {
+        } else if (this.isInfinite() && !dateRange.isInfinite()) {
             //One range is partial and the other not. We need to get the min
             //and max of the three dates for the merge.
             if (this.min == null) {
@@ -217,7 +230,7 @@ public class DateRange implements Comparable<DateRange>, Cloneable {
                 this.set(min(this.min, dateRange.min, dateRange.max),
                         max(this.min, dateRange.min, dateRange.max));
             }
-        } else if (!this.isPartial() && dateRange.isPartial()) {
+        } else if (!this.isInfinite() && dateRange.isInfinite()) {
             //Same as above
             if (dateRange.min == null) {
                 this.set(min(this.max, this.min, dateRange.max),
@@ -268,7 +281,11 @@ public class DateRange implements Comparable<DateRange>, Cloneable {
 
     @Override
     public String toString() {
-        return "(" + Dates.formatAsMysqlDate(min) + ", " +
-                Dates.formatAsMysqlDate(max) + ")";
+        if (this.isEmpty()) {
+            return "(EMPTY)";
+        } else {
+            return "(" + (min == null ? "Infinite" : Dates.formatAsMysqlDate(min)) + ", " +
+                    (max == null ? "Infinite" : Dates.formatAsMysqlDate(max)) + ")";
+        }
     }
 }
