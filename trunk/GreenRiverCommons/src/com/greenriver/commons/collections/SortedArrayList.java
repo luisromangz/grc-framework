@@ -43,15 +43,14 @@ public class SortedArrayList<T> extends ArrayList<T> {
      */
     private class ComparableComparator<T> implements Comparator<T> {
 
-	public int compare(T o1, T o2) {
-	    if (o1 instanceof Comparable) {
-		return ((Comparable)o1).compareTo(o2);
-	    } else {
-		throw new IllegalArgumentException("Not comparable elements");
-	    }
-	}
+        public int compare(T o1, T o2) {
+            if (o1 instanceof Comparable) {
+                return ((Comparable) o1).compareTo(o2);
+            } else {
+                throw new IllegalArgumentException("Not comparable elements");
+            }
+        }
     }
-
     private Comparator<T> comparator;
     private ComparableComparator<T> fallbackComparator;
 
@@ -64,56 +63,64 @@ public class SortedArrayList<T> extends ArrayList<T> {
      * @return
      */
     public Comparator<T> getComparator() {
-	return comparator;
+        return comparator;
     }
 
     public SortedArrayList() {
-	super();
+        super();
     }
 
     public SortedArrayList(int initialCapacity) {
-	super(initialCapacity);
+        super(initialCapacity);
     }
 
     public SortedArrayList(Comparator<T> comparator) {
-	super();
-	this.comparator = comparator;
+        super();
+        this.comparator = comparator;
     }
 
     public SortedArrayList(int initialCapacity, Comparator<T> comparator) {
-	super(initialCapacity);
-	this.comparator = comparator;
+        super(initialCapacity);
+        this.comparator = comparator;
+    }
+
+    private int compare(T a, T b) {
+        if (comparator != null) {
+            return comparator.compare(a, b);
+        } else {
+            return fallbackComparator.compare(a, b);
+        }
     }
 
     @Override
     public boolean add(T e) {
-	int pos = 0;
+        int pos = 0;
 
-	if (comparator == null && !(e instanceof Comparable)) {
-	    throw new IllegalStateException("The type doesn't " +
-		    "implements Comparable and " +
-		    "you haven't provided a Comparator implementation");
-	}
+        if (comparator == null && !(e instanceof Comparable)) {
+            throw new IllegalStateException("The type doesn't " +
+                    "implements Comparable and " +
+                    "you haven't provided a Comparator implementation");
+        }
 
-	if (comparator != null) {
-	    pos = Collections.binarySearch(this, e, comparator);
-	} else {
-	    //We need to use the fallback comparator here as we can't call this
-	    //method without forcing in the generic type definition of T that
-	    //it must implement Comparable
-	    pos = Collections.binarySearch(this, e, fallbackComparator);
-	}
+        if (comparator != null) {
+            pos = Collections.binarySearch(this, e, comparator);
+        } else {
+            //We need to use the fallback comparator here as we can't call this
+            //method without forcing in the generic type definition of T that
+            //it must implement Comparable
+            pos = Collections.binarySearch(this, e, fallbackComparator);
+        }
 
-	if (pos < 0) {
-	    pos = -(pos + 1);
-	}
+        if (pos < 0) {
+            pos = -(pos + 1);
+        }
 
-	if (pos == size()) {
-	    return super.add(e);
-	} else {
-	    super.add(pos, e);
-	    return true;
-	}
+        if (pos == size()) {
+            return super.add(e);
+        } else {
+            super.add(pos, e);
+            return true;
+        }
     }
 
     @Override
@@ -133,13 +140,56 @@ public class SortedArrayList<T> extends ArrayList<T> {
     @Override
     public boolean addAll(Collection<? extends T> collection) {
 
-	boolean result = false;
-	for (T element : collection) {
-	    if (this.add(element)) {
-		result = true;
-	    }
-	}
+        boolean result = false;
+        for (T element : collection) {
+            if (this.add(element)) {
+                result = true;
+            }
+        }
 
-	return result;
+        return result;
+    }
+
+    protected boolean addAt(int pos, T element) {
+        return this.addAt(pos, element, false);
+    }
+
+    /**
+     * Inserts an element into a position checking that is ordered with the
+     * previous and next elements only.
+     * @param pos
+     * @param element
+     * @param throwExWhenNotAdded If true the method throws an exceptio when
+     * the element can't be added
+     * @return true if the element is sorted and then is added, or false if it
+     * is not in order.
+     */
+    protected boolean addAt(int pos, T element, boolean throwExWhenNotAdded) {
+        if (pos < 0 || pos > this.size()) {
+            throw new ArrayIndexOutOfBoundsException("The index " + pos +
+                    " is out of the bounds of this collection.");
+        }
+
+        boolean result = false;
+
+        if (this.size() == 0) {
+            result = super.add(element);
+        } else if (pos == this.size() && compare(element, this.get(pos - 1)) > 0) {
+            result = super.add(element);
+        } else if (pos == 0 && compare(element, this.get(0)) < 0) {
+            super.add(0, element);
+            result = true;
+        } else if (pos > 0 && pos < this.size() &&
+                compare(element, this.get(pos - 1)) > 0 &&
+                compare(element, this.get(pos + 1)) < 0) {
+            super.add(pos, element);
+            result = true;
+        }
+
+        if (!result == throwExWhenNotAdded) {
+            throw new IllegalStateException("Can't insert element into position " + pos);
+        }
+
+        return result;
     }
 }
