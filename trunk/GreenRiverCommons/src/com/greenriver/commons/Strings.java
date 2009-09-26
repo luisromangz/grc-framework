@@ -18,6 +18,7 @@ import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.Random;
 
 /**
  * String utilities
@@ -30,6 +31,11 @@ public class Strings {
         '8', '9', 'A', 'B',
         'C', 'D', 'E', 'F'
     };
+
+    private static String LOWERCASE_CHARS = "abcdefghijklmnopqrstuvwxyz";
+    private static String UPERCASE_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private static String NUMBERS = "0123456789";
+    private static Random random = new Random();
 
     private static Charset asciiCharset = Charset.forName("US-ASCII");
 
@@ -247,5 +253,22 @@ public class Strings {
         } else {
             return Strings.equalsIgnoreCase(suffix, target);
         }
+    }
+
+    public static String random(int size) {
+        String src = LOWERCASE_CHARS +  UPERCASE_CHARS + NUMBERS;
+        StringBuilder result = new StringBuilder(size);
+        int srcLen = src.length();
+        int randomInt = 0;
+        char ch;
+        
+        while(size > 0) {
+            randomInt = random.nextInt(srcLen);
+            ch = src.charAt(randomInt);
+            result.append(ch);
+            size --;
+        }
+
+        return result.toString();
     }
 }

@@ -61,6 +61,11 @@ public class DateRangeSortedList extends SortedArrayList<DateRange> {
      */
     @Override
     public boolean add(DateRange candidate) throws IllegalStateException {
+
+        if (candidate.isEmpty() || candidate.isInfinite()) {
+            throw new IllegalArgumentException("Empty or infinite ranges are not allowed");
+        }
+
         DateRange dateRange = null;
         DateRange increasedRange = null;
         int pos = 0;
