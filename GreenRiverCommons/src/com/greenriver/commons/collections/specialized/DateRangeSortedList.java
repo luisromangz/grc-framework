@@ -56,9 +56,11 @@ public class DateRangeSortedList extends SortedArrayList<DateRange> {
      * intersects or if they are consecutive.
      * @param candidate
      * @return true if added or false if not (only if it already exists)
+     * @throws IllegalStateException when the element can't be added and it
+     * didn't existed in the collection.
      */
     @Override
-    public boolean add(DateRange candidate) {
+    public boolean add(DateRange candidate) throws IllegalStateException {
         DateRange dateRange = null;
         DateRange increasedRange = null;
         int pos = 0;
@@ -67,7 +69,7 @@ public class DateRangeSortedList extends SortedArrayList<DateRange> {
         while (pos <= this.size()) {
             
             if (pos == this.size()) {
-                return super.add(clone(candidate));
+                return super.addAt(pos, clone(candidate), true);
             }
 
             dateRange = this.get(pos);
@@ -77,7 +79,7 @@ public class DateRangeSortedList extends SortedArrayList<DateRange> {
                 return false;
             }
 
-            if (increasedRange.intersects(dateRange, this.datePart)) {
+            if (increasedRange.intersects(dateRange, datePart)) {
                 //The candidate can be merged with the existing range
                 dateRange.merge(candidate, datePart);
                 //We need to check if any other range must be merged with this
@@ -87,17 +89,12 @@ public class DateRangeSortedList extends SortedArrayList<DateRange> {
                 //The range is after the current one so we must increase this
                 pos++;
             } else if (candidate.before(dateRange, datePart)) {
-                //The range goes before the current one, we add it using the
-                //inherited version
-                // FIXME: this uses binary search to find inserting position
-                // but we already know it.
-                return super.add(clone(candidate));
+                //The range goes before the current one
+                return super.addAt(pos, clone(candidate), true);
             }
         }
         //We must append the range to the end
-        //FIXME: We can't append as this does a binary search and then an
-        //insertion (we don't need a binary search at all).
-        return super.add(clone(candidate));
+        return super.addAt(this.size(), clone(candidate), true);
     }
 
     /**
