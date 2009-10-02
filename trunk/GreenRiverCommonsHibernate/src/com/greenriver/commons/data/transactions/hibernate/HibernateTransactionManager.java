@@ -40,7 +40,7 @@ public class HibernateTransactionManager implements TransactionManager {
 
         if (tran.isActive()) {
             try{
-                sessionFactory.getCurrentSession().getTransaction().rollback();
+                tran.rollback();
             } catch (TransactionException tE){
                 // Do nothing;
             }
