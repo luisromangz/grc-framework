@@ -11,6 +11,7 @@ Author: mangelp
 ###################################################################*/
 package com.greenriver.commons.collections;
 
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -110,5 +111,16 @@ public class Lists {
         }
 
         return returnedElement;
+    }
+
+    public static <T> int indexOf(T obj, List<T> list, Comparator<T> comparator) {
+
+        for (int i=0; i<list.size(); i++) {
+            if (comparator.compare(list.get(i), obj) == 0) {
+                return i;
+            }
+        }
+
+        return -1;
     }
 }
