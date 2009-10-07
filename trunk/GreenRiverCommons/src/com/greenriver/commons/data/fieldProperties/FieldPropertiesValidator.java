@@ -3,6 +3,7 @@ package com.greenriver.commons.data.fieldProperties;
 import com.greenriver.commons.Strings;
 import com.greenriver.commons.data.validation.FieldsValidationResult;
 import com.greenriver.commons.data.validation.FieldsValidator;
+import com.greenriver.commons.data.validation.ValidationRegex;
 import com.greenriver.commons.roleManagement.RoleManager;
 import java.io.ByteArrayInputStream;
 import java.lang.reflect.Field;
@@ -20,13 +21,13 @@ import java.util.regex.Pattern;
 public class FieldPropertiesValidator implements FieldsValidator {
 
     public static final Pattern COLOR_PATTERN = Pattern.compile(
-            "^#[0-9[A-F]]{6}$",
+            "^" + ValidationRegex.COLOR + "$",
             Pattern.CASE_INSENSITIVE);
     public static final Pattern EMAIL_PATTERN = Pattern.compile(
-            "^[\\w\\d._%+-]+@[\\w\\d.-]+\\.[\\w]{2,6}$",
+            "^" + ValidationRegex.EMAIL + "$",
             Pattern.CASE_INSENSITIVE);
     public static final Pattern PASSWORD_PATTERN =
-            Pattern.compile("^\\w{6,}$");
+            Pattern.compile("^" + ValidationRegex.PASSWORD_ALPHA_6 + "$");
     private RoleManager roleManager;
 
     public FieldsValidationResult validate(Object object) {
@@ -188,10 +189,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
             return;
         }
 
-        CharSequence sequence = colorValue.subSequence(0,
-                colorValue.length());
-
-        if (!COLOR_PATTERN.matcher(sequence).matches()) {
+        if (!COLOR_PATTERN.matcher((CharSequence)colorValue).matches()) {
             validationMessages.add(
                     "El campo «" + properties.label() + "» no tiene formato de color RGB hexadecimal.");
         }
@@ -230,10 +228,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
             return;
         }
 
-
-        CharSequence sequence1 = password.subSequence(0,
-                password.length());
-        if (!PASSWORD_PATTERN.matcher(sequence1).matches()) {
+        if (!PASSWORD_PATTERN.matcher((CharSequence)password).matches()) {
             validationMessages.add(String.format(
                     "El campo «%s» no tiene la longitud adecuada.",
                     properties.label()));
@@ -279,7 +274,9 @@ public class FieldPropertiesValidator implements FieldsValidator {
             Object value,
             FieldProperties properties,
             List<String> validationMessages) {
+        
         String email = value.toString();
+        
         if (properties.required() && email.isEmpty()) {
             validationMessages.add(String.format(
                     "Es necesario rellenar el campo «%s».",
@@ -291,11 +288,12 @@ public class FieldPropertiesValidator implements FieldsValidator {
             return;
         }
 
-        if (!EMAIL_PATTERN.matcher(email.subSequence(0,
-                email.length() - 1)).matches()) {
+        if (!EMAIL_PATTERN.matcher((CharSequence)email).matches()) {
             // The passed value isn't an email.
             validationMessages.add(
-                    "El valor del campo «" + properties.label() + "» no es uno de los permitidos.");
+                    "El valor del campo «" +
+                    properties.label() +
+                    "» no es uno de los permitidos.");
         }
     }
 
