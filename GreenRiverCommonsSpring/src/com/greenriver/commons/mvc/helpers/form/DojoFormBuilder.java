@@ -5,6 +5,7 @@ import com.greenriver.commons.collections.Lists;
 import com.greenriver.commons.data.fieldProperties.FieldProperties;
 import com.greenriver.commons.data.fieldProperties.FieldPropertiesValidator;
 import com.greenriver.commons.data.fieldProperties.FieldType;
+import com.greenriver.commons.data.validation.ValidationRegex;
 import com.greenriver.commons.mvc.helpers.header.HeaderConfigurer;
 import com.greenriver.commons.mvc.helpers.header.HeaderConfigurerClient;
 import com.greenriver.commons.roleManagement.RoleManager;
@@ -381,7 +382,7 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
                 "dijit.form.ValidationTextBox");
         element.getAttributes().setProperty(
                 "regExp",
-                "[\\w\\d._%+-]+@[\\w\\d.-]+\\.[\\w]{2,6}");
+                ValidationRegex.EMAIL);
         headerConfigurer.addDojoModule("dojox.validate.regexp");
     }
 

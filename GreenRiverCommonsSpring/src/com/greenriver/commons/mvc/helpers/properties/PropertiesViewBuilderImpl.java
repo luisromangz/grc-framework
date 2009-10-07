@@ -3,7 +3,6 @@ package com.greenriver.commons.mvc.helpers.properties;
 import com.greenriver.commons.mvc.helpers.PropertyOptions;
 import com.greenriver.commons.Strings;
 import com.greenriver.commons.collections.Lists;
-import com.greenriver.commons.collections.Maps;
 import com.greenriver.commons.data.fieldProperties.FieldProperties;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
