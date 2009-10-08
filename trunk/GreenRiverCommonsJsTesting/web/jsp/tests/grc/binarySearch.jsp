@@ -28,6 +28,7 @@
         <script type="text/javascript" src="${jsRoot}/grc/grc.js"></script>
         <script type="text/javascript">dojo.registerModulePath("grc", "../../grc");</script>
         <script type="text/javascript" src="${jsRoot}/grc/array.js"></script>
+        <script type="text/javascript" src="${jsRoot}/grc/string.js"></script>
         <script type="text/javascript">
             var onDojoLoad = function() {
                 dojo.require("dojo.parser");

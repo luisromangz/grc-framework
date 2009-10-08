@@ -29,7 +29,7 @@
         <script type="text/javascript" src="${jsRoot}/grc/grc.js"></script>
         <script type="text/javascript" src="${jsRoot}/grc/date.js"></script>
         <script type="text/javascript" src="${jsRoot}/jsunit/app/jsUnitCore.js"></script>
-        <script type="text/javascript" src="${jsRoot}/tests/date.js"></script>
+        <script type="text/javascript" src="${jsRoot}/tests/grc/date.js"></script>
         <script type="text/javascript">
             var onDojoLoad = function() {
                 dojo.require("dojo.parser");
