@@ -2,7 +2,7 @@
 <%@page pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <c:set var="jsRoot" value="../../../js"/>
-<c:set var="dojoRoot" value="${jsRoot}/dojo_toolkit_132"/>
+<c:set var="dojoRoot" value="${jsRoot}/dojo_toolkit_131"/>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
     "http://www.w3.org/TR/html4/loose.dtd">
@@ -32,8 +32,8 @@
         <script type="text/javascript" src="${jsRoot}/tests/date.js"></script>
         <script type="text/javascript">
             var onDojoLoad = function() {
-                dojo.registerModulePath("grc", "../../grc");
                 dojo.require("dojo.parser");
+                dojo.require("grc.date");
                 dojo.parser.parse();
             }
             dojo.addOnLoad(onDojoLoad);
@@ -41,7 +41,7 @@
     </head>
     <body class="tundra">
         <div id="body">
-            Date tests with jsUnit
+            <p>Date tests with jsUnit.<br/>To run this test go to /js/jsunit/testRunner.html and put there the url to reach this jsp.</p>
         </div>
     </body>
 </html>
