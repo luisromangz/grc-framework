@@ -2,17 +2,16 @@
 <%@page pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <c:set var="jsRoot" value="../../../js"/>
-<c:set var="dojoRoot" value="${jsRoot}/dojo_toolkit_132"/>
+<c:set var="dojoRoot" value="${jsRoot}/dojo_toolkit_131"/>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
     "http://www.w3.org/TR/html4/loose.dtd">
 <html>
     <head>
+        <title>Test</title>
         <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
         <link rel="stylesheet" href="${dojoRoot}/dojo/resources/dojo.css" />
         <link rel="stylesheet" href="${dojoRoot}/dijit/themes/tundra/tundra.css" />
-        <link rel="stylesheet" href="${dojoRoot}/dojox/form/resources/FileInput.css" />
-        <link rel="stylesheet" href="${jsRoot}/grc/dijit/form/resources/FileInput.css" />
         <style media="all" type="text/css">
             #body {
                 padding: 12px;
@@ -26,8 +25,8 @@
             };
         </script>
         <script type="text/javascript" src="${dojoRoot}/dojo/dojo.js"></script>
-        <script type="text/javascript">dojo.registerModulePath("grc", "../../grc");</script>
         <script type="text/javascript" src="${jsRoot}/grc/grc.js"></script>
+        <script type="text/javascript">dojo.registerModulePath("grc", "../../grc");</script>
         <script type="text/javascript" src="${jsRoot}/grc/array.js"></script>
         <script type="text/javascript">
             var onDojoLoad = function() {
