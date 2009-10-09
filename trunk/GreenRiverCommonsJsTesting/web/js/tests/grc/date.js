@@ -405,3 +405,40 @@ function testIsInDateRangeArray () {
     result = grc.date.isInDateRangeArray(target, ranges, 'date');
     assertFalse(name, result);
 }
+
+function testSplitRange() {
+    var range = {min: new Date(), max: dojo.date.add(new Date(), 'day', 5)};
+    var result = grc.date.splitRange(range);
+
+    console.debug("**  testSplitRange  **");
+    console.debug("  Target range: " + grc.string.toString(range));
+    console.debug("  Splitted range: " + grc.string.toString(result));
+
+    assertFalse("Split result not empty.", grc.isEmpty(result));
+    assertTrue("Split result array.", dojo.isArray(result));
+    
+    assertEquals(
+        "Split result 5 items.",
+        6,
+        result.length);
+
+    assertEquals(
+        "First date equals range start.",
+        0,
+        grc.date.compareDate(result[0], range.min));
+
+    assertEquals(
+        "Second date greater than range start.",
+        1,
+        grc.date.compareDate(result[1], range.min));
+
+    assertEquals(
+        "Last date equals range end.",
+        0,
+        grc.date.compareDate(result[result.length-1], range.max));
+
+    assertEquals(
+        "Before last date lower than range end.",
+        -1,
+        grc.date.compareDate(result[result.length-2], range.max));
+}
