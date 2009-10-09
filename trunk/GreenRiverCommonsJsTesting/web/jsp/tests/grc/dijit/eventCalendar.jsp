@@ -2,7 +2,7 @@
 <%@page pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <c:set var="jsRoot" value="../../../../js"/>
-<c:set var="dojoRoot" value="${jsRoot}/dojo_toolkit_132"/>
+<c:set var="dojoRoot" value="${jsRoot}/dojo_toolkit_131"/>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
     "http://www.w3.org/TR/html4/loose.dtd">
@@ -33,10 +33,7 @@
         <script type="text/javascript" src="${jsRoot}/grc/date.js"></script>
         <script type="text/javascript">
             var onDojoLoad = function() {
-                dojo.registerModulePath("grc", "../../grc");
                 dojo.require("dojo.parser");
-                dojo.require("grc.dijit.EventCalendar");
-                dojo.require("dijit.Tooltip");
                 dojo.parser.parse();
             }
             dojo.addOnLoad(onDojoLoad);
@@ -46,26 +43,32 @@
         <div id="body">
             <div style="background-color: #cfcfcf;min-width: 700px; min-height: 450px;padding: 12px">
                 <dl>
-                    <dt>Calendario propio restringido a días posteriores o iguales a hoy</dt>
+                    <dt>Por defecto</dt>
                     <dd>
-                        <div dojoType="grc.dijit.EventCalendar" id="eventCalendar"
+                        <div dojoType="grc.dijit.EventCalendar" id="eventCalendar1"></div>
+                        <button onclick="dijit.byId('eventCalendar1').selection.deselectAll()">Limpiar</button>
+                        <button onclick="dijit.byId('eventCalendar1').selection.setSelected([new Date(), dojo.date.add(new Date(), 'day', 1)])">Hoy y mañana</button>
+                    </dd>
+                    <dt>Restringido a días >= hoy</dt>
+                    <dd>
+                        <div dojoType="grc.dijit.EventCalendar" id="eventCalendar2"
                              constraints="{min: 'today'}"></div>
                     </dd>
-                    <dt>Clear</dt>
-                    <dd><button onclick="dijit.byId('eventCalendar').selection.deselectAll()">Limpiar</button></dd>
-                    <dt>Dias</dt>
-                    <dd><button onclick="dijit.byId('eventCalendar').selection.setSelected([new Date(), dojo.date.add(new Date(), 'day', 1)])">Hoy y mañana</button></dd>
-                    <dt>Invertir</dt>
-                    <dd><button onclick="dijit.byId('eventCalendar').selection.toggleSelected(dijit.byId('eventCalendar').attr('constraints'))">Invertir</button></dd>
-                    <dt>Calendario normal</dt>
+                    <dt>Hacer click cambia la selección</dt>
                     <dd>
-                        <div dojoType="dijit._Calendar" id="eventCalendarNormal"></div>
+                        <div dojoType="grc.dijit.EventCalendar" id="eventCalendar3"
+                             singleClickToggle="true"></div>
                     </dd>
-                    <dt>Calendario propio restringido programáticamente</dt>
+                    <dt>Modo de selección de rangos forzado</dt>
                     <dd>
-                        <!--div dojoType="grc.dijit.EventCalendar" id="eventCalendarAlwaysToggle"
-                             constraints="{min:'today'}"
-                             singleClickToggle="true"></div-->
+                        <div dojoType="grc.dijit.EventCalendar" id="eventCalendar4"
+                             forceShiftForRangeSelection="true"></div>
+                    </dd>
+                    <dt>Restringido a días >= hoy cambio a meses deshabilitados no permitido</dt>
+                    <dd>
+                        <div dojoType="grc.dijit.EventCalendar" id="eventCalendar5"
+                             allowViewOfDisabledMonths="false"
+                             constraints="{min:'today'}"></div>
                     </dd>
                 </dl>
             </div>

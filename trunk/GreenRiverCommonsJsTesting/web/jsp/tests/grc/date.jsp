@@ -9,15 +9,7 @@
 <html>
     <head>
         <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
-        <title>Testing</title>
-        <link rel="stylesheet" href="${dojoRoot}/dojo/resources/dojo.css" />
-        <link rel="stylesheet" href="${dojoRoot}/dijit/themes/tundra/tundra.css" />
-        <style media="all" type="text/css">
-            #body {
-                padding: 12px;
-                margin: 0px auto 0px auto;
-            }
-        </style>
+        <title>Unit Testing</title>
         <script type="text/javascript">
             var djConfig =  {
                 isDebug: true,
