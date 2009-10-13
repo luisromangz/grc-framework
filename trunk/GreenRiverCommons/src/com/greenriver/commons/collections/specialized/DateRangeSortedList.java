@@ -4,6 +4,7 @@ import com.greenriver.commons.DatePart;
 import com.greenriver.commons.DateRange;
 import com.greenriver.commons.Dates;
 import com.greenriver.commons.collections.SortedArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -41,6 +42,16 @@ public class DateRangeSortedList extends SortedArrayList<DateRange> {
         super(initialCapacity);
         this.datePart = part;
         this.setComparator(new DateRangeComparator());
+    }
+
+    public DateRangeSortedList(Collection<DateRange> dateRanges) {
+        this(dateRanges, DatePart.DateTime);
+    }
+
+    public DateRangeSortedList(Collection<DateRange> dateRanges, DatePart part) {
+        super(dateRanges);
+        this.setComparator(new DateRangeComparator());
+        this.datePart = part;
     }
 
     private DateRange clone(DateRange dateRange) {

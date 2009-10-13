@@ -113,6 +113,15 @@ public class Lists {
         return returnedElement;
     }
 
+    /**
+     * Looks for an element in a list using a linear search. The comparator is
+     * used to check if the element have been found (comparison == 0) or not.
+     * @param <T> type of the element to look for
+     * @param obj Element to find
+     * @param list List to iterate
+     * @param comparator Comparator to check if the element have been found
+     * @return index of the element if found or -1 if not found
+     */
     public static <T> int indexOf(T obj, List<T> list, Comparator<T> comparator) {
 
         for (int i=0; i<list.size(); i++) {

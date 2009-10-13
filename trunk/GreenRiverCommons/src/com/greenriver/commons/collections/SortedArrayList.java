@@ -84,6 +84,17 @@ public class SortedArrayList<T> extends ArrayList<T> {
         this.comparator = comparator;
     }
 
+    public SortedArrayList(Collection<? extends T> source) {
+        this(source, null);
+    }
+
+    public SortedArrayList(Collection<? extends T> source, Comparator<T> comparator) {
+        super(source.size());
+        this.comparator = comparator;
+
+        this.addAll(source);
+    }
+
     private int compare(T a, T b) {
         if (comparator != null) {
             return comparator.compare(a, b);
@@ -191,5 +202,21 @@ public class SortedArrayList<T> extends ArrayList<T> {
         }
 
         return result;
+    }
+
+    public T getFirst() {
+        if (this.isEmpty()) {
+            return null;
+        }
+
+        return this.get(0);
+    }
+
+    public T getLast() {
+        if (this.isEmpty()) {
+            return null;
+        }
+
+        return this.get(this.size() - 1);
     }
 }
