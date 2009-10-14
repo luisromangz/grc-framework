@@ -686,19 +686,24 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
                 setupSelectionField(formFieldElement, fieldType, properties);
                 break;
             case MULTISELECTION:
-                setupMultiSelectionField(formFieldElement, fieldType, properties);
+                setupMultiSelectionField(
+                        formFieldElement, fieldType, properties);
                 break;
             case COLOR:
                 setupColorField(formFieldElement, fieldType, properties);
                 break;
             case ROLESELECTOR:
-                setupRoleSelectionField(formFieldElement, fieldType, properties);
+                setupRoleSelectionField(
+                        formFieldElement, fieldType, properties);
                 break;
             case DECIMAL:
                 setupDecimalField(formFieldElement, fieldType, properties);
                 break;
             case AUTOCOMPLETION:
-                setupAutocompletionField(formFieldElement, fieldType, properties);
+                setupAutocompletionField(
+                        formFieldElement,
+                        fieldType,
+                        properties);
                 break;
             case FILE:
                 setupFileInputField(formFieldElement, fieldType, properties);
@@ -708,6 +713,8 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
                 break;
             case TIME:
                 setupTimeField(formFieldElement, fieldType, properties);
+            case DATE:
+                setupDateField(formFieldElement, fieldType, properties);
         }
     }
 
@@ -726,5 +733,14 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
             FieldProperties properties) {
         headerConfigurer.addDojoModule("dijit.form.TimeTextBox");
         formFieldElement.setAttribute("dojoType", "dijit.form.TimeTextBox");
+    }
+
+    private void setupDateField(
+            HtmlFormElementInfo formFieldElement,
+            Class fieldType,
+            FieldProperties properties) {
+
+        headerConfigurer.addDojoModule("dojox.form.DateTextBox");
+        formFieldElement.setAttribute("dojoType", "dojox.form.DateTextBox");
     }
 }
