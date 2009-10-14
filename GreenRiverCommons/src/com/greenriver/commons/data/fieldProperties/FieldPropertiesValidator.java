@@ -416,6 +416,9 @@ public class FieldPropertiesValidator implements FieldsValidator {
             case TIME:
                 validateTime(value, properties, validationMessages);
                 break;
+            case DATE:
+                validateDate(value, properties, validationMessages);
+                break;
         }
     }
 
@@ -567,5 +570,22 @@ public class FieldPropertiesValidator implements FieldsValidator {
             return;
         }
 
+    }
+
+    private void validateDate(
+            Object value,
+            FieldProperties properties,
+            List<String> validationMessages) {
+
+        if(properties.required()){
+            if(value==null) {
+                 validationMessages.add(String.format(
+                        "El valor del campo «%s» es requerido.",
+                        properties.label()));
+            }
+
+            return;
+        }
+        
     }
 }

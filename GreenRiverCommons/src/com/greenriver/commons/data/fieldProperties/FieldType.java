@@ -100,5 +100,10 @@ public enum FieldType {
     /**
      * A field used to select a time.
      */
-    TIME
+    TIME,
+
+    /**
+     * A field holding a date.
+     */
+    DATE
 }
