@@ -24,12 +24,9 @@
         <script type="text/javascript" src="${dojoRoot}/dojo/dojo.js"></script>
         <script type="text/javascript">dojo.registerModulePath("grc", "../../grc");</script>
         <script type="text/javascript" src="js/grc/grc.js"></script>
-        <script type="text/javascript" src="js/grc/dijit/DataTable.js"></script>
         <script type="text/javascript">
             var onDojoLoad = function() {
                 dojo.require("dojo.parser");
-                dojo.require("dojox.data.AndOrWriteStore");
-                dojo.require("grc.dijit.DataTable");
                 
                 dojo.parser.parse();
             };
@@ -38,26 +35,40 @@
     </head>
     <body class="tundra">
         <div id="body">
-            <div style="min-width:450px;min-height:550px;padding: 12px;margin:24px;border: solid 2px #cfcfcf;">
-                    <table dojoType="grc.dijit.DataTable">
-                        <thead>
-                            <tr>
-                                <th rowSpan="2"></th>
-                                <th rowSpan="2">
-                                    Hora
-                                </th>
-                                <th rowSpan="2">
-                                    Comida
-                                </th>
-                                <th colSpan="2">Platos opcionales</th>
-                            </tr>
-                            <tr>
-                                <th></th>
-                                <th>Plato</th>
-                            </tr>
-                        </thead>
-                    </table>
-            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>c1</th>
+                        <th>c2</th>
+                        <th>c3</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>d1</th>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <th>d2</th>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th></th>
+                        <th>foot2</th>
+                        <th>foot3</th>
+                        <th>foot4</th>
+                    </tr>
+                </tfoot>
+            </table>
         </div>
     </body>
 </html>
