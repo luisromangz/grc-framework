@@ -288,4 +288,17 @@ public class DateRange implements Comparable<DateRange>, Cloneable, Serializable
                     (max == null ? "Infinite" : Dates.formatAsMysqlDate(max)) + ")";
         }
     }
+
+    public boolean contains(Date time) {
+        return contains(time, DatePart.DateTime);
+    }
+
+    public boolean contains(Date time, DatePart part) {
+        if (this.isEmpty()) {
+           return false;
+        }
+
+        return (this.max == null || Dates.lessOrEqual(time, this.max, part)) &&
+                (this.min == null || Dates.greaterOrEqual(time, this.min, part));
+    }
 }
