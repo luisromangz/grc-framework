@@ -134,8 +134,6 @@
         <div id="body">
             <div style="background-color: #cfcfcf;min-width: 700px; min-height: 450px;padding: 12px">
                 <dl>
-                    <dt>Regular checkbox</dt>
-                    <dd><input id="c1" dojoType="dijit.form.CheckBox"/></dd>
                     <dt>tristate checkbox</dt>
                     <dd><input id="c2" dojoType="grc.dijit.form.TriStateCheckBox"/></dd>
                     <dt>tristate checkbox two state cycle</dt>
