@@ -103,8 +103,7 @@ public class SortedArrayList<T> extends ArrayList<T> {
         }
     }
 
-    @Override
-    public boolean add(T e) {
+    private int internalIndexOf(T e) {
         int pos = 0;
 
         if (comparator == null && !(e instanceof Comparable)) {
@@ -121,6 +120,28 @@ public class SortedArrayList<T> extends ArrayList<T> {
             //it must implement Comparable
             pos = Collections.binarySearch(this, e, fallbackComparator);
         }
+
+        return pos;
+    }
+
+    @Override
+    public int indexOf(Object o) {
+
+        // This can throw exceptions if type of o can be cast to T, but we can't
+        // check nothing here without using a second parameter for the type of T
+        // but that information is not here :( (remember type erasure).
+        int pos = this.internalIndexOf((T)o);
+        
+        if (pos >= 0) {
+            return pos;
+        }
+
+        return -1;
+    }
+
+    @Override
+    public boolean add(T e) {
+        int pos = this.internalIndexOf(e);
 
         if (pos < 0) {
             pos = -(pos + 1);
