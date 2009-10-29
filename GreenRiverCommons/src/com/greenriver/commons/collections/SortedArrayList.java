@@ -11,6 +11,7 @@ Author: mangelp
 ###################################################################*/
 package com.greenriver.commons.collections;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -41,7 +42,7 @@ public class SortedArrayList<T> extends ArrayList<T> {
      * an exception if the elements doesn't implement comparable.
      * @param <T>
      */
-    private class ComparableComparator<T> implements Comparator<T> {
+    private class ComparableComparator<T> implements Comparator<T>, Serializable {
 
         public int compare(T o1, T o2) {
             if (o1 instanceof Comparable) {
@@ -157,7 +158,8 @@ public class SortedArrayList<T> extends ArrayList<T> {
 
     @Override
     public void add(int index, T element) {
-        int pos = Collections.binarySearch(this, element, comparator);
+        int pos = this.internalIndexOf(element);
+        
         if (pos < 0) {
             pos = -(pos + 1);
             if (pos == index) {
@@ -166,6 +168,8 @@ public class SortedArrayList<T> extends ArrayList<T> {
                 throw new IllegalArgumentException(
                         "Inserting an element out of order is not allowed");
             }
+        } else {
+            super.add(pos, element);
         }
     }
 
@@ -174,9 +178,7 @@ public class SortedArrayList<T> extends ArrayList<T> {
 
         boolean result = false;
         for (T element : collection) {
-            if (this.add(element)) {
-                result = true;
-            }
+            result |= this.add(element);
         }
 
         return result;
@@ -218,11 +220,39 @@ public class SortedArrayList<T> extends ArrayList<T> {
             result = true;
         }
 
-        if (!result == throwExWhenNotAdded) {
+        if (!result && throwExWhenNotAdded) {
             throw new IllegalStateException("Can't insert element into position " + pos);
         }
 
         return result;
+    }
+
+    @Override
+    public boolean remove(Object o) {
+        // Use faster search to look for the item
+        // If o if not of type T this throws an exception
+        int pos = internalIndexOf((T)o);
+        if (pos >= 0) {
+            remove(pos);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean removeAll(Collection<?> c) {
+        boolean modified = false;
+        int pos = 0;
+
+        for (Object obj : c) {
+            pos = internalIndexOf((T)obj);
+            if (pos >= 0) {
+                remove(pos);
+                modified = true;
+            }
+        }
+        
+        return modified;
     }
 
     public T getFirst() {
