@@ -15,6 +15,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Calendar;
 
 /**
  * Date handling utilities.
@@ -177,7 +178,7 @@ public class Dates {
 
     public static boolean intersects(Date startA, Date endA, Date startB,
             Date endB) {
-        
+
         return intersects(startA, endA, startB, endB, DatePart.DateTime);
     }
 
@@ -192,7 +193,8 @@ public class Dates {
      * @return
      */
     public static Date getDate(int year, int month, int day, int hour, int minutes, int seconds) {
-        GregorianCalendar cal = (GregorianCalendar)GregorianCalendar.getInstance();
+        GregorianCalendar cal =
+                (GregorianCalendar) GregorianCalendar.getInstance();
 
         cal.set(GregorianCalendar.YEAR, year);
         cal.set(GregorianCalendar.MONTH, month);
@@ -223,7 +225,7 @@ public class Dates {
     }
 
     public static java.sql.Time getSqlTime(Date date) {
-        return new java.sql.Time (getDateTimePart(date, DatePart.Time));
+        return new java.sql.Time(getDateTimePart(date, DatePart.Time));
     }
 
     /**
@@ -235,7 +237,8 @@ public class Dates {
      * @return a java.sql.Time instance
      */
     public static java.sql.Time getSqlTime(int hour, int minutes, int seconds) {
-        GregorianCalendar cal = (GregorianCalendar) GregorianCalendar.getInstance();
+        GregorianCalendar cal =
+                (GregorianCalendar) GregorianCalendar.getInstance();
         cal.setTime(EPOCH);
         cal.set(GregorianCalendar.HOUR_OF_DAY, hour);
         cal.set(GregorianCalendar.MINUTE, minutes);
@@ -244,7 +247,7 @@ public class Dates {
     }
 
     public static java.sql.Date getSqlDate(Date date) {
-        return new java.sql.Date (getDateTimePart(date, DatePart.Date));
+        return new java.sql.Date(getDateTimePart(date, DatePart.Date));
     }
 
     /**
@@ -255,7 +258,8 @@ public class Dates {
      * @return
      */
     public static java.sql.Date getSqlDate(int year, int month, int day) {
-        GregorianCalendar cal = (GregorianCalendar) GregorianCalendar.getInstance();
+        GregorianCalendar cal =
+                (GregorianCalendar) GregorianCalendar.getInstance();
         cal.setTime(EPOCH);
         cal.set(GregorianCalendar.YEAR, year);
         cal.set(GregorianCalendar.MONTH, month);
@@ -268,7 +272,8 @@ public class Dates {
             return date.getTime();
         }
 
-        GregorianCalendar cal = (GregorianCalendar) GregorianCalendar.getInstance();
+        GregorianCalendar cal =
+                (GregorianCalendar) GregorianCalendar.getInstance();
         cal.setTime(date);
 
         if (part == DatePart.Date) {
@@ -306,9 +311,11 @@ public class Dates {
             return false;
         }
 
-        long x1 = startA != null ? getDateTimePart(startA, part) : Long.MIN_VALUE;
+        long x1 =
+                startA != null ? getDateTimePart(startA, part) : Long.MIN_VALUE;
         long x2 = endA != null ? getDateTimePart(endA, part) : Long.MAX_VALUE;
-        long y1 = startB != null ? getDateTimePart(startB, part) : Long.MIN_VALUE;
+        long y1 =
+                startB != null ? getDateTimePart(startB, part) : Long.MIN_VALUE;
         long y2 = endB != null ? getDateTimePart(endB, part) : Long.MAX_VALUE;
 
         return (x1 >= y1 && x1 <= y2) || (x2 >= y1 && x2 <= y2) ||
@@ -347,7 +354,8 @@ public class Dates {
 
     public static boolean equals(Date date1, Date date2, DatePart part) {
         return (date1 == null && date2 == null) ||
-                (date1 != null && date2 != null && getDateTimePart(date1, part) == getDateTimePart(date2, part));
+                (date1 != null && date2 != null && getDateTimePart(date1, part) == getDateTimePart(
+                date2, part));
     }
 
     public static boolean lessOrEqual(Date date1, Date date2, DatePart part) {
@@ -365,7 +373,8 @@ public class Dates {
     }
 
     public static int getDayOfYear(Date date) {
-        GregorianCalendar cal = (GregorianCalendar) GregorianCalendar.getInstance();
+        GregorianCalendar cal =
+                (GregorianCalendar) GregorianCalendar.getInstance();
         cal.setTime(date);
         return cal.get(GregorianCalendar.DAY_OF_YEAR);
     }
@@ -382,5 +391,30 @@ public class Dates {
         long newTime = getSqlTime(hour, minutes, seconds).getTime();
         long oldTime = getTimePart(date).getTime();
         return new Date(date.getTime() - oldTime + newTime);
+    }
+
+    public static Date removeTime(Date date) {
+        if (date == null) {
+            throw new IllegalArgumentException(
+                    "The argument 'date' cannot be null.");
+        }
+
+        // Get an instance of the Calendar.
+        Calendar calendar = Calendar.getInstance();
+
+        // Make sure the calendar will not perform automatic correction.
+        calendar.setLenient(false);
+
+        // Set the time of the calendar to the given date.
+        calendar.setTime(date);
+
+        // Remove the hours, minutes, seconds and milliseconds.
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        // Return the date again.
+        return calendar.getTime();
     }
 }
