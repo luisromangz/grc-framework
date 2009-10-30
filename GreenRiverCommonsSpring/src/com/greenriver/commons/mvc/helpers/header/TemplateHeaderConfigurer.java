@@ -41,6 +41,7 @@ public class TemplateHeaderConfigurer implements HeaderConfigurer {
         dojoBundles = new ArrayList<String>();
     }
 
+    // <editor-fold defaultstate="collapsed" desc="Adding methods">
     public void addCssFile(String cssFilename) {
         cssFiles.add(cssFilename);
     }
@@ -49,7 +50,7 @@ public class TemplateHeaderConfigurer implements HeaderConfigurer {
         jsFiles.add(jsFilename);
     }
 
-    public void addScript(String script) {       
+    public void addScript(String script) {
         scripts.add(script);
     }
 
@@ -59,7 +60,8 @@ public class TemplateHeaderConfigurer implements HeaderConfigurer {
 
     public void addOnLoadScript(String code) {
         onLoadScripts.add(code);
-    }   
+    }
+    // </editor-fold>
 
     /**
      * Sets properties into a given ModelAndView object so
@@ -97,7 +99,7 @@ public class TemplateHeaderConfigurer implements HeaderConfigurer {
        mav.addObject("dojoBundles", dojoBundles);
     }
 
-
+    // <editor-fold defaultstate="collapsed" desc="Getters and setters">
     public List<String> getCssFiles() {
         return cssFiles;
     }
@@ -151,7 +153,7 @@ public class TemplateHeaderConfigurer implements HeaderConfigurer {
     }
 
     public void setDojoModules(List<String> dojoModules) {
-       this.dojoModules = new ArrayList(dojoModules);
+        this.dojoModules = new ArrayList(dojoModules);
     }
 
     @SuppressWarnings("unchecked")
@@ -178,6 +180,9 @@ public class TemplateHeaderConfigurer implements HeaderConfigurer {
     }
 
     public void addDojoModules(List<String> dojoModules) {
-       this.dojoModules.addAll(dojoModules);
+        this.dojoModules.addAll(dojoModules);
     }
+
+    
+    // </editor-fold>
 }
