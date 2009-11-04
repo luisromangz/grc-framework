@@ -10,6 +10,6 @@ package com.greenriver.commons.collections;
  * @param <T>
  * @author luis
  */
-public interface MinMaxCriteria<T> {
+public interface SortingCriteria<T> {
     float criteriaValue(T object);
 }

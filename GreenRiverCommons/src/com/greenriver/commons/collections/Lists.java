@@ -63,7 +63,7 @@ public class Lists {
      * @param criteria The criteria used to determine the maximun value.
      * @return The element of the list with the maximum value.
      */
-    public static <T> T getMaxElement(List<T> elements, MinMaxCriteria<T> criteria) {
+    public static <T> T getMaxElement(List<T> elements, SortingCriteria<T> criteria) {
 
         if(elements.isEmpty()) {
             return null;
@@ -92,7 +92,7 @@ public class Lists {
      * @param criteria The criteria used to determine the minimum value.
      * @return The element of the list with the minimum value.
      */
-    public static <T> T getMinElement(List<T> elements, MinMaxCriteria<T> criteria) {
+    public static <T> T getMinElement(List<T> elements, SortingCriteria<T> criteria) {
 
         if(elements.isEmpty()) {
             return null;
