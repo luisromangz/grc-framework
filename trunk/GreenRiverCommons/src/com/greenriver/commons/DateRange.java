@@ -89,6 +89,10 @@ public class DateRange implements Comparable<DateRange>, Cloneable, Serializable
     public DateRange() {
     }
 
+    public DateRange(Date singleRangeDate) {
+        this(singleRangeDate.getTime(), singleRangeDate.getTime());
+    }
+
     public DateRange(Date min, Date max) {
         this(min.getTime(), max.getTime());
     }
@@ -300,5 +304,32 @@ public class DateRange implements Comparable<DateRange>, Cloneable, Serializable
 
         return (this.max == null || Dates.lessOrEqual(time, this.max, part)) &&
                 (this.min == null || Dates.greaterOrEqual(time, this.min, part));
+    }
+
+    public DateRange getIntersection(DateRange range, DatePart part) {
+        if (this.isEmpty() || this.isInfinite() || range.isEmpty() || range.isInfinite()) {
+            throw new IllegalArgumentException("One of the ranges is empty or " +
+                    "infinite, can't get an intersection");
+        }
+
+        if (this.before(range, part) || this.after(range, part)) {
+            return new DateRange();
+        }
+
+        DateRange result = new DateRange();
+
+        if (Dates.lessOrEqual(min, range.min, part)) {
+            result.setMin(new Date(range.min.getTime()));
+        } else {
+            result.setMin(new Date(min.getTime()));
+        }
+
+        if (Dates.greaterOrEqual(max, range.max, part)) {
+            result.setMax(new Date(range.max.getTime()));
+        } else {
+            result.setMax(new Date(max.getTime()));
+        }
+
+        return result;
     }
 }

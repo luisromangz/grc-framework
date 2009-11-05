@@ -4,6 +4,7 @@ import com.greenriver.commons.DatePart;
 import com.greenriver.commons.DateRange;
 import com.greenriver.commons.Dates;
 import com.greenriver.commons.collections.SortedArrayList;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
@@ -14,12 +15,15 @@ import java.util.GregorianCalendar;
  */
 public class DateRangeSortedList extends SortedArrayList<DateRange> {
 
-    private class DateRangeComparator implements Comparator<DateRange> {
+    private class DateRangeComparator 
+            implements Comparator<DateRange>,
+            Serializable {
 
         public int compare(DateRange o1, DateRange o2) {
             return o1.compareTo(o2, datePart);
         }
     }
+    
     private DatePart datePart;
 
     public DatePart getDatePart() {
@@ -49,9 +53,10 @@ public class DateRangeSortedList extends SortedArrayList<DateRange> {
     }
 
     public DateRangeSortedList(Collection<DateRange> dateRanges, DatePart part) {
-        super(dateRanges);
+        super(dateRanges.size());
         this.setComparator(new DateRangeComparator());
         this.datePart = part;
+        this.addAll(dateRanges);
     }
 
     private DateRange clone(DateRange dateRange) {
@@ -186,5 +191,24 @@ public class DateRangeSortedList extends SortedArrayList<DateRange> {
         }
 
         return this.get(this.size() - 1).getMax();
+    }
+
+    public DateRangeSortedList getIntersection(DateRangeSortedList other) {
+        if (other.datePart != this.datePart) {
+            throw new IllegalArgumentException("Incompatible date parts");
+        }
+        
+        DateRangeSortedList result = new DateRangeSortedList(this.datePart);
+
+        // TODO: Optimize this
+        for (DateRange range : this) {
+            for (DateRange otherRange : other) {
+                if (range.intersects(otherRange, this.datePart)) {
+                    result.add(range.getIntersection(otherRange, this.datePart));
+                }
+            }
+        }
+
+        return result;
     }
 }
