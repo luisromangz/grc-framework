@@ -115,4 +115,35 @@ public class DateRangeSortedListTest {
         assertTrue(list.size() == 2);
         assertTrue(result.equals(list.get(0), DatePart.Date));
     }
+
+    @Test
+    public void testIntersects() {
+        GregorianCalendar cal = (GregorianCalendar) GregorianCalendar.getInstance();
+        DateRange range1 = new DateRange();
+        DateRangeSortedList list1 = new DateRangeSortedList(1);
+        DateRange range2 = new DateRange();
+        DateRangeSortedList list2 = new DateRangeSortedList(1);
+        DateRangeSortedList resultList = null;
+        DateRangeSortedList expectedResult = new DateRangeSortedList(1);
+
+        cal.add(GregorianCalendar.DAY_OF_MONTH, 2);
+        range1.setMin(cal.getTime());
+        cal.add(GregorianCalendar.DAY_OF_MONTH, 6);
+        range1.setMax(cal.getTime());
+        list1.add(range1);
+
+        cal.add(GregorianCalendar.DAY_OF_MONTH, -4);
+        range2.setMin(cal.getTime());
+        cal.add(GregorianCalendar.DAY_OF_MONTH, 8);
+        range2.setMax(cal.getTime());
+        list2.add(range2);
+
+        expectedResult.add(new DateRange(
+                    range1.getMax(),
+                    range2.getMin()
+                ));
+
+        resultList = list1.getIntersection(list2);
+        assertArrayEquals(expectedResult.toArray(), resultList.toArray());
+    }
 }
