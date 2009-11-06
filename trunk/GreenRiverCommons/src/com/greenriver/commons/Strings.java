@@ -271,4 +271,30 @@ public class Strings {
 
         return result.toString();
     }
+
+    /**
+     * Returns a lowercased version of a given string, in which the only
+     * lowercased chars are the ones between startIndex (included) and endIndex
+     * (not included).
+     * @param value 
+     * @param startIndex
+     * @param endIndex
+     */
+    public static String toLowerCase(String value, int startIndex, int endIndex) {
+        String lowercased = value.substring(startIndex, endIndex);
+
+        String result = "";
+
+        if(startIndex>0) {
+            result = value.substring(0, startIndex);
+        }
+
+        result += lowercased;
+
+        if(endIndex<value.length()) {
+            result+=value.substring(endIndex);
+        }
+
+        return result;
+    }
 }
