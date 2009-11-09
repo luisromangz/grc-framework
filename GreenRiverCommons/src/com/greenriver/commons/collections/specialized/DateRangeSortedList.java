@@ -211,4 +211,14 @@ public class DateRangeSortedList extends SortedArrayList<DateRange> {
 
         return result;
     }
+
+    public boolean containsDate(Date date) {
+        for (DateRange range : this) {
+            if (range.contains(date, datePart)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
