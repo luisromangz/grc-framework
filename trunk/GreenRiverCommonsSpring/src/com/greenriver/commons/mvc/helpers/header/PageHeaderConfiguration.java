@@ -1,4 +1,3 @@
-
 package com.greenriver.commons.mvc.helpers.header;
 
 import java.util.ArrayList;
@@ -30,46 +29,46 @@ public class PageHeaderConfiguration implements HeaderConfiguration {
         scripts = new ArrayList<String>();
     }
 
-    public void configure(HeaderConfigurer headerConfigurer, ModelAndView mav) {
-        headerConfigurer.setCssFiles(this.getCssFiles());
-        headerConfigurer.setDojoBundles(this.getDojoBundles());
-        headerConfigurer.setDojoModules(this.getDojoModules());
-        headerConfigurer.setDwrServices(this.getDwrServices());
-        headerConfigurer.setJavaScriptFiles(this.getJavaScriptFiles());
-        headerConfigurer.setOnLoadScripts(this.getOnLoadScripts());
-        headerConfigurer.setScripts(this.getScripts());
-        headerConfigurer.setTitle(this.getTitle());
-
-        headerConfigurer.configure(mav);
-    }
-
-
     public void addCssFile(String cssFilename) {
-        cssFiles.add(cssFilename);
+        if (!cssFiles.contains(cssFilename)) {
+            cssFiles.add(cssFilename);
+        }
     }
 
     public void addDwrService(String name) {
-        dwrServices.add(name);
+        if (!dwrServices.contains(name)) {
+            dwrServices.add(name);
+        }
     }
 
     public void addDojoBundle(String bundleName) {
-        dojoBundles.add(bundleName);
+        if (!dojoBundles.contains(bundleName)) {
+            dojoBundles.add(bundleName);
+        }
     }
 
     public void addDojoModule(String dojoModule) {
-        dojoModules.add(dojoModule);
+        if (!dojoModules.contains(dojoModule)) {
+            dojoModules.add(dojoModule);
+        }
     }
 
     public void addJavaScriptFile(String jsFilename) {
-        javascriptFiles.add(jsFilename);
+        if (!javascriptFiles.contains(jsFilename)) {
+            javascriptFiles.add(jsFilename);
+        }
     }
 
     public void addOnLoadScript(String code) {
-       onLoadScripts.add(code);
+        if (!onLoadScripts.contains(code)) {
+            onLoadScripts.add(code);
+        }
     }
 
     public void addScript(String script) {
-       scripts.add(script);
+        if (!scripts.contains(script)) {
+            scripts.add(script);
+        }
     }
 
     public List<String> getCssFiles() {
@@ -105,31 +104,52 @@ public class PageHeaderConfiguration implements HeaderConfiguration {
     }
 
     public void setCssFiles(List<String> cssFiles) {
-        this.cssFiles = new ArrayList<String>(cssFiles);
+        this.cssFiles = new ArrayList<String>();
+        for(String cssFile : cssFiles) {
+            this.addCssFile(cssFile);
+        }
     }
 
     public void setDwrServices(List<String> dwrServices) {
-        this.dwrServices = new ArrayList<String>(dwrServices);
+        this.dwrServices = new ArrayList<String>();
+        for(String dwrService : dwrServices) {
+            this.addDwrService(dwrService);
+        }
     }
 
     public void setDojoBundles(List<String> dojoBundles) {
-        this.dojoBundles = new ArrayList<String>(dojoBundles);
+        this.dojoBundles = new ArrayList<String>();
+        for(String dojoBundle : dojoBundles) {
+            this.addDojoBundle(dojoBundle);
+        }
     }
 
     public void setDojoModules(List<String> dojoModules) {
-        this.dojoModules = new ArrayList<String>(dojoModules);
+        this.dojoModules = new ArrayList<String>();
+        for(String dojoModule : dojoModules) {
+            this.addDojoModule(dojoModule);
+        }
     }
 
     public void setJavaScriptFiles(List<String> javascriptFiles) {
-        this.javascriptFiles = new ArrayList<String>(javascriptFiles);
+        this.javascriptFiles = new ArrayList<String>();
+        for(String javaScriptFile : javascriptFiles) {
+            this.addJavaScriptFile(javaScriptFile);
+        }
     }
 
     public void setOnLoadScripts(List<String> onLoadScripts) {
-        this.onLoadScripts = new ArrayList<String>(onLoadScripts);
+        this.onLoadScripts = new ArrayList<String>();
+        for(String onLoadScript : onLoadScripts) {
+            this.addOnLoadScript(onLoadScript);
+        }
     }
 
     public void setScripts(List<String> scripts) {
-        this.scripts = new ArrayList<String>(scripts);
+        this.scripts = new ArrayList<String>();
+        for(String script : scripts) {
+            this.addScript(script);
+        }
     }
 
     public List<String> getDojoBundles() {
@@ -137,11 +157,15 @@ public class PageHeaderConfiguration implements HeaderConfiguration {
     }
 
     public void addDojoBundles(List<String> dojoBundles) {
-        this.dojoBundles.addAll(dojoBundles);
+        for(String bundle : dojoBundles){
+            this.addDojoBundle(bundle);
+        }
+        
     }
 
     public void addDojoModules(List<String> dojoModules) {
-        this.dojoModules.addAll(dojoModules);
+        for(String dojoModule : dojoModules) {
+            this.addDojoModule(dojoModule);
+        }
     }
-
 }
