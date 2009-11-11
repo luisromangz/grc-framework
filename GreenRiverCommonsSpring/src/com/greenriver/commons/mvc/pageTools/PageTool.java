@@ -39,6 +39,15 @@ public class PageTool implements FormsConfiguration,
         pageConfiguration = new PageConfiguration();
     }
 
+    public boolean equals(Object o) {
+        if(o.getClass() != PageTool.class) {
+            return false;
+        }
+
+        String oName = ((PageTool)o).getName();
+        return oName.equals(this.name);
+    }
+
     // <editor-fold defaultstate="collapsed" desc="Getters & setters">
     /**
      * @return the name

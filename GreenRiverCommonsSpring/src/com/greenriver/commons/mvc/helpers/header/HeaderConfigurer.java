@@ -5,7 +5,6 @@
 
 package com.greenriver.commons.mvc.helpers.header;
 
-import java.util.List;
 import org.springframework.web.servlet.ModelAndView;
 
 /**

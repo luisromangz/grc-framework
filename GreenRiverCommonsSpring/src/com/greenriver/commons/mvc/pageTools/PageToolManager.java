@@ -1,6 +1,7 @@
 
 package com.greenriver.commons.mvc.pageTools;
 
+import com.greenriver.commons.Strings;
 import java.util.ArrayList;
 import java.util.List;
 /**
@@ -29,10 +30,21 @@ public class PageToolManager {
      */
     public void setTools(List<PageTool> tools) {
         this.tools = new ArrayList<PageTool>();
-        this.tools.addAll(tools);
+        for(PageTool tool : tools) {
+            addTool(tool);
+        }
     }
 
     public void addTool(PageTool pageTool) {
+        if(Strings.isNullOrEmpty(pageTool.getName())){
+            throw new IllegalArgumentException("Tool has no name");
+        }
+
+        if(tools.contains(pageTool)) {
+            throw new IllegalArgumentException(
+                    "Duplicate tool name "+pageTool.getName());
+        }
+
         tools.add(pageTool);
     }
 
