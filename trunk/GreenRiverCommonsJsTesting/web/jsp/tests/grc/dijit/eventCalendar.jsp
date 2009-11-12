@@ -70,6 +70,12 @@
                              allowViewOfDisabledMonths="false"
                              constraints="{min:'today'}"></div>
                     </dd>
+                    <dt>Restricción inicializada a varios objetos siendo uno inválido por
+                    lo que debe lanzar una excepción</dt>
+                    <dd>
+                        <div dojoType="grc.dijit.EventCalendar" id="eventCalendar6"
+                             constraints="[{min:'today'},{max:'2010/09/20'},{p:'j'}]"></div>
+                    </dd>
                 </dl>
             </div>
         </div>
