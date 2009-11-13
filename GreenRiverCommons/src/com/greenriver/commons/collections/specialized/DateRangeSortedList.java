@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 /**
  * @author Miguel Angel
@@ -220,5 +221,68 @@ public class DateRangeSortedList extends SortedArrayList<DateRange> {
         }
 
         return false;
+    }
+
+    @Override
+    public boolean remove(Object o) {
+        if (o == null) {
+            throw new NullPointerException(
+                    "Null not allowed as an item of this collection");
+        }
+
+        if (!DateRange.class.isAssignableFrom(o.getClass())) {
+            throw new ClassCastException("Class " + o.getClass() +
+                    " can't be cast to " + DateRange.class);
+        }
+
+        boolean modified = false;
+        DateRange target = (DateRange) o;
+        DateRange candidate = null;
+        int pos = 0;
+        List<DateRange> newItems = null;
+
+        // For each range in the collection that intersects with the present
+        // one we must:
+        // a- Remove it entirely if the collection's range is contained in the
+        // range to remove
+        // b- Replace the collection's range with another range(s) with the
+        // difference between the collection's range and the range to remove
+
+        // Iterate using a loop as we will doing replacements and element
+        // removal and is easier this way
+        while(pos < this.size()) {
+            candidate = this.get(pos);
+            if (!candidate.intersects(target, datePart)) {
+                pos++;
+                continue;
+            }
+
+            // collection surely updated
+            modified = true;
+            // Case a- is always done, case b- is only done when the ranges 
+            // doesn't match and we need to add the remains of the candidate
+            this.remove(pos);
+
+            if (candidate.isContained(target, datePart)) {
+                continue;
+            }
+            
+            newItems = candidate.getDifference(target, datePart);
+            for (int i=0; i<newItems.size(); i++) {
+                this.add(pos + i, newItems.get(i));
+            }
+            pos += newItems.size();
+        }
+
+        return modified;
+    }
+
+    @Override
+    public boolean removeAll(Collection<?> c) {
+        boolean updated = false;
+        for (Object obj : c) {
+            updated |= this.remove(obj);
+        }
+        return updated;
     }
 }
