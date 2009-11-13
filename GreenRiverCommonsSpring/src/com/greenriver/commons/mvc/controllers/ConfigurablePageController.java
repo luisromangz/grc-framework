@@ -1,10 +1,10 @@
 package com.greenriver.commons.mvc.controllers;
 
-import com.greenriver.commons.collections.Lists;
 import com.greenriver.commons.mvc.configuration.PageConfiguration;
 import com.greenriver.commons.mvc.configuration.FormsConfiguration;
 import com.greenriver.commons.mvc.configuration.PageToolsConfiguration;
 import com.greenriver.commons.mvc.configuration.PropertiesViewConfiguration;
+import com.greenriver.commons.mvc.controllers.plugins.ControllerPlugin;
 import com.greenriver.commons.mvc.helpers.form.FormBuilder;
 import com.greenriver.commons.mvc.helpers.header.HeaderConfiguration;
 import com.greenriver.commons.mvc.helpers.header.HeaderConfigurer;
@@ -12,11 +12,6 @@ import com.greenriver.commons.mvc.helpers.properties.PropertiesViewBuilder;
 import com.greenriver.commons.mvc.pageTools.PageTool;
 import com.greenriver.commons.mvc.pageTools.PageToolManager;
 import com.greenriver.commons.session.UserSessionInfo;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -50,11 +45,13 @@ public class ConfigurablePageController extends AbstractController
     private String viewName;
     private UserSessionInfo userSessionInfo;
     private PageToolManager pageToolManager;
+    private List<ControllerPlugin> plugins;
     // </editor-fold>
 
     public ConfigurablePageController() {
         // We intialize the pageConfiguration object;
         pageConfiguration = new PageConfiguration();
+        plugins = new ArrayList<ControllerPlugin>();
     }
 
     @Override
@@ -64,59 +61,38 @@ public class ConfigurablePageController extends AbstractController
 
         ModelAndView mav = new ModelAndView(viewName);
 
-        headerConfigurer.setCssFiles(pageConfiguration.getCssFiles());
-        headerConfigurer.addDojoBundles(pageConfiguration.getDojoBundles());
-        headerConfigurer.addDojoModules(pageConfiguration.getDojoModules());
-        headerConfigurer.setDwrServices(pageConfiguration.getDwrServices());
+        headerConfigurer.setCssFiles(getPageConfiguration().getCssFiles());
+        headerConfigurer.addDojoBundles(getPageConfiguration().getDojoBundles());
+        headerConfigurer.addDojoModules(getPageConfiguration().getDojoModules());
+        headerConfigurer.setDwrServices(getPageConfiguration().getDwrServices());
         headerConfigurer.setJavaScriptFiles(
-                pageConfiguration.getJavaScriptFiles());
-        headerConfigurer.setOnLoadScripts(pageConfiguration.getOnLoadScripts());
-        headerConfigurer.setScripts(pageConfiguration.getScripts());
-        headerConfigurer.setTitle(pageConfiguration.getTitle());
+                getPageConfiguration().getJavaScriptFiles());
+        headerConfigurer.setOnLoadScripts(getPageConfiguration().getOnLoadScripts());
+        headerConfigurer.setScripts(getPageConfiguration().getScripts());
+        headerConfigurer.setTitle(getPageConfiguration().getTitle());
+
+         headerConfigurer.configure(mav);
+       
 
         configureFormEntities(this.getFormEntities(), mav, null);
-
         configurePropertiesView(this.getPropertiesView(), mav, null);
-
         configurePageTools(mav);
 
-        headerConfigurer.configure(mav);
+        
 
         if (this.userSessionInfo != null) {
             mav.addObject("userSessionInfo", this.userSessionInfo);
         }
 
-        customHandleRequest(request, response, mav);
+         customHandleRequest(request, response, mav);
 
-        // We create the page's dojo-bundle profile.
-        createBundleProfile(request);
+         for(ControllerPlugin plugin : this.getPlugins()) {
+            plugin.doWork(request,getPageConfiguration());
+        }
 
+       
 
         return mav;
-    }
-
-    private void createBundleProfile(HttpServletRequest request) 
-            throws UnsupportedEncodingException, FileNotFoundException, IOException {
-        String path = request.getSession().getServletContext().getRealPath("");
-        path += "/" + request.getServletPath() + "-dojo-bundle.profile.js";
-
-        String profileContent =
-                "dependencies={\nstripConsole:'normal',\n" +
-                "layers:[{\nname:'%s',\n dependencies: [\n'%s'\n]\n}],\n " +
-                "prefixes:[\n['dijit','../dijit'],\n['dojox','../dojox'],\n['grc','../grc']\n]\n}";
-
-        // We remove the initial slash and replace the dots with hyphens.
-        String fileName = request.getServletPath().substring(1);
-        fileName = fileName.replace('.', '-');
-        profileContent = String.format(profileContent,
-                fileName+"-dojo-bundle.js",
-                Lists.join(headerConfigurer.getDojoModules(), "',\n'"));
-
-        OutputStreamWriter out = new OutputStreamWriter(
-                new FileOutputStream(path), "UTF-8");
-
-        out.write(profileContent);
-        out.close();
     }
 
     public void customHandleRequest(HttpServletRequest request,
@@ -207,24 +183,24 @@ public class ConfigurablePageController extends AbstractController
                         "tools/" + pageTool.getName(),
                         pageTool.getSetupPaneJspFiles()));
 
-                headerConfigurer.getJavaScriptFiles().addAll(addPathPrefixToFileNames(
+                pageConfiguration.getJavaScriptFiles().addAll(addPathPrefixToFileNames(
                         "tools/" + pageTool.getName(),
                         pageTool.getJavaScriptFiles()));
 
-                headerConfigurer.getCssFiles().addAll(addPathPrefixToFileNames(
+                pageConfiguration.getCssFiles().addAll(addPathPrefixToFileNames(
                         pageTool.getName(),
                         pageTool.getCssFiles()));
 
-                headerConfigurer.getDojoBundles().addAll(
+                pageConfiguration.getDojoBundles().addAll(
                         pageTool.getDojoBundles());
 
-                headerConfigurer.getDojoModules().addAll(
+                pageConfiguration.getDojoModules().addAll(
                         pageTool.getDojoModules());
-                headerConfigurer.getDwrServices().addAll(
+                pageConfiguration.getDwrServices().addAll(
                         pageTool.getDwrServices());
-                headerConfigurer.getOnLoadScripts().addAll(
+                pageConfiguration.getOnLoadScripts().addAll(
                         pageTool.getOnLoadScripts());
-                headerConfigurer.getScripts().addAll(pageTool.getScripts());
+                pageConfiguration.getScripts().addAll(pageTool.getScripts());
 
                 //Forms ids are prefixed with the task name
                 configureFormEntities(pageTool.getFormEntities(), mav,
@@ -241,7 +217,7 @@ public class ConfigurablePageController extends AbstractController
     }
     // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="Facade methods">
+    // <editor-fold defaultstate="collapsed" desc="Getters, setters and adders">
     /**
      * @param headerConfigurer the headerConfigurer to set
      */
@@ -296,7 +272,7 @@ public class ConfigurablePageController extends AbstractController
      * @param entityName The name of the entity the form will be created for.
      */
     public void addFormEntity(String id, String entityName) {
-        pageConfiguration.addFormEntity(id, entityName);
+        getPageConfiguration().addFormEntity(id, entityName);
     }
 
     /**
@@ -304,7 +280,7 @@ public class ConfigurablePageController extends AbstractController
      * @return A list containing the entity names.
      */
     public Map<String, String> getFormEntities() {
-        return pageConfiguration.getFormEntities();
+        return getPageConfiguration().getFormEntities();
     }
 
     /**
@@ -312,7 +288,7 @@ public class ConfigurablePageController extends AbstractController
      * @param formEntities A list of entity names.
      */
     public void setFormEntities(Map<String, String> formEntities) {
-        pageConfiguration.setFormEntities(formEntities);
+        getPageConfiguration().setFormEntities(formEntities);
     }
 
     /**
@@ -320,7 +296,7 @@ public class ConfigurablePageController extends AbstractController
      * @param cssFilename The name (without the extension) of the CSS file.
      */
     public void addCssFile(String cssFilename) {
-        pageConfiguration.addCssFile(cssFilename);
+        getPageConfiguration().addCssFile(cssFilename);
     }
 
     /**
@@ -329,7 +305,7 @@ public class ConfigurablePageController extends AbstractController
      * @param name The name of the service.
      */
     public void addDwrService(String name) {
-        pageConfiguration.addDwrService(name);
+        getPageConfiguration().addDwrService(name);
     }
 
     /**
@@ -337,7 +313,7 @@ public class ConfigurablePageController extends AbstractController
      * @param bundleName The bundle file name (without its extension).
      */
     public void addDojoBundle(String bundleName) {
-        pageConfiguration.addDojoBundle(bundleName);
+        getPageConfiguration().addDojoBundle(bundleName);
     }
 
     /**
@@ -347,7 +323,7 @@ public class ConfigurablePageController extends AbstractController
      * being loaded (e.g. dijit.form.Button).
      */
     public void addDojoModule(String dojoModule) {
-        pageConfiguration.addDojoModule(dojoModule);
+        getPageConfiguration().addDojoModule(dojoModule);
     }
 
     /**
@@ -355,7 +331,7 @@ public class ConfigurablePageController extends AbstractController
      * @param jsFilename The name of the Javascript file, without extension.
      */
     public void addJavaScriptFile(String jsFilename) {
-        pageConfiguration.addJavaScriptFile(jsFilename);
+        getPageConfiguration().addJavaScriptFile(jsFilename);
     }
 
     /**
@@ -363,7 +339,7 @@ public class ConfigurablePageController extends AbstractController
      * @param code The piece of code to be executed.
      */
     public void addOnLoadScript(String code) {
-        pageConfiguration.addOnLoadScript(code);
+        getPageConfiguration().addOnLoadScript(code);
     }
 
     /**
@@ -371,7 +347,7 @@ public class ConfigurablePageController extends AbstractController
      * @param script The piece of code to be included.
      */
     public void addScript(String script) {
-        pageConfiguration.addScript(script);
+        getPageConfiguration().addScript(script);
     }
 
     /**
@@ -379,7 +355,7 @@ public class ConfigurablePageController extends AbstractController
      * @return A list of the names of the CSS files, without extensions.
      */
     public List<String> getCssFiles() {
-        return pageConfiguration.getCssFiles();
+        return getPageConfiguration().getCssFiles();
     }
 
     /**
@@ -387,7 +363,7 @@ public class ConfigurablePageController extends AbstractController
      * @return A list with the names of the Dojo modules to be 'required'.
      */
     public List<String> getDojoModules() {
-        return pageConfiguration.getDojoModules();
+        return getPageConfiguration().getDojoModules();
     }
 
     /**
@@ -395,7 +371,7 @@ public class ConfigurablePageController extends AbstractController
      * @return A list with the names of the Javascript files, without the extension.
      */
     public List<String> getDojoBundles() {
-        return pageConfiguration.getDojoBundles();
+        return getPageConfiguration().getDojoBundles();
     }
 
     /**
@@ -403,7 +379,7 @@ public class ConfigurablePageController extends AbstractController
      * @return A list with the services' names.
      */
     public List<String> getDwrServices() {
-        return pageConfiguration.getDwrServices();
+        return getPageConfiguration().getDwrServices();
     }
 
     /**
@@ -411,7 +387,7 @@ public class ConfigurablePageController extends AbstractController
      * @return A list with the names of the files, without the extension.
      */
     public List<String> getJavaScriptFiles() {
-        return pageConfiguration.getJavaScriptFiles();
+        return getPageConfiguration().getJavaScriptFiles();
     }
 
     /**
@@ -420,7 +396,7 @@ public class ConfigurablePageController extends AbstractController
      * @return A list with the pieces of code.
      */
     public List<String> getOnLoadScripts() {
-        return pageConfiguration.getOnLoadScripts();
+        return getPageConfiguration().getOnLoadScripts();
     }
 
     /**
@@ -428,7 +404,7 @@ public class ConfigurablePageController extends AbstractController
      * @return A list with the pieces of code.
      */
     public List<String> getScripts() {
-        return pageConfiguration.getScripts();
+        return getPageConfiguration().getScripts();
     }
 
     /**
@@ -436,7 +412,7 @@ public class ConfigurablePageController extends AbstractController
      * @return The page's title.
      */
     public String getTitle() {
-        return pageConfiguration.getTitle();
+        return getPageConfiguration().getTitle();
     }
 
     /**
@@ -444,7 +420,7 @@ public class ConfigurablePageController extends AbstractController
      * @param title The page's title.
      */
     public void setTitle(String title) {
-        pageConfiguration.setTitle(title);
+        getPageConfiguration().setTitle(title);
     }
 
     /**
@@ -452,7 +428,7 @@ public class ConfigurablePageController extends AbstractController
      * @param cssFiles A list with the CSS filenames, without extensions.
      */
     public void setCssFiles(List<String> cssFiles) {
-        pageConfiguration.setCssFiles(cssFiles);
+        getPageConfiguration().setCssFiles(cssFiles);
     }
 
     /**
@@ -460,7 +436,7 @@ public class ConfigurablePageController extends AbstractController
      * @param dwrServices A list of the DWR service names.
      */
     public void setDwrServices(List<String> dwrServices) {
-        pageConfiguration.setDwrServices(dwrServices);
+        getPageConfiguration().setDwrServices(dwrServices);
     }
 
     /**
@@ -470,7 +446,7 @@ public class ConfigurablePageController extends AbstractController
      * extensions.
      */
     public void setDojoBundles(List<String> dojoBundles) {
-        pageConfiguration.setDojoBundles(dojoBundles);
+        getPageConfiguration().setDojoBundles(dojoBundles);
     }
 
     /**
@@ -479,7 +455,7 @@ public class ConfigurablePageController extends AbstractController
      * (e.g. dijit.form.Button) required by the page.
      */
     public void setDojoModules(List<String> dojoModules) {
-        pageConfiguration.setDojoModules(dojoModules);
+        getPageConfiguration().setDojoModules(dojoModules);
     }
 
     /**
@@ -487,7 +463,7 @@ public class ConfigurablePageController extends AbstractController
      * @param javascriptFiles A list with the names of the files (without extensions).
      */
     public void setJavaScriptFiles(List<String> javascriptFiles) {
-        pageConfiguration.setJavaScriptFiles(javascriptFiles);
+        getPageConfiguration().setJavaScriptFiles(javascriptFiles);
     }
 
     /**
@@ -497,7 +473,7 @@ public class ConfigurablePageController extends AbstractController
      * loading.
      */
     public void setOnLoadScripts(List<String> onLoadScripts) {
-        pageConfiguration.setOnLoadScripts(onLoadScripts);
+        getPageConfiguration().setOnLoadScripts(onLoadScripts);
     }
 
     /**
@@ -505,7 +481,7 @@ public class ConfigurablePageController extends AbstractController
      * @param scripts A list of pieces of JavaScript code.
      */
     public void setScripts(List<String> scripts) {
-        pageConfiguration.setScripts(scripts);
+        getPageConfiguration().setScripts(scripts);
     }
 
     /**
@@ -523,15 +499,15 @@ public class ConfigurablePageController extends AbstractController
     }
 
     public void addPropertiesView(String id, Object configuration) {
-        this.pageConfiguration.addPropertiesView(id, configuration);
+        this.getPageConfiguration().addPropertiesView(id, configuration);
     }
 
     public void setPropertiesView(Map<String, Object> configuration) {
-        this.pageConfiguration.setPropertiesView(configuration);
+        this.getPageConfiguration().setPropertiesView(configuration);
     }
 
     public Map<String, Object> getPropertiesView() {
-        return pageConfiguration.getPropertiesView();
+        return getPageConfiguration().getPropertiesView();
     }
 
     /**
@@ -549,7 +525,25 @@ public class ConfigurablePageController extends AbstractController
     }
 
     public void addDojoBundles(List<String> dojoBundles) {
-        pageConfiguration.addDojoBundles(dojoBundles);
+        getPageConfiguration().addDojoBundles(dojoBundles);
+    }
+
+    public void addDojoModules(List<String> dojoModules) {
+        getPageConfiguration().addDojoModules(dojoModules);
+    }
+
+    /**
+     * @return the plugin
+     */
+    public List<ControllerPlugin> getPlugins() {
+        return plugins;
+    }
+
+    /**
+     * @param plugin the plugin to set
+     */
+    public void setPlugins(List<ControllerPlugin> plugin) {
+        this.plugins = plugin;
     }
 
     // </editor-fold>
@@ -567,8 +561,13 @@ public class ConfigurablePageController extends AbstractController
         return prefixedFileNames;
     }
 
-    public void addDojoModules(List<String> dojoModules) {
-        pageConfiguration.addDojoModules(dojoModules);
+    /**
+     * @return the pageConfiguration
+     */
+    protected PageConfiguration getPageConfiguration() {
+        return pageConfiguration;
     }
+
+    
     // </editor-fold>
 }

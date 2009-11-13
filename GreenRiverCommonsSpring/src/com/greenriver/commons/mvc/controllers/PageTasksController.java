@@ -105,18 +105,18 @@ public class PageTasksController extends ConfigurablePageController implements P
 
         // The properties that are files need to have their path relative
         // to the task's name, and inside a "js" folder.
-        headerConfigurer.getJavaScriptFiles().addAll(addPathPrefixToFileNames(
-                "tasks//" + taskName,
+        getPageConfiguration().getCssFiles().addAll(addPathPrefixToFileNames(
+                "tasks/" + taskName,
                 pageTask.getJavaScriptFiles()));
 
-        headerConfigurer.getCssFiles().addAll(
+        getPageConfiguration().getCssFiles().addAll(
                 addPathPrefixToFileNames(taskName, pageTask.getCssFiles()));
 
-        headerConfigurer.getDojoBundles().addAll(pageTask.getDojoBundles());
-        headerConfigurer.getDojoModules().addAll(pageTask.getDojoModules());
-        headerConfigurer.getDwrServices().addAll(pageTask.getDwrServices());
-        headerConfigurer.getOnLoadScripts().addAll(pageTask.getOnLoadScripts());
-        headerConfigurer.getScripts().addAll(pageTask.getScripts());
+        getPageConfiguration().getDojoBundles().addAll(pageTask.getDojoBundles());
+        getPageConfiguration().getDojoModules().addAll(pageTask.getDojoModules());
+        getPageConfiguration().getDwrServices().addAll(pageTask.getDwrServices());
+        getPageConfiguration().getOnLoadScripts().addAll(pageTask.getOnLoadScripts());
+        getPageConfiguration().getScripts().addAll(pageTask.getScripts());
 
         //Forms ids are prefixed with the task name
         configureFormEntities(pageTask.getFormEntities(), mav,
