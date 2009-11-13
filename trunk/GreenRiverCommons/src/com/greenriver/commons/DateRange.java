@@ -1,7 +1,10 @@
 package com.greenriver.commons;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
 
 /**
  * Date range.
@@ -131,10 +134,10 @@ public class DateRange implements Comparable<DateRange>, Cloneable, Serializable
 
     @Override
     public boolean equals(Object obj) {
-        return this.equals(obj, DatePart.DateTime);
+        return this.equals((DateRange) obj, DatePart.DateTime);
     }
 
-    public boolean equals(Object obj, DatePart part) {
+    public boolean equals(DateRange obj, DatePart part) {
         if (obj == null || !this.getClass().isAssignableFrom(obj.getClass())) {
             return false;
         }
@@ -256,8 +259,29 @@ public class DateRange implements Comparable<DateRange>, Cloneable, Serializable
         }
     }
 
+    /**
+     * Checks if the maximum of this range is before the minimum of another
+     * range. That means this range goes before the another one
+     * @param dateRange
+     * @return
+     */
+    public boolean before(DateRange dateRange) {
+        return !Dates.greaterOrEqual(this.max, dateRange.min, DatePart.Date);
+    }
+
+    /**
+     * Checks if the minimum of this range is after the maximum of another
+     * range. That means this range goes after the another one.
+     * @param dateRange
+     * @param part 
+     * @return
+     */
     public boolean before(DateRange dateRange, DatePart part) {
         return !Dates.greaterOrEqual(this.max, dateRange.min, part);
+    }
+
+    public boolean after(DateRange dateRange) {
+        return !Dates.lessOrEqual(this.min, dateRange.max, DatePart.Date);
     }
 
     public boolean after(DateRange dateRange, DatePart part) {
@@ -299,11 +323,15 @@ public class DateRange implements Comparable<DateRange>, Cloneable, Serializable
 
     public boolean contains(Date time, DatePart part) {
         if (this.isEmpty()) {
-           return false;
+            return false;
         }
 
         return (this.max == null || Dates.lessOrEqual(time, this.max, part)) &&
                 (this.min == null || Dates.greaterOrEqual(time, this.min, part));
+    }
+
+    public DateRange getIntersection(DateRange range) {
+        return getIntersection(range, DatePart.Date);
     }
 
     public DateRange getIntersection(DateRange range, DatePart part) {
@@ -328,6 +356,77 @@ public class DateRange implements Comparable<DateRange>, Cloneable, Serializable
             result.setMax(new Date(range.max.getTime()));
         } else {
             result.setMax(new Date(max.getTime()));
+        }
+
+        return result;
+    }
+
+    /**
+     * Gets if a date range is entirely contained within another range
+     * @param target
+     * @return
+     */
+    public boolean isContained(DateRange target) {
+        return isContained(target, DatePart.Date);
+    }
+
+    /**
+     * Gets if a date range is entirely contained within another range
+     * @param target
+     * @param part 
+     * @return
+     */
+    public boolean isContained(DateRange target, DatePart part) {
+        return Dates.lessOrEqual(target.min, min, part) &&
+                Dates.greaterOrEqual(target.max, max, part);
+    }
+
+    /**
+     * Gets the difference within another range. The resulting range(s) will be
+     * made up of those days that are not in the other range. If no days matches
+     * the condition an empty list of ranges will be returned.
+     * @param target
+     * @return
+     */
+    public List<DateRange> getDifference(DateRange target) {
+        return getDifference(target, DatePart.Date);
+    }
+
+    public List<DateRange> getDifference(DateRange target, DatePart part) {
+        List<DateRange> result = new ArrayList<DateRange>(2);
+
+        if (!this.intersects(target, part)) {
+            result.add(new DateRange(min, max));
+            return result;
+        }
+
+        if (this.equals(target, part)) {
+            return result;
+        }
+
+        GregorianCalendar cal = (GregorianCalendar) GregorianCalendar.getInstance();
+
+        if (target.isContained(this)) {
+            // When we contain the target range we end up with two ranges
+            // as result
+            cal.setTime(target.min);
+            cal.add(GregorianCalendar.DAY_OF_MONTH, -1);
+            result.add(new DateRange(min, cal.getTime()));
+            cal.setTime(target.max);
+            cal.add(GregorianCalendar.DAY_OF_MONTH, 1);
+            result.add(new DateRange(cal.getTime(), max));
+        } else if (!Dates.greaterOrEqual(min, target.min, part) ||
+                Dates.equals(max, target.max, part)) {
+
+            cal.setTime(target.min);
+            cal.add(GregorianCalendar.DAY_OF_MONTH, -1);
+            result.add(new DateRange(min, cal.getTime()));
+        } else if (!Dates.lessOrEqual(max, target.max, part) ||
+                Dates.equals(min, target.min, part)) {
+
+            cal.setTime(target.max);
+            cal.add(GregorianCalendar.DAY_OF_MONTH, 1);
+            result.add(new DateRange(cal.getTime(), max));
         }
 
         return result;

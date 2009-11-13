@@ -47,6 +47,7 @@ public class DateRangeSortedListTest {
 
     @Test
     public void testAdd() {
+        System.out.println("testAdd");
         DateRangeSortedList list = new DateRangeSortedList(DatePart.Date);
         GregorianCalendar cal = (GregorianCalendar) GregorianCalendar.getInstance();
 
@@ -118,6 +119,7 @@ public class DateRangeSortedListTest {
 
     @Test
     public void testIntersects() {
+        System.out.println("testIntersects");
         GregorianCalendar cal = (GregorianCalendar) GregorianCalendar.getInstance();
         DateRange range1 = new DateRange();
         DateRangeSortedList list1 = new DateRangeSortedList(1);
@@ -145,5 +147,84 @@ public class DateRangeSortedListTest {
 
         resultList = list1.getIntersection(list2);
         assertArrayEquals(expectedResult.toArray(), resultList.toArray());
+    }
+
+    @Test
+    public void remove() {
+        System.out.println("testRemove");
+        GregorianCalendar cal = (GregorianCalendar) GregorianCalendar.getInstance();
+        DateRange range1 = new DateRange();
+        DateRange range2 = new DateRange();
+        DateRange range3 = new DateRange();
+        DateRange range0 = new DateRange();
+        DateRange removalRange = new DateRange();
+        DateRangeSortedList list = new DateRangeSortedList(4, DatePart.Date);
+        DateRangeSortedList expectedResult = new DateRangeSortedList(4, DatePart.Date);
+
+        range1.setMin(cal.getTime());
+        cal.add(GregorianCalendar.DAY_OF_MONTH, 4);
+        removalRange.setMin(cal.getTime());
+        cal.add(GregorianCalendar.DAY_OF_MONTH, 2);
+        range1.setMax(cal.getTime());
+        cal.add(GregorianCalendar.DAY_OF_MONTH, 3);
+        range2.setMin(cal.getTime());
+        cal.add(GregorianCalendar.DAY_OF_MONTH, 2);
+        removalRange.setMax(cal.getTime());
+        cal.add(GregorianCalendar.DAY_OF_MONTH, 4);
+        range2.setMax(cal.getTime());
+        cal.add(GregorianCalendar.DAY_OF_MONTH, 10);
+        range3.setMin(cal.getTime());
+        cal.add(GregorianCalendar.DAY_OF_MONTH, 4);
+        range3.setMax(cal.getTime());
+        cal.add(GregorianCalendar.DAY_OF_MONTH, -100);
+        range0.setMin(cal.getTime());
+        cal.add(GregorianCalendar.DAY_OF_MONTH, 10);
+        range0.setMax(cal.getTime());
+
+        list.add(range0);
+        list.add(range1);
+        list.add(range2);
+        list.add(range3);
+
+        range1 = new DateRange(range1.getMin(), range1.getMax());
+        cal.setTime(range1.getMax());
+        cal.add(GregorianCalendar.DAY_OF_MONTH, -3);
+        range1.setMax(cal.getTime());
+        
+
+        range2 = new DateRange(range2.getMin(), range2.getMax());
+        cal.setTime(range2.getMin());
+        cal.add(GregorianCalendar.DAY_OF_MONTH, 3);
+        range2.setMin(cal.getTime());
+
+        expectedResult.add(range0);
+        expectedResult.add(range1);
+        expectedResult.add(range2);
+        expectedResult.add(range3);
+
+        list.remove(removalRange);
+        
+        assertArrayEquals(expectedResult.toArray(), list.toArray());
+
+        expectedResult.remove(0);
+        list.remove(range0);
+
+        assertArrayEquals(expectedResult.toArray(), list.toArray());
+
+        list.add(range0);
+
+        cal.setTime(range0.getMin());
+        cal.add(GregorianCalendar.DAY_OF_MONTH, 1);
+        removalRange.setMin(cal.getTime());
+        cal.setTime(range0.getMax());
+        cal.add(GregorianCalendar.DAY_OF_MONTH, -1);
+        removalRange.setMax(cal.getTime());
+
+        expectedResult.add(new DateRange(range0.getMin()));
+        expectedResult.add(new DateRange(range0.getMax()));
+
+        list.remove(removalRange);
+
+        assertArrayEquals(expectedResult.toArray(), list.toArray());
     }
 }
