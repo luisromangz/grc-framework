@@ -64,7 +64,8 @@ public class DojoBundlerPlugin implements ControllerPlugin {
         if (bundleFile.exists() && !alwaysCreate) {
             configuration.getDojoBundles().clear();
             //configuration.addDojoBundle(bundleName);
-            configuration.addDojoBundle(bundleName + (applyCompression?".compressed":""));
+            configuration.addDojoBundle(
+                    bundleName + (applyCompression ? ".js.compressed" : ""));
             return;
         }
 
@@ -73,26 +74,29 @@ public class DojoBundlerPlugin implements ControllerPlugin {
 
         // When using the auto bundler, we discard other bundles.
         configuration.getDojoBundles().clear();
-        
 
-        FileReader reader;
-        try {
-            reader = new FileReader(bundlePath);
-            JavaScriptCompressor compressor = new JavaScriptCompressor(reader,
-                    new ToolErrorReporter(false));
-            FileWriter compressedWriter =
-                    new FileWriter(bundlePath + ".compressed.js");
-            compressor.compress(compressedWriter, 1000, false, false, false,
-                    false);
+        if (applyCompression) {
+            FileReader reader;
+            try {
+                reader = new FileReader(bundlePath);
+                JavaScriptCompressor compressor = new JavaScriptCompressor(
+                        reader,
+                        new ToolErrorReporter(false));
+                FileWriter compressedWriter =
+                        new FileWriter(bundlePath + ".compressed.js");
+                compressor.compress(compressedWriter, 1000, false, false, false,
+                        false);
 
-            compressedWriter.close();
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
-        } catch (EvaluatorException ex) {
-            throw new RuntimeException(ex);
+                compressedWriter.close();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            } catch (EvaluatorException ex) {
+                throw new RuntimeException(ex);
+            }
         }
 
-        configuration.addDojoBundle(bundleName+(applyCompression?".compressed":""));
+        configuration.addDojoBundle(
+                bundleName + (applyCompression ? ".js.compressed" : ""));
     }
 
     public void addDojoModules(List<String> newModules, File bundleFile) {
@@ -103,8 +107,8 @@ public class DojoBundlerPlugin implements ControllerPlugin {
                     bundleFile, false));
 
             for (String newModule : newModules) {
-                if (loadedModules.contains(newModule)
-                        || isModuleExcluded(newModule)) {
+                if (loadedModules.contains(newModule) || isModuleExcluded(
+                        newModule)) {
                     continue;
                 }
 
@@ -249,14 +253,14 @@ public class DojoBundlerPlugin implements ControllerPlugin {
     }
 
     /**
-     * @return the applyCompression
+     * @return the getApplyCompression
      */
-    public boolean applyCompression() {
+    public boolean getApplyCompression() {
         return applyCompression;
     }
 
     /**
-     * @param applyCompression the applyCompression to set
+     * @param getApplyCompression the getApplyCompression to set
      */
     public void setApplyCompression(boolean applyCompression) {
         this.applyCompression = applyCompression;
