@@ -150,4 +150,10 @@ public @interface FieldProperties {
      * @return an array with all the allowed file types.
      */
     public String[] allowedFileTypes() default {};
+
+    /**
+     * A field's deactivation condition.
+     * @return
+     */
+    public FieldDeactivationCondition[] deactivationConditions() default {};
 }
