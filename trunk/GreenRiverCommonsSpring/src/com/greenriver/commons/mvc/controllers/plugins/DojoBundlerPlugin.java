@@ -66,11 +66,7 @@ public class DojoBundlerPlugin extends BaseBundlerPlugin {
         }
 
 
-        for (String loadedModule : loadedModules) {
-            if (newModules.contains(loadedModule)) {
-                newModules.remove(loadedModule);
-            }
-        }
+        
     }
 
     public boolean isModuleExcluded(String moduleName) {
