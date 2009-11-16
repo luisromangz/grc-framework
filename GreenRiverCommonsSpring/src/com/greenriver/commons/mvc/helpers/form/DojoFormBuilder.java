@@ -2,6 +2,7 @@ package com.greenriver.commons.mvc.helpers.form;
 
 import com.greenriver.commons.Strings;
 import com.greenriver.commons.collections.Lists;
+import com.greenriver.commons.data.fieldProperties.FieldDeactivationCondition;
 import com.greenriver.commons.data.fieldProperties.FieldProperties;
 import com.greenriver.commons.data.fieldProperties.FieldPropertiesValidator;
 import com.greenriver.commons.data.fieldProperties.FieldType;
@@ -62,6 +63,38 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
             createPasswordConfirmationFormField(formFieldElement,
                     properties.label());
         }
+
+        for(FieldDeactivationCondition condition : properties.deactivationConditions()) {
+            addFieldDeactivationCondition(field.getId(), condition);
+        }
+    }
+
+    public void addFieldDeactivationCondition(
+            String fieldId,
+            FieldDeactivationCondition condition) {
+
+        ArrayList<String> conditions = new ArrayList<String>();
+        if(!Strings.isNullOrEmpty(condition.equals())) {
+            conditions.add(String.format("value==%s", condition.equals()));
+        }
+
+        if(!Strings.isNullOrEmpty(condition.notEquals())) {
+            conditions.add(String.format("value!=%s", condition.notEquals()));
+        }
+
+        String conditionString = Lists.join(conditions, "||");
+
+
+        String code = String.format(
+                "dojo.connect(dijit.byId('%s'),'onChange',function(){" +
+                "var value=dijit.byId('%s').attr('value');" +
+                "dijit.byId('%s').setDisabled(%s)});",
+                lastForm.getId()+"_"+condition.widgetId(),
+                 lastForm.getId()+"_"+condition.widgetId(),
+                fieldId,
+                conditionString);
+
+        configuration.addOnLoadScript(code);
     }
 
     public void addFieldsFromModel(Class modelClass) {
@@ -435,7 +468,8 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
                     element.getId()));
         } catch (Exception ex) {
             throw new FormBuildingException(
-                    "Error creating selection contents for field " + element.getId() + ": " + ex.getMessage());
+                    "Error creating selection contents for field "
+                    + element.getId() + ": " + ex.getMessage());
         }
     }
 
@@ -454,16 +488,19 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
 
         String colorSelectionScript =
                 String.format(
-                "dojo.connect(dijit.byId('%s'),'onChange',function(newValue) {dojo.style(dojo.byId('%1$s_colorViewer'),'background',newValue);});",
+                "dojo.connect(dijit.byId('%s'),'onChange',function(newValue) {" +
+                "dojo.style(dojo.byId('%1$s_colorViewer'),'background',newValue);});",
                 element.getId());
 
         configuration.addOnLoadScript(colorSelectionScript);
 
         String contents = String.format(
-                "<span><div id=\"%s_colorViewer\" style=\"width:1em; height:1em; border: 1px solid #7EABCD;\"></div></span>",
+                "<span><div id=\"%s_colorViewer\" style=\"width:1em; height:1em;" +
+                " border: 1px solid #7EABCD;\"></div></span>",
                 element.getId());
         contents += String.format(
-                "<div dojoType=\"dijit.TooltipDialog\"><div id=\"%s\" dojoType=\"dojox.widget.ColorPicker\" liveUpdate=\"true\"></div></div>",
+                "<div dojoType=\"dijit.TooltipDialog\"><div id=\"%s\" " +
+                "dojoType=\"dojox.widget.ColorPicker\" liveUpdate=\"true\"></div></div>",
                 element.getId());
 
         element.setContents(contents);
@@ -511,7 +548,8 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
                     element.getId()));
         } catch (Exception ex) {
             throw new FormBuildingException(
-                    "Error creating selection contents for field " + element.getId() + ": " + ex.getMessage());
+                    "Error creating selection contents for field "
+                    + element.getId() + ": " + ex.getMessage());
         }
 
         configuration.addDojoModule("dijit.form.ComboBox");
@@ -537,7 +575,8 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
                     element.getId()));
         } catch (Exception ex) {
             throw new FormBuildingException(
-                    "Error creating selection contents for field " + element.getId() + ": " + ex.getMessage());
+                    "Error creating selection contents for field "
+                    + element.getId() + ": " + ex.getMessage());
         }
     }
 
@@ -622,7 +661,8 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         String confirmId = formFieldElement.getId() + "_confirm";
         String validationFunction =
                 String.format(
-                "var %s_validate = function (value) {\n" + "return dijit.byId(\"%s\").getValue() == value;\n" + "}",
+                "var %s_validate = function (value) {\n"
+                + "return dijit.byId(\"%s\").getValue() == value;\n" + "}",
                 confirmId, formFieldElement.getId());
 
         String validationFunctionConnector =

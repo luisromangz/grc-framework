@@ -164,6 +164,7 @@ public class DojoBundlerPlugin implements ControllerPlugin {
         List<String> lines = new ArrayList<String>();
         // We start reading the module file
         while (scanner.hasNextLine()) {
+            
             String nextLine = scanner.nextLine();
 
             // We search for a declare statement in the line.
@@ -188,9 +189,6 @@ public class DojoBundlerPlugin implements ControllerPlugin {
                         nextLine = nextLine.replaceAll(regex, "");
                     }
                 }
-
-
-
             }
 
             if (!nextLine.isEmpty()) {
