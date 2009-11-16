@@ -71,13 +71,8 @@ public class PageTasksController extends ConfigurablePageController implements P
             // We have to add to the previously configured properties,
             // that had been configured in the page level, not the task level
             // as we are doing it now.
-            configurePageProperties(pageTask, headerConfigurer, modelAndView);
+            configurePageProperties(pageTask, modelAndView);
         }
-
-        // The configuration was done in the call to super.handleRequestInternal,
-        // but must be redone now as we have to add all the things we have included
-        // for the tasks.
-        headerConfigurer.configure(modelAndView);
 
         // We add the tasks info to the ModelAndView object so we can access
         // it in the view so the tasks and toolbar can be rendered.
@@ -97,16 +92,16 @@ public class PageTasksController extends ConfigurablePageController implements P
         return result;
     }
 
-    private void configurePageProperties(PageTask pageTask,
-            HeaderConfigurer headerConfigurer,
+    private void configurePageProperties(
+            PageTask pageTask,
             ModelAndView mav) throws ClassNotFoundException {
 
         String taskName = pageTask.getTaskName();
 
         // The properties that are files need to have their path relative
         // to the task's name, and inside a "js" folder.
-        getPageConfiguration().getCssFiles().addAll(addPathPrefixToFileNames(
-                "tasks/" + taskName,
+        getPageConfiguration().getJavaScriptFiles().addAll(addPathPrefixToFileNames(
+                "tasks/"+taskName,
                 pageTask.getJavaScriptFiles()));
 
         getPageConfiguration().getCssFiles().addAll(

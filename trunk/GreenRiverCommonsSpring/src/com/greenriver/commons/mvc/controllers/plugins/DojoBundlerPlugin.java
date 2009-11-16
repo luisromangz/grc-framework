@@ -3,9 +3,11 @@ package com.greenriver.commons.mvc.controllers.plugins;
 // <editor-fold defaultstate="collapsed" desc="Imports">
 import com.greenriver.commons.collections.Lists;
 import com.greenriver.commons.mvc.configuration.PageConfiguration;
+import com.yahoo.platform.yui.compressor.JavaScriptCompressor;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,6 +15,8 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.regex.MatchResult;
 import javax.servlet.http.HttpServletRequest;
+import org.mozilla.javascript.EvaluatorException;
+import org.mozilla.javascript.tools.ToolErrorReporter;
 import org.springframework.security.providers.encoding.PasswordEncoder;
 // </editor-fold>
 
@@ -27,6 +31,7 @@ public class DojoBundlerPlugin implements ControllerPlugin {
     private boolean alwaysCreate;
     private PasswordEncoder passwordEncoder;
     private List<String> excludedNamespaces;
+    private boolean applyCompression;
     // </editor-fold>
 
     public DojoBundlerPlugin() {
@@ -48,6 +53,7 @@ public class DojoBundlerPlugin implements ControllerPlugin {
         // of the bundled file will change too, and thus will force a new
         // bundle generation.
         bundleName = passwordEncoder.encodePassword(bundleName, null);
+        bundleName = "dojo-" + bundleName;
 
         String bundlePath = String.format(
                 "%sdojo/%s.js",
@@ -56,20 +62,46 @@ public class DojoBundlerPlugin implements ControllerPlugin {
 
         File bundleFile = new File(bundlePath);
         if (bundleFile.exists() && !alwaysCreate) {
-            configuration.addDojoBundle(bundleName);
+            configuration.getDojoBundles().clear();
+            //configuration.addDojoBundle(bundleName);
+            configuration.addDojoBundle(bundleName + (applyCompression?".compressed":""));
             return;
         }
 
+        addDojoModules(dojoModules, bundleFile);
 
-        configuration.addDojoBundle(bundleName);
+
+        // When using the auto bundler, we discard other bundles.
+        configuration.getDojoBundles().clear();
+        
+
+        FileReader reader;
+        try {
+            reader = new FileReader(bundlePath);
+            JavaScriptCompressor compressor = new JavaScriptCompressor(reader,
+                    new ToolErrorReporter(false));
+            FileWriter compressedWriter =
+                    new FileWriter(bundlePath + ".compressed.js");
+            compressor.compress(compressedWriter, 1000, false, false, false,
+                    false);
+
+            compressedWriter.close();
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        } catch (EvaluatorException ex) {
+            throw new RuntimeException(ex);
+        }
+
+        configuration.addDojoBundle(bundleName+(applyCompression?".compressed":""));
     }
 
     public void addDojoModules(List<String> newModules, File bundleFile) {
+        List<String> loadedModules = new ArrayList<String>();
+
         try {
             BufferedWriter fileWriter = new BufferedWriter(new FileWriter(
-                    bundleFile));
+                    bundleFile, false));
 
-            List<String> loadedModules = new ArrayList<String>();
             for (String newModule : newModules) {
                 if (loadedModules.contains(newModule)
                         || isModuleExcluded(newModule)) {
@@ -79,16 +111,22 @@ public class DojoBundlerPlugin implements ControllerPlugin {
                 processModuleFile(loadedModules, newModule, fileWriter);
             }
 
-
             fileWriter.close();
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
+
+
+        for (String loadedModule : loadedModules) {
+            if (newModules.contains(loadedModule)) {
+                newModules.remove(loadedModule);
+            }
+        }
     }
 
     public boolean isModuleExcluded(String moduleName) {
-        for(String excludedNamespace : this.excludedNamespaces) {
-            if(moduleName.startsWith(excludedNamespace)){
+        for (String excludedNamespace : this.excludedNamespaces) {
+            if (moduleName.startsWith(excludedNamespace)) {
                 return true;
             }
         }
@@ -102,17 +140,17 @@ public class DojoBundlerPlugin implements ControllerPlugin {
 
     public void processModuleFile(
             List<String> loadedModules,
-            String moduleFileName,
+            String moduleName,
             BufferedWriter fileWriter) throws IOException {
 
-        if (loadedModules.contains(moduleFileName)) {
+        if (loadedModules.contains(moduleName)) {
             return;
         }
 
-        loadedModules.add(moduleFileName);
+        loadedModules.add(moduleName);
 
 
-        File moduleFile = new File(getPathFromModuleName(moduleFileName));
+        File moduleFile = new File(getPathFromModuleName(moduleName));
         Scanner scanner;
         try {
             scanner = new Scanner(moduleFile);
@@ -125,26 +163,38 @@ public class DojoBundlerPlugin implements ControllerPlugin {
             String nextLine = scanner.nextLine();
 
             // We search for a declare statement in the line.
-            String regex = "dojo\\.require\\(\"((\\w+\\.)*(\\w)+)\"\\)(;)?";
+            String regex =
+                    "dojo\\.require\\([\"']((\\w+\\.)+(\\w)+)[\"']\\)(;)?";
             String declarationFound = scanner.findInLine(regex);
 
             if (declarationFound != null) {
-                // We are supposing just one declare statement by line.
                 MatchResult matchResult = scanner.match();
-                String requiredModule = matchResult.group(1);
+                for (int groupIndex = 1; groupIndex < matchResult.groupCount(); groupIndex++) {
+                    String requiredModule = matchResult.group(groupIndex);
 
-                // We have found a declare statement, so we remove process it
-                // before we write anything to the file.
-                if(!isModuleExcluded(requiredModule)) {
-                    processModuleFile(loadedModules, requiredModule, fileWriter);
-                    nextLine = nextLine.replaceAll(regex, "");
+                    if (!requiredModule.matches("^(\\w+\\.)+(\\w)+$")) {
+                        continue;
+                    }
+
+                    // We have found a declare statement, so we remove process it
+                    // before we write anything to the file.
+                    if (!isModuleExcluded(requiredModule)) {
+                        processModuleFile(loadedModules, requiredModule,
+                                fileWriter);
+                        nextLine = nextLine.replaceAll(regex, "");
+                    }
                 }
+
+
+
             }
 
-            lines.add(nextLine);
+            if (!nextLine.isEmpty()) {
+                lines.add(nextLine);
+            }
         }
 
-        fileWriter.write("// Module: "+ moduleFileName);
+        fileWriter.write("// Module: " + moduleName);
         fileWriter.newLine();
 
         for (String line : lines) {
@@ -196,6 +246,20 @@ public class DojoBundlerPlugin implements ControllerPlugin {
      */
     public void setExcludedNamespaces(List<String> excludedNamespaces) {
         this.excludedNamespaces = excludedNamespaces;
+    }
+
+    /**
+     * @return the applyCompression
+     */
+    public boolean applyCompression() {
+        return applyCompression;
+    }
+
+    /**
+     * @param applyCompression the applyCompression to set
+     */
+    public void setApplyCompression(boolean applyCompression) {
+        this.applyCompression = applyCompression;
     }
     // </editor-fold>
 }

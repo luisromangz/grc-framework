@@ -1,5 +1,6 @@
 package com.greenriver.commons.mvc.helpers.form;
 import com.greenriver.commons.data.fieldProperties.FieldProperties;
+import com.greenriver.commons.mvc.helpers.header.HeaderConfiguration;
 import java.util.List;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -13,9 +14,13 @@ public interface FormBuilder {
      * Adds a form to the form collection, making it the form being edited
      * e. g. the form fields are being added to.
      * @param formId The new form's id.
+     * @param configuration The configuration object used to hold javascript files etc.
      * @param modelAndView The <c>ModelAndView</c> object the form will be added to.
      */
-    public void addForm(String formId, ModelAndView modelAndView);
+    public void addForm(
+            String formId,
+            HeaderConfiguration configuration,
+            ModelAndView modelAndView);
 
     /**
      * Gets the created forms.
