@@ -5,9 +5,6 @@
 
 package com.greenriver.commons.mvc.helpers.header;
 
-import com.greenriver.commons.mvc.configuration.PageConfiguration;
-import java.util.ArrayList;
-import java.util.List;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
@@ -49,17 +46,18 @@ public class TemplateHeaderConfigurer
      * sensible way, which is not enforced here in any way.
      *
      * @param mav
+     * @param configuration
      */
-    public void configure(ModelAndView mav) {
-       mav.addObject("jsFiles", this.getJavaScriptFiles());
-       mav.addObject("jsScripts", this.getScripts());
-       mav.addObject("onLoadScripts", this.getOnLoadScripts());
-       mav.addObject("dojoModules", this.getDojoModules());
-       mav.addObject("cssFiles", this.getCssFiles());
-       mav.addObject("dwrServices", this.getDwrServices());
+    public void configure(ModelAndView mav, HeaderConfiguration configuration) {
+       mav.addObject("jsFiles", configuration.getJavaScriptFiles());
+       mav.addObject("jsScripts", configuration.getScripts());
+       mav.addObject("onLoadScripts", configuration.getOnLoadScripts());
+       mav.addObject("dojoModules", configuration.getDojoModules());
+       mav.addObject("cssFiles", configuration.getCssFiles());
+       mav.addObject("dwrServices", configuration.getDwrServices());
        // The following remains here for compatibility's sake.
-       mav.addObject("dwrScripts", this.getDwrServices());
-       mav.addObject("title", this.getTitle());
-       mav.addObject("dojoBundles", this.getDojoBundles());
+       mav.addObject("dwrScripts", configuration.getDwrServices());
+       mav.addObject("title", configuration.getTitle());
+       mav.addObject("dojoBundles", configuration.getDojoBundles());
     }
 }

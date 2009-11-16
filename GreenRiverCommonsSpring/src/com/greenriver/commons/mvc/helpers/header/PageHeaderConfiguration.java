@@ -2,7 +2,6 @@ package com.greenriver.commons.mvc.helpers.header;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.web.servlet.ModelAndView;
 
 /**
  * Instances of this class hold the configuration of a page's header.

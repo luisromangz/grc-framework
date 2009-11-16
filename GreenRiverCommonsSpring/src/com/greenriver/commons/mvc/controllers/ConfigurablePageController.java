@@ -61,19 +61,6 @@ public class ConfigurablePageController extends AbstractController
 
         ModelAndView mav = new ModelAndView(viewName);
 
-        headerConfigurer.setCssFiles(getPageConfiguration().getCssFiles());
-        headerConfigurer.addDojoBundles(getPageConfiguration().getDojoBundles());
-        headerConfigurer.addDojoModules(getPageConfiguration().getDojoModules());
-        headerConfigurer.setDwrServices(getPageConfiguration().getDwrServices());
-        headerConfigurer.setJavaScriptFiles(
-                getPageConfiguration().getJavaScriptFiles());
-        headerConfigurer.setOnLoadScripts(getPageConfiguration().getOnLoadScripts());
-        headerConfigurer.setScripts(getPageConfiguration().getScripts());
-        headerConfigurer.setTitle(getPageConfiguration().getTitle());
-
-         headerConfigurer.configure(mav);
-       
-
         configureFormEntities(this.getFormEntities(), mav, null);
         configurePropertiesView(this.getPropertiesView(), mav, null);
         configurePageTools(mav);
@@ -84,13 +71,13 @@ public class ConfigurablePageController extends AbstractController
             mav.addObject("userSessionInfo", this.userSessionInfo);
         }
 
-         customHandleRequest(request, response, mav);
+         customHandleRequest(request, response, mav);         
 
          for(ControllerPlugin plugin : this.getPlugins()) {
             plugin.doWork(request,getPageConfiguration());
         }
 
-       
+       headerConfigurer.configure(mav, getPageConfiguration());
 
         return mav;
     }
@@ -125,7 +112,11 @@ public class ConfigurablePageController extends AbstractController
         for (String formId : configuration.keySet()) {
             String className = configuration.get(formId);
             Class entityClass = Class.forName(className);
-            formBuilder.addForm(prefix + formId, mav);
+            formBuilder.addForm(
+                    prefix + formId,
+                    this.getPageConfiguration(),
+                    mav);
+            
             formBuilder.addFieldsFromModel(entityClass);
         }
     }

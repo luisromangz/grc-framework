@@ -6,8 +6,7 @@ import com.greenriver.commons.data.fieldProperties.FieldProperties;
 import com.greenriver.commons.data.fieldProperties.FieldPropertiesValidator;
 import com.greenriver.commons.data.fieldProperties.FieldType;
 import com.greenriver.commons.data.validation.ValidationRegex;
-import com.greenriver.commons.mvc.helpers.header.HeaderConfigurer;
-import com.greenriver.commons.mvc.helpers.header.HeaderConfigurerClient;
+import com.greenriver.commons.mvc.helpers.header.HeaderConfiguration;
 import com.greenriver.commons.roleManagement.RoleManager;
 import com.greenriver.commons.roleManagement.RoleManagerClient;
 import java.lang.reflect.Field;
@@ -24,13 +23,12 @@ import org.springframework.web.servlet.ModelAndView;
  * it has state.
  * @author luis
  */
-public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
-        RoleManagerClient {
+public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
 
     private List<Form> forms;
     private Form lastForm;
     private RoleManager roleManager;
-    private HeaderConfigurer headerConfigurer;
+    private HeaderConfiguration configuration;
 
     public DojoFormBuilder() {
         forms = new ArrayList<Form>();
@@ -80,27 +78,22 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
                 this.addField(field.getName(), props, field.getType());
             }
         }
-
-
     }
 
     public void setAction(String action) {
         lastForm.setAction(action);
     }
 
-    public void setHeaderConfigurer(HeaderConfigurer headerConfigurer) {
-        this.headerConfigurer = headerConfigurer;
-    }
-
-    public HeaderConfigurer getHeaderConfigurer() {
-        return this.headerConfigurer;
-    }
-
-    public void addForm(String formId, ModelAndView modelAndView) {
+    public void addForm(
+            String formId,
+            HeaderConfiguration configuration,
+            ModelAndView modelAndView) {
         Form newForm = new Form();
         newForm.setId(formId);
 
         modelAndView.addObject(formId, newForm);
+
+        this.configuration = configuration;
 
         forms.add(newForm);
         lastForm = newForm;
@@ -318,7 +311,7 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
         assertNotNumber(properties);
         assertNotSelection(properties);
         assertNotFile(properties);
-        headerConfigurer.addDojoModule("grc.dijit.form.DowngradableTextarea");
+        configuration.addDojoModule("grc.dijit.form.DowngradableTextarea");
         element.setAttribute(
                 "dojoType",
                 "grc.dijit.form.DowngradableTextarea");
@@ -334,7 +327,7 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
 
         element.getAttributes().setProperty("dojoType", "dijit.form.Editor");
         element.setElementType("textarea");
-        headerConfigurer.addDojoModule("dijit.form.Editor");
+        configuration.addDojoModule("dijit.form.Editor");
     }
 
     private void setupNumberField(HtmlFormElementInfo element,
@@ -346,7 +339,7 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
 
         element.getAttributes().setProperty("dojoType",
                 "dijit.form.NumberSpinner");
-        headerConfigurer.addDojoModule("dijit.form.NumberSpinner");
+        configuration.addDojoModule("dijit.form.NumberSpinner");
 
         String min = properties.minValue() + "";
         String max = properties.maxValue() + "";
@@ -366,7 +359,7 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
 
         element.getAttributes().setProperty("dojoType", "dijit.form.CheckBox");
         element.getAttributes().setProperty("type", "checkbox");
-        headerConfigurer.addDojoModule("dijit.form.CheckBox");
+        configuration.addDojoModule("dijit.form.CheckBox");
     }
 
     private void setupEmailField(HtmlFormElementInfo element,
@@ -383,7 +376,7 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
         element.getAttributes().setProperty(
                 "regExp",
                 ValidationRegex.EMAIL);
-        headerConfigurer.addDojoModule("dojox.validate.regexp");
+        configuration.addDojoModule("dojox.validate.regexp");
     }
 
     private void setupIpAddressField(HtmlFormElementInfo element,
@@ -402,7 +395,7 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
                 "{allowIPv6:false,allowHybrid:false, allowDecimal:false}");
         element.getAttributes().setProperty("invalidMessage",
                 "Dirección IP inválida.");
-        headerConfigurer.addDojoModule("dojox.validate.regexp");
+        configuration.addDojoModule("dojox.validate.regexp");
     }
 
     private void setupSelectionField(HtmlFormElementInfo element,
@@ -429,7 +422,7 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
         assertNotText(properties);
         assertNotFile(properties);
 
-        headerConfigurer.addDojoModule("dojox.form.CheckedMultiSelect");
+        configuration.addDojoModule("dojox.form.CheckedMultiSelect");
         element.getAttributes().setProperty("dojoType",
                 "dojox.form.CheckedMultiSelect");
         element.getAttributes().setProperty("multiple", "true");
@@ -457,14 +450,14 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
         element.setElementType("div");
         element.getAttributes().setProperty(
                 "dojoType", "dijit.form.DropDownButton");
-        headerConfigurer.addDojoModule("dojox.widget.ColorPicker");
+        configuration.addDojoModule("dojox.widget.ColorPicker");
 
         String colorSelectionScript =
                 String.format(
                 "dojo.connect(dijit.byId('%s'),'onChange',function(newValue) {dojo.style(dojo.byId('%1$s_colorViewer'),'background',newValue);});",
                 element.getId());
 
-        headerConfigurer.addOnLoadScript(colorSelectionScript);
+        configuration.addOnLoadScript(colorSelectionScript);
 
         String contents = String.format(
                 "<span><div id=\"%s_colorViewer\" style=\"width:1em; height:1em; border: 1px solid #7EABCD;\"></div></span>",
@@ -486,7 +479,7 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
 
         element.getAttributes().setProperty("dojoType",
                 "dijit.form.NumberSpinner");
-        headerConfigurer.addDojoModule("dijit.form.NumberSpinner");
+        configuration.addDojoModule("dijit.form.NumberSpinner");
 
         //Here we set the range, note that if min or max are float it must
         //use a dot as decimal separator (representation independent in javascript).
@@ -521,7 +514,7 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
                     "Error creating selection contents for field " + element.getId() + ": " + ex.getMessage());
         }
 
-        headerConfigurer.addDojoModule("dijit.form.ComboBox");
+        configuration.addDojoModule("dijit.form.ComboBox");
     }
 
     private void setupRoleSelectionField(HtmlFormElementInfo element,
@@ -531,7 +524,7 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
         assertNotText(properties);
         assertNotFile(properties);
 
-        headerConfigurer.addDojoModule("dojox.form.CheckedMultiSelect");
+        configuration.addDojoModule("dojox.form.CheckedMultiSelect");
         element.getAttributes().setProperty("dojoType",
                 "dojox.form.CheckedMultiSelect");
         element.getAttributes().setProperty("multiple", "true");
@@ -561,7 +554,7 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
         String constraint = null;
 
         // We import dojo file input's replacement.
-        headerConfigurer.addDojoModule("grc.dijit.form.FileInput");
+        configuration.addDojoModule("grc.dijit.form.FileInput");
 
         formFieldElement.setAttribute("dojoType", "grc.dijit.form.FileInput");
 
@@ -637,13 +630,13 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
                 "dijit.byId(\'%s\').validator = %1$s_validate;",
                 confirmId);
 
-        headerConfigurer.addScript(validationFunction);
-        headerConfigurer.addOnLoadScript(
+        configuration.addScript(validationFunction);
+        configuration.addOnLoadScript(
                 String.format(
                 "dojo.connect(dijit.byId('%s'),'onChange',function(){dijit.byId('%s').validate();});",
                 formFieldElement.getId(), confirmId));
 
-        headerConfigurer.addOnLoadScript(validationFunctionConnector);
+        configuration.addOnLoadScript(validationFunctionConnector);
 
         FormField field = new FormField(confirmId,
                 formFieldElement.getElementType(),
@@ -713,6 +706,7 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
                 break;
             case TIME:
                 setupTimeField(formFieldElement, fieldType, properties);
+                break;
             case DATE:
                 setupDateField(formFieldElement, fieldType, properties);
         }
@@ -722,7 +716,7 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
             HtmlFormElementInfo formFieldElement,
             Class fieldType,
             FieldProperties properties) {
-        headerConfigurer.addDojoModule("grc.dijit.form.YearDayTextBox");
+        configuration.addDojoModule("grc.dijit.form.YearDayTextBox");
         formFieldElement.setAttribute("dojoType",
                 "grc.dijit.form.YearDayTextBox");
     }
@@ -731,7 +725,7 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
             HtmlFormElementInfo formFieldElement,
             Class fieldType,
             FieldProperties properties) {
-        headerConfigurer.addDojoModule("dijit.form.TimeTextBox");
+        configuration.addDojoModule("dijit.form.TimeTextBox");
         formFieldElement.setAttribute("dojoType", "dijit.form.TimeTextBox");
     }
 
@@ -740,7 +734,7 @@ public class DojoFormBuilder implements FormBuilder, HeaderConfigurerClient,
             Class fieldType,
             FieldProperties properties) {
 
-        headerConfigurer.addDojoModule("dojox.form.DateTextBox");
+        configuration.addDojoModule("dojox.form.DateTextBox");
         formFieldElement.setAttribute("dojoType", "dojox.form.DateTextBox");
     }
 }

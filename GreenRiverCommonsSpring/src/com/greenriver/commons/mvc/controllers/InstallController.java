@@ -60,12 +60,12 @@ public class InstallController extends ConfigurablePageController
         modelAndView.addObject("keyPath",  path);
         modelAndView.addObject("key", key);
 
-        getFormBuilder().addForm("adminForm",modelAndView);
+        getFormBuilder().addForm("adminForm",this.getPageConfiguration(),modelAndView);
         getFormBuilder().addFieldsFromModel(Class.forName(userClass));
         getFormBuilder().removeField("roles");
         getFormBuilder().removeField("enabled");
 
-        getHeaderConfigurer().configure(modelAndView);
+        getHeaderConfigurer().configure(modelAndView, this.getPageConfiguration());
     }
 
     /**
