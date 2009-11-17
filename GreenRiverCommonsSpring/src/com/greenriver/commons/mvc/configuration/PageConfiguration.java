@@ -4,6 +4,7 @@ package com.greenriver.commons.mvc.configuration;
 import com.greenriver.commons.mvc.helpers.header.PageHeaderConfiguration;
 import com.greenriver.commons.mvc.pageTools.PageTool;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +15,7 @@ import java.util.Map;
  * @author luis
  */
 public class PageConfiguration extends PageHeaderConfiguration
-        implements FormsConfiguration, PropertiesViewConfiguration {
+        implements FormsConfiguration, PropertiesViewConfiguration, Cloneable {
 
      private Map<String,String> formEntities;
      private Map<String, Object> propertiesViewConfiguration;
@@ -26,6 +27,28 @@ public class PageConfiguration extends PageHeaderConfiguration
          formEntities = new Hashtable<String, String>();
 	 propertiesViewConfiguration = new Hashtable<String, Object>();
          pageTools =  new ArrayList<PageTool>();
+     }
+
+    @Override
+     public Object clone() {
+
+        // We just do a superficial copy.
+         PageConfiguration  newConfiguration = new PageConfiguration();
+         newConfiguration.setFormEntities(formEntities);
+         newConfiguration.setPropertiesView(propertiesViewConfiguration);
+         newConfiguration.setPageTools(pageTools);
+
+         newConfiguration.setCssFiles(this.getCssFiles());
+         newConfiguration.setDojoBundles(this.getDojoBundles());
+         newConfiguration.setDojoModules(this.getDojoModules());
+         newConfiguration.setDwrServices(getDwrServices());
+         newConfiguration.setJavaScriptFiles(getJavaScriptFiles());
+         newConfiguration.setOnLoadScripts(getOnLoadScripts());
+         newConfiguration.setScripts(getScripts());
+         newConfiguration.setTitle(this.getTitle());
+
+         return newConfiguration;
+
      }
 
     // <editor-fold defaultstate="collapsed" desc="Form entities">
@@ -74,7 +97,7 @@ public class PageConfiguration extends PageHeaderConfiguration
 
     // <editor-fold defaultstate="collapsed" desc="Page tools">
     public void setPageTools(List<PageTool> pageTools) {
-        this.pageTools = pageTools;
+        this.pageTools = new ArrayList<PageTool>(pageTools);
     }
 
     public List<PageTool> getPageTools() {
