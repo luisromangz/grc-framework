@@ -33,14 +33,19 @@ public class DojoBundlerPlugin extends BaseBundlerPlugin {
    
 
     @Override
-    protected void addBundle(String bundleName,PageConfiguration configuration) {
+        protected void addBundle(String bundleName,PageConfiguration configuration) {
         // When using the auto bundler, we discard other bundles.
+        configuration.getDojoModules().clear();
         configuration.getDojoBundles().clear();
         configuration.addDojoBundle(bundleName);
     }
 
     @Override
     protected void bundleFiles(PageConfiguration configuration, File bundleFile) {
+
+        if(configuration.getDojoModules().isEmpty()){
+            throw new RuntimeException("We should have dojo modules.");
+        }
         addDojoModules(configuration.getDojoModules(), bundleFile);
     }
 

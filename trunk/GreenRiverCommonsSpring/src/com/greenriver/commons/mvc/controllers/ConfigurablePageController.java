@@ -59,6 +59,8 @@ public class ConfigurablePageController extends AbstractController
             HttpServletResponse response)
             throws Exception {
 
+        
+
         ModelAndView mav = new ModelAndView(viewName);
 
         configureFormEntities(this.getFormEntities(), mav, null);
@@ -71,13 +73,16 @@ public class ConfigurablePageController extends AbstractController
             mav.addObject("userSessionInfo", this.userSessionInfo);
         }
 
-         customHandleRequest(request, response, mav);         
+         customHandleRequest(request, response, mav);
+
+         PageConfiguration configuration = (PageConfiguration) this.pageConfiguration.clone();
+         //PageConfiguration configuration = this.pageConfiguration;
 
          for(ControllerPlugin plugin : this.getPlugins()) {
-            plugin.doWork(request,getPageConfiguration());
+            plugin.doWork(request,configuration);
         }
 
-       headerConfigurer.configure(mav, getPageConfiguration());
+       headerConfigurer.configure(mav, configuration);
 
         return mav;
     }
