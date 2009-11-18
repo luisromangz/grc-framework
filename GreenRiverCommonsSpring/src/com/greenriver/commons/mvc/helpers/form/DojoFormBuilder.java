@@ -540,6 +540,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         element.setElementType("select");
         element.getAttributes().setProperty("class",
                 "backgroundlessComboBoxButton");
+        element.setAttribute("ignoreCase", "false");
 
         try {
             element.setContents(createSelectionContents(fieldType, properties,
