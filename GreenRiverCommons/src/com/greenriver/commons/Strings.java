@@ -279,10 +279,13 @@ public class Strings {
      * @param value 
      * @param startIndex
      * @param endIndex
+     * @return 
      */
     public static String toLowerCase(String value, int startIndex, int endIndex) {
         String lowercased = value.substring(startIndex, endIndex);
 
+        lowercased = lowercased.toLowerCase();
+        
         String result = "";
 
         if(startIndex>0) {
