@@ -54,7 +54,10 @@
         <script type="text/javascript" src="${jsRoot}/tasks/mealScheduleManagement/_MealSelectionHelper.js"></script>
         <script type="text/javascript" src="${jsRoot}/tasks/mealScheduleManagement/_MealSelectionPanel.js"></script>
         <script type="text/javascript" src="${jsRoot}/tasks/mealScheduleManagement/MealSelectionTableView.js"></script>
+        <script type="text/javascript" src="${jsRoot}/tasks/mealScheduleManagement/_MealSelectionGridViewMealColumnsMixin.js"></script>
+        <script type="text/javascript" src="${jsRoot}/tasks/mealScheduleManagement/_MealSelectionGridViewDayColumnMixin.js"></script>
         <script type="text/javascript" src="${jsRoot}/tasks/mealScheduleManagement/MealSelectionGridView.js"></script>
+        <script type="text/javascript" src="${jsRoot}/tasks/mealScheduleManagement/_MealSelectionGridView.js"></script>
        
         <script type="text/javascript">
             var onDojoLoad = function() {
@@ -64,13 +67,19 @@
                 var structure = [
                     {
                         cells: [
-                            {width: 'auto', headerStyles:'text-align:center'},
-                            {width: 'auto', headerStyles:'text-align:center'},
-                            {width: 'auto', headerStyles:'text-align:center'},
-                            {width: 'auto', headerStyles:'text-align:center'},
-                            {width: 'auto', headerStyles:'text-align:center'}
+                            {width: '100px', headerStyles:'text-align:center'},
                         ],
-                        type: tasks.mealScheduleManagement.MealSelectionTableView
+                        noscroll: true,
+                        type: tasks.mealScheduleManagement._MealSelectionGridView
+                    },
+                    {
+                        cells: [
+                            {width: '175px', headerStyles:'text-align:center'},
+                            {width: '175px', headerStyles:'text-align:center'},
+                            {width: '175px', headerStyles:'text-align:center'},
+                            {width: '175px', headerStyles:'text-align:center'}
+                        ],
+                        type: tasks.mealScheduleManagement._MealSelectionGridView
                     }
                 ];
                 var data = {
@@ -196,19 +205,159 @@
                     ]/*,
                     structure: structure*/
                 };
+                var data2 = {
+                    columns: [
+                        {
+                            mealKind: 'Brickfast',
+                            ids: [1],
+                            hours: [
+                                {
+                                    index: 8*100,
+                                    hour: grc.date.createDate(8, 0, 0),
+                                    menus: [{
+                                       id: 14,
+                                       name: 'Invierno',
+                                       type: 'tururú'
+                                    }]
+                                }
+                            ]
+                        },
+                        {
+                            mealKind: 'Hanpen',
+                            ids: [2],
+                            hours: [
+                                {
+                                    index: 14*100 + 30,
+                                    hour: grc.date.createDate(14, 30, 0),
+                                    menus: [{
+                                       id: 14,
+                                       name: 'Invierno',
+                                       type: 'tururú'
+                                    }]
+                                }
+                            ]
+                        },
+                        {
+                            mealKind: 'Trucutrú',
+                            ids: [3],
+                            hours: [
+                                {
+                                    index: 18*100,
+                                    hour: grc.date.createDate(18, 0, 0),
+                                    menus: [{
+                                       id: 14,
+                                       name: 'Invierno',
+                                       type: 'tururú'
+                                    }]
+                                }
+                            ]
+                        },
+                        {
+                            mealKind: 'Washinnai',
+                            ids: [4],
+                            hours: [
+                                {
+                                    index: 22*100 + 30,
+                                    hour: grc.date.createDate(22, 30, 0),
+                                    menus: [{
+                                       id: 14,
+                                       name: 'Invierno',
+                                       type: 'tururú'
+                                    }]
+                                }
+                            ]
+                        }
+                    ],
+                    days: [
+                        {
+                            day:new Date(),
+                            meals:[
+                                {
+                                    everyDayMealId: 1,
+                                    mealKind: 'eeee',
+                                    menuName: 'Invierno',
+                                    selected: true,
+                                    optionalDishes: [
+                                        {
+                                            id: 11,
+                                            name: 'XXXXXXXXXXXXXXXX',
+                                            selected: false
+                                        }
+                                    ]
+                                },
+                                {
+                                    everyDayMealId: 2,
+                                    mealKind: 'aaaaaa',
+                                    menuName: 'Invierno',
+                                    selected: false,
+                                    optionalDishes: [
+                                        {
+                                            id: 21,
+                                            name: 'XXXXXXXXXXXXXXXXXX',
+                                            selected: false
+                                        }
+                                    ]
+                                },
+                                {
+                                    everyDayMealId: 3,
+                                    mealKind: 'ooooooo',
+                                    menuName: 'Invierno',
+                                    selected: true,
+                                    optionalDishes: [
+                                        {
+                                            id: 31,
+                                            name: 'XXXXXXXXXXX!',
+                                            selected: true
+                                        }
+                                    ]
+                                },
+                                {
+                                    everyDayMealId: 4,
+                                    mealKind: 'uuuuuuu',
+                                    menuName: 'Invierno',
+                                    selected: false,
+                                    optionalDishes: [
+                                        {
+                                            id: 41,
+                                            name: 'XXXXXXXXXXXXXritès',
+                                            selected: false
+                                        }
+                                    ]
+                                }
+                            ]}
+                    ]/*,
+                    structure: structure*/
+                };
                 var grid = dijit.byId('grid');
                 grid.setDataSource(data);
                 //grid.attr('structure', structure);
                 setTimeout(function() {
+                    console.debug("----------------RESET1----------------");
+                    //data.structure = structure;
+                    grid.setDataSource(data2);
+                }, 15000);
+                setTimeout(function() {
+                    console.debug("----------------RESET2----------------");
+                    //data.structure = structure;
                     grid.setDataSource(data);
-                }, 10000);
+                }, 30000);
+                setTimeout(function() {
+                    console.debug("----------------RESET3----------------");
+                    //data.structure = structure;
+                    grid.setDataSource(data2);
+                }, 60000);
+                setTimeout(function() {
+                    console.debug("----------------RESET4----------------");
+                    //data.structure = structure;
+                    grid.setDataSource(data);
+                }, 120000);
             };
             dojo.addOnLoad(onDojoLoad);
         </script>
     </head>
     <body class="tundra">
         <div id="body">
-            <div style="background-color: #cfcfcf;min-width: 400px; min-height: 250px;padding: 12px">
+            <div style="background-color: #cfcfcf;width: 650px; min-height: 250px;padding: 12px">
                 <div id="grid"
                      height="14em"
                      dojoType="tasks.mealScheduleManagement.MealSelectionGridView">
