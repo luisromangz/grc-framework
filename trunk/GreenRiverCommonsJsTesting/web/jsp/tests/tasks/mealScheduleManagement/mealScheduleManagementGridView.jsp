@@ -41,6 +41,9 @@
         <script type="text/javascript" src="${jsRoot}/grc/grc.js"></script>
         <script type="text/javascript" src="${dojoRoot}/dojox/grid/_Grid.js"></script>
         <script type="text/javascript" src="${dojoRoot}/dojox/grid/_Layout.js"></script>
+        <script type="text/javascript" src="${dojoRoot}/dojox/grid/_FocusManager.js"></script>
+        <script type="text/javascript" src="${dojoRoot}/dojox/grid/_RowManager.js"></script>
+        <script type="text/javascript" src="${dojoRoot}/dojox/grid/_Scroller.js"></script>
         <script type="text/javascript" src="${dojoRoot}/dojox/grid/_View.js"></script>
         <script type="text/javascript" src="${dojoRoot}/dojox/grid/_ViewManager.js"></script>
         <script type="text/javascript" src="${dojoRoot}/dojox/grid/_Builder.js"></script>
@@ -270,7 +273,63 @@
                     ],
                     days: [
                         {
-                            day:new Date(),
+                            day: grc.date.createDate(22, 10, 2015),
+                            meals:[
+                                {
+                                    everyDayMealId: 1,
+                                    mealKind: 'eeee',
+                                    menuName: 'Invierno',
+                                    selected: true,
+                                    optionalDishes: [
+                                        {
+                                            id: 11,
+                                            name: 'XXXXXXXXXXXXXXXX',
+                                            selected: false
+                                        }
+                                    ]
+                                },
+                                {
+                                    everyDayMealId: 2,
+                                    mealKind: 'aaaaaa',
+                                    menuName: 'Invierno',
+                                    selected: false,
+                                    optionalDishes: [
+                                        {
+                                            id: 21,
+                                            name: 'XXXXXXXXXXXXXXXXXX',
+                                            selected: false
+                                        }
+                                    ]
+                                },
+                                {
+                                    everyDayMealId: 3,
+                                    mealKind: 'ooooooo',
+                                    menuName: 'Invierno',
+                                    selected: true,
+                                    optionalDishes: [
+                                        {
+                                            id: 31,
+                                            name: 'XXXXXXXXXXX!',
+                                            selected: true
+                                        }
+                                    ]
+                                },
+                                {
+                                    everyDayMealId: 4,
+                                    mealKind: 'uuuuuuu',
+                                    menuName: 'Invierno',
+                                    selected: false,
+                                    optionalDishes: [
+                                        {
+                                            id: 41,
+                                            name: 'XXXXXXXXXXXXXritès',
+                                            selected: false
+                                        }
+                                    ]
+                                }
+                            ]},
+                            {
+                            day:grc.date.createDate(23, 10, 2015),
                             meals:[
                                 {
                                     everyDayMealId: 1,
@@ -328,29 +387,96 @@
                     ]/*,
                     structure: structure*/
                 };
+                var data3 = {
+                    columns: [
+                        {
+                            mealKind: 'Almuerzo',
+                            ids: [2],
+                            hours: [
+                                {
+                                    index: 14*100 + 30,
+                                    hour: grc.date.createDate(14, 30, 0),
+                                    menus: [{
+                                       id: 14,
+                                       name: 'Invierno',
+                                       type: 'tururú'
+                                    }]
+                                }
+                            ]
+                        },
+                        {
+                            mealKind: 'Cena',
+                            ids: [4],
+                            hours: [
+                                {
+                                    index: 22*100 + 30,
+                                    hour: grc.date.createDate(22, 30, 0),
+                                    menus: [{
+                                       id: 14,
+                                       name: 'Invierno',
+                                       type: 'tururú'
+                                    }]
+                                }
+                            ]
+                        }
+                    ],
+                    days: [
+                        {
+                            day:new Date(),
+                            meals:[
+                                {
+                                    everyDayMealId: 2,
+                                    mealKind: 'Almuerzo',
+                                    menuName: 'Invierno',
+                                    selected: false,
+                                    optionalDishes: [
+                                        {
+                                            id: 21,
+                                            name: 'Papas al ali-jolí',
+                                            selected: false
+                                        }
+                                    ]
+                                },
+                                {
+                                    everyDayMealId: 4,
+                                    mealKind: 'Cena',
+                                    menuName: 'Invierno',
+                                    selected: false,
+                                    optionalDishes: [
+                                        {
+                                            id: 41,
+                                            name: 'Vaca al orneut rellenè de pajaritès',
+                                            selected: false
+                                        }
+                                    ]
+                                }
+                            ]}
+                    ]/*,
+                    structure: structure*/
+                };
                 var grid = dijit.byId('grid');
-                grid.setDataSource(data);
+                grid.setDataSource(data2);
                 //grid.attr('structure', structure);
                 setTimeout(function() {
                     console.debug("----------------RESET1----------------");
                     //data.structure = structure;
-                    grid.setDataSource(data2);
+                    grid.setDataSource(data);
                 }, 15000);
                 setTimeout(function() {
                     console.debug("----------------RESET2----------------");
                     //data.structure = structure;
-                    grid.setDataSource(data);
+                    grid.setDataSource(data3);
                 }, 30000);
                 setTimeout(function() {
                     console.debug("----------------RESET3----------------");
                     //data.structure = structure;
-                    grid.setDataSource(data2);
-                }, 60000);
+                    grid.setDataSource(data);
+                }, 45000);
                 setTimeout(function() {
                     console.debug("----------------RESET4----------------");
                     //data.structure = structure;
-                    grid.setDataSource(data);
-                }, 120000);
+                    grid.setDataSource(data2);
+                }, 60000);
             };
             dojo.addOnLoad(onDojoLoad);
         </script>
