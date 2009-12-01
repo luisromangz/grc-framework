@@ -84,17 +84,26 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
 
         String conditionString = Lists.join(conditions, "||");
 
-
-        String code = String.format(
-                "dojo.connect(dijit.byId('%s'),'onChange',function(){" +
+        String function = String.format("function(){" +
                 "var value=dijit.byId('%s').attr('value');" +
-                "dijit.byId('%s').setDisabled(%s)});",
-                lastForm.getId()+"_"+condition.widgetId(),
+                "dijit.byId('%s').setDisabled(%s)}",
                  lastForm.getId()+"_"+condition.widgetId(),
                 fieldId,
                 conditionString);
 
-        configuration.addOnLoadScript(code);
+        String onChangeCode = String.format(
+                "dojo.connect(dijit.byId('%s'),'onChange',%s);",
+                lastForm.getId()+"_"+condition.widgetId(),
+                function);
+
+        configuration.addOnLoadScript(onChangeCode);
+
+        String onValueSetCode = String.format(
+                "dojo.connect(dijit.byId('%s'),'setValue',%s);",
+                lastForm.getId()+"_"+condition.widgetId(),
+                function);
+
+        configuration.addOnLoadScript(onValueSetCode);
     }
 
     public void addFieldsFromModel(Class modelClass) {
