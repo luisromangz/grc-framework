@@ -39,6 +39,7 @@ public class StringsTest {
 
     @Test
     public void testStartsWith() {
+        System.out.println("testStartsWith");
         String prefix = "prefix";
         boolean result = true;
         String test = "prefixString";
@@ -90,6 +91,7 @@ public class StringsTest {
 
     @Test
     public void testEndsWith() {
+        System.out.println("testEndsWith");
         String suffix = "suffix";
         boolean result = true;
         String test = "Stringsuffix";

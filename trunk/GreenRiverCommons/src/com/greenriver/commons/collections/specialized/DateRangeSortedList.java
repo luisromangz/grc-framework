@@ -32,7 +32,7 @@ public class DateRangeSortedList extends SortedArrayList<DateRange> {
     }
 
     public DateRangeSortedList() {
-        this(DatePart.DateTime);
+        this(DatePart.DATE_TIME);
     }
 
     public DateRangeSortedList(DatePart part) {
@@ -40,7 +40,7 @@ public class DateRangeSortedList extends SortedArrayList<DateRange> {
     }
 
     public DateRangeSortedList(int initialCapacity) {
-        this(initialCapacity, DatePart.DateTime);
+        this(initialCapacity, DatePart.DATE_TIME);
     }
 
     public DateRangeSortedList(int initialCapacity, DatePart part) {
@@ -50,7 +50,7 @@ public class DateRangeSortedList extends SortedArrayList<DateRange> {
     }
 
     public DateRangeSortedList(Collection<DateRange> dateRanges) {
-        this(dateRanges, DatePart.DateTime);
+        this(dateRanges, DatePart.DATE_TIME);
     }
 
     public DateRangeSortedList(Collection<DateRange> dateRanges, DatePart part) {
@@ -151,7 +151,7 @@ public class DateRangeSortedList extends SortedArrayList<DateRange> {
         Date max = null;
 
         switch (this.datePart) {
-            case Date:
+            case DATE:
                 min = Dates.getDatePart(range.getMin());
                 cal.setTime(min);
                 cal.add(GregorianCalendar.DAY_OF_MONTH, -1);
@@ -162,7 +162,7 @@ public class DateRangeSortedList extends SortedArrayList<DateRange> {
                 cal.add(GregorianCalendar.DAY_OF_MONTH, 1);
                 max = cal.getTime();
                 break;
-            case DateTime:
+            case DATE_TIME:
                 cal.setTime(range.getMin());
                 cal.add(GregorianCalendar.MILLISECOND, -1);
                 min = cal.getTime();
@@ -171,7 +171,7 @@ public class DateRangeSortedList extends SortedArrayList<DateRange> {
                 cal.add(GregorianCalendar.MILLISECOND, 1);
                 max = cal.getTime();
                 break;
-            case Time:
+            case TIME:
                 throw new UnsupportedOperationException("not implemented for time");
         }
 

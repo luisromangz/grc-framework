@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.greenriver.commons;
 
 import com.greenriver.commons.os.PidFileHandler;
@@ -24,13 +23,13 @@ public class PidFileHandlerTest {
     public PidFileHandlerTest() {
     }
 
-	@BeforeClass
-	public static void setUpClass() throws Exception {
-	}
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+    }
 
-	@AfterClass
-	public static void tearDownClass() throws Exception {
-	}
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+    }
 
     @Before
     public void setUp() {
@@ -40,24 +39,25 @@ public class PidFileHandlerTest {
     public void tearDown() {
     }
 
-	@Test
-	public void createPidFile() throws IOException {
-		PidFileHandler handler = new PidFileHandler(new File("/tmp/pidtest.pid"), 12345);
-		handler.create();
-		assertEquals(true, handler.isValid());
+    @Test
+    public void createPidFileTest() throws IOException {
+        System.out.println("createPidFileTest");
+        PidFileHandler handler = new PidFileHandler(new File("/tmp/pidtest.pid"), 12345);
+        handler.create();
+        assertEquals(true, handler.isValid());
 
-		PidFileHandler anotherHandler = new PidFileHandler(new File("/tmp/pidtest.pid"), 54321);
-		anotherHandler.create();
-		assertEquals(false, anotherHandler.isValid());
+        PidFileHandler anotherHandler = new PidFileHandler(new File("/tmp/pidtest.pid"), 54321);
+        anotherHandler.create();
+        assertEquals(false, anotherHandler.isValid());
 
-		anotherHandler.release();
+        anotherHandler.release();
 
-		assertEquals(true, handler.getPidFile().exists());
+        assertEquals(true, handler.getPidFile().exists());
 
-		handler.release();
+        handler.release();
 
-		anotherHandler = new PidFileHandler(new File("/tmp/pidtest.pid"), 54321);
-		anotherHandler.create();
-		assertEquals(true, anotherHandler.isValid());
-	}
+        anotherHandler = new PidFileHandler(new File("/tmp/pidtest.pid"), 54321);
+        anotherHandler.create();
+        assertEquals(true, anotherHandler.isValid());
+    }
 }

@@ -7,7 +7,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
- * Date range.
+ * DATE range.
  * @author Miguel Angel
  */
 public class DateRange implements Comparable<DateRange>, Cloneable, Serializable {
@@ -121,7 +121,7 @@ public class DateRange implements Comparable<DateRange>, Cloneable, Serializable
     }
 
     public boolean intersects(DateRange range) {
-        return intersects(range, DatePart.DateTime);
+        return intersects(range, DatePart.DATE_TIME);
     }
 
     public boolean intersects(DateRange range, DatePart part) {
@@ -134,7 +134,7 @@ public class DateRange implements Comparable<DateRange>, Cloneable, Serializable
 
     @Override
     public boolean equals(Object obj) {
-        return this.equals((DateRange) obj, DatePart.DateTime);
+        return this.equals((DateRange) obj, DatePart.DATE_TIME);
     }
 
     public boolean equals(DateRange obj, DatePart part) {
@@ -266,7 +266,7 @@ public class DateRange implements Comparable<DateRange>, Cloneable, Serializable
      * @return
      */
     public boolean before(DateRange dateRange) {
-        return !Dates.greaterOrEqual(this.max, dateRange.min, DatePart.Date);
+        return !Dates.greaterOrEqual(this.max, dateRange.min, DatePart.DATE);
     }
 
     /**
@@ -281,7 +281,7 @@ public class DateRange implements Comparable<DateRange>, Cloneable, Serializable
     }
 
     public boolean after(DateRange dateRange) {
-        return !Dates.lessOrEqual(this.min, dateRange.max, DatePart.Date);
+        return !Dates.lessOrEqual(this.min, dateRange.max, DatePart.DATE);
     }
 
     public boolean after(DateRange dateRange, DatePart part) {
@@ -299,7 +299,7 @@ public class DateRange implements Comparable<DateRange>, Cloneable, Serializable
     }
 
     public int compareTo(DateRange o) {
-        return this.compareTo(o, DatePart.DateTime);
+        return this.compareTo(o, DatePart.DATE_TIME);
     }
 
     @Override
@@ -318,7 +318,7 @@ public class DateRange implements Comparable<DateRange>, Cloneable, Serializable
     }
 
     public boolean contains(Date time) {
-        return contains(time, DatePart.DateTime);
+        return contains(time, DatePart.DATE_TIME);
     }
 
     public boolean contains(Date time, DatePart part) {
@@ -331,7 +331,7 @@ public class DateRange implements Comparable<DateRange>, Cloneable, Serializable
     }
 
     public DateRange getIntersection(DateRange range) {
-        return getIntersection(range, DatePart.Date);
+        return getIntersection(range, DatePart.DATE);
     }
 
     public DateRange getIntersection(DateRange range, DatePart part) {
@@ -367,7 +367,7 @@ public class DateRange implements Comparable<DateRange>, Cloneable, Serializable
      * @return
      */
     public boolean isContained(DateRange target) {
-        return isContained(target, DatePart.Date);
+        return isContained(target, DatePart.DATE);
     }
 
     /**
@@ -389,7 +389,7 @@ public class DateRange implements Comparable<DateRange>, Cloneable, Serializable
      * @return
      */
     public List<DateRange> getDifference(DateRange target) {
-        return getDifference(target, DatePart.Date);
+        return getDifference(target, DatePart.DATE);
     }
 
     public List<DateRange> getDifference(DateRange target, DatePart part) {

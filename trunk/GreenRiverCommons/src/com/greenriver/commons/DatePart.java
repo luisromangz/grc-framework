@@ -17,7 +17,7 @@ package com.greenriver.commons;
  * @author Miguel angel
  */
 public enum DatePart {
-    DateTime,
-    Time,
-    Date
+    DATE_TIME,
+    TIME,
+    DATE
 }

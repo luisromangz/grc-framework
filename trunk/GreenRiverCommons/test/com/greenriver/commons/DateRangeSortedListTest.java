@@ -48,7 +48,7 @@ public class DateRangeSortedListTest {
     @Test
     public void testAdd() {
         System.out.println("testAdd");
-        DateRangeSortedList list = new DateRangeSortedList(DatePart.Date);
+        DateRangeSortedList list = new DateRangeSortedList(DatePart.DATE);
         GregorianCalendar cal = (GregorianCalendar) GregorianCalendar.getInstance();
 
         DateRange result = new DateRange();
@@ -63,7 +63,7 @@ public class DateRangeSortedListTest {
         }
 
         assertTrue(list.size() == 1);
-        assertTrue(result.equals(list.get(0), DatePart.Date));
+        assertTrue(result.equals(list.get(0), DatePart.DATE));
 
         tmp.setMin(cal.getTime());
         cal.add(GregorianCalendar.DAY_OF_MONTH, 20);
@@ -72,7 +72,7 @@ public class DateRangeSortedListTest {
 
         list.add(tmp);
         assertTrue(list.size() == 1);
-        assertTrue(result.equals(list.get(0), DatePart.Date));
+        assertTrue(result.equals(list.get(0), DatePart.DATE));
 
         cal.add(GregorianCalendar.DAY_OF_MONTH, -51);
         tmp.setMin(cal.getTime());
@@ -82,8 +82,8 @@ public class DateRangeSortedListTest {
         list.add(tmp);
 
         assertTrue(list.size() == 2);
-        assertTrue(tmp.equals(list.get(0), DatePart.Date));
-        assertTrue(result.equals(list.get(1), DatePart.Date));
+        assertTrue(tmp.equals(list.get(0), DatePart.DATE));
+        assertTrue(result.equals(list.get(1), DatePart.DATE));
 
         cal.add(GregorianCalendar.DAY_OF_MONTH, 35);
         tmp.setMin(cal.getTime());
@@ -92,8 +92,8 @@ public class DateRangeSortedListTest {
 
         list.add(tmp);
         assertTrue(list.size() == 3);
-        assertTrue(tmp.equals(list.get(2), DatePart.Date));
-        assertTrue(result.equals(list.get(1), DatePart.Date));
+        assertTrue(tmp.equals(list.get(2), DatePart.DATE));
+        assertTrue(result.equals(list.get(1), DatePart.DATE));
 
         cal.add(GregorianCalendar.DAY_OF_MONTH, 1);
         tmp.setMin(cal.getTime());
@@ -105,7 +105,7 @@ public class DateRangeSortedListTest {
 
         list.add(tmp);
         assertTrue(list.size() == 3);
-        assertTrue(result.equals(list.get(2), DatePart.Date));
+        assertTrue(result.equals(list.get(2), DatePart.DATE));
 
         tmp.setMin(list.get(0).getMax());
         tmp.setMax(list.get(1).getMax());
@@ -114,7 +114,7 @@ public class DateRangeSortedListTest {
 
         list.add(tmp);
         assertTrue(list.size() == 2);
-        assertTrue(result.equals(list.get(0), DatePart.Date));
+        assertTrue(result.equals(list.get(0), DatePart.DATE));
     }
 
     @Test
@@ -158,8 +158,8 @@ public class DateRangeSortedListTest {
         DateRange range3 = new DateRange();
         DateRange range0 = new DateRange();
         DateRange removalRange = new DateRange();
-        DateRangeSortedList list = new DateRangeSortedList(4, DatePart.Date);
-        DateRangeSortedList expectedResult = new DateRangeSortedList(4, DatePart.Date);
+        DateRangeSortedList list = new DateRangeSortedList(4, DatePart.DATE);
+        DateRangeSortedList expectedResult = new DateRangeSortedList(4, DatePart.DATE);
 
         range1.setMin(cal.getTime());
         cal.add(GregorianCalendar.DAY_OF_MONTH, 4);

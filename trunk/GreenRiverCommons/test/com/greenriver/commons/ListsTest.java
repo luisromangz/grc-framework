@@ -47,6 +47,7 @@ public class ListsTest {
 
     @Test
     public void testJoin() {
+        System.out.println("testJoin");
 	String[] elems = new String[] {"Test1 ", "Test2 ", "Test3 "};
 	String expResult = "Test1 +Test2 +Test3 ";
 	String testResult = Lists.join(Arrays.asList(elems), "+");

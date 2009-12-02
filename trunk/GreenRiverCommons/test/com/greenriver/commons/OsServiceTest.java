@@ -54,18 +54,19 @@ public class OsServiceTest {
 
 	@Test
 	public void shutdownTest() throws InterruptedException {
-		Thread osSrvThread = new Thread(osService);
-		osSrvThread.start();
-		//Add a little delay to wait for the service to start
-		//before shutting down
-		Thread.sleep(1000);
-		osService.shutdown();
-		//Add a little delay to wait for the service to end
-		Thread.sleep(1000);
-		assertEquals(true, osService.isFinished());
-		assertEquals(false, osService.isDaemon());
-		assertEquals(false, osService.isAborted());
-		assertEquals(false, osService.isRunning());
-		assertEquals(true, osService.isStopping());
+            System.out.println("shutdownTest");
+            Thread osSrvThread = new Thread(osService);
+            osSrvThread.start();
+            //Add a little delay to wait for the service to start
+            //before shutting down
+            Thread.sleep(1000);
+            osService.shutdown();
+            //Add a little delay to wait for the service to end
+            Thread.sleep(1000);
+            assertEquals(true, osService.isFinished());
+            assertEquals(false, osService.isDaemon());
+            assertEquals(false, osService.isAborted());
+            assertEquals(false, osService.isRunning());
+            assertEquals(true, osService.isStopping());
 	}
 }
