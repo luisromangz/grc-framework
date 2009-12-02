@@ -84,12 +84,22 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
 
         String conditionString = Lists.join(conditions, "||");
 
+        String asignationStatement = "";
+        if(!condition.newValue().equals("\0")) {
+            asignationStatement = String.format(
+                "if(%s){widget.attr('value',%s);}",
+                conditionString,
+                condition.newValue());
+        }
+
         String function = String.format("function(){" +
                 "var value=dijit.byId('%s').attr('value');" +
-                "dijit.byId('%s').setDisabled(%s)}",
+                "var widget = dijit.byId('%s');"+
+                "widget.setDisabled(%s);%s}",
                  lastForm.getId()+"_"+condition.widgetId(),
                 fieldId,
-                conditionString);
+                conditionString,
+                asignationStatement);
 
         String onChangeCode = String.format(
                 "dojo.connect(dijit.byId('%s'),'onChange',%s);",
