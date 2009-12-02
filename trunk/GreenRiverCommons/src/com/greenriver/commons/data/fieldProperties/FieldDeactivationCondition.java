@@ -22,4 +22,5 @@ public @interface FieldDeactivationCondition {
     public String widgetId();
     public String equals() default "";
     public String notEquals() default "";
+    public String newValue() default "\0";
 }
