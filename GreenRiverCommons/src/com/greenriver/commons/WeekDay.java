@@ -5,6 +5,7 @@ import java.text.DateFormatSymbols;
 /**
  * This enum contains the days of the week constants, and provide methods to
  * retrieve the localized labels for them.
+ * The order of this enumerations is important so don't change it.
  *
  * @author luis
  */
@@ -16,7 +17,6 @@ public enum WeekDay {
     THURSDAY,
     FRIDAY,
     SATURDAY;
-    
 
     /**
      * Gets the localized label for the day of the week.

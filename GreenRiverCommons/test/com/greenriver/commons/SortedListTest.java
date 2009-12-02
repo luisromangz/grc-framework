@@ -134,7 +134,8 @@ public class SortedListTest {
     }
 
     @Test
-    public void sortComparatorAscending() {
+    public void sortComparatorAscendingTest() {
+        System.out.println("sortComparatorAscendingTest");
 	SortedArrayList<TestElement> list =
 		new SortedArrayList<TestElement>(new SortByXAscComparator());
 
@@ -158,7 +159,8 @@ public class SortedListTest {
     }
 
     @Test
-    public void sortComparatorDescending() {
+    public void sortComparatorDescendingTest() {
+        System.out.println("sortComparatorDescendingTest");
 	SortedArrayList<TestElement> list =
 		new SortedArrayList<TestElement>(new SortByXDescComparator());
 
@@ -185,7 +187,8 @@ public class SortedListTest {
      *
      */
     @Test(expected = IllegalStateException.class)
-    public void throwsExceptionWhenNotComparableAndNoComparator() {
+    public void throwsExceptionWhenNotComparableAndNoComparatorTest() {
+        System.out.println("throwsExceptionWhenNotComparableAndNoComparatorTest");
 	//If the element of the list is not comparable and a comparator is not
 	//specified an exception is thrown
 	SortedArrayList<Object> list = new SortedArrayList<Object>();
@@ -193,7 +196,8 @@ public class SortedListTest {
     }
 
     @Test
-    public void sortComparableDescending() {
+    public void sortComparableDescendingTest() {
+        System.out.println("sortComparableDescendingTest");
 	SortedArrayList<ComparableTestElement> list =
 		new SortedArrayList<SortedListTest.ComparableTestElement>();
 	list.add(new ComparableTestElement(1));

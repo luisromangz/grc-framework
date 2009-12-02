@@ -18,7 +18,7 @@ import java.util.GregorianCalendar;
 import java.util.Calendar;
 
 /**
- * Date handling utilities.
+ * DATE handling utilities.
  */
 public class Dates {
 
@@ -71,7 +71,7 @@ public class Dates {
      * Converts an amount of milliseconds and an amount of nanoseconds to a
      * timestamp. Once the millis are converted into a date the milliseconds
      * withing the second are replaced by the nanoseconds within the second.
-     * @param millis Date as milliseconds.
+     * @param millis DATE as milliseconds.
      * @param nanos Nanoseconds within the second.
      * @return a timestamp
      * @throws IllegalArgumentException if the amount of nanos
@@ -179,7 +179,7 @@ public class Dates {
     public static boolean intersects(Date startA, Date endA, Date startB,
             Date endB) {
 
-        return intersects(startA, endA, startB, endB, DatePart.DateTime);
+        return intersects(startA, endA, startB, endB, DatePart.DATE_TIME);
     }
 
     /**
@@ -209,32 +209,32 @@ public class Dates {
     /**
      * Returns only the date part without the time.
      * @param date
-     * @return a Date with only the date part
+     * @return a DATE with only the date part
      */
     public static Date getDatePart(Date date) {
-        return new Date(getDateTimePart(date, DatePart.Date));
+        return new Date(getDateTimePart(date, DatePart.DATE));
     }
 
     /**
      * Returns only the time part without the date. The date is left as The Epoch.
      * @param date
-     * @return a Date with only the time part set
+     * @return a DATE with only the time part set
      */
     public static Date getTimePart(Date date) {
-        return new Date(getDateTimePart(date, DatePart.Time));
+        return new Date(getDateTimePart(date, DatePart.TIME));
     }
 
     public static java.sql.Time getSqlTime(Date date) {
-        return new java.sql.Time(getDateTimePart(date, DatePart.Time));
+        return new java.sql.Time(getDateTimePart(date, DatePart.TIME));
     }
 
     /**
-     * Gets a java.sql.Time instance with the number of milliseconds for the
+     * Gets a java.sql.TIME instance with the number of milliseconds for the
      * time part of the date fixing the date components to the epoch.
      * @param hour 0-23 Hour (24h format).
      * @param minutes 0-59 Minutes
      * @param seconds 0-59 Seconds
-     * @return a java.sql.Time instance
+     * @return a java.sql.TIME instance
      */
     public static java.sql.Time getSqlTime(int hour, int minutes, int seconds) {
         GregorianCalendar cal =
@@ -247,7 +247,7 @@ public class Dates {
     }
 
     public static java.sql.Date getSqlDate(Date date) {
-        return new java.sql.Date(getDateTimePart(date, DatePart.Date));
+        return new java.sql.Date(getDateTimePart(date, DatePart.DATE));
     }
 
     /**
@@ -268,7 +268,7 @@ public class Dates {
     }
 
     protected static long getDateTimePart(Date date, DatePart part) {
-        if (part == DatePart.DateTime) {
+        if (part == DatePart.DATE_TIME) {
             return date.getTime();
         }
 
@@ -276,12 +276,12 @@ public class Dates {
                 (GregorianCalendar) GregorianCalendar.getInstance();
         cal.setTime(date);
 
-        if (part == DatePart.Date) {
+        if (part == DatePart.DATE) {
             cal.set(GregorianCalendar.HOUR_OF_DAY, 0);
             cal.set(GregorianCalendar.MINUTE, 0);
             cal.set(GregorianCalendar.SECOND, 0);
             cal.set(GregorianCalendar.MILLISECOND, 0);
-        } else if (part == DatePart.Time) {
+        } else if (part == DatePart.TIME) {
             cal.set(GregorianCalendar.YEAR, 1970);
             cal.set(GregorianCalendar.MONTH, 0);
             cal.set(GregorianCalendar.DAY_OF_MONTH, 1);
@@ -323,12 +323,12 @@ public class Dates {
     }
 
     public static boolean inRange(Date date, Date start, Date end) {
-        return inRange(date, start, end, DatePart.DateTime);
+        return inRange(date, start, end, DatePart.DATE_TIME);
     }
 
     /**
      * Gets if a date is in a range, including the start and end dates.
-     * @param date Date to check that is into the range
+     * @param date DATE to check that is into the range
      * @param start Start of the range (included)
      * @param end End of the range (included)
      * @param part Part of the date to check
@@ -349,7 +349,7 @@ public class Dates {
     }
 
     public static boolean equals(Date date1, Date date2) {
-        return equals(date1, date2, DatePart.DateTime);
+        return equals(date1, date2, DatePart.DATE_TIME);
     }
 
     public static boolean equals(Date date1, Date date2, DatePart part) {
@@ -381,7 +381,7 @@ public class Dates {
 
     /**
      * Sets the time part of a date
-     * @param date Date
+     * @param date DATE
      * @param hour 0-23 hour
      * @param minutes 0-59
      * @param seconds 059

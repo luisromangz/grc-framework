@@ -96,127 +96,52 @@ public class DatesTest {
     }
 
     @Test
-    public void testEquals() {
-        Date ref = new Date();
-        long monthLen = 20 * 24 * 60 * 60 * 1000;
-        long hourLen = 60 * 60 * 1000;
-        boolean result = false;
-
-        //Range from month and a hour in the past to a month in the past
-        DateRange rangeA = new DateRange(
-                ref.getTime() - monthLen - hourLen,
-                ref.getTime() - monthLen);
-        //Range from an hour in the past to the current time
-        DateRange rangeB = new DateRange(
-                ref.getTime() - hourLen,
-                ref.getTime());
-
-        result = rangeA.equals(rangeB);
-        assertFalse(result);
-
-        result = rangeA.equals(rangeA);
-        assertTrue(result);
-
-        result = rangeB.equals(rangeB);
-        assertTrue(result);
-
-        result = Dates.equals(rangeA.getMin(), rangeA.getMax());
-        assertFalse(result);
-
-        result = Dates.equals(rangeA.getMin(), rangeA.getMax(), DatePart.Date);
-        assertTrue(result);
-
-        result = Dates.equals(rangeA.getMin(), rangeA.getMax(), DatePart.Time);
-        assertFalse(result);
-    }
-
-    @Test
-    public void testIntersects () {
-        Date ref = new Date();
-        long monthLen = 20 * 24 * 60 * 60 * 1000;
-        long hourLen = 60 * 60 * 1000;
-        boolean result = false;
-
-        //Range from month and a hour in the past to a month in the past
-        DateRange rangeA = new DateRange(
-                ref.getTime() - monthLen - hourLen,
-                ref.getTime() - monthLen);
-        //Range from an hour in the past to the current time
-        DateRange rangeB = new DateRange(
-                ref.getTime() - hourLen,
-                ref.getTime());
-
-        result = rangeA.intersects(rangeB);
-        assertFalse(result);
-
-        rangeB.setMin(new Date(ref.getTime() - monthLen - 1000));
-
-        result = rangeA.intersects(rangeB);
-        assertTrue(result);
-
-        result = rangeA.intersects(rangeA);
-        assertTrue(result);
-
-        result = rangeA.intersects(rangeA, DatePart.Date);
-        assertTrue(result);
-
-        result = rangeA.intersects(rangeB, DatePart.Date);
-        assertTrue(result);
-
-        result = rangeA.intersects(rangeB, DatePart.Time);
-        assertTrue(result);
-
-        rangeB.setMin(new Date(ref.getTime() - monthLen + 1000));
-
-        result = rangeA.intersects(rangeB, DatePart.Date);
-        assertTrue(result);
-
-        result = rangeA.intersects(rangeB, DatePart.Time);
-        assertTrue(result);
-
-        rangeB.setMin(null);
-        result = rangeA.intersects(rangeB);
-        assertTrue(result);
-
-        rangeB = new DateRange();
-        result = rangeA.intersects(rangeB);
-        assertFalse(result);
-    }
-
-    @Test
-    public void testInRange () {
-        Date ref = new Date();
-        long monthLen = 20 * 24 * 60 * 60 * 1000;
-        long weekLen = 7 * 24 * 60 * 60 * 1000;
-        long hourLen = 60 * 60 * 1000;
-        boolean result = false;
-        Date test = new Date(ref.getTime() - monthLen - 1000);
-
-        //Range from month and a hour in the past to a month in the past
-        DateRange rangeA = new DateRange(
-                ref.getTime() - monthLen - hourLen,
-                ref.getTime() - monthLen);
-        //Range from an hour in the past to the current time
-        DateRange rangeB = new DateRange(
-                ref.getTime() - hourLen,
-                ref.getTime());
-
-        result = Dates.inRange(test, rangeA.getMin(), rangeA.getMax());
-        assertTrue(result);
-
-        result = Dates.inRange(test, rangeB.getMin(), rangeB.getMax());
-        assertFalse(result);
-    }
-
-    @Test
     public void testTime() {
+        System.out.println("testTime");
         java.sql.Time time = new Time(14, 0, 0);
         java.sql.Time time2 = Dates.getSqlTime(14, 0, 0);
-        long timePart = Dates.getDateTimePart(time, DatePart.Time);
-        long timePart2 = Dates.getDateTimePart(time2, DatePart.Time);
+        long timePart = Dates.getDateTimePart(time, DatePart.TIME);
+        long timePart2 = Dates.getDateTimePart(time2, DatePart.TIME);
 
         assertEquals(time, time2);
         assertEquals(time.getTime(), timePart);
         assertEquals(timePart, timePart2);
+    }
+
+    @Test
+    public void testEquals() {
+        System.out.println("testEquals");
+        GregorianCalendar cal =
+                (GregorianCalendar)GregorianCalendar.getInstance();
+        
+        cal.set(2001, 10, 10, 10, 10, 10);
+        Date dateA = cal.getTime();
+        cal.set(2001, 10, 11, 10, 10, 10);
+        Date dateB = cal.getTime();
+        cal.set(2001, 10, 10, 11, 10, 10);
+        Date dateC = cal.getTime();
+        
+        Boolean result = false;
+        Boolean expectedResult = false;
+
+        // DATE(A) != DATE(B)
+        expectedResult = false;
+        result = Dates.equals(dateA, dateB, DatePart.DATE);
+        assertEquals("DATE(A) != DATE(B)", expectedResult, result);
+
+        // DATE(A) == DATE(C)
+        expectedResult = true;
+        result = Dates.equals(dateA, dateC, DatePart.DATE);
+        assertEquals("DATE(A) == DATE(C)", expectedResult, result);
+
+        // TIME(A) == TIME(B)
+        expectedResult = true;
+        result = Dates.equals(dateA, dateB, DatePart.TIME);
+        assertEquals("TIME(A) == TIME(B)", expectedResult, result);
+
+        // TIME(A) != TIME(c)
+        expectedResult = false;
+        result = Dates.equals(dateA, dateC, DatePart.TIME);
+        assertEquals("TIME(A) != TIME(B)", expectedResult, result);
     }
 }
