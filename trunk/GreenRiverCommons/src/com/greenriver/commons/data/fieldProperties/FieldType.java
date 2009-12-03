@@ -42,7 +42,7 @@ public enum FieldType {
     BOOLEAN,
 
     /**
-     * A numeric value.
+     * A natural, non-negative value.
      */
     NUMBER,
 
