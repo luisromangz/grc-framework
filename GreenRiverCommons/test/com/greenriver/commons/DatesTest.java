@@ -144,4 +144,35 @@ public class DatesTest {
         result = Dates.equals(dateA, dateC, DatePart.TIME);
         assertEquals("TIME(A) != TIME(B)", expectedResult, result);
     }
+
+    @Test
+    public void testDayDifference() {
+        System.out.println("testDayDifference");
+        GregorianCalendar calA =
+                (GregorianCalendar)GregorianCalendar.getInstance();
+        GregorianCalendar calB =
+                (GregorianCalendar)GregorianCalendar.getInstance();
+        Date dateA = null;
+        Date dateB = null;
+        int expectedDays = 1;
+        long expectedMillis = 4 * Dates.HOUR_MILLIS;
+        int resultDays = 0;
+        long resultMillis = 0L;
+
+        calA.set(2009, 11, 24, 23, 00, 00);
+        dateA = calA.getTime();
+        calB.set(2009, 11, 25, 04, 00, 00);
+        dateB = calB.getTime();
+
+        resultDays = Dates.daysDifference(dateA, dateB);
+        assertEquals(expectedDays, resultDays);
+
+        calA.set(2009, 11, 25, 1, 00, 00);
+        dateA = calA.getTime();
+        calB.set(2009, 11, 25, 5, 00, 00);
+        dateB = calB.getTime();
+
+        resultMillis = Dates.difference(dateA, dateB);
+        assertEquals(expectedMillis, resultMillis);
+    }
 }

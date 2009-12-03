@@ -136,4 +136,51 @@ public class Lists {
 
         return -1;
     }
+
+    /**
+     * Compares two lists first by size and then comparing elements.
+     * The element comparison relies on equals implementation so this will work
+     * if the objects in the lists have a proper implementation of it.
+     * If one or both the lists allows null values you can expect this method
+     * to trhow a null pointer exception in these cases.
+     * @param listA
+     * @param listB
+     * @param structural If true the elements are supposed to be in the same
+     * order, if false the elements of the first list are checked to exists in
+     * the second list.
+     * @return
+     */
+    public static boolean equals(
+            List<? extends Object> listA,
+            List<? extends Object> listB,
+            boolean structural) {
+        
+        if ((listA == null && listB != null) ||
+                (listA != null && listB == null) ||
+                listA.size() != listB.size()) {
+            return false;
+        }
+
+        Object objA = null;
+
+        if (!structural) {
+            for (int i=0; i<listA.size(); i++) {
+                objA = listA.get(i);
+
+                if (!listB.contains(objA)) {
+                    return false;
+                }
+            }
+        } else {
+            for (int i=0; i<listA.size(); i++) {
+                objA = listA.get(i);
+
+                if (!objA.equals(listB.get(i))) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
 }

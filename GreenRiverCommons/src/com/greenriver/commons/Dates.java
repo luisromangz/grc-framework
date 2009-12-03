@@ -15,7 +15,6 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.Calendar;
 
 /**
  * DATE handling utilities.
@@ -24,6 +23,8 @@ public class Dates {
 
     public static final int MAX_NANOS = 999999999;
     private static final Date EPOCH = new Date(0);
+    public static final long DAY_MILLIS = 24 * 60 * 60 * 1000;
+    public static final long HOUR_MILLIS = 60 * 60 * 1000;
 
     /**
      * Applies an increment in the nanoseconds of a timestamp. The increment 
@@ -399,22 +400,51 @@ public class Dates {
                     "The argument 'date' cannot be null.");
         }
 
-        // Get an instance of the Calendar.
-        Calendar calendar = Calendar.getInstance();
+        return new Date(getDateTimePart(date, DatePart.DATE));
+    }
 
-        // Make sure the calendar will not perform automatic correction.
-        calendar.setLenient(false);
+    /**
+     * Gets the difference between two dates as a number of milliseconds
+     * @param dateA
+     * @param dateB
+     * @return
+     */
+    public static long difference(Date dateA, Date dateB) {
+        // TODO: This is not the right way of doing this and will work only
+        // when the total loss of precision is less than a day
+        // see:
+        // - http://www.exit109.com/~ghealton/y2k/yrexamples.html
+        // - http://www.xmission.com/~goodhill/dates/deltaDates.html
 
-        // Set the time of the calendar to the given date.
-        calendar.setTime(date);
+        if (dateA.equals(dateB)) {
+            return 0;
+        }
+        
+        long aMillis = 0L;
+        long bMillis = 0L;
 
-        // Remove the hours, minutes, seconds and milliseconds.
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
+        GregorianCalendar greg = (GregorianCalendar)GregorianCalendar.getInstance();
+        greg.setTime(dateA);
+        aMillis = greg.getTimeInMillis() + greg.getTimeZone().getOffset(greg.getTimeInMillis());
+        greg.setTime(dateB);
+        bMillis = greg.getTimeInMillis() + greg.getTimeZone().getOffset(greg.getTimeInMillis());
 
-        // Return the date again.
-        return calendar.getTime();
+        if (aMillis > bMillis) {
+            return aMillis - bMillis;
+        } else {
+            return bMillis - aMillis;
+        }
+    }
+
+    /**
+     * Gets the difference between two dates in days
+     * @param dateA
+     * @param dateB
+     * @return
+     */
+    public static int daysDifference(Date dateA, Date dateB) {
+        dateA = getDatePart(dateA);
+        dateB = getDatePart(dateB);
+        return (int)(difference(dateA, dateB) / DAY_MILLIS);
     }
 }
