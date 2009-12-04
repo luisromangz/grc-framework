@@ -17,14 +17,30 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 /**
- * DATE handling utilities.
+ * Date handling utilities.
  */
 public class Dates {
 
+    /**
+     * Constant with the maximum number of nanoseconds in a second
+     */
     public static final int MAX_NANOS = 999999999;
+    /**
+     * Constant used internally which holds the Epoch date.
+     */
     private static final Date EPOCH = new Date(0);
+    /**
+     * Constant with milliseconds per day
+     */
     public static final long DAY_MILLIS = 24 * 60 * 60 * 1000;
+    /**
+     * Constant with milliseconds per hour
+     */
     public static final long HOUR_MILLIS = 60 * 60 * 1000;
+    /**
+     * Constant with millis per minute
+     */
+    public static final long MINUTE_MILLIS = 60 * 1000;
 
     /**
      * Applies an increment in the nanoseconds of a timestamp. The increment 
@@ -184,7 +200,7 @@ public class Dates {
     }
 
     /**
-     * Gets a date from the components of it
+     * Gets an object with date and time from the components of it
      * @param year Full year
      * @param month 0-11 Month order (0-based)
      * @param day Day of month
@@ -193,7 +209,9 @@ public class Dates {
      * @param seconds 0-59 seconds
      * @return
      */
-    public static Date getDate(int year, int month, int day, int hour, int minutes, int seconds) {
+    public static Date getDateTime(
+            int year, int month, int day,
+            int hour, int minutes, int seconds) {
         GregorianCalendar cal =
                 (GregorianCalendar) GregorianCalendar.getInstance();
 
@@ -216,6 +234,10 @@ public class Dates {
         return new Date(getDateTimePart(date, DatePart.DATE));
     }
 
+    public static long getDatePart(long millis) {
+        return getDateTimePart(millis, DatePart.DATE);
+    }
+
     /**
      * Returns only the time part without the date. The date is left as The Epoch.
      * @param date
@@ -225,17 +247,29 @@ public class Dates {
         return new Date(getDateTimePart(date, DatePart.TIME));
     }
 
-    public static java.sql.Time getSqlTime(Date date) {
-        return new java.sql.Time(getDateTimePart(date, DatePart.TIME));
+    public static long getTimePart(long millis) {
+        return getDateTimePart(millis, DatePart.TIME);
     }
 
     /**
-     * Gets a java.sql.TIME instance with the number of milliseconds for the
-     * time part of the date fixing the date components to the epoch.
+     * Gets an java.sql.date instance which is guaranteed to have the same
+     * hour, minute, second and milliseconod components as the original date.
+     * The date components is reset to cero (epoch).
+     * @param date
+     * @return
+     */
+    public static java.sql.Time getSqlTime(Date date) {
+        return new java.sql.Time(getDateTimePart(date.getTime(), DatePart.TIME));
+    }
+
+    /**
+     * Gets a java.sql.Time instance with the time components set and fixing
+     * the date components to 0 (the epoch). The millisecond component is set
+     * to 0.
      * @param hour 0-23 Hour (24h format).
      * @param minutes 0-59 Minutes
      * @param seconds 0-59 Seconds
-     * @return a java.sql.TIME instance
+     * @return a java.sql.Time instance
      */
     public static java.sql.Time getSqlTime(int hour, int minutes, int seconds) {
         GregorianCalendar cal =
@@ -244,11 +278,19 @@ public class Dates {
         cal.set(GregorianCalendar.HOUR_OF_DAY, hour);
         cal.set(GregorianCalendar.MINUTE, minutes);
         cal.set(GregorianCalendar.SECOND, seconds);
+        cal.set(GregorianCalendar.MILLISECOND, 0);
         return new java.sql.Time(cal.getTimeInMillis());
     }
 
+    /**
+     * Returns a java.sql.Time instance which is guaranteed to contain the
+     * same day, month and year components as the original date but with time
+     * information set to 0.
+     * @param date
+     * @return
+     */
     public static java.sql.Date getSqlDate(Date date) {
-        return new java.sql.Date(getDateTimePart(date, DatePart.DATE));
+        return new java.sql.Date(getDateTimePart(date.getTime(), DatePart.DATE));
     }
 
     /**
@@ -268,14 +310,14 @@ public class Dates {
         return new java.sql.Date(cal.getTimeInMillis());
     }
 
-    protected static long getDateTimePart(Date date, DatePart part) {
+    protected static long getDateTimePart(long millis, DatePart part) {
         if (part == DatePart.DATE_TIME) {
-            return date.getTime();
+            return millis;
         }
 
         GregorianCalendar cal =
                 (GregorianCalendar) GregorianCalendar.getInstance();
-        cal.setTime(date);
+        cal.setTimeInMillis(millis);
 
         if (part == DatePart.DATE) {
             cal.set(GregorianCalendar.HOUR_OF_DAY, 0);
@@ -289,6 +331,10 @@ public class Dates {
         }
 
         return cal.getTimeInMillis();
+    }
+
+    protected static long getDateTimePart(Date date, DatePart part) {
+        return getDateTimePart(date.getTime(), part);
     }
 
     /**
@@ -394,15 +440,6 @@ public class Dates {
         return new Date(date.getTime() - oldTime + newTime);
     }
 
-    public static Date removeTime(Date date) {
-        if (date == null) {
-            throw new IllegalArgumentException(
-                    "The argument 'date' cannot be null.");
-        }
-
-        return new Date(getDateTimePart(date, DatePart.DATE));
-    }
-
     /**
      * Gets the difference between two dates as a number of milliseconds
      * @param dateA
@@ -419,11 +456,13 @@ public class Dates {
         if (dateA.equals(dateB)) {
             return 0;
         }
-        
+
         long aMillis = 0L;
         long bMillis = 0L;
 
-        GregorianCalendar greg = (GregorianCalendar)GregorianCalendar.getInstance();
+        // These calculations are done as suggested in the second url referenced
+        // above
+        GregorianCalendar greg = (GregorianCalendar) GregorianCalendar.getInstance();
         greg.setTime(dateA);
         aMillis = greg.getTimeInMillis() + greg.getTimeZone().getOffset(greg.getTimeInMillis());
         greg.setTime(dateB);
@@ -445,6 +484,6 @@ public class Dates {
     public static int daysDifference(Date dateA, Date dateB) {
         dateA = getDatePart(dateA);
         dateB = getDatePart(dateB);
-        return (int)(difference(dateA, dateB) / DAY_MILLIS);
+        return (int) (difference(dateA, dateB) / DAY_MILLIS);
     }
 }
