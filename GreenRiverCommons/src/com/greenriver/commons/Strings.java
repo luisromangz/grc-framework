@@ -300,4 +300,24 @@ public class Strings {
 
         return result;
     }
+
+    public static String toUpperCase(String value, int startIndex, int endIndex) {
+         String uppercased = value.substring(startIndex, endIndex);
+
+        uppercased = uppercased.toUpperCase();
+
+        String result = "";
+
+        if(startIndex>0) {
+            result = value.substring(0, startIndex);
+        }
+
+        result += uppercased;
+
+        if(endIndex<value.length()) {
+            result+=value.substring(endIndex);
+        }
+
+        return result;
+    }
 }
