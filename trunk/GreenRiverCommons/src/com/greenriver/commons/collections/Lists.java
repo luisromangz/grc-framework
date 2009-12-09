@@ -27,7 +27,9 @@ public class Lists {
      * @param glue
      * @return An string with all the elements of the first list converted to
      * strings and using the glue as separator.
+     * @deprecated Use Strings.join, which operates over all kind of Collection.
      */
+    @Deprecated
     public static String join(List list, String glue) {
 	if (list == null || list.size() == 0) {
 	    return "";

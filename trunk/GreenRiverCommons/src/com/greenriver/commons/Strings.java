@@ -18,6 +18,8 @@ import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.Random;
 
 /**
@@ -31,12 +33,10 @@ public class Strings {
         '8', '9', 'A', 'B',
         'C', 'D', 'E', 'F'
     };
-
     private static String LOWERCASE_CHARS = "abcdefghijklmnopqrstuvwxyz";
     private static String UPERCASE_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static String NUMBERS = "0123456789";
     private static Random random = new Random();
-
     private static Charset asciiCharset = Charset.forName("US-ASCII");
 
     /**
@@ -47,10 +47,10 @@ public class Strings {
     public static String toHexString(int value) {
         byte[] data = new byte[2];
 
-        data[0] = (byte)((value & 0xF0) >>> 4);
-        data[1] = (byte)((value & 0x0F));
+        data[0] = (byte) ((value & 0xF0) >>> 4);
+        data[1] = (byte) ((value & 0x0F));
 
-        return hexChars[data[0]]+""+hexChars[data[1]];
+        return hexChars[data[0]] + "" + hexChars[data[1]];
     }
 
     /**
@@ -73,7 +73,7 @@ public class Strings {
         StringBuilder builder = new StringBuilder(data.length * 2);
         int highB, lowB;
 
-        for (int i=0; i<data.length; i++) {
+        for (int i = 0; i < data.length; i++) {
             highB = (data[i] & 0xF0) >>> 4;
             lowB = (data[i] & 0x0F);
             builder.append(hexChars[highB]);
@@ -106,19 +106,19 @@ public class Strings {
      * @return the checksum as a hex string or null if MD5 is not supported
      * @throws NullPointerException if the input string is null
      */
-    public static String toMD5HexString (String str) {
+    public static String toMD5HexString(String str) {
         if (str == null) {
             throw new NullPointerException("Null strings are not allowed");
         }
 
         MessageDigest digest = null;
-        
+
         try {
             digest = MessageDigest.getInstance("MD5");
         } catch (NoSuchAlgorithmException ex) {
             return null;
         }
-        
+
         byte[] data = digest.digest(str.getBytes());
         return toHexString(data);
     }
@@ -206,8 +206,8 @@ public class Strings {
     }
 
     public static boolean startsWith(String prefix, String target, boolean caseInsensitive) {
-        if (prefix == null || 
-                (prefix.length() == 0 && target != null)) {
+        if (prefix == null
+                || (prefix.length() == 0 && target != null)) {
             return true;
         } else if (target == null) {
             return false;
@@ -215,12 +215,12 @@ public class Strings {
             return false;
         } else if (prefix.length() == target.length()) {
             target = target.substring(0, prefix.length());
-            return (caseInsensitive && Strings.equalsIgnoreCase(prefix, target)) ||
-                    (!caseInsensitive && Strings.equals(prefix, target));
+            return (caseInsensitive && Strings.equalsIgnoreCase(prefix, target))
+                    || (!caseInsensitive && Strings.equals(prefix, target));
         }
 
         target = target.substring(0, prefix.length());
-        
+
         if (!caseInsensitive) {
             return Strings.equals(prefix, target);
         } else {
@@ -233,8 +233,8 @@ public class Strings {
     }
 
     public static boolean endsWith(String suffix, String target, boolean caseInsensitive) {
-        if (suffix == null ||
-                (suffix.length() == 0 && target != null)) {
+        if (suffix == null
+                || (suffix.length() == 0 && target != null)) {
             return true;
         } else if (target == null) {
             return false;
@@ -242,8 +242,8 @@ public class Strings {
             return false;
         } else if (suffix.length() == target.length()) {
             target = target.substring(0, suffix.length());
-            return (caseInsensitive && Strings.equalsIgnoreCase(suffix, target)) ||
-                    (!caseInsensitive && Strings.equals(suffix, target));
+            return (caseInsensitive && Strings.equalsIgnoreCase(suffix, target))
+                    || (!caseInsensitive && Strings.equals(suffix, target));
         }
 
         target = target.substring(target.length() - suffix.length());
@@ -256,17 +256,17 @@ public class Strings {
     }
 
     public static String random(int size) {
-        String src = LOWERCASE_CHARS +  UPERCASE_CHARS + NUMBERS;
+        String src = LOWERCASE_CHARS + UPERCASE_CHARS + NUMBERS;
         StringBuilder result = new StringBuilder(size);
         int srcLen = src.length();
         int randomInt = 0;
         char ch;
-        
-        while(size > 0) {
+
+        while (size > 0) {
             randomInt = random.nextInt(srcLen);
             ch = src.charAt(randomInt);
             result.append(ch);
-            size --;
+            size--;
         }
 
         return result.toString();
@@ -285,39 +285,56 @@ public class Strings {
         String lowercased = value.substring(startIndex, endIndex);
 
         lowercased = lowercased.toLowerCase();
-        
+
         String result = "";
 
-        if(startIndex>0) {
+        if (startIndex > 0) {
             result = value.substring(0, startIndex);
         }
 
         result += lowercased;
 
-        if(endIndex<value.length()) {
-            result+=value.substring(endIndex);
+        if (endIndex < value.length()) {
+            result += value.substring(endIndex);
         }
 
         return result;
     }
 
     public static String toUpperCase(String value, int startIndex, int endIndex) {
-         String uppercased = value.substring(startIndex, endIndex);
+        String uppercased = value.substring(startIndex, endIndex);
 
         uppercased = uppercased.toUpperCase();
 
         String result = "";
 
-        if(startIndex>0) {
+        if (startIndex > 0) {
             result = value.substring(0, startIndex);
         }
 
         result += uppercased;
 
-        if(endIndex<value.length()) {
-            result+=value.substring(endIndex);
+        if (endIndex < value.length()) {
+            result += value.substring(endIndex);
         }
 
         return result;
+    }
+
+    public static String join(Collection collection, String glue) {
+        if (collection == null || collection.size() == 0) {
+            return "";
+        }
+
+        StringBuilder builder = new StringBuilder();
+        Iterator iter = collection.iterator();
+        while (iter.hasNext()) {
+            builder.append(iter.next());
+            if (!iter.hasNext()) {
+                break;
+            }
+            builder.append(glue);
+        }
+        return builder.toString();
     }
 }
