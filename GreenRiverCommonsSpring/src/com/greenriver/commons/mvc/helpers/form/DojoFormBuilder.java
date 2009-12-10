@@ -349,6 +349,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         assertNotFile(properties);
 
         element.getAttributes().setProperty("type", "password");
+        element.getAttributes().setProperty("style", "width:10em");
         element.getAttributes().setProperty("dojoType",
                 "dijit.form.ValidationTextBox");
         element.getAttributes().setProperty("regExp",
@@ -678,6 +679,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         formFieldElement.getAttributes().setProperty("invalidMessage",
                 "Las contraseñas no coinciden.");
         formFieldElement.getAttributes().remove("regExp");
+        formFieldElement.getAttributes().setProperty("style", "width:10em");
         String confirmId = formFieldElement.getId() + "_confirm";
         String validationFunction =
                 String.format(
@@ -786,7 +788,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
             Class fieldType,
             FieldProperties properties) {
         configuration.addDojoModule("dijit.form.TimeTextBox");
-        formFieldElement.setAttribute("dojoType", "dijit.form.TimeTextBox");
+        formFieldElement.setAttribute("dojoType", "dijit.form.TimeTextBox");       
     }
 
     private void setupDateField(
@@ -796,5 +798,6 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
 
         configuration.addDojoModule("dojox.form.DateTextBox");
         formFieldElement.setAttribute("dojoType", "dojox.form.DateTextBox");
+        formFieldElement.setAttribute("class","dijitDateTextBox");
     }
 }
