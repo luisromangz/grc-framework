@@ -11,6 +11,7 @@ Author: mangelp
 ###################################################################*/
 package com.greenriver.commons.collections;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -184,5 +185,14 @@ public class Lists {
         }
 
         return true;
+    }
+
+     public static <T,R> List<R> apply(List<T> list, ApplicableCommand<T,R> command){
+        List<R> resultSet = new ArrayList<R>();
+        for(T setElement : list) {
+            resultSet.add(command.apply(setElement));
+        }
+
+        return resultSet;
     }
 }
