@@ -82,7 +82,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
             conditions.add(String.format("value!=%s", condition.notEquals()));
         }
 
-        String conditionString = Lists.join(conditions, "||");
+        String conditionString = Strings.join(conditions, "||");
 
         String asignationStatement = "";
         if(!condition.newValue().equals("\0")) {
@@ -96,21 +96,21 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
                 "var value=dijit.byId('%s').attr('value');" +
                 "var widget = dijit.byId('%s');"+
                 "widget.setDisabled(%s);%s}",
-                 lastForm.getId()+"_"+condition.widgetId(),
+                 lastForm.getId()+"_"+condition.triggerField(),
                 fieldId,
                 conditionString,
                 asignationStatement);
 
         String onChangeCode = String.format(
                 "dojo.connect(dijit.byId('%s'),'onChange',%s);",
-                lastForm.getId()+"_"+condition.widgetId(),
+                lastForm.getId()+"_"+condition.triggerField(),
                 function);
 
         configuration.addOnLoadScript(onChangeCode);
 
         String onValueSetCode = String.format(
                 "dojo.connect(dijit.byId('%s'),'setValue',%s);",
-                lastForm.getId()+"_"+condition.widgetId(),
+                lastForm.getId()+"_"+condition.triggerField(),
                 function);
 
         configuration.addOnLoadScript(onValueSetCode);
