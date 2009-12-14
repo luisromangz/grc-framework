@@ -39,79 +39,106 @@
                 var element = 1;
                 var result = grc.array.binarySearch(element, data);
                 var tmp = null;
+                var output = '';
                 out.innerHTML = grc.string.toString(data);
-                out.innerHTML = out.innerHTML + "\n" + "Search " + element + " : " + result;
+                output += "\n" + "Search " + element + " : " + result;
                 element = 18;
                 result = grc.array.binarySearch(element, data);
-                out.innerHTML = out.innerHTML + "\n" + "Search " + element + " : " + result;
+                output += "\n" + "Search " + element + " : " + result;
                 data.splice((result*-1) - 1, 0, element);
-                out.innerHTML = out.innerHTML + "\n" + grc.string.toString(data);
+                output += "\n" + grc.string.toString(data);
                 result = grc.array.binarySearch(element, data);
-                out.innerHTML = out.innerHTML + "\n" + "Search " + element + " : " + result;
+                output += "\n" + "Search " + element + " : " + result;
                 element = '5009';
                 result = grc.array.binarySearch(element, data);
-                out.innerHTML = out.innerHTML + "\n" + "Search " + element + " : " + result;
+                output += "\n" + "Search " + element + " : " + result;
                 element = 6000;
                 result = grc.array.binarySearch(element, data);
-                out.innerHTML = out.innerHTML + "\n" + "Search " + element + " : " + result;
+                output += "\n" + "Search " + element + " : " + result;
                 //-------------------------------------------
                 tmp = new Date();
                 data = [tmp, dojo.date.add(tmp, 'day', 5), dojo.date.add(tmp, 'day', 10)];
-                out.innerHTML = out.innerHTML + "\n" + grc.string.toString(data);
+                output += "\n" + grc.string.toString(data);
 
                 element = data[0];
                 result = grc.array.binarySearch(element, data, function (a, b) {
                     return dojo.date.compare(a, b, 'date');
                 });
-                out.innerHTML = out.innerHTML + "\n" + "Search " + grc.string.toString(element) + " : " + result;
+                output += "\n" + "Search " + grc.string.toString(element) + " : " + result;
 
                 element = data[1];
                 result = grc.array.binarySearch(element, data, function (a, b) {
                     return dojo.date.compare(a, b, 'date');
                 });
-                out.innerHTML = out.innerHTML + "\n" + "Search " + grc.string.toString(element) + " : " + result;
+                output += "\n" + "Search " + grc.string.toString(element) + " : " + result;
 
                 element = data[2];
                 result = grc.array.binarySearch(element, data, function (a, b) {
                     return dojo.date.compare(a, b, 'date');
                 });
-                out.innerHTML = out.innerHTML + "\n" + "Search " + grc.string.toString(element) + " : " + result;
+                output += "\n" + "Search " + grc.string.toString(element) + " : " + result;
 
                 element = dojo.date.add(tmp, 'day', 2);
                 result = grc.array.binarySearch(element, data, function (a, b) {
                     return dojo.date.compare(a, b, 'date');
                 });
-                out.innerHTML = out.innerHTML + "\n" + "Search " + grc.string.toString(element) + " : " + result;
+                output += "\n" + "Search " + grc.string.toString(element) + " : " + result;
 
                 element = dojo.date.add(tmp, 'day', 6);
                 result = grc.array.binarySearch(element, data, function (a, b) {
                     return dojo.date.compare(a, b, 'date');
                 });
-                out.innerHTML = out.innerHTML + "\n" + "Search " + grc.string.toString(element) + " : " + result;
+                output += "\n" + "Search " + grc.string.toString(element) + " : " + result;
 
                 element = dojo.date.add(tmp, 'day', 12);
                 result = grc.array.binarySearch(element, data, function (a, b) {
                     return dojo.date.compare(a, b, 'date');
                 });
-                out.innerHTML = out.innerHTML + "\n" + "Search " + grc.string.toString(element) + " : " + result;
+                output += "\n" + "Search " + grc.string.toString(element) + " : " + result;
 
-                /*var data = [1,4,6];
-                var out = dojo.byId('results');
-                var element = 2;
-                var result = grc.array.binarySearch(element, data);
-                var tmp = null;
-                out.innerHTML = grc.string.toString(data);
-                out.innerHTML = out.innerHTML + "\n" + "Search " + element + " : " + result;
-                element = 5;
-                result = grc.array.binarySearch(element, data);
-                out.innerHTML = out.innerHTML + "\n" + "Search " + element + " : " + result;*/
+                var data = [];
+                var pos = 0;
+                var pos2 = 0;
+                var r = 0;
+                var criteria = function (arr, pos) {
+                    if (pos < (arr.length - 1)) {
+                        return arr[pos] <= arr[pos + 1];
+                    } else {
+                        return true;
+                    }
+                }
+
+                for (var i=0; i<100; i++) {
+                    r = Math.round(Math.random() * (500 - 1) + 1);
+                    output += "\nInserting " + r;
+                    pos = grc.array.binarySearch(r, data);
+                    if (pos < 0) {
+                        pos = (pos + 1) * -1;
+                    }
+                    
+                    grc.array.insert(r, data, pos);
+                    output += "\n\t" + grc.string.toString(data, 1);
+
+                    if (!grc.array.forAll(data, criteria)) {
+                        output += "\n\tFailed to do ordered insertion.";
+                    } else {
+                        pos2 = grc.array.binarySearch(r, data);
+                        if (pos2 < 0) {
+                            output += "\n\tFailed to search inserted element.";
+                        } else if (data[pos] !== r) {
+                            output += "\n\tElement found is " + data[pos] + " but should be " + r + ".";
+                        }
+                    }
+                }
+
+                out.innerHTML = output;
             }
             dojo.addOnLoad(onDojoLoad);
         </script>
     </head>
     <body class="tundra">
         <div id="body">
-            <textarea id="results" cols="150" rows="64"></textarea>
+            <textarea id="results" cols="550" rows="128"></textarea>
         </div>
     </body>
 </html>
