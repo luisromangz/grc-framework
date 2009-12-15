@@ -18,6 +18,7 @@ package com.greenriver.commons.security;
  *  http://www.forensicswiki.org/wiki/SIM_Card</li><li>
  *  http://en.wikipedia.org/wiki/Luhn_algorithm</li><li>
  *  http://www.chriswareham.demon.co.uk/software/Luhn.java</li></ul>
+ * @author Miguel Angel
  */
 public class IMEIValidator {
 

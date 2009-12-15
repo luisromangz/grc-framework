@@ -5,6 +5,7 @@ import com.greenriver.commons.data.validation.FieldsValidationResult;
 import com.greenriver.commons.data.validation.FieldsValidator;
 import com.greenriver.commons.data.validation.ValidationRegex;
 import com.greenriver.commons.roleManagement.RoleManager;
+import com.greenriver.commons.security.NIFValidator;
 import java.io.ByteArrayInputStream;
 import java.lang.reflect.Field;
 import java.text.DecimalFormat;
@@ -419,6 +420,9 @@ public class FieldPropertiesValidator implements FieldsValidator {
             case DATE:
                 validateDate(value, properties, validationMessages);
                 break;
+            case NIF:
+                validateNIF(value, properties, validationMessages);
+                break;
         }
     }
 
@@ -586,6 +590,30 @@ public class FieldPropertiesValidator implements FieldsValidator {
 
             return;
         }
+    }
+
+    private void validateNIF(Object value, 
+            FieldProperties properties,
+            List<String> validationMessages) {
         
+        if (properties.required() && value == null) {
+            validationMessages.add(String.format(
+                    "El valor del campo «%s» es requerido.",
+                    properties.label()));
+            return;
+        } else if (!properties.required() && value == null) {
+            return;
+        }
+
+        NIFValidator validator = new NIFValidator();
+        String nif = (String)value;
+        // remove unwanted characters to left only numbers and letters
+        nif = nif.replaceAll("[/b-]+", "");
+        
+        if (!validator.validate(nif)) {
+            validationMessages.add(String.format(
+                    "El valor del campo «%s» no es un NIF válido.",
+                    properties.label()));
+        }
     }
 }
