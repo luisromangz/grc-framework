@@ -59,8 +59,8 @@ import java.util.logging.Logger;
  *  detaches.
  *  </li></li>maxThreads: Sets the maximum number of threads to use.
  *  </li></li>minThreads: Sets the minimum number of threads to use. These
- *  number of threads are kept event without no work to do.
- *  </li><li>maxIdle: Sets the maximum number of idle threads.
+ *  number of threads are kept even without no work to do.
+ *  </li><li>maxIdle: Sets the maximum number of idle threads to keep.
  *  </li></li>maxQueue: Maximum number of queued tasks.
  *  </li></li>threadTTL: Sets the amount of time a thread is kept alive
  *  without being used.

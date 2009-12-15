@@ -105,5 +105,10 @@ public enum FieldType {
     /**
      * A field holding a date.
      */
-    DATE
+    DATE,
+
+    /**
+     * Spanish NIF with validation code
+     */
+    NIF
 }
