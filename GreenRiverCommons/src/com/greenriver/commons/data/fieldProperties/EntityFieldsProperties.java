@@ -18,7 +18,7 @@ public @interface EntityFieldsProperties {
      * If true, the fields of the base class are added at the end, not the beggining.
      * @return
      */
-    boolean appendBaseClassFields() default false;
+    boolean appendSuperClassFields() default false;
 
     /**
      * A list of deactivation conditions for the fields.
