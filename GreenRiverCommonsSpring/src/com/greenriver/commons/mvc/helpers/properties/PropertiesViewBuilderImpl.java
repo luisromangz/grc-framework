@@ -204,11 +204,12 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
                 (EntityFieldsProperties) modelClass.getAnnotation(
                 EntityFieldsProperties.class);
 
-        if (entityProperties == null || !entityProperties.appendBaseClassFields()) {
-            if (modelClass.getSuperclass() != null) {
-                addPropertyViewsFromModel(
-                        modelClass.getSuperclass(),
-                        propertiesToShow);
+        List<String> originalPropertiesToShow =
+                propertiesToShow==null?null:new ArrayList<String>(propertiesToShow);
+
+        if (entityProperties == null || !entityProperties.appendSuperClassFields()) {
+            if (modelClass.getSuperclass() != Object.class) {
+                addPropertyViewsFromModel(modelClass.getSuperclass(),originalPropertiesToShow);
             }
         }
 
@@ -225,7 +226,7 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
             try {
                 classField = modelClass.getDeclaredField(propName);
             } catch (NoSuchFieldException ex) {
-                continue;
+                continue; // We cant crash because the field might be defined in the superclass.
             }
 
             fieldProperties =
@@ -238,11 +239,9 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
             }
         }
 
-         if (entityProperties != null && entityProperties.appendBaseClassFields()) {
-            if (modelClass.getSuperclass() != null) {
-                addPropertyViewsFromModel(
-                        modelClass.getSuperclass(),
-                        propertiesToShow);
+        if (entityProperties != null && entityProperties.appendSuperClassFields()) {
+            if (modelClass.getSuperclass() != Object.class) {
+                addPropertyViewsFromModel(modelClass.getSuperclass(),originalPropertiesToShow);
             }
         }
 

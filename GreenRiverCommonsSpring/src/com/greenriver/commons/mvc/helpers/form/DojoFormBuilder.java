@@ -143,7 +143,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         }
 
         if(entityProperties==null
-                || !entityProperties.appendBaseClassFields()) {
+                || !entityProperties.appendSuperClassFields()) {
 
             if (modelClass.getSuperclass() != null) {
                 addFieldsFromModel(modelClass.getSuperclass());
@@ -161,7 +161,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         }
 
         if(entityProperties!=null
-               && entityProperties.appendBaseClassFields()) {
+               && entityProperties.appendSuperClassFields()) {
 
             if (modelClass.getSuperclass() != null) {
                 addFieldsFromModel(modelClass.getSuperclass());
