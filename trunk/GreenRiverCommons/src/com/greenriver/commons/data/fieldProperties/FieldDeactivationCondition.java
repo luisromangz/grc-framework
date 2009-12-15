@@ -19,6 +19,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface FieldDeactivationCondition {
+    public String targetField() default "";
     public String triggerField();
     public String equals() default "";
     public String notEquals() default "";
