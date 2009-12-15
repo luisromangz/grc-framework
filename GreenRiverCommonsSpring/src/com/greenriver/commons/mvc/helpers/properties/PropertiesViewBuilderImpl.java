@@ -3,6 +3,7 @@ package com.greenriver.commons.mvc.helpers.properties;
 import com.greenriver.commons.mvc.helpers.PropertyOptions;
 import com.greenriver.commons.Strings;
 import com.greenriver.commons.collections.Lists;
+import com.greenriver.commons.data.fieldProperties.EntityFieldsProperties;
 import com.greenriver.commons.data.fieldProperties.FieldProperties;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -48,11 +49,10 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
      * separated with commas.
      */
     public static final String KEY_IGNORE_PROPERTIES = "ignoreProperties";
-
-    private static final String labelFormat = "<span id=\"%1$s_label\">%2$s</span>";
-    private static final String valueFormat = "<span id=\"%1$s\"></span>" +
-                "<span style=\"margin-left:5px\" id=\"%1$s_unit\">%2$s</span>";
-    
+    private static final String labelFormat =
+            "<span id=\"%1$s_label\">%2$s</span>";
+    private static final String valueFormat = "<span id=\"%1$s\"></span>"
+            + "<span style=\"margin-left:5px\" id=\"%1$s_unit\">%2$s</span>";
     private List<PropertiesView> propertiesViews;
     private PropertiesView currentPropertiesView;
     private Map<String, Class> classCache;
@@ -119,11 +119,13 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
 
         PropertyOptions options = PropertyOptions.parseString(id);
 
-        if (currentPropertiesView.containsPropertyViewForName(options.getPropName())) {
+        if (currentPropertiesView.containsPropertyViewForName(
+                options.getPropName())) {
             return null;
         }
 
-        SinglePropertyView propView = new SinglePropertyView(
+        SinglePropertyView propView =
+                new SinglePropertyView(
                 currentPropertiesView.getPropertyViewName(options.getPropName()));
 
         propView.setLabel(properties.label());
@@ -148,19 +150,21 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
         }
 
         if (label == null) {
-            throw new IllegalArgumentException("Label parameter can be empty" +
-                    " but not null");
+            throw new IllegalArgumentException("Label parameter can be empty"
+                    + " but not null");
         }
 
         assertCurrent();
 
         PropertyOptions options = PropertyOptions.parseString(id);
 
-        if (currentPropertiesView.containsPropertyViewForName(options.getPropName())) {
+        if (currentPropertiesView.containsPropertyViewForName(
+                options.getPropName())) {
             return null;
         }
 
-        SinglePropertyView propView = new SinglePropertyView(
+        SinglePropertyView propView =
+                new SinglePropertyView(
                 currentPropertiesView.getPropertyViewName(options.getPropName()));
 
         propView.setLabel(label);
@@ -178,9 +182,9 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
         addPropertyViewsFromModel(entityFullName, null);
     }
 
-    public void addPropertyViewsFromModel(String entityFullName, 
+    public void addPropertyViewsFromModel(String entityFullName,
             List<String> propertiesToShow) {
-        
+
         addPropertyViewsFromModel(
                 getClassFromName(entityFullName),
                 propertiesToShow);
@@ -195,10 +199,17 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
             Class modelClass,
             List<String> propertiesToShow) {
 
-        if(modelClass.getSuperclass() !=null) {
-            addPropertyViewsFromModel(
-                modelClass.getSuperclass(),
-                propertiesToShow);
+
+        EntityFieldsProperties entityProperties =
+                (EntityFieldsProperties) modelClass.getAnnotation(
+                EntityFieldsProperties.class);
+
+        if (entityProperties == null || !entityProperties.appendBaseClassFields()) {
+            if (modelClass.getSuperclass() != null) {
+                addPropertyViewsFromModel(
+                        modelClass.getSuperclass(),
+                        propertiesToShow);
+            }
         }
 
         Field classField = null;
@@ -214,16 +225,27 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
             try {
                 classField = modelClass.getDeclaredField(propName);
             } catch (NoSuchFieldException ex) {
-               continue;
+                continue;
             }
 
-            fieldProperties = classField.getAnnotation(FieldProperties.class);
+            fieldProperties =
+                    classField.getAnnotation(FieldProperties.class);
 
             //Only go ahead if there is a field property
             if (fieldProperties != null) {
-                addPropertyView(propName, fieldProperties, classField.getType());
+                addPropertyView(propName, fieldProperties,
+                        classField.getType());
             }
         }
+
+         if (entityProperties != null && entityProperties.appendBaseClassFields()) {
+            if (modelClass.getSuperclass() != null) {
+                addPropertyViewsFromModel(
+                        modelClass.getSuperclass(),
+                        propertiesToShow);
+            }
+        }
+
     }
 
     /**
@@ -233,8 +255,8 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
     public void addPropertyViewFromConfiguration(Map<String, Object> config) {
         if (!config.containsKey(KEY_MODEL)) {
             throw new IllegalArgumentException(
-                    "The configuration must include '" + KEY_MODEL +
-                    "' key with the entity full name as value");
+                    "The configuration must include '" + KEY_MODEL
+                    + "' key with the entity full name as value");
         }
 
         //Temporal object to put values got from the map.
@@ -248,13 +270,13 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
 
         if (obj == null || !(obj instanceof String)) {
             throw new IllegalArgumentException(
-                    "The configuration must include '" + KEY_MODEL +
-                    "' key with the entity full name as value");
+                    "The configuration must include '" + KEY_MODEL
+                    + "' key with the entity full name as value");
         }
 
         entityName = (String) obj;
         entityClass = getClassFromName(entityName);
-        
+
         //We process the properties key if set
         if (config.containsKey(KEY_PROPERTIES)) {
             processPropertiesListObject(
@@ -308,7 +330,7 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
         if (classCache.containsKey(classFullName)) {
             return classCache.get(classFullName);
         }
-        
+
         Class result = null;
 
         try {
@@ -331,7 +353,7 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
      * @return a list of properties
      */
     private List<String> generatePropertyList(Class entityClass) {
-        
+
         Field[] classFields = entityClass.getDeclaredFields();
         List<String> result = new ArrayList<String>();
 
@@ -430,7 +452,7 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
             if (properties.unit() != null) {
                 unit = properties.unit();
             }
-            
+
             if (properties.label() != null) {
                 label = properties.label();
             }
@@ -445,7 +467,6 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
 
         return true;
     }
-    
     //TODO: To handle more or less complex setups for other properties
     //add new methods here with the same parameters as the setupPropertiesView
     //method.

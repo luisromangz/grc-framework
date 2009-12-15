@@ -2,6 +2,7 @@ package com.greenriver.commons.mvc.helpers.form;
 
 import com.greenriver.commons.Strings;
 import com.greenriver.commons.collections.Lists;
+import com.greenriver.commons.data.fieldProperties.EntityFieldsProperties;
 import com.greenriver.commons.data.fieldProperties.FieldDeactivationCondition;
 import com.greenriver.commons.data.fieldProperties.FieldProperties;
 import com.greenriver.commons.data.fieldProperties.FieldPropertiesValidator;
@@ -27,7 +28,7 @@ import org.springframework.web.servlet.ModelAndView;
 public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
 
     private List<Form> forms;
-    private Form lastForm;
+    private Form currentForm;
     private RoleManager roleManager;
     private HeaderConfiguration configuration;
 
@@ -36,11 +37,11 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
     }
 
     public void addField(FormField field) {
-        lastForm.addField(field);
+        currentForm.addField(field);
     }
 
     public void addField(String id, FieldProperties properties, Class fieldType) {
-        String fieldId = lastForm.getId() + "_" + id;
+        String fieldId = currentForm.getId() + "_" + id;
 
         HtmlFormElementInfo formFieldElement = new HtmlFormElementInfo(fieldId);
 
@@ -55,7 +56,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
                 formFieldElement.getContents(),
                 formFieldElement.getAttributes());
 
-        lastForm.addField(field);
+        currentForm.addField(field);
 
         if (properties.type() == FieldType.PASSWORDEDITOR) {
             // If the field is a password editor, then we need to add a second
@@ -70,8 +71,20 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
     }
 
     public void addFieldDeactivationCondition(
-            String fieldId,
+            String fieldIdentifier,
             FieldDeactivationCondition condition) {
+
+        String fieldId = null;
+        if(!Strings.isNullOrEmpty(fieldIdentifier)) {
+            // Real field name takes preference over the name passed in the annotation.
+            fieldId=fieldIdentifier;
+        } else if(!Strings.isNullOrEmpty(condition.targetField())){
+            fieldId = currentForm.getId()+"_"+condition.targetField();
+        } else {
+            throw new IllegalArgumentException(
+                    "addFieldDeactivationCondition: A non-empty target field identifier is required");
+        }
+
 
         ArrayList<String> conditions = new ArrayList<String>();
         if(!Strings.isNullOrEmpty(condition.equals())) {
@@ -96,29 +109,45 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
                 "var value=dijit.byId('%s').attr('value');" +
                 "var widget = dijit.byId('%s');"+
                 "widget.setDisabled(%s);%s}",
-                 lastForm.getId()+"_"+condition.triggerField(),
+                 currentForm.getId()+"_"+condition.triggerField(),
                 fieldId,
                 conditionString,
                 asignationStatement);
 
         String onChangeCode = String.format(
                 "dojo.connect(dijit.byId('%s'),'onChange',%s);",
-                lastForm.getId()+"_"+condition.triggerField(),
+                currentForm.getId()+"_"+condition.triggerField(),
                 function);
 
         configuration.addOnLoadScript(onChangeCode);
 
         String onValueSetCode = String.format(
                 "dojo.connect(dijit.byId('%s'),'setValue',%s);",
-                lastForm.getId()+"_"+condition.triggerField(),
+                currentForm.getId()+"_"+condition.triggerField(),
                 function);
 
         configuration.addOnLoadScript(onValueSetCode);
     }
 
     public void addFieldsFromModel(Class modelClass) {
-        if (modelClass.getSuperclass() != null) {
-            addFieldsFromModel(modelClass.getSuperclass());
+
+        @SuppressWarnings("unchecked")
+        EntityFieldsProperties entityProperties =
+                (EntityFieldsProperties) modelClass.getAnnotation(EntityFieldsProperties.class);
+
+        if(entityProperties!=null) {
+            for(FieldDeactivationCondition deactivationCondition :
+                entityProperties.deactivationConditions()){
+                addFieldDeactivationCondition(null, deactivationCondition);
+            }
+        }
+
+        if(entityProperties==null
+                || !entityProperties.appendBaseClassFields()) {
+
+            if (modelClass.getSuperclass() != null) {
+                addFieldsFromModel(modelClass.getSuperclass());
+            }
         }
 
 
@@ -130,10 +159,19 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
                 this.addField(field.getName(), props, field.getType());
             }
         }
+
+        if(entityProperties!=null
+               && entityProperties.appendBaseClassFields()) {
+
+            if (modelClass.getSuperclass() != null) {
+                addFieldsFromModel(modelClass.getSuperclass());
+            }
+        }
+
     }
 
     public void setAction(String action) {
-        lastForm.setAction(action);
+        currentForm.setAction(action);
     }
 
     public void addForm(
@@ -148,7 +186,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         this.configuration = configuration;
 
         forms.add(newForm);
-        lastForm = newForm;
+        currentForm = newForm;
     }
 
     public List<Form> getForms() {
@@ -156,7 +194,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
     }
 
     public void removeField(String fieldId) {
-        lastForm.removeField(fieldId);
+        currentForm.removeField(fieldId);
     }
 
     /**
@@ -705,7 +743,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
                 "Confirmar " + label.toLowerCase(),
                 "", formFieldElement.getAttributes());
 
-        lastForm.addField(field);
+        currentForm.addField(field);
     }
 
     private void setupFieldElement(HtmlFormElementInfo formFieldElement,
@@ -771,6 +809,14 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
                 break;
             case DATE:
                 setupDateField(formFieldElement, fieldType, properties);
+                break;
+            case NIF:
+                setupNifField(formFieldElement, fieldType, properties);
+                break;
+            default:
+                throw new java.lang.UnsupportedOperationException(String.format(
+                        "Field tipe '%s' not supported by DojoFormBuilder",
+                        properties.type().name()));
         }
     }
 
@@ -799,5 +845,18 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         configuration.addDojoModule("dojox.form.DateTextBox");
         formFieldElement.setAttribute("dojoType", "dojox.form.DateTextBox");
         formFieldElement.setAttribute("class","dijitDateTextBox");
+    }
+
+    private void setupNifField(HtmlFormElementInfo formFieldElement, Class fieldType, FieldProperties properties) {
+         assertNotNumber(properties);
+        assertNotSelection(properties);
+        assertNotFile(properties);
+
+        formFieldElement.getAttributes().setProperty("type", "text");
+        formFieldElement.getAttributes().setProperty("dojoType",
+                "dijit.form.ValidationTextBox");
+
+        // TODO: Add validation to NIF type
+        formFieldElement.getAttributes().setProperty("trim", "true");
     }
 }
