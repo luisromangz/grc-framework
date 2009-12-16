@@ -4,16 +4,19 @@ package com.greenriver.commons.security;
 import com.greenriver.commons.Strings;
 
 /**
- * Validates a nif
+ * Validates an spanish NIF
  * @author Miguel Angel
  */
 public class NIFValidator {
-    // 23 letters used
-    private static String LETTERS = "TRWAGMYFPDXBNJZSQVHLCKE";
-    // Maximum length of the nif string plus letter
-    private static int MAX_LENGTH = 12;
-    // Minimum length of the nif string plus letter
-    private static int MIN_LENGTH = 6;
+    /**
+     * Ordered list of the 23 characters used as the validation code for NIF
+     */
+    public static String NIF_LETTERS = "TRWAGMYFPDXBNJZSQVHLCKE";
+    // Maximum length of the NIF string plus letter, this allows 9 digit NIF
+    // plus letter
+    private static int MAX_LENGTH = 9;
+    // Minimum length of the nif string plus letter (6 digit plus letter)
+    private static int MIN_LENGTH = 8;
 
     /**
      * Validates a spanish NIF. The nif letter must be appended at the end of
@@ -24,8 +27,11 @@ public class NIFValidator {
      */
     public boolean validate(String nif) {
 
-        if (Strings.isNullOrEmpty(nif) || nif.length() < MIN_LENGTH ||
-                nif.length() > MAX_LENGTH) {
+        if (Strings.isNullOrEmpty(nif)) {
+            return false;
+        }
+        
+        if(nif.length() < MIN_LENGTH || nif.length() > MAX_LENGTH) {
             return false;
         }
         
@@ -49,7 +55,7 @@ public class NIFValidator {
 
     public boolean validate(long nif, Character ch) {
         ch = Character.toUpperCase(ch);
-        return ch.equals(LETTERS.charAt((int)nif % 23));
+        return ch.equals(NIF_LETTERS.charAt((int)nif % 23));
     }
 
     /**
@@ -58,7 +64,12 @@ public class NIFValidator {
      * @return
      */
     public Character calculateNIFLetter(String nif) {
-        if (Strings.isNullOrEmpty(nif) || nif.length() < MIN_LENGTH ||
+        
+        if (Strings.isNullOrEmpty(nif)) {
+            return null;
+        }
+
+        if(nif.length() < MIN_LENGTH ||
                 nif.length() > MAX_LENGTH) {
             return null;
         }
@@ -82,6 +93,6 @@ public class NIFValidator {
     public Character calculateNIFLetter(long nif) {
         // It's as easy as calculating mod 23 to get a number in the range 0-22
         // and then get the letter from the letters string.
-        return LETTERS.charAt((int)nif % 23);
+        return NIF_LETTERS.charAt((int)nif % 23);
     }
 }
