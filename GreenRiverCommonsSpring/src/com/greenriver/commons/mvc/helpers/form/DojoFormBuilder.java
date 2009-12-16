@@ -846,24 +846,27 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         formFieldElement.setAttribute("class", "dijitDateTextBox");
     }
 
-    private void setupNifField(HtmlFormElementInfo formFieldElement, Class fieldType, FieldProperties properties) {
+    private void setupNifField(
+            HtmlFormElementInfo formFieldElement,
+            Class fieldType,
+            FieldProperties properties) {
         assertNotNumber(properties);
         assertNotSelection(properties);
         assertNotFile(properties);
 
         configuration.addDojoModule("grc.dijit.form.CustomValidationTextBox");
 
-        formFieldElement.getAttributes().setProperty("type", "text");
-        formFieldElement.getAttributes().setProperty("dojoType",
-                "grc.dijit.form.CustomValidationTextBox");
+        formFieldElement.setAttribute("type", "text");
+        formFieldElement.setAttribute("dojoType","grc.dijit.form.CustomValidationTextBox");
 
         // TODO: Add validation to NIF type
-        formFieldElement.getAttributes().setProperty("trim", "true");
-        formFieldElement.getAttributes().setProperty("promptMessage", "Introduzca su NIF sin espacios u otros caracteres.");
-        formFieldElement.getAttributes().setProperty("invalidMessage", "NIF incorrecto.");
+        formFieldElement.setAttribute("trim", "true");
+        formFieldElement.setAttribute("promptMessage", "Introduzca un NIF sin espacios u otros caracteres.");
+        formFieldElement.setAttribute("invalidMessage", "NIF incorrecto.");
         // regexp to validate a nif in the form 123456789A with adition of a
         // separator (blank, - or _) between the numbers and the letter for 
         // flexibility in the input
-        formFieldElement.getAttributes().setProperty("validation", "nif");
+        formFieldElement.setAttribute("validation", "nif");
+        formFieldElement.setAttribute("style", "width:12em");
     }
 }
