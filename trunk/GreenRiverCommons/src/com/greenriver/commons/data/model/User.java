@@ -34,6 +34,9 @@ public class User implements Serializable, Comparable<User> {
     @FieldProperties(label="Contraseña", type = FieldType.PASSWORDEDITOR)
     private String password;
 
+    @FieldProperties(label="Correo electrónico", type=FieldType.EMAIL, required=false)
+    private String emailAddress;
+
     @FieldProperties(label = "Permisos", type = FieldType.ROLESELECTOR, required=false)
     private String[] roles;
 
@@ -161,5 +164,19 @@ public class User implements Serializable, Comparable<User> {
 
     public void setDeleted(Boolean deleted) {
         this.deleted = deleted;
+    }
+
+    /**
+     * @return the emailAddress
+     */
+    public String getEmailAddress() {
+        return emailAddress;
+    }
+
+    /**
+     * @param emailAddress the emailAddress to set
+     */
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
     }
 }
