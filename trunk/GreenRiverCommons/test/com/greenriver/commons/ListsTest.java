@@ -1,11 +1,6 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package com.greenriver.commons;
 
-import com.greenriver.commons.collections.Lists;
 import java.util.Arrays;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -50,7 +45,7 @@ public class ListsTest {
         System.out.println("testJoin");
 	String[] elems = new String[] {"Test1 ", "Test2 ", "Test3 "};
 	String expResult = "Test1 +Test2 +Test3 ";
-	String testResult = Lists.join(Arrays.asList(elems), "+");
+	String testResult = Strings.join(Arrays.asList(elems), "+");
 
 	assertEquals(expResult, testResult);
     }

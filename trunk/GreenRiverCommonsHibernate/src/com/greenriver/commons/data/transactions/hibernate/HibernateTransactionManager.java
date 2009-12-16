@@ -24,6 +24,9 @@ public class HibernateTransactionManager implements TransactionManager {
 
         if (!tran.isActive()) {
             sessionFactory.getCurrentSession().beginTransaction();
+            System.out.println("\t\t- Transaction begin " + tran.toString() + " - ");
+        } else {
+            System.out.println("\t\t- Transaction active " + tran.toString() + " - ");
         }
     }
 
@@ -32,6 +35,9 @@ public class HibernateTransactionManager implements TransactionManager {
 
         if (tran.isActive()) {
             sessionFactory.getCurrentSession().getTransaction().commit();
+            System.out.println("\t\t- Transaction commit " + tran.toString() + " -");
+        } else {
+            System.out.println("\t\t- Transaction inactive " + tran.toString() + " -");
         }
         sessionFactory.getCurrentSession().close();
     }
@@ -44,11 +50,16 @@ public class HibernateTransactionManager implements TransactionManager {
                 tran.rollback();
             } catch (TransactionException tE){
                 // Do nothing;
+                System.out.println("\t\t- Transaction rollback throwed and exception -");
+                tE.printStackTrace(System.out);
             }
         }
 
         sessionFactory.getCurrentSession().close();
+
+        System.out.println("\t\t- Transaction rollback and closes " + tran.toString() + " -");
     }
+    
     private SessionFactory sessionFactory;
 
     public void setSessionFactory(SessionFactory sessionFactory) {

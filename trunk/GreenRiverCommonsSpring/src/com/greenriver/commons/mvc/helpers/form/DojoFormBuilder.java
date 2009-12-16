@@ -1,7 +1,6 @@
 package com.greenriver.commons.mvc.helpers.form;
 
 import com.greenriver.commons.Strings;
-import com.greenriver.commons.collections.Lists;
 import com.greenriver.commons.data.fieldProperties.EntityFieldsProperties;
 import com.greenriver.commons.data.fieldProperties.FieldDeactivationCondition;
 import com.greenriver.commons.data.fieldProperties.FieldProperties;
@@ -665,12 +664,12 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         }
 
         if (properties.allowedFileTypes().length > 0) {
-            constraint = Lists.join(Arrays.asList(
+            constraint = Strings.join(Arrays.asList(
                     properties.allowedFileTypes()), ",");
             constraints.add("types:'" + constraint + "'");
         }
 
-        constraint = "{" + Lists.join(constraints, ",") + "}";
+        constraint = "{" + Strings.join(constraints, ",") + "}";
 
         formFieldElement.setAttribute("constraints", constraint);
     }
