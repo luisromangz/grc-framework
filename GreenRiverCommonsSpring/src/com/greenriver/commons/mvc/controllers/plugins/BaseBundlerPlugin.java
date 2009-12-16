@@ -1,6 +1,7 @@
 package com.greenriver.commons.mvc.controllers.plugins;
 
 // <editor-fold defaultstate="collapsed" desc="Imports">
+import com.greenriver.commons.Strings;
 import com.greenriver.commons.collections.Lists;
 import com.greenriver.commons.mvc.configuration.PageConfiguration;
 import com.yahoo.platform.yui.compressor.JavaScriptCompressor;
@@ -44,7 +45,7 @@ public abstract class BaseBundlerPlugin implements ControllerPlugin {
 
         List<String> fileNames = getFileNames(configuration);
 
-        String bundleName = Lists.join(fileNames, ",");
+        String bundleName = Strings.join(fileNames, ",");
 
         // We encode the bundle's name, so if modules change, the name
         // of the bundled file will change too, and thus will force a new

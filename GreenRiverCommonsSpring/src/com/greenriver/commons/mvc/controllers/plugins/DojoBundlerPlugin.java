@@ -1,4 +1,3 @@
-
 package com.greenriver.commons.mvc.controllers.plugins;
 
 import com.greenriver.commons.mvc.configuration.PageConfiguration;
@@ -13,16 +12,18 @@ import java.util.Scanner;
 import java.util.regex.MatchResult;
 
 /**
- *
+ * Creates a bundle of dojo javascript files on the fly reducing the number of
+ * request for dojo components to almost 1. Also supports minimizing the size of
+ * the bundle by using a javascript compressor like yui's javascript compressor.
  * @author luis
  */
 public class DojoBundlerPlugin extends BaseBundlerPlugin {
 
     private List<String> excludedNamespaces;
 
-    public DojoBundlerPlugin () {
-         this.excludedNamespaces = new ArrayList<String>();
-         this.setBundlePrefix("dojo");
+    public DojoBundlerPlugin() {
+        this.excludedNamespaces = new ArrayList<String>();
+        this.setBundlePrefix("dojo");
     }
 
     @Override
@@ -30,10 +31,8 @@ public class DojoBundlerPlugin extends BaseBundlerPlugin {
         return configuration.getDojoModules();
     }
 
-   
-
     @Override
-        protected void addBundle(String bundleName,PageConfiguration configuration) {
+    protected void addBundle(String bundleName, PageConfiguration configuration) {
         // When using the auto bundler, we discard other bundles.
         configuration.getDojoModules().clear();
         configuration.getDojoBundles().clear();
@@ -43,17 +42,18 @@ public class DojoBundlerPlugin extends BaseBundlerPlugin {
     @Override
     protected void bundleFiles(PageConfiguration configuration, File bundleFile) {
 
-        if(configuration.getDojoModules().isEmpty()){
+        if (configuration.getDojoModules().isEmpty()) {
             throw new RuntimeException("We should have dojo modules.");
         }
         addDojoModules(configuration.getDojoModules(), bundleFile);
     }
 
-     public void addDojoModules(List<String> newModules, File bundleFile) {
+    public void addDojoModules(List<String> newModules, File bundleFile) {
         List<String> loadedModules = new ArrayList<String>();
+        BufferedWriter fileWriter = null;
 
         try {
-            BufferedWriter fileWriter = new BufferedWriter(new FileWriter(
+            fileWriter = new BufferedWriter(new FileWriter(
                     bundleFile, false));
 
             for (String newModule : newModules) {
@@ -61,17 +61,20 @@ public class DojoBundlerPlugin extends BaseBundlerPlugin {
                         newModule)) {
                     continue;
                 }
-
+                
                 processModuleFile(loadedModules, newModule, fileWriter);
             }
-
-            fileWriter.close();
         } catch (IOException ex) {
             throw new RuntimeException(ex);
+        } finally {
+            if (fileWriter != null) {
+                try {
+                    fileWriter.close();
+                } catch (IOException ex) {
+                    
+                }
+            }
         }
-
-
-        
     }
 
     public boolean isModuleExcluded(String moduleName) {
@@ -85,7 +88,7 @@ public class DojoBundlerPlugin extends BaseBundlerPlugin {
     }
 
     public String getPathFromModuleName(String moduleName) {
-        return this.getJavascriptBasePath()+"/" + moduleName.replace('.', '/') + ".js";
+        return this.getJavascriptBasePath() + "/" + moduleName.replace('.', '/') + ".js";
     }
 
     public void processModuleFile(
@@ -99,29 +102,34 @@ public class DojoBundlerPlugin extends BaseBundlerPlugin {
 
         loadedModules.add(moduleName);
 
-
         File moduleFile = new File(getPathFromModuleName(moduleName));
         Scanner scanner = null;
+        List<String> lines = new ArrayList<String>();
+        String nextLine = null;
+        String regex = null;
+        String declarationFound = null;
+        MatchResult matchResult = null;
+        String requiredModule = null;
+        
         try {
             scanner = new Scanner(moduleFile);
         } catch (FileNotFoundException ex) {
             throw new RuntimeException(ex);
         }
-        List<String> lines = new ArrayList<String>();
+        
         // We start reading the module file
         while (scanner.hasNextLine()) {
 
-            String nextLine = scanner.nextLine();
+            nextLine = scanner.nextLine();
 
             // We search for a declare statement in the line.
-            String regex =
-                    "dojo\\.require\\([\"']((\\w+\\.)+(\\w)+)[\"']\\)(;)?";
-            String declarationFound = scanner.findInLine(regex);
+            regex = "dojo\\.require\\([\"']((\\w+\\.)+(\\w)+)[\"']\\)(;)?";
+            declarationFound = scanner.findInLine(regex);
 
             if (declarationFound != null) {
-                MatchResult matchResult = scanner.match();
+                matchResult = scanner.match();
                 for (int groupIndex = 1; groupIndex < matchResult.groupCount(); groupIndex++) {
-                    String requiredModule = matchResult.group(groupIndex);
+                    requiredModule = matchResult.group(groupIndex);
 
                     if (!requiredModule.matches("^(\\w+\\.)+(\\w)+$")) {
                         continue;
@@ -167,7 +175,5 @@ public class DojoBundlerPlugin extends BaseBundlerPlugin {
     public void setExcludedNamespaces(List<String> excludedNamespaces) {
         this.excludedNamespaces = excludedNamespaces;
     }
-
-    
     // </editor-fold>
 }

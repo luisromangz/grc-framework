@@ -12,7 +12,6 @@ Author: mangelp
 package com.greenriver.commons.configuration;
 
 import com.greenriver.commons.Strings;
-import com.greenriver.commons.collections.Lists;
 import java.util.Arrays;
 import java.util.List;
 
@@ -411,7 +410,7 @@ public class ApplicationSettingsProvider implements SettingsProvider {
     }
 
     public void setList(String key, List<String> value, String separator) {
-	set(key, Lists.join(value, separator));
+	set(key, Strings.join(value, separator));
     }
 
     public void setEnum(String key, Enum value) {
