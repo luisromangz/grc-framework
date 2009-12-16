@@ -59,30 +59,27 @@ public class ConfigurablePageController extends AbstractController
             HttpServletResponse response)
             throws Exception {
 
-        
-
         ModelAndView mav = new ModelAndView(viewName);
 
         configureFormEntities(this.getFormEntities(), mav, null);
         configurePropertiesView(this.getPropertiesView(), mav, null);
         configurePageTools(mav);
 
-        
-
         if (this.userSessionInfo != null) {
             mav.addObject("userSessionInfo", this.userSessionInfo);
         }
 
-         customHandleRequest(request, response, mav);
+        customHandleRequest(request, response, mav);
 
-         PageConfiguration configuration = (PageConfiguration) this.pageConfiguration.clone();
-         //PageConfiguration configuration = this.pageConfiguration;
+        PageConfiguration configuration = (PageConfiguration)
+                this.pageConfiguration.clone();
+        //PageConfiguration configuration = this.pageConfiguration;
 
-         for(ControllerPlugin plugin : this.getPlugins()) {
-            plugin.doWork(request,configuration);
+        for (ControllerPlugin plugin : this.getPlugins()) {
+            plugin.doWork(request, configuration);
         }
 
-       headerConfigurer.configure(mav, configuration);
+        headerConfigurer.configure(mav, configuration);
 
         return mav;
     }
@@ -121,7 +118,7 @@ public class ConfigurablePageController extends AbstractController
                     prefix + formId,
                     this.getPageConfiguration(),
                     mav);
-            
+
             formBuilder.addFieldsFromModel(entityClass);
         }
     }
@@ -157,13 +154,15 @@ public class ConfigurablePageController extends AbstractController
                         (Map<String, Object>) value);
             } else {
                 throw new IllegalArgumentException(
-                        "Invalid type for map value of key '" + propsViewId +
-                        "'");
+                        "Invalid type for map value of key '" + propsViewId
+                        + "'");
             }
         }
     }
 
-    private void configurePageTools(ModelAndView mav) throws ClassNotFoundException {
+    private void configurePageTools(ModelAndView mav) 
+            throws ClassNotFoundException {
+        
         List<String> dialogJspFiles = new ArrayList<String>();
         List<String> setupJspFiles = new ArrayList<String>();
 
@@ -236,7 +235,9 @@ public class ConfigurablePageController extends AbstractController
         return formBuilder;
     }
 
-    public void setPropertiesViewBuilder(PropertiesViewBuilder propertiesViewBuilder) {
+    public void setPropertiesViewBuilder(
+            PropertiesViewBuilder propertiesViewBuilder) {
+        
         this.propertiesViewBuilder = propertiesViewBuilder;
     }
 
@@ -563,7 +564,5 @@ public class ConfigurablePageController extends AbstractController
     protected PageConfiguration getPageConfiguration() {
         return pageConfiguration;
     }
-
-    
     // </editor-fold>
 }
