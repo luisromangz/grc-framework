@@ -65,7 +65,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
                     properties.label());
         }
 
-        for(FieldDeactivationCondition condition : properties.deactivationConditions()) {
+        for (FieldDeactivationCondition condition : properties.deactivationConditions()) {
             addFieldDeactivationCondition(field.getId(), condition);
         }
     }
@@ -75,11 +75,11 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
             FieldDeactivationCondition condition) {
 
         String fieldId = null;
-        if(!Strings.isNullOrEmpty(fieldIdentifier)) {
+        if (!Strings.isNullOrEmpty(fieldIdentifier)) {
             // Real field name takes preference over the name passed in the annotation.
-            fieldId=fieldIdentifier;
-        } else if(!Strings.isNullOrEmpty(condition.targetField())){
-            fieldId = currentForm.getId()+"_"+condition.targetField();
+            fieldId = fieldIdentifier;
+        } else if (!Strings.isNullOrEmpty(condition.targetField())) {
+            fieldId = currentForm.getId() + "_" + condition.targetField();
         } else {
             throw new IllegalArgumentException(
                     "addFieldDeactivationCondition: A non-empty target field identifier is required");
@@ -87,62 +87,61 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
 
 
         ArrayList<String> conditions = new ArrayList<String>();
-        if(!Strings.isNullOrEmpty(condition.equals())) {
+        if (!Strings.isNullOrEmpty(condition.equals())) {
             conditions.add(String.format("value==%s", condition.equals()));
         }
 
-        if(!Strings.isNullOrEmpty(condition.notEquals())) {
+        if (!Strings.isNullOrEmpty(condition.notEquals())) {
             conditions.add(String.format("value!=%s", condition.notEquals()));
         }
 
         String conditionString = Strings.join(conditions, "||");
 
         String asignationStatement = "";
-        if(!condition.newValue().equals("\0")) {
+        if (!condition.newValue().equals("\0")) {
             asignationStatement = String.format(
-                "if(%s){widget.attr('value',%s);}",
-                conditionString,
-                condition.newValue());
+                    "if(%s){widget.attr('value',%s);}",
+                    conditionString,
+                    condition.newValue());
         }
 
-        String function = String.format("function(){" +
-                "var value=dijit.byId('%s').attr('value');" +
-                "var widget = dijit.byId('%s');"+
-                "widget.setDisabled(%s);%s}",
-                 currentForm.getId()+"_"+condition.triggerField(),
+        String function = String.format("function(){"
+                + "var value=dijit.byId('%s').attr('value');"
+                + "var widget = dijit.byId('%s');"
+                + "widget.setDisabled(%s);%s}",
+                currentForm.getId() + "_" + condition.triggerField(),
                 fieldId,
                 conditionString,
                 asignationStatement);
 
         String onChangeCode = String.format(
                 "dojo.connect(dijit.byId('%s'),'onChange',%s);",
-                currentForm.getId()+"_"+condition.triggerField(),
+                currentForm.getId() + "_" + condition.triggerField(),
                 function);
 
         configuration.addOnLoadScript(onChangeCode);
 
         String onValueSetCode = String.format(
                 "dojo.connect(dijit.byId('%s'),'setValue',%s);",
-                currentForm.getId()+"_"+condition.triggerField(),
+                currentForm.getId() + "_" + condition.triggerField(),
                 function);
 
         configuration.addOnLoadScript(onValueSetCode);
     }
 
     public void addFieldsFromModel(Class modelClass) {
-
         @SuppressWarnings("unchecked")
         EntityFieldsProperties entityProperties =
                 (EntityFieldsProperties) modelClass.getAnnotation(EntityFieldsProperties.class);
 
-        if(entityProperties!=null) {
-            for(FieldDeactivationCondition deactivationCondition :
-                entityProperties.deactivationConditions()){
+        if (entityProperties != null) {
+            for (FieldDeactivationCondition deactivationCondition :
+                    entityProperties.deactivationConditions()) {
                 addFieldDeactivationCondition(null, deactivationCondition);
             }
         }
 
-        if(entityProperties==null
+        if (entityProperties == null
                 || !entityProperties.appendSuperClassFields()) {
 
             if (modelClass.getSuperclass() != null) {
@@ -222,20 +221,20 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
 
             if (properties.externalValues()) {
                 throw new FormBuildingException(
-                        "Error procesing element " + elementId + ". " +
-                        "Enum field type is incompatible with externalValues flag");
+                        "Error procesing element " + elementId + ". "
+                        + "Enum field type is incompatible with externalValues flag");
             } else if (Strings.isNullOrEmpty(properties.enumLabelMethod())) {
                 throw new FormBuildingException(
-                        "Error procesing element " + elementId + ". " +
-                        "Enum method name required but not specified");
+                        "Error procesing element " + elementId + ". "
+                        + "Enum method name required but not specified");
             } else if (possibleValues.length != 0) {
                 throw new FormBuildingException(
-                        "Error procesing element " + elementId + ". " +
-                        "Enum field type is incompatible with a list of possible values");
+                        "Error procesing element " + elementId + ". "
+                        + "Enum field type is incompatible with a list of possible values");
             } else if (possibleValueLabels.length != 0) {
                 throw new FormBuildingException(
-                        "Error procesing element " + elementId + ". " +
-                        "Enum field type is incompatible with a list of possible value labels");
+                        "Error procesing element " + elementId + ". "
+                        + "Enum field type is incompatible with a list of possible value labels");
             }
 
             // We have to extract the values from the Enum;
@@ -263,19 +262,19 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
             }
         }
 
-        if (!properties.externalValues() &&
-                (labels.size() == 0 || values.size() == 0)) {
+        if (!properties.externalValues()
+                && (labels.size() == 0 || values.size() == 0)) {
 
             throw new FormBuildingException(
-                    "Error procesing element " + elementId + ": " +
-                    "No options specified for selection. " +
-                    "Maybe you forgot to set externalValues?");
+                    "Error procesing element " + elementId + ": "
+                    + "No options specified for selection. "
+                    + "Maybe you forgot to set externalValues?");
 
         } else if (labels.size() != values.size()) {
 
             throw new FormBuildingException(
-                    "Error procesing element " + elementId + ": " +
-                    "Number of labels doesn't match number of values");
+                    "Error procesing element " + elementId + ": "
+                    + "Number of labels doesn't match number of values");
 
         }
 
@@ -461,6 +460,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         assertNotFile(properties);
 
         element.getAttributes().setProperty("type", "text");
+        element.getAttributes().setProperty("trim", "true");
         element.getAttributes().setProperty(
                 "dojoType",
                 "dijit.form.ValidationTextBox");
@@ -546,19 +546,19 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
 
         String colorSelectionScript =
                 String.format(
-                "dojo.connect(dijit.byId('%s'),'onChange',function(newValue) {" +
-                "dojo.style(dojo.byId('%1$s_colorViewer'),'background',newValue);});",
+                "dojo.connect(dijit.byId('%s'),'onChange',function(newValue) {"
+                + "dojo.style(dojo.byId('%1$s_colorViewer'),'background',newValue);});",
                 element.getId());
 
         configuration.addOnLoadScript(colorSelectionScript);
 
         String contents = String.format(
-                "<span><div id=\"%s_colorViewer\" style=\"width:1em; height:1em;" +
-                " border: 1px solid #7EABCD;\"></div></span>",
+                "<span><div id=\"%s_colorViewer\" style=\"width:1em; height:1em;"
+                + " border: 1px solid #7EABCD;\"></div></span>",
                 element.getId());
         contents += String.format(
-                "<div dojoType=\"dijit.TooltipDialog\"><div id=\"%s\" " +
-                "dojoType=\"dojox.widget.ColorPicker\" liveUpdate=\"true\"></div></div>",
+                "<div dojoType=\"dijit.TooltipDialog\"><div id=\"%s\" "
+                + "dojoType=\"dojox.widget.ColorPicker\" liveUpdate=\"true\"></div></div>",
                 element.getId());
 
         element.setContents(contents);
@@ -834,7 +834,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
             Class fieldType,
             FieldProperties properties) {
         configuration.addDojoModule("dijit.form.TimeTextBox");
-        formFieldElement.setAttribute("dojoType", "dijit.form.TimeTextBox");       
+        formFieldElement.setAttribute("dojoType", "dijit.form.TimeTextBox");
     }
 
     private void setupDateField(
@@ -844,19 +844,27 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
 
         configuration.addDojoModule("dojox.form.DateTextBox");
         formFieldElement.setAttribute("dojoType", "dojox.form.DateTextBox");
-        formFieldElement.setAttribute("class","dijitDateTextBox");
+        formFieldElement.setAttribute("class", "dijitDateTextBox");
     }
 
     private void setupNifField(HtmlFormElementInfo formFieldElement, Class fieldType, FieldProperties properties) {
-         assertNotNumber(properties);
+        assertNotNumber(properties);
         assertNotSelection(properties);
         assertNotFile(properties);
 
+        configuration.addDojoModule("grc.dijit.form.CustomValidationTextBox");
+
         formFieldElement.getAttributes().setProperty("type", "text");
         formFieldElement.getAttributes().setProperty("dojoType",
-                "dijit.form.ValidationTextBox");
+                "grc.dijit.form.CustomValidationTextBox");
 
         // TODO: Add validation to NIF type
         formFieldElement.getAttributes().setProperty("trim", "true");
+        formFieldElement.getAttributes().setProperty("promptMessage", "Introduzca su NIF sin espacios u otros caracteres.");
+        formFieldElement.getAttributes().setProperty("invalidMessage", "NIF incorrecto.");
+        // regexp to validate a nif in the form 123456789A with adition of a
+        // separator (blank, - or _) between the numbers and the letter for 
+        // flexibility in the input
+        formFieldElement.getAttributes().setProperty("validation", "nif");
     }
 }
