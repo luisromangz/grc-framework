@@ -414,9 +414,9 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         assertNotSelection(properties);
         assertNotFile(properties);
 
-        element.getAttributes().setProperty("dojoType", "dijit.form.Editor");
+        element.getAttributes().setProperty("dojoType", "dijit.Editor");
         element.setElementType("textarea");
-        configuration.addDojoModule("dijit.form.Editor");
+        configuration.addDojoModule("dijit.Editor");
     }
 
     private void setupNumberField(HtmlFormElementInfo element,
