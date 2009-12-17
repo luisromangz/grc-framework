@@ -4,7 +4,6 @@ import com.greenriver.commons.Strings;
 import com.greenriver.commons.data.fieldProperties.EntityFieldsProperties;
 import com.greenriver.commons.data.fieldProperties.FieldDeactivationCondition;
 import com.greenriver.commons.data.fieldProperties.FieldProperties;
-import com.greenriver.commons.data.fieldProperties.FieldPropertiesValidator;
 import com.greenriver.commons.data.fieldProperties.FieldType;
 import com.greenriver.commons.data.validation.ValidationRegex;
 import com.greenriver.commons.mvc.helpers.header.HeaderConfiguration;
@@ -389,9 +388,10 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         element.getAttributes().setProperty("dojoType",
                 "dijit.form.ValidationTextBox");
         element.getAttributes().setProperty("regExp",
-                FieldPropertiesValidator.PASSWORD_PATTERN.pattern());
+                ValidationRegex.PASSWORD_ALPHA_6);
         element.getAttributes().setProperty("invalidMessage",
-                "La contraseña debe tener al menos 6 carácteres.");
+                "La contraseña debe tener al menos 6 carácteres y " +
+                "sólo carácteres alfabéticos.");
     }
 
     private void setupLongTextField(HtmlFormElementInfo element,
@@ -404,6 +404,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         element.setAttribute(
                 "dojoType",
                 "grc.dijit.form.DowngradableTextarea");
+        element.setAttribute("trim", "true");
         element.setElementType("textarea");
     }
 
