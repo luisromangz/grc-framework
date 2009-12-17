@@ -1,5 +1,6 @@
 package com.greenriver.commons.data.model;
 
+import com.greenriver.commons.Strings;
 import com.greenriver.commons.data.fieldProperties.FieldProperties;
 import com.greenriver.commons.data.fieldProperties.FieldType;
 import java.io.Serializable;
@@ -24,7 +25,11 @@ public class User implements Serializable, Comparable<User> {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @FieldProperties(label = "Nombre de usuario", customRegExp = "^[\\w]{6,}$")
+    @FieldProperties(
+        label = "Nombre de usuario",
+        customRegExp = "[\\w]{6,}",
+        invalidMessage="El nombre de usuario debe tener al menos 6 carácteres y " +
+                "sólo carácteres alfabéticos.")
     @Column(unique=true)
     private String username;
 
@@ -63,23 +68,20 @@ public class User implements Serializable, Comparable<User> {
 
     @Override
     public int hashCode() {
-        int hash = 0;
-        hash += (getId() != null ? getId().hashCode() : 0);
+        int hash = 7;
+        hash = 41 * hash + (this.username != null ? this.username.hashCode() : 0);
         return hash;
     }
-
+    
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof User)) {
+        if (object == null || !this.getClass().isAssignableFrom(object.getClass())) {
             return false;
         }
+
         User other = (User) object;
-        if ((this.getId() == null && other.getId() != null)
-                || (this.getId() != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
+
+        return Strings.equals(this.username, other.username);
     }
 
     @Override
