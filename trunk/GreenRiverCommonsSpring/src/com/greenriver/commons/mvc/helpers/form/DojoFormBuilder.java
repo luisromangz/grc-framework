@@ -415,7 +415,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         assertNotFile(properties);
 
         element.getAttributes().setProperty("dojoType", "dijit.Editor");
-        element.setElementType("textarea");
+        element.setElementType("div");
         configuration.addDojoModule("dijit.Editor");
     }
 
@@ -708,6 +708,12 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         if (!properties.editable()) {
             element.getAttributes().setProperty("disabled", "true");
         }
+
+
+        if(!Strings.isNullOrEmpty(properties.widgetWidth())) {
+            element.setAttribute("style", "width:"+properties.widgetWidth());
+        }
+
     }
 
     private void createPasswordConfirmationFormField(
