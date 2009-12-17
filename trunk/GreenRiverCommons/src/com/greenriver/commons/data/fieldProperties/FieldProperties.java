@@ -156,4 +156,10 @@ public @interface FieldProperties {
      * @return
      */
     public FieldDeactivationCondition[] deactivationConditions() default {};
+
+    /**
+     * The desired widget size, in css format.
+     * @return
+     */
+    public String widgetWidth() default "";
 }
