@@ -486,4 +486,10 @@ public class Dates {
         dateB = getDatePart(dateB);
         return (int) (difference(dateA, dateB) / DAY_MILLIS);
     }
+
+    public static Date addDays(Date date, int amount) {
+        GregorianCalendar cal = (GregorianCalendar) GregorianCalendar.getInstance();
+        cal.add(GregorianCalendar.DAY_OF_MONTH, amount);
+        return cal.getTime();
+    }
 }

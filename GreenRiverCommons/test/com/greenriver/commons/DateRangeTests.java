@@ -7,6 +7,7 @@ package com.greenriver.commons;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -164,4 +165,26 @@ public class DateRangeTests {
         assertFalse(result);
     }
 
+    @Test
+    public void testIterator() {
+        System.out.println("testIterator");
+        Date[] dates = new Date[]{
+            Dates.getDateTime(2009, 11, 24, 0, 0, 0),
+            Dates.getDateTime(2009, 11, 25, 0, 0, 0),
+            Dates.getDateTime(2009, 11, 26, 0, 0, 0),
+            Dates.getDateTime(2009, 11, 27, 0, 0, 0)
+        };
+        int count = 0;
+        DateRange dateRange = new DateRange(dates[0], dates[3]);
+        Date next = null;
+        Iterator<Date> dateIterator = dateRange.getDateIterator(DatePart.DATE);
+
+        while(dateIterator.hasNext()) {
+            next = dateIterator.next();
+            assertTrue(Dates.equals(dates[count], next, DatePart.DATE));
+            count ++;
+        }
+
+        assertEquals(dates.length, count);
+    }
 }
