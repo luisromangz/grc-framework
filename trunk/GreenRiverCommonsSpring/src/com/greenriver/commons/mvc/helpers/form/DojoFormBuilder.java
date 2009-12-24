@@ -416,8 +416,19 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         assertNotFile(properties);
 
         element.getAttributes().setProperty("dojoType", "dijit.Editor");
+        element.setAttribute("plugins",
+                "[{name:'dijit._editor.plugins.FontChoice', command:'fontName', generic:false}," 
+                +"{name:'dijit._editor.plugins.FontChoice', command:'formatBlock', generic:false},"
+                +"'foreColor','hiliteColor',"
+                +"'|','undo','redo','|','bold','italic','underline','strikethrough'," 
+                +"'|', 'indent', 'outdent', 'justifyLeft', 'justifyCenter', 'justifyRight',"
+                +"'|','createLink','insertImage']");
+        
         element.setElementType("div");
         configuration.addDojoModule("dijit.Editor");
+        configuration.addDojoModule("dijit._editor.plugins.FontChoice");
+        configuration.addDojoModule("dijit._editor.plugins.TextColor");
+        configuration.addDojoModule("dijit._editor.plugins.LinkDialog");
     }
 
     private void setupNumberField(HtmlFormElementInfo element,
