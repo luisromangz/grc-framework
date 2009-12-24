@@ -453,7 +453,15 @@ public class DateRange implements Comparable<DateRange>, Cloneable, Serializable
                 );
     }
 
+    /**
+     * Gets the number of days in the range
+     * @return number of days in the range
+     */
     public int getDayCount() {
+        if (this.isInfinite()) {
+            throw new IllegalStateException("The range is infinite");
+        }
+        
         return Dates.daysDifference(min, max);
     }
 
