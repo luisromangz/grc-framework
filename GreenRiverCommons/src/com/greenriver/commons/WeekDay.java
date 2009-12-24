@@ -10,6 +10,7 @@ import java.text.DateFormatSymbols;
  * @author luis
  */
 public enum WeekDay {
+
     SUNDAY,
     MONDAY,
     TUESDAY,
@@ -23,7 +24,9 @@ public enum WeekDay {
      * @return
      */
     public String getLabel() {
-        return DateFormatSymbols.getInstance().getWeekdays()[this.ordinal() +1];
+        return Strings.toUpperCase(
+                DateFormatSymbols.getInstance().getWeekdays()[this.ordinal() + 1],
+                0, 1);
     }
 
     /**
@@ -31,6 +34,8 @@ public enum WeekDay {
      * @return
      */
     public String getShortLabel() {
-        return DateFormatSymbols.getInstance().getShortWeekdays()[this.ordinal() +1];
+        return Strings.toUpperCase(
+                DateFormatSymbols.getInstance().getShortWeekdays()[this.ordinal() + 1],
+                0,1);
     }
 }
