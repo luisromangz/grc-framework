@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -430,5 +431,73 @@ public class DateRange implements Comparable<DateRange>, Cloneable, Serializable
         }
 
         return result;
+    }
+
+    /**
+     * Gets an iterator over days since the minimun date of the range to the
+     * maximum date.
+     * @param part
+     * @return
+     * @throws IllegalStateException If one or both range dates are not specified.
+     */
+    public Iterator<Date> getDateIterator(DatePart part) {
+        if (this.isInfinite()) {
+            throw new IllegalStateException(
+                    "The range is infinite. Can only iterate finite ranges");
+        }
+
+        return new DateRangeIterator(
+                    this.min,
+                    this.max,
+                    part
+                );
+    }
+
+    public int getDayCount() {
+        return Dates.daysDifference(min, max);
+    }
+
+    private class DateRangeIterator implements Iterator<Date> {
+        private Date end;
+        private Date next;
+        private DatePart part;
+        private GregorianCalendar cal;
+
+        public DateRangeIterator(Date start, Date end, DatePart part) {
+            this.end = new Date(Dates.getDateTimePart(end, part));
+            this.next = new Date(Dates.getDateTimePart(start, part));
+            this.part = part;
+            this.cal = (GregorianCalendar) GregorianCalendar.getInstance();
+        }
+
+        @Override
+        public boolean hasNext() {
+            return Dates.lessOrEqual(next, end, part);
+        }
+
+        @Override
+        public Date next() {
+            Date result = this.next;
+            cal.setTime(this.next);
+            
+            switch(part) {
+                case DATE:
+                    cal.add(GregorianCalendar.DAY_OF_MONTH, 1);
+                    break;
+                case DATE_TIME:
+                case TIME:
+                    cal.add(GregorianCalendar.SECOND, 1);
+                    break;
+            }
+            
+            this.next = cal.getTime();
+            return result;
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException("Not supported.");
+        }
+        
     }
 }
