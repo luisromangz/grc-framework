@@ -20,7 +20,8 @@ import javax.persistence.InheritanceType;
  */
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public class MailTemplate<T extends TemplateReplacement> implements Serializable {
+public class MailTemplate<T extends TemplateReplacement>
+        implements Serializable, Template<T,Mail> {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -32,7 +33,8 @@ public class MailTemplate<T extends TemplateReplacement> implements Serializable
     @Column(length=2048)
     private String body;
 
-    public Mail createMailFromTemplate(
+    @Override
+    public Mail fillTemplate(
             Map<T,String> replacements){
 
         String mailBody = this.getBody();
