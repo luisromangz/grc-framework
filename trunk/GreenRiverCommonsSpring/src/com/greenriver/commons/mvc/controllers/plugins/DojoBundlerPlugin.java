@@ -20,6 +20,11 @@ import java.util.regex.MatchResult;
 public class DojoBundlerPlugin extends BaseBundlerPlugin {
 
     private List<String> excludedNamespaces;
+    private static final String DOJO_REQUIRE_REGEX =
+            "dojo\\.require\\([\"'](.*)[\"']\\)(;)?";
+    private static final String MODULE_NAME_REGEX = "^(\\w+\\.)*\\w+$";
+    private static final String DOJO_REQUIRE_LOCALIZATION_REGEX =
+            "dojo\\.requireLocalization\\([\"']((?:\\w+\\.)*\\w+)['\"],[\"'](\\w+)['\"],.*\\)(?:;)";
 
     public DojoBundlerPlugin() {
         this.excludedNamespaces = new ArrayList<String>();
@@ -49,20 +54,26 @@ public class DojoBundlerPlugin extends BaseBundlerPlugin {
     }
 
     public void addDojoModules(List<String> newModules, File bundleFile) {
-        List<String> loadedModules = new ArrayList<String>();
+
         BufferedWriter fileWriter = null;
+
+        List<String> loadedModules = new ArrayList<String>();
+        List<String> loadedLocalizations = new ArrayList<String>();
 
         try {
             fileWriter = new BufferedWriter(new FileWriter(
                     bundleFile, false));
 
             for (String newModule : newModules) {
-                if (loadedModules.contains(newModule) || isModuleExcluded(
-                        newModule)) {
+                if (loadedModules.contains(newModule)
+                        || isModuleExcluded(newModule)) {
                     continue;
                 }
-                
-                processModuleFile(loadedModules, newModule, fileWriter);
+
+                processModuleFile(loadedModules,
+                        loadedLocalizations,
+                        newModule,
+                        fileWriter);
             }
         } catch (IOException ex) {
             throw new RuntimeException(ex);
@@ -71,7 +82,6 @@ public class DojoBundlerPlugin extends BaseBundlerPlugin {
                 try {
                     fileWriter.close();
                 } catch (IOException ex) {
-                    
                 }
             }
         }
@@ -93,6 +103,7 @@ public class DojoBundlerPlugin extends BaseBundlerPlugin {
 
     public void processModuleFile(
             List<String> loadedModules,
+            List<String> loadedLocalizations,
             String moduleName,
             BufferedWriter fileWriter) throws IOException {
 
@@ -104,46 +115,30 @@ public class DojoBundlerPlugin extends BaseBundlerPlugin {
 
         File moduleFile = new File(getPathFromModuleName(moduleName));
         Scanner scanner = null;
-        List<String> lines = new ArrayList<String>();
-        String nextLine = null;
-        String regex = null;
-        String declarationFound = null;
-        MatchResult matchResult = null;
-        String requiredModule = null;
-        
+
         try {
             scanner = new Scanner(moduleFile);
         } catch (FileNotFoundException ex) {
             throw new RuntimeException(ex);
         }
-        
+
+        List<String> lines = new ArrayList<String>();
+
         // We start reading the module file
         while (scanner.hasNextLine()) {
 
-            nextLine = scanner.nextLine();
+            String nextLine = scanner.nextLine();
 
-            // We search for a declare statement in the line.
-            regex = "dojo\\.require\\([\"']((\\w+\\.)+(\\w)+)[\"']\\)(;)?";
-            declarationFound = scanner.findInLine(regex);
+            // We search for a declare statement in the line.           
+            searchDojoRequire(
+                    nextLine,
+                    loadedModules, loadedLocalizations,
+                    scanner, fileWriter);
 
-            if (declarationFound != null) {
-                matchResult = scanner.match();
-                for (int groupIndex = 1; groupIndex < matchResult.groupCount(); groupIndex++) {
-                    requiredModule = matchResult.group(groupIndex);
-
-                    if (!requiredModule.matches("^(\\w+\\.)+(\\w)+$")) {
-                        continue;
-                    }
-
-                    // We have found a declare statement, so we remove process it
-                    // before we write anything to the file.
-                    if (!isModuleExcluded(requiredModule)) {
-                        processModuleFile(loadedModules, requiredModule,
-                                fileWriter);
-                        nextLine = nextLine.replaceAll(regex, "");
-                    }
-                }
-            }
+            searchDojoRequireLocalization(
+                    nextLine,
+                    loadedLocalizations,
+                    scanner, fileWriter);
 
             if (!nextLine.isEmpty()) {
                 lines.add(nextLine);
@@ -159,6 +154,122 @@ public class DojoBundlerPlugin extends BaseBundlerPlugin {
         }
 
         scanner.close();
+    }
+
+    private void searchDojoRequire(
+            String currentLine,
+            List<String> loadedModules,
+            List<String> loadedLocalizations,
+            Scanner scanner,
+            BufferedWriter fileWriter) throws IOException {
+        String requireFound = scanner.findInLine(DOJO_REQUIRE_REGEX);
+
+        if (requireFound != null) {
+            MatchResult matchResult = scanner.match();
+            for (int groupIndex = 1; groupIndex < matchResult.groupCount(); groupIndex++) {
+                String requiredModule = matchResult.group(groupIndex);
+
+                if (!requiredModule.matches(MODULE_NAME_REGEX)) {
+                    continue;
+                }
+
+                // We have found a declare statement, so we remove process it
+                // before we write anything to the file.
+                if (!isModuleExcluded(requiredModule)) {
+                    processModuleFile(
+                            loadedModules,
+                            loadedLocalizations,
+                            requiredModule,
+                            fileWriter);
+                    currentLine = currentLine.replaceAll(DOJO_REQUIRE_REGEX, "");
+                }
+            }
+        }
+    }
+
+    private void searchDojoRequireLocalization(
+            String currentLine,
+            List<String> loadedLocalizations,
+            Scanner scanner,
+            BufferedWriter fileWriter) throws IOException {
+        String requireFound = scanner.findInLine(DOJO_REQUIRE_LOCALIZATION_REGEX);
+
+        if (requireFound != null) {
+            MatchResult matchResult = scanner.match();
+            for (int groupIndex = 1; groupIndex < matchResult.groupCount(); groupIndex++) {
+                String modulePath = matchResult.group(groupIndex);
+
+                if (!modulePath.matches(MODULE_NAME_REGEX)) {
+                    continue;
+                }
+
+                // The next parameter is the module name.
+                groupIndex++;
+                String moduleName = matchResult.group(groupIndex);
+
+                String localizationName = modulePath + "." + moduleName;
+                if (!loadedLocalizations.contains(localizationName)) {
+                    loadedLocalizations.add(localizationName);
+                    addLocalizationFile(modulePath, "es", moduleName, fileWriter);
+                }
+
+                // We remove the localization requirement.
+                //currentLine = currentLine.replaceAll(DOJO_REQUIRE_REGEX, "");
+            }
+        }
+    }
+
+    private void addLocalizationFile(
+            String localizedModulePath,
+            String localization,
+            String localizedModuleName,
+            BufferedWriter fileWriter) throws IOException {
+        String filePath =String.format("%s.nls.%s.%s",
+                    localizedModulePath,
+                    localization,
+                    localizedModuleName);
+        File localizationFile = new File(getPathFromModuleName(
+                filePath));
+
+        Scanner scanner =null;
+        try {
+            scanner = new Scanner(localizationFile);
+        } catch (FileNotFoundException ex) {
+            throw new RuntimeException(ex);
+        }
+
+
+        fileWriter.write("// Localization file: "+filePath);
+        fileWriter.newLine();
+        fileWriter.write(String.format("dojo.provide(\"%s.nls.%s\");",
+                localizedModulePath,
+                localizedModuleName));
+        fileWriter.newLine();
+
+        fileWriter.write(String.format("%s.nls.%s._built=true",
+                localizedModulePath,
+                localizedModuleName));
+        fileWriter.newLine();
+
+        fileWriter.write(String.format("dojo.provide(\"%s.nls.%s.%s\");",
+                localizedModulePath,
+                localizedModuleName,
+                localization.replace("-", "_")));
+        fileWriter.newLine();
+
+         fileWriter.write(String.format("%s.nls.%s.%s=",
+                localizedModulePath,
+                localizedModuleName,
+                localization.replace("-", "_")));
+
+        while (scanner.hasNextLine()) {
+           String nextLine = scanner.nextLine();
+           fileWriter.write(nextLine);
+        }
+
+         fileWriter.newLine();
+
+        scanner.close();       
     }
 
     // <editor-fold defaultstate="collapsed" desc="Getters & setters">
