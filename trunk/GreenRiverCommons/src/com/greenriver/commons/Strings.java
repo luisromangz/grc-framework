@@ -322,7 +322,7 @@ public class Strings {
     }
 
     public static String join(Collection collection, String glue) {
-        if (collection == null || collection.size() == 0) {
+        if (collection == null || collection.isEmpty()) {
             return "";
         }
 
