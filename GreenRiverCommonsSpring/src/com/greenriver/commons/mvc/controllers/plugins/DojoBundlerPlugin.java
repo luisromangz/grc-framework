@@ -20,6 +20,7 @@ import java.util.regex.MatchResult;
 public class DojoBundlerPlugin extends BaseBundlerPlugin {
 
     private List<String> excludedNamespaces;
+    private List<String> localizations;
     private static final String DOJO_REQUIRE_REGEX =
             "dojo\\.require\\([\"'](.*)[\"']\\)(;)?";
     private static final String MODULE_NAME_REGEX = "^(\\w+\\.)*\\w+$";
@@ -210,36 +211,18 @@ public class DojoBundlerPlugin extends BaseBundlerPlugin {
                 String localizationName = modulePath + "." + moduleName;
                 if (!loadedLocalizations.contains(localizationName)) {
                     loadedLocalizations.add(localizationName);
-                    addLocalizationFile(modulePath, "es", moduleName, fileWriter);
+                    addLocalizationFiles(modulePath, moduleName, fileWriter);
                 }
-
-                // We remove the localization requirement.
-                //currentLine = currentLine.replaceAll(DOJO_REQUIRE_REGEX, "");
             }
         }
     }
 
-    private void addLocalizationFile(
+    private void addLocalizationFiles(
             String localizedModulePath,
-            String localization,
             String localizedModuleName,
             BufferedWriter fileWriter) throws IOException {
-        String filePath =String.format("%s.nls.%s.%s",
-                    localizedModulePath,
-                    localization,
-                    localizedModuleName);
-        File localizationFile = new File(getPathFromModuleName(
-                filePath));
 
-        Scanner scanner =null;
-        try {
-            scanner = new Scanner(localizationFile);
-        } catch (FileNotFoundException ex) {
-            throw new RuntimeException(ex);
-        }
-
-
-        fileWriter.write("// Localization file: "+filePath);
+        fileWriter.write("// Localization files:" + localizedModulePath + ".nls." + localizedModuleName);
         fileWriter.newLine();
         fileWriter.write(String.format("dojo.provide(\"%s.nls.%s\");",
                 localizedModulePath,
@@ -251,25 +234,49 @@ public class DojoBundlerPlugin extends BaseBundlerPlugin {
                 localizedModuleName));
         fileWriter.newLine();
 
+        for (String localization : localizations) {
+            addLocalizationFile(localizedModulePath, localization, localizedModuleName, fileWriter);
+        }
+    }
+
+    private void addLocalizationFile(
+            String localizedModulePath,
+            String localization,
+            String localizedModuleName,
+            BufferedWriter fileWriter) throws IOException {
+        String filePath = String.format("%s.nls.%s.%s",
+                localizedModulePath,
+                localization,
+                localizedModuleName);
+        File localizationFile = new File(getPathFromModuleName(
+                filePath));
+
+        Scanner scanner = null;
+        try {
+            scanner = new Scanner(localizationFile);
+        } catch (FileNotFoundException ex) {
+            throw new RuntimeException(ex);
+        }
+
         fileWriter.write(String.format("dojo.provide(\"%s.nls.%s.%s\");",
                 localizedModulePath,
                 localizedModuleName,
                 localization.replace("-", "_")));
         fileWriter.newLine();
 
-         fileWriter.write(String.format("%s.nls.%s.%s=",
+        fileWriter.write(String.format("%s.nls.%s.%s=",
                 localizedModulePath,
                 localizedModuleName,
                 localization.replace("-", "_")));
 
         while (scanner.hasNextLine()) {
-           String nextLine = scanner.nextLine();
-           fileWriter.write(nextLine);
+            String nextLine = scanner.nextLine();
+            fileWriter.write(nextLine);
         }
 
-         fileWriter.newLine();
+        fileWriter.newLine();
 
-        scanner.close();       
+        scanner.close();
     }
 
     // <editor-fold defaultstate="collapsed" desc="Getters & setters">
@@ -285,6 +292,20 @@ public class DojoBundlerPlugin extends BaseBundlerPlugin {
      */
     public void setExcludedNamespaces(List<String> excludedNamespaces) {
         this.excludedNamespaces = excludedNamespaces;
+    }
+
+    /**
+     * @return the localizations
+     */
+    public List<String> getLocalizations() {
+        return localizations;
+    }
+
+    /**
+     * @param localizations the localizations to set
+     */
+    public void setLocalizations(List<String> localizations) {
+        this.localizations = localizations;
     }
     // </editor-fold>
 }
