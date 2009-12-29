@@ -50,9 +50,9 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
      */
     public static final String KEY_IGNORE_PROPERTIES = "ignoreProperties";
     private static final String labelFormat =
-            "<span id=\"%1$s_label\">%2$s</span>";
-    private static final String valueFormat = "<span id=\"%1$s\"></span>"
-            + "<span style=\"margin-left:5px\" id=\"%1$s_unit\">%2$s</span>";
+            "<span class=\"propertyViewLabelNode\" id=\"%1$s_label\">%2$s</span>";
+    private static final String valueFormat = "<span class=\"propertyViewValueNode\" id=\"%1$s\"></span>"
+            + "<span class=\"propertyViewUnitNode\" id=\"%1$s_unit\">%2$s</span>";
     private List<PropertiesView> propertiesViews;
     private PropertiesView currentPropertiesView;
     private Map<String, Class> classCache;
@@ -69,6 +69,7 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
         }
     }
 
+    @Override
     public PropertiesView addPropertiesView(String id, ModelAndView mav) {
         if (mav.getModel().containsKey(id)) {
             throw new IllegalArgumentException(
@@ -81,14 +82,17 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
         return currentPropertiesView;
     }
 
+    @Override
     public List<PropertiesView> getPropertiesViews() {
         return Collections.unmodifiableList(propertiesViews);
     }
 
+    @Override
     public PropertiesView getCurrentPropertiesView() {
         return currentPropertiesView;
     }
 
+    @Override
     public void makeCurrent(PropertiesView propertiesView) {
         if (propertiesView == null) {
             throw new IllegalArgumentException(
@@ -103,6 +107,7 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
         this.currentPropertiesView = propertiesView;
     }
 
+    @Override
     public SinglePropertyView addPropertyView(String id,
             FieldProperties properties,
             Class modelClass) {
@@ -144,6 +149,7 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
      * @param label Label for the element. Can be an empty string but not null.
      * @return The created property view or null if it was not added.
      */
+    @Override
     public SinglePropertyView addPropertyView(String id, String label) {
         if (Strings.isNullOrEmpty(id)) {
             throw new IllegalArgumentException("Id can't be null nor empty.");
@@ -178,10 +184,12 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
         return propView;
     }
 
+    @Override
     public void addPropertyViewsFromModel(String entityFullName) {
         addPropertyViewsFromModel(entityFullName, null);
     }
 
+    @Override
     public void addPropertyViewsFromModel(String entityFullName,
             List<String> propertiesToShow) {
 
@@ -190,11 +198,13 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
                 propertiesToShow);
     }
 
+    @Override
     public void addPropertyViewsFromModel(Class modelClass) {
 
         addPropertyViewsFromModel(modelClass, null);
     }
 
+    @Override
     public void addPropertyViewsFromModel(
             Class modelClass,
             List<String> propertiesToShow) {
@@ -251,6 +261,7 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
      * Configures the views from a map.
      * @param config Map with configuration key values.
      */
+    @Override
     public void addPropertyViewFromConfiguration(Map<String, Object> config) {
         if (!config.containsKey(KEY_MODEL)) {
             throw new IllegalArgumentException(
@@ -311,12 +322,14 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
      * the most simple and generic ones.
      * @param virtualProperties Map with pairs propertyName-propertyLabel.
      */
+    @Override
     public void addVirtualPropertyViews(List<String> virtualProperties) {
         for (String propName : virtualProperties) {
             addPropertyView(propName, "");
         }
     }
 
+    @Override
     public void removePropertyView(String id) {
         assertCurrent();
 
