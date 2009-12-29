@@ -2,16 +2,18 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.greenriver.commons.templating;
 
 import com.greenriver.commons.data.fieldProperties.FieldProperties;
 import com.greenriver.commons.data.fieldProperties.FieldType;
 import java.io.Serializable;
+import java.util.Map;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.OneToOne;
 
 /**
@@ -19,16 +21,37 @@ import javax.persistence.OneToOne;
  * @author luis
  */
 @Entity
-public class PrintingTemplate implements Serializable {
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+public abstract class PrintingTemplate<T extends TemplateReplacement>
+        implements Serializable, Template<T, PrintableDocument> {
 
+    @FieldProperties(label = "Cuerpo del documento", type = FieldType.RICHTEXT)
+    private String body;
 
+    private String cssStyles;
     @OneToOne
     private PageConfiguration pageConfiguration;
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    @Override
+    public PrintableDocument fillTemplate(Map<T, String> replacements) {
+        String documentBody = new String(body);
+        for (T replacement : replacements.keySet()) {
+            documentBody = documentBody.replace(
+                    replacement.getPlaceholder(),
+                    replacements.get(replacement));
+        }
+
+        PrintableDocument document = new PrintableDocument();
+        document.setBody(documentBody);
+        document.setCssStyles(this.getCssStyles());
+        document.setPageConfiguration(this.getPageConfiguration());
+
+        return document;
+    }
 
     // <editor-fold defaultstate="collapsed" desc="Auto generated stuff">
     @Override
@@ -79,7 +102,33 @@ public class PrintingTemplate implements Serializable {
     public void setPageConfiguration(PageConfiguration pageConfiguration) {
         this.pageConfiguration = pageConfiguration;
     }
-    // </editor-fold>
-  
 
+    /**
+     * @return the cssStyles
+     */
+    public String getCssStyles() {
+        return cssStyles;
+    }
+
+    /**
+     * @param cssStyles the cssStyles to set
+     */
+    public void setCssStyles(String cssStyles) {
+        this.cssStyles = cssStyles;
+    }
+
+    /**
+     * @return the body
+     */
+    public String getBody() {
+        return body;
+    }
+
+    /**
+     * @param body the body to set
+     */
+    public void setBody(String body) {
+        this.body = body;
+    }
+    // </editor-fold>
 }

@@ -43,14 +43,14 @@ public class PageConfiguration implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     // All margins are measured in mm.
-    @FieldProperties(label = "Margen superior", minValue = 0, type = FieldType.DECIMAL, unit = "mm")
-    private float topMargin = 20;
-    @FieldProperties(label = "Margen inferior", minValue = 0, type = FieldType.DECIMAL, unit = "mm")
-    private float bottomMargin = 20;
-    @FieldProperties(label = "Margen izquierdo", minValue = 0, type = FieldType.DECIMAL, unit = "mm")
-    private float leftMargin = 20;
-    @FieldProperties(label = "Margen derecho", minValue = 0, type = FieldType.DECIMAL, unit = "mm")
-    private float rightMargin = 20;
+    @FieldProperties(label = "Margen superior", minValue = 0, type = FieldType.DECIMAL, unit = "cm")
+    private float topMargin = 2;
+    @FieldProperties(label = "Margen inferior", minValue = 0, type = FieldType.DECIMAL, unit = "cm")
+    private float bottomMargin = 2;
+    @FieldProperties(label = "Margen izquierdo", minValue = 0, type = FieldType.DECIMAL, unit = "cm")
+    private float leftMargin = 2;
+    @FieldProperties(label = "Margen derecho", minValue = 0, type = FieldType.DECIMAL, unit = "cm")
+    private float rightMargin = 2;
     @FieldProperties(label = "Anchura del papel", minValue = 0, type = FieldType.DECIMAL, unit = "mm")
     private float pageWidth = 210;
     @FieldProperties(label = "Altura del papel", minValue = 0, type = FieldType.DECIMAL, unit = "mm")
@@ -62,10 +62,10 @@ public class PageConfiguration implements Serializable {
     public Map<String,String> getCustomJsPrintConfiguration() {
         Map<String,String> configuration = new HashMap<String,String>();
 
-        configuration.put("print_margin_top", String.valueOf(topMargin/INCH_IN_MM));
-        configuration.put("print_margin_bottom",String.valueOf(bottomMargin/INCH_IN_MM));
-        configuration.put("print_margin_left", String.valueOf(leftMargin/INCH_IN_MM));
-        configuration.put("print_margin_right", String.valueOf(rightMargin/INCH_IN_MM));
+        configuration.put("print_margin_top", String.valueOf(topMargin*10/INCH_IN_MM));
+        configuration.put("print_margin_bottom",String.valueOf(bottomMargin*10/INCH_IN_MM));
+        configuration.put("print_margin_left", String.valueOf(leftMargin*10/INCH_IN_MM));
+        configuration.put("print_margin_right", String.valueOf(rightMargin*10/INCH_IN_MM));
 
         configuration.put("print_orientation", String.valueOf(landscape?1:0));
         configuration.put("print_paper_size_unit",String.valueOf(1));//in mm, please.
