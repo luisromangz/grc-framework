@@ -20,7 +20,7 @@ import javax.persistence.InheritanceType;
  */
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public class MailTemplate<T extends TemplateReplacement>
+public abstract class MailTemplate<T extends TemplateReplacement>
         implements Serializable, Template<T,Mail> {
     private static final long serialVersionUID = 1L;
     @Id

@@ -1,10 +1,6 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.greenriver.commons.templating;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -13,4 +9,6 @@ import java.util.Map;
  */
 public interface Template<T extends TemplateReplacement, R> {
     R fillTemplate(Map<T,String> replacements);
+
+    List<T> getTemplateReplacements();
 }
