@@ -12,10 +12,10 @@ public class NIFValidator {
      * Ordered list of the 23 characters used as the validation code for NIF
      */
     public static String NIF_LETTERS = "TRWAGMYFPDXBNJZSQVHLCKE";
-    // Maximum length of the NIF string plus letter, this allows 9 digit NIF
+    // Maximum length of the NIF string plus letter, this allows 8 digit NIF
     // plus letter
     private static int MAX_LENGTH = 9;
-    // Minimum length of the nif string plus letter (6 digit plus letter)
+    // Minimum length of the nif string plus letter (7 digit plus letter)
     private static int MIN_LENGTH = 8;
 
     /**
