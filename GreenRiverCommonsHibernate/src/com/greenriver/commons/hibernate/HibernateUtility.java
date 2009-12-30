@@ -22,6 +22,6 @@ public class HibernateUtility {
             return false;
         }
 
-        return idA.equals(idB);
+        return idA.compareTo(idB) == 0;
     }
 }

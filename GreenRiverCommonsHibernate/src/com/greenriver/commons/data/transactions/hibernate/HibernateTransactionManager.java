@@ -19,29 +19,27 @@ import org.hibernate.TransactionException;
  */
 public class HibernateTransactionManager implements TransactionManager {
 
+    @Override
     public void begin() {
         Transaction tran = sessionFactory.getCurrentSession().getTransaction();
 
         if (!tran.isActive()) {
             sessionFactory.getCurrentSession().beginTransaction();
-            //System.out.println("\t\t- Transaction begin " + tran.toString() + " - ");
-        } else {
-            //System.out.println("\t\t- Transaction active " + tran.toString() + " - ");
         }
     }
 
+    @Override
     public void commit() {
         Transaction tran = sessionFactory.getCurrentSession().getTransaction();
 
         if (tran.isActive()) {
             sessionFactory.getCurrentSession().getTransaction().commit();
-            //System.out.println("\t\t- Transaction commit " + tran.toString() + " -");
-        } else {
-            //System.out.println("\t\t- Transaction inactive " + tran.toString() + " -");
         }
+        
         sessionFactory.getCurrentSession().close();
     }
 
+    @Override
     public void rollback() {
         Transaction tran = sessionFactory.getCurrentSession().getTransaction();
 
@@ -50,14 +48,11 @@ public class HibernateTransactionManager implements TransactionManager {
                 tran.rollback();
             } catch (TransactionException tE){
                 // Do nothing;
-                //System.out.println("\t\t- Transaction rollback throwed and exception -");
                 tE.printStackTrace(System.out);
             }
         }
 
         sessionFactory.getCurrentSession().close();
-
-        //System.out.println("\t\t- Transaction rollback and closes " + tran.toString() + " -");
     }
     
     private SessionFactory sessionFactory;
