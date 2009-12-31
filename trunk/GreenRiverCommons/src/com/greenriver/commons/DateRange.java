@@ -134,6 +134,7 @@ public class DateRange implements Comparable<DateRange>, Cloneable, Serializable
     }
 
     @Override
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     public boolean equals(Object obj) {
         return this.equals((DateRange) obj, DatePart.DATE_TIME);
     }
@@ -299,6 +300,7 @@ public class DateRange implements Comparable<DateRange>, Cloneable, Serializable
         }
     }
 
+    @Override
     public int compareTo(DateRange o) {
         return this.compareTo(o, DatePart.DATE_TIME);
     }
@@ -465,6 +467,35 @@ public class DateRange implements Comparable<DateRange>, Cloneable, Serializable
         return Dates.daysDifference(min, max);
     }
 
+    /**
+     * Increases the range width with the specified amount in both limits so
+     * the real width increment is the double of the specified amount.
+     * @param amount Milliseconds to add to the max and to substract from the
+     * min
+     * @param component Date component affected by the change. Take into account
+     * that NANOSECONDS are not supported and that NONE causes this method to
+     * return the current values without changes.
+     * @return
+     */
+    public DateRange increase(int amount, DateComponent component) {
+        DateRange result = new DateRange();
+        GregorianCalendar cal = (GregorianCalendar) GregorianCalendar.getInstance();
+        int calFieldSpec = component.getCalendarConstant();
+
+        cal.setTime(this.min);
+        cal.add(calFieldSpec, -amount);
+        result.setMin(cal.getTime());
+
+        cal.setTime(this.max);
+        cal.add(calFieldSpec, amount);
+        result.setMax(cal.getTime());
+
+        return result;
+    }
+
+    /**
+     * Iterator that iterates dates from min to max
+     */
     private class DateRangeIterator implements Iterator<Date> {
         private Date end;
         private Date next;
