@@ -31,6 +31,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
             Pattern.compile("^" + ValidationRegex.PASSWORD_ALPHA_6 + "$");
     private RoleManager roleManager;
 
+    @Override
     public FieldsValidationResult validate(Object object) {
         FieldsValidationResult result = new FieldsValidationResult();
 
@@ -79,11 +80,13 @@ public class FieldPropertiesValidator implements FieldsValidator {
         }
 
         String methodName = field.getName();
+        if(!Strings.isNullOrEmpty(properties.accesorFieldName())){
+            methodName = properties.accesorFieldName();
+        }
+        
         if (!Strings.isNullOrEmpty(properties.getterPrefix())) {
             // We compose the name of the accesor;
-            methodName = field.getName().substring(0,
-                    1).toUpperCase() + field.getName().substring(1);
-
+            methodName = Strings.toUpperCase(methodName, 0, 1);
             // We add the prefix.
             methodName = properties.getterPrefix() + methodName;
         }
@@ -108,10 +111,12 @@ public class FieldPropertiesValidator implements FieldsValidator {
         return validationMessages;
     }
 
+    @Override
     public void setRoleManager(RoleManager roleManager) {
         this.roleManager = roleManager;
     }
 
+    @Override
     public RoleManager getRoleManager() {
         return this.roleManager;
     }
