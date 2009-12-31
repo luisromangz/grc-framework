@@ -163,6 +163,7 @@ public class DateRangeSortedList extends SortedArrayList<DateRange> {
                 max = cal.getTime();
                 break;
             case DATE_TIME:
+            case TIME:
                 cal.setTime(range.getMin());
                 cal.add(GregorianCalendar.MILLISECOND, -1);
                 min = cal.getTime();
@@ -171,8 +172,8 @@ public class DateRangeSortedList extends SortedArrayList<DateRange> {
                 cal.add(GregorianCalendar.MILLISECOND, 1);
                 max = cal.getTime();
                 break;
-            case TIME:
-                throw new UnsupportedOperationException("not implemented for time");
+            default:
+                throw new IllegalArgumentException("Date part not supported");
         }
 
         return new DateRange(min, max);

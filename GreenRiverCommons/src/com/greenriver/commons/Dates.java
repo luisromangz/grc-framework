@@ -12,6 +12,7 @@ Author: mangelp
 package com.greenriver.commons;
 
 import java.sql.Timestamp;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -53,8 +54,8 @@ public class Dates {
             Timestamp stamp, int nanos) {
         if (nanos > MAX_NANOS || nanos < -MAX_NANOS) {
             throw new IllegalArgumentException(
-                    "Deviation is limited to up to (+/-)999999999 " +
-                    "nanoseconds.");
+                    "Deviation is limited to up to (+/-)999999999 "
+                    + "nanoseconds.");
         }
 
         GregorianCalendar cal = null;
@@ -96,8 +97,8 @@ public class Dates {
     public static Timestamp toTimestamp(long millis, int nanos) {
         if (nanos > MAX_NANOS || nanos < 0) {
             throw new IllegalArgumentException(
-                    "Nanos must be within the second and the range is " +
-                    "0-999999999 nanoseconds.");
+                    "Nanos must be within the second and the range is "
+                    + "0-999999999 nanoseconds.");
         }
 
         Timestamp result = new Timestamp(millis);
@@ -353,8 +354,8 @@ public class Dates {
     public static boolean intersects(Date startA, Date endA, Date startB,
             Date endB, DatePart part) {
 
-        if ((startA == null && startB == null) ||
-                (startB == null && endB == null)) {
+        if ((startA == null && startB == null)
+                || (startB == null && endB == null)) {
             return false;
         }
 
@@ -365,8 +366,8 @@ public class Dates {
                 startB != null ? getDateTimePart(startB, part) : Long.MIN_VALUE;
         long y2 = endB != null ? getDateTimePart(endB, part) : Long.MAX_VALUE;
 
-        return (x1 >= y1 && x1 <= y2) || (x2 >= y1 && x2 <= y2) ||
-                (y1 >= x1 && y1 <= x2) || (y2 >= x1 && y2 <= x2);
+        return (x1 >= y1 && x1 <= y2) || (x2 >= y1 && x2 <= y2)
+                || (y1 >= x1 && y1 <= x2) || (y2 >= x1 && y2 <= x2);
     }
 
     public static boolean inRange(Date date, Date start, Date end) {
@@ -383,8 +384,8 @@ public class Dates {
      */
     public static boolean inRange(Date date, Date start, Date end, DatePart part) {
 
-        if (date == null ||
-                (start == null && end == null)) {
+        if (date == null
+                || (start == null && end == null)) {
             return false;
         }
 
@@ -400,8 +401,8 @@ public class Dates {
     }
 
     public static boolean equals(Date date1, Date date2, DatePart part) {
-        return (date1 == null && date2 == null) ||
-                (date1 != null && date2 != null && getDateTimePart(date1, part) == getDateTimePart(
+        return (date1 == null && date2 == null)
+                || (date1 != null && date2 != null && getDateTimePart(date1, part) == getDateTimePart(
                 date2, part));
     }
 
@@ -491,5 +492,39 @@ public class Dates {
         GregorianCalendar cal = (GregorianCalendar) GregorianCalendar.getInstance();
         cal.add(GregorianCalendar.DAY_OF_MONTH, amount);
         return cal.getTime();
+    }
+
+    /**
+     * Returns a new DateFormat instance for a given pattern. If the pattern is
+     * equal to "short" or "long" a predefined pattern will be returned.
+     * @param part
+     * @param pattern
+     * @return
+     */
+    public static DateFormat getDateFormat(DatePart part, String pattern) {
+        switch (part) {
+            case DATE:
+                if (Strings.equals(pattern, "short")) {
+                    pattern = "dd/MM/yyyy";
+                } else if (Strings.equals(pattern, "long")) {
+                    pattern = "d 'de' MMM 'de' yyyy";
+                }
+                return new SimpleDateFormat(pattern);
+            case TIME:
+                if (Strings.equals(pattern, "short") ||
+                        Strings.equals(pattern, "long")) {
+                    pattern = "HH:mm";
+                }
+                return new SimpleDateFormat(pattern);
+            case DATE_TIME:
+                if (Strings.equals(pattern, "short")) {
+                    pattern = "dd/MM/yyyy HH:mm";
+                } else if (Strings.equals(pattern, "long")) {
+                    pattern = "d 'de' MMM 'de' yyyy 'a las' HH:mm";
+                }
+                return new SimpleDateFormat(pattern);
+            default:
+                throw new IllegalArgumentException("Invalid part");
+        }
     }
 }
