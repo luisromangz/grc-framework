@@ -153,7 +153,11 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         for (Field field : classFields) {
             FieldProperties props = field.getAnnotation(FieldProperties.class);
             if (props != null && props.visible()) {
-                this.addField(field.getName(), props, field.getType());
+                String fieldName =
+                        Strings.isNullOrEmpty(props.accesorFieldName())?
+                            field.getName()
+                            : props.accesorFieldName();
+                this.addField(fieldName, props, field.getType());
             }
         }
 
