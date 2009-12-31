@@ -9,6 +9,6 @@ package com.greenriver.commons.collections;
  *
  * @author luis
  */
-public interface ApplicableCommand<T,R> {
-    public R apply(T element);
+public interface FilteringCondition<T> {
+    boolean condition(T element);
 }

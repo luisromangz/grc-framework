@@ -162,4 +162,13 @@ public @interface FieldProperties {
      * @return
      */
     public String widgetWidth() default "";
+
+    /**
+     * In case the getter or the setter arent called as the field in which the
+     * annotation is applied, we can use it to tell the form builder and
+     * validator.
+     * 
+     * @return
+     */
+    public String accesorFieldName() default "";
 }
