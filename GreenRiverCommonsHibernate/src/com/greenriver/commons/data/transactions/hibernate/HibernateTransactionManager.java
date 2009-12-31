@@ -33,6 +33,7 @@ public class HibernateTransactionManager implements TransactionManager {
         Transaction tran = sessionFactory.getCurrentSession().getTransaction();
 
         if (tran.isActive()) {
+            sessionFactory.getCurrentSession().flush();
             sessionFactory.getCurrentSession().getTransaction().commit();
         }
         
