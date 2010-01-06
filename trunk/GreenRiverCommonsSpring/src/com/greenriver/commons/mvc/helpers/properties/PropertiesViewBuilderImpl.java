@@ -122,6 +122,11 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
 
         assertCurrent();
 
+        if(!Strings.isNullOrEmpty(properties.accesorFieldName())){
+            id= properties.accesorFieldName();
+        }
+
+
         PropertyOptions options = PropertyOptions.parseString(id);
 
         if (currentPropertiesView.containsPropertyViewForName(
