@@ -5,6 +5,7 @@
 
 package com.greenriver.commons.templating;
 
+import com.greenriver.commons.Copieable;
 import com.greenriver.commons.data.fieldProperties.FieldProperties;
 import com.greenriver.commons.data.fieldProperties.FieldType;
 import java.io.Serializable;
@@ -20,7 +21,7 @@ import javax.persistence.Id;
  * @author luis
  */
 @Entity
-public class PageConfiguration implements Serializable {
+public class PageConfiguration implements Serializable, Copieable<PageConfiguration> {
     // <editor-fold defaultstate="collapsed" desc="Fields">
     private static long serialVersionUID = 1L;
 
@@ -84,6 +85,19 @@ public class PageConfiguration implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
+
+    @Override
+    public void copyTo(PageConfiguration copyTarget) {
+        copyTarget.setBottomMargin(bottomMargin);
+        copyTarget.setLandscape(landscape);
+        copyTarget.setLeftMargin(leftMargin);
+        copyTarget.setRightMargin(rightMargin);
+        copyTarget.setPageHeight(pageHeight);
+        copyTarget.setTopMargin(topMargin);
+        copyTarget.setPageWidth(pageWidth);
+    }
+
+
 
     // <editor-fold defaultstate="collapsed" desc="Auto-generated methods">
     @Override
