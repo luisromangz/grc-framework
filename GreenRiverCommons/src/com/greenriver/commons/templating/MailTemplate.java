@@ -40,6 +40,10 @@ public abstract class MailTemplate<T extends TemplateReplacement>
         String mailBody = this.getBody();
         String mailSubject = this.getSubject();
 
+        if(mailBody == null || mailSubject==null){
+            throw new RuntimeException("The body and subject of the mail are required.");
+        }
+
         for(T replacementType : replacements.keySet()){
             mailBody = mailBody.replace(replacementType.getPlaceholder(),
                     replacements.get(replacementType));
@@ -54,6 +58,16 @@ public abstract class MailTemplate<T extends TemplateReplacement>
 
         return result;
     };
+
+    @Override
+    public void copyTo(Template copyTarget) {
+       MailTemplate templateTarget = (MailTemplate) copyTarget;
+       templateTarget.setBody(body);
+       templateTarget.setSubject(subject);
+    }
+
+
+
 
     // <editor-fold defaultstate="collapsed" desc="Setters getters & auto-generated stuff">
     public Long getId() {

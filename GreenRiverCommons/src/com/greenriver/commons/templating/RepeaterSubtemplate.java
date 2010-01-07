@@ -76,6 +76,17 @@ public abstract class RepeaterSubtemplate<T extends TemplateReplacement>
         return result;
 
     }
+
+    @Override
+    public void copyTo(Template copyTarget) {
+        RepeaterSubtemplate targetTemplate = (RepeaterSubtemplate) copyTarget;
+        targetTemplate.setElementFormat(elementFormat);
+        targetTemplate.setIsOrderedList(isOrderedList);
+        targetTemplate.setIsTable(isTable);
+        targetTemplate.setTableHeader(tableHeader);
+    }
+
+
   
     // <editor-fold defaultstate="collapsed" desc="Getters & setters">
 

@@ -4,10 +4,13 @@
  */
 package com.greenriver.commons.templating;
 
+import com.greenriver.commons.Copieable;
 import com.greenriver.commons.data.fieldProperties.FieldProperties;
 import com.greenriver.commons.data.fieldProperties.FieldType;
 import java.io.Serializable;
 import java.util.Map;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -23,13 +26,15 @@ import javax.persistence.OneToOne;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public abstract class PrintingTemplate<T extends TemplateReplacement>
-        implements Serializable, Template<T, PrintableDocument> {
+        implements Serializable, Template<T, PrintableDocument>{
 
     @FieldProperties(label = "Cuerpo del documento", type = FieldType.RICHTEXT)
+    @Column(length=2048)
     private String body;
 
+    @Column(length=2048)
     private String cssStyles;
-    @OneToOne
+    @OneToOne(cascade=CascadeType.ALL)
     private PageConfiguration pageConfiguration;
     private static final long serialVersionUID = 1L;
     @Id
@@ -52,6 +57,16 @@ public abstract class PrintingTemplate<T extends TemplateReplacement>
 
         return document;
     }
+
+    @Override
+    public void copyTo(Template copyTarget) {
+       PrintingTemplate targetTemplate = (PrintingTemplate) copyTarget;
+       targetTemplate.setBody(this.getBody());
+       targetTemplate.setCssStyles(cssStyles);
+       this.getPageConfiguration().copyTo(targetTemplate.getPageConfiguration());
+    }
+
+    
 
     // <editor-fold defaultstate="collapsed" desc="Auto generated stuff">
     @Override
