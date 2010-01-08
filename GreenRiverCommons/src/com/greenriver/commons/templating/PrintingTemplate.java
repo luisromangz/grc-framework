@@ -45,9 +45,14 @@ public abstract class PrintingTemplate<T extends TemplateReplacement>
     public PrintableDocument fillTemplate(Map<T, String> replacements) {
         String documentBody = new String(body);
         for (T replacement : replacements.keySet()) {
+            String replacementValue = replacements.get(replacement);
+            if(replacementValue ==null){
+                replacementValue="";
+            }
+
             documentBody = documentBody.replace(
                     replacement.getPlaceholder(),
-                    replacements.get(replacement));
+                    replacementValue);
         }
 
         PrintableDocument document = new PrintableDocument();
