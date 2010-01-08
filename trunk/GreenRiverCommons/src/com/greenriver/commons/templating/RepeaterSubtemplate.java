@@ -64,9 +64,9 @@ public abstract class RepeaterSubtemplate<T extends TemplateReplacement>
             result+="</th></tr></thead><tbody>";
         }
 
-        for(Map<T,String> elementReplacement : replacements) {
+        for(Map<T,String> elementReplacements : replacements) {
             result+=String.format(isTable?"<tr><td>${0}</td></tr>":"<li>${0}</li>",
-                    this.fillTemplate(elementReplacement).replace(
+                    this.fillTemplate(elementReplacements).replace(
                         RepeaterSubtemplate.TABLE_CELL_SEPARATOR,
                         isTable?"</td><td>":""));
         }
@@ -75,6 +75,21 @@ public abstract class RepeaterSubtemplate<T extends TemplateReplacement>
 
         return result;
 
+    }
+
+    @Override
+    public String fillTemplate(Map<T,String> replacements){
+        String result = new String(this.elementFormat);
+        for(T replacement : replacements.keySet()) {
+            String replacementValue = replacements.get(replacement);
+            if(replacementValue==null){
+                replacementValue="";
+            }
+
+            result = result.replace(replacement.getPlaceholder(), replacementValue);
+        }
+
+        return result;
     }
 
     @Override

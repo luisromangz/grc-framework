@@ -45,11 +45,19 @@ public abstract class MailTemplate<T extends TemplateReplacement>
         }
 
         for(T replacementType : replacements.keySet()){
-            mailBody = mailBody.replace(replacementType.getPlaceholder(),
-                    replacements.get(replacementType));
 
-            mailSubject = mailSubject.replace(replacementType.getPlaceholder(),
-                    replacements.get(replacementType));
+            String replacement = replacements.get(replacementType);
+            if(replacement==null){
+                replacement = "";
+            }
+
+            mailBody = mailBody.replace(
+                    replacementType.getPlaceholder(),
+                    replacement);
+
+            mailSubject = mailSubject.replace(
+                    replacementType.getPlaceholder(),
+                    replacement);
         }
 
         Mail result = new Mail();
