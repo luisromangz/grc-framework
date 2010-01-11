@@ -34,10 +34,12 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         forms = new ArrayList<Form>();
     }
 
+    @Override
     public void addField(FormField field) {
         currentForm.addField(field);
     }
 
+    @Override
     public void addField(String id, FieldProperties properties, Class fieldType) {
         String fieldId = currentForm.getId() + "_" + id;
 
@@ -127,6 +129,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         configuration.addOnLoadScript(onValueSetCode);
     }
 
+    @Override
     public void addFieldsFromModel(Class modelClass) {
         @SuppressWarnings("unchecked")
         EntityFieldsProperties entityProperties =
@@ -171,10 +174,12 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
 
     }
 
+    @Override
     public void setAction(String action) {
         currentForm.setAction(action);
     }
 
+    @Override
     public void addForm(
             String formId,
             HeaderConfiguration configuration,
@@ -190,10 +195,12 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         currentForm = newForm;
     }
 
+    @Override
     public List<Form> getForms() {
         return forms;
     }
 
+    @Override
     public void removeField(String fieldId) {
         currentForm.removeField(fieldId);
     }
@@ -201,6 +208,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
     /**
      * @return the roleManager
      */
+    @Override
     public RoleManager getRoleManager() {
         return roleManager;
     }
@@ -208,6 +216,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
     /**
      * @param roleManager the roleManager to set
      */
+    @Override
     public void setRoleManager(RoleManager roleManager) {
         this.roleManager = roleManager;
     }
@@ -834,6 +843,9 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
             case NIF:
                 setupNifField(formFieldElement, fieldType, properties);
                 break;
+            case CIF_OR_NIF:
+                setupCifOrNifField(formFieldElement, fieldType, properties);
+                break;
             default:
                 throw new java.lang.UnsupportedOperationException(String.format(
                         "Field tipe '%s' not supported by DojoFormBuilder",
@@ -889,6 +901,28 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         // separator (blank, - or _) between the numbers and the letter for 
         // flexibility in the input
         formFieldElement.setAttribute("validation", "nif");
+        formFieldElement.setAttribute("style", "width:12em");
+    }
+
+    private void setupCifOrNifField(
+            HtmlFormElementInfo formFieldElement,
+            Class fieldType,
+            FieldProperties properties) {
+        assertNotNumber(properties);
+        assertNotSelection(properties);
+        assertNotFile(properties);
+
+        configuration.addDojoModule("grc.dijit.form.CustomValidationTextBox");
+
+        formFieldElement.setAttribute("type", "text");
+        formFieldElement.setAttribute("dojoType","grc.dijit.form.CustomValidationTextBox");
+
+        // TODO: Add validation to NIF type
+        formFieldElement.setAttribute("trim", "true");
+        formFieldElement.setAttribute("promptMessage", "Introduzca un CIF o NIF.");
+        formFieldElement.setAttribute("invalidMessage", "CIF o NIF incorrecto.");
+        // In client-side the validation is done by a custom validator 
+        formFieldElement.setAttribute("validation", "cifOrNif");
         formFieldElement.setAttribute("style", "width:12em");
     }
 }

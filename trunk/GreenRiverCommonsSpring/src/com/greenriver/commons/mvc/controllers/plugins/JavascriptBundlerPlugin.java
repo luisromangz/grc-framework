@@ -38,7 +38,6 @@ public class JavascriptBundlerPlugin extends BaseBundlerPlugin {
             for (String fileName : configuration.getJavaScriptFiles()) {
                 addFileToBundle(fileName, writer);
             }
-            writer.close();
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         } finally {
