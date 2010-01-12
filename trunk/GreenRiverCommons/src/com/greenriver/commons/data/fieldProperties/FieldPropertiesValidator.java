@@ -45,8 +45,8 @@ public class FieldPropertiesValidator implements FieldsValidator {
             Class validationClass,
             FieldsValidationResult result) {
         // We want to validate the fields defined in a class superclass also.
-        if(validationClass.getSuperclass()!=null) {
-            validateFieldsByClass(object, validationClass.getSuperclass(),result);
+        if (validationClass.getSuperclass() != null) {
+            validateFieldsByClass(object, validationClass.getSuperclass(), result);
         }
 
         Field[] fields = validationClass.getDeclaredFields();
@@ -80,10 +80,10 @@ public class FieldPropertiesValidator implements FieldsValidator {
         }
 
         String methodName = field.getName();
-        if(!Strings.isNullOrEmpty(properties.accesorFieldName())){
+        if (!Strings.isNullOrEmpty(properties.accesorFieldName())) {
             methodName = properties.accesorFieldName();
         }
-        
+
         if (!Strings.isNullOrEmpty(properties.getterPrefix())) {
             // We compose the name of the accesor;
             methodName = Strings.toUpperCase(methodName, 0, 1);
@@ -195,7 +195,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
             return;
         }
 
-        if (!COLOR_PATTERN.matcher((CharSequence)colorValue).matches()) {
+        if (!COLOR_PATTERN.matcher((CharSequence) colorValue).matches()) {
             validationMessages.add(
                     "El campo «" + properties.label() + "» no tiene formato de color RGB hexadecimal.");
         }
@@ -234,7 +234,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
             return;
         }
 
-        if (!PASSWORD_PATTERN.matcher((CharSequence)password).matches()) {
+        if (!PASSWORD_PATTERN.matcher((CharSequence) password).matches()) {
             validationMessages.add(String.format(
                     "El campo «%s» no tiene la longitud adecuada.",
                     properties.label()));
@@ -280,9 +280,9 @@ public class FieldPropertiesValidator implements FieldsValidator {
             Object value,
             FieldProperties properties,
             List<String> validationMessages) {
-        
+
         String email = value.toString();
-        
+
         if (properties.required() && email.isEmpty()) {
             validationMessages.add(String.format(
                     "Es necesario rellenar el campo «%s».",
@@ -294,12 +294,12 @@ public class FieldPropertiesValidator implements FieldsValidator {
             return;
         }
 
-        if (!EMAIL_PATTERN.matcher((CharSequence)email).matches()) {
+        if (!EMAIL_PATTERN.matcher((CharSequence) email).matches()) {
             // The passed value isn't an email.
             validationMessages.add(
-                    "El valor del campo «" +
-                    properties.label() +
-                    "» no es uno de los permitidos.");
+                    "El valor del campo «"
+                    + properties.label()
+                    + "» no es uno de los permitidos.");
         }
     }
 
@@ -451,34 +451,43 @@ public class FieldPropertiesValidator implements FieldsValidator {
             }
 
             selections = valueString.split(",");
-        } else {
+        } else if(value instanceof String[]) {         
             // We have a value list.
             selections = (String[]) value;
             if (selections.length == 0 && properties.required()) {
                 validationMessages.add(String.format(
-                        "Es necesario rellenar el campo «%s».",
+                        "Es necesario seleccionar una opción el campo «%s».",
                         properties.label()));
                 return;
             } else if (selections.length == 0 && !properties.required()) {
                 return;
             }
+        } else if(value instanceof List) {
+            List list = (List) value;
+            if(list.size()==0 && properties.required()){
+                validationMessages.add(String.format(
+                        "Es necesario seleccionar una opción el campo «%s».",
+                        properties.label()));
+            }
+            return;
         }
 
-        List<String> possibleValueList = Arrays.asList(possibleValues);
+        if (!properties.externalValues() && selections != null) {
+            List<String> possibleValueList = Arrays.asList(possibleValues);
 
-        if (selections != null) {
             for (String selection : selections) {
 
                 // If external values is set, we cannot validate here
-                if (!properties.externalValues() && !possibleValueList.contains(
-                        selection)) {
+                if (!possibleValueList.contains(selection)) {
                     validationMessages.add(String.format(
                             "Uno de los valores del campo «%s» no es uno de los permitidos.",
                             properties.label()));
                     break;
                 }
             }
+
         }
+
     }
 
     private void validateRoleSelector(
@@ -586,9 +595,9 @@ public class FieldPropertiesValidator implements FieldsValidator {
             FieldProperties properties,
             List<String> validationMessages) {
 
-        if(properties.required()){
-            if(value==null) {
-                 validationMessages.add(String.format(
+        if (properties.required()) {
+            if (value == null) {
+                validationMessages.add(String.format(
                         "El valor del campo «%s» es requerido.",
                         properties.label()));
             }
@@ -597,10 +606,10 @@ public class FieldPropertiesValidator implements FieldsValidator {
         }
     }
 
-    private void validateNIF(Object value, 
+    private void validateNIF(Object value,
             FieldProperties properties,
             List<String> validationMessages) {
-        
+
         if (properties.required() && value == null) {
             validationMessages.add(String.format(
                     "El valor del campo «%s» es requerido.",
@@ -611,10 +620,10 @@ public class FieldPropertiesValidator implements FieldsValidator {
         }
 
         NIFValidator validator = new NIFValidator();
-        String nif = (String)value;
+        String nif = (String) value;
         // remove unwanted characters to left only numbers and letters
         nif = nif.replaceAll("[/b-]+", "");
-        
+
         if (!validator.validate(nif)) {
             validationMessages.add(String.format(
                     "El valor del campo «%s» no es un NIF válido.",
