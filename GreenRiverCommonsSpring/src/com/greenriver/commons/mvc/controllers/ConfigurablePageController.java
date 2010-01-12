@@ -84,6 +84,7 @@ public class ConfigurablePageController extends AbstractController
         return mav;
     }
 
+    @Override
     public void customHandleRequest(HttpServletRequest request,
             HttpServletResponse response, ModelAndView mav) throws Exception {
     }
