@@ -14,6 +14,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 public class Log4jLoggingAdvisor extends Log4jLogger
         implements LoggingAdvisor {
 
+    @Override
     public Object log(ProceedingJoinPoint pjp) throws Throwable {
         Logger logger = getLogger();
         logger.debug(String.format("Entering %s::%s",
