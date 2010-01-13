@@ -1,6 +1,6 @@
-
 package com.greenriver.commons.mvc.pageTasks;
 
+import com.greenriver.commons.data.model.User;
 import com.greenriver.commons.mvc.configuration.FormsConfiguration;
 import com.greenriver.commons.mvc.configuration.PageConfiguration;
 import com.greenriver.commons.mvc.configuration.PropertiesViewConfiguration;
@@ -15,12 +15,11 @@ import java.util.Map;
  * DWR services that uses, etc.
  * @author luis
  */
-public class PageTask  extends PageConfiguration
+public class PageTask extends PageConfiguration
         implements FormsConfiguration, HeaderConfiguration,
         Comparable<PageTask>, PropertiesViewConfiguration {
 
     // <editor-fold defaultstate="collapsed" desc="Fields">
-    
     // The roles that are required to show the task.
     private String[] allowedRoles = {"ROLE_USER"};
     // The name of the main JSP file.
@@ -29,47 +28,48 @@ public class PageTask  extends PageConfiguration
     private String taskName;
     // The JSP file used to render the contents of the tasks contextual toolbar.
     private String toolbarJspFileName;
-    // Tells if the task is the start one, which provides access to the other
-    // tasks.
-    private boolean isStartTask;
     // The image that is shown as icon for the task in the taskSelector.
     private String imageFileName;
     // A function name that must be called when showing a task to re initialize
     // it.
     private String taskResetCallback;
+
+    private boolean loadedOnPageLoad = false;
     // </editor-fold>
+
     public PageTask() {
         taskResetCallback = "false";
     }
 
+    @Override
     public boolean equals(Object o) {
-        if(o.getClass()!= PageTask.class) {
+        if (o.getClass() != PageTask.class) {
             return false;
         }
 
-        PageTask oTask = (PageTask)o;
-        if(getTaskName()==null || oTask.getTaskName() ==null) {
+        PageTask oTask = (PageTask) o;
+        if (getTaskName() == null || oTask.getTaskName() == null) {
             return false;
         }
 
         return getTaskName().equals(oTask.getTaskName());
     }
 
-     /**
+    public boolean isAllowedForUser(User user) {
+        boolean allowed = user.hasAnyRole(this.getAllowedRoles());
+        return allowed;
+    }
+
+    /**
      * Defines an order for PageTasks based on the startTask attribute.
      * @param o Another PageTask to compare.
      * @return 0 if both tasks have the same startTask value; -1 if this page
      * task object is the start task and the other isn't, and 1 if this page task
      * is not the start one, and the other is.
      */
+    @Override
     public int compareTo(PageTask o) {
-        if (this.getIsStartTask() == o.getIsStartTask()) {
-            return this.getTaskName().compareTo(o.getTaskName());
-        } else if (this.getIsStartTask()) {
-            return -1;
-        } else {
-            return 1;
-        }
+        return this.getTaskName().compareTo(o.getTaskName());
     }
 
     // <editor-fold defaultstate="collapsed" desc="Getters and setters">
@@ -130,20 +130,6 @@ public class PageTask  extends PageConfiguration
     }
 
     /**
-     * @return the isStartTask
-     */
-    public boolean getIsStartTask() {
-        return isStartTask;
-    }
-
-    /**
-     * @param isStartTask the isStartTask to set
-     */
-    public void setIsStartTask(boolean isStartTask) {
-        this.isStartTask = isStartTask;
-    }
-
-    /**
      * @return the imageFileName
      */
     public String getImageFileName() {
@@ -170,6 +156,20 @@ public class PageTask  extends PageConfiguration
     public void setTaskResetCallback(String taskResetCallback) {
         this.taskResetCallback = taskResetCallback;
     }
-    // </editor-fold>
 
+    /**
+     * @return the loadedOnPageLoad
+     */
+    public boolean isLoadedOnPageLoad() {
+        return loadedOnPageLoad;
+    }
+
+    /**
+     * @param loadedOnPageLoad the loadedOnPageLoad to set
+     */
+    public void setLoadedOnPageLoad(boolean loadedOnPageLoad) {
+        this.loadedOnPageLoad = loadedOnPageLoad;
+    }
+
+    // </editor-fold>
 }

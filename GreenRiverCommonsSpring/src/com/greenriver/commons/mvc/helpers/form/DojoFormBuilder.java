@@ -760,7 +760,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
                 "dijit.byId(\'%s\').validator = %1$s_validate;",
                 confirmId);
 
-        configuration.addScript(validationFunction);
+        configuration.addOnLoadScript(validationFunction);
         configuration.addOnLoadScript(
                 String.format(
                 "dojo.connect(dijit.byId('%s'),'onChange',function(){dijit.byId('%s').validate();});",
