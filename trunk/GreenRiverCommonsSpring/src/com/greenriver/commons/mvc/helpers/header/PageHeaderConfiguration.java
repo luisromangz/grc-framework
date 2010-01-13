@@ -28,80 +28,96 @@ public class PageHeaderConfiguration implements HeaderConfiguration {
         scripts = new ArrayList<String>();
     }
 
+    @Override
     public void addCssFile(String cssFilename) {
         if (!cssFiles.contains(cssFilename)) {
             cssFiles.add(cssFilename);
         }
     }
 
+    @Override
     public void addDwrService(String name) {
         if (!dwrServices.contains(name)) {
             dwrServices.add(name);
         }
     }
 
+    @Override
     public void addDojoBundle(String bundleName) {
         if (!dojoBundles.contains(bundleName)) {
             dojoBundles.add(bundleName);
         }
     }
 
+    @Override
     public void addDojoModule(String dojoModule) {
         if (!dojoModules.contains(dojoModule)) {
             dojoModules.add(dojoModule);
         }
     }
 
+    @Override
     public void addJavaScriptFile(String jsFilename) {
         if (!javascriptFiles.contains(jsFilename)) {
             javascriptFiles.add(jsFilename);
         }
     }
 
+    @Override
     public void addOnLoadScript(String code) {
         if (!onLoadScripts.contains(code)) {
             onLoadScripts.add(code);
         }
     }
 
+    @Override
     public void addScript(String script) {
         if (!scripts.contains(script)) {
             scripts.add(script);
         }
     }
 
+    @Override
     public List<String> getCssFiles() {
         return cssFiles;
     }
 
+    @Override
     public List<String> getDojoModules() {
         return dojoModules;
     }
 
+    @Override
     public List<String> getDwrServices() {
         return dwrServices;
     }
 
+    @Override
     public List<String> getJavaScriptFiles() {
         return javascriptFiles;
     }
 
+    @Override
     public List<String> getOnLoadScripts() {
         return onLoadScripts;
     }
 
+    @Override
     public List<String> getScripts() {
         return scripts;
     }
 
+    @Override
     public String getTitle() {
         return title;
     }
 
+    @Override
     public void setTitle(String title) {
         this.title = title;
     }
 
+    @Override
     public void setCssFiles(List<String> cssFiles) {
         this.cssFiles = new ArrayList<String>();
         for(String cssFile : cssFiles) {
@@ -109,6 +125,7 @@ public class PageHeaderConfiguration implements HeaderConfiguration {
         }
     }
 
+    @Override
     public void setDwrServices(List<String> dwrServices) {
         this.dwrServices = new ArrayList<String>();
         for(String dwrService : dwrServices) {
@@ -116,6 +133,7 @@ public class PageHeaderConfiguration implements HeaderConfiguration {
         }
     }
 
+    @Override
     public void setDojoBundles(List<String> dojoBundles) {
         this.dojoBundles = new ArrayList<String>();
         for(String dojoBundle : dojoBundles) {
@@ -123,6 +141,7 @@ public class PageHeaderConfiguration implements HeaderConfiguration {
         }
     }
 
+    @Override
     public void setDojoModules(List<String> dojoModules) {
         this.dojoModules = new ArrayList<String>();
         for(String dojoModule : dojoModules) {
@@ -130,6 +149,7 @@ public class PageHeaderConfiguration implements HeaderConfiguration {
         }
     }
 
+    @Override
     public void setJavaScriptFiles(List<String> javascriptFiles) {
         this.javascriptFiles = new ArrayList<String>();
         for(String javaScriptFile : javascriptFiles) {
@@ -137,6 +157,7 @@ public class PageHeaderConfiguration implements HeaderConfiguration {
         }
     }
 
+    @Override
     public void setOnLoadScripts(List<String> onLoadScripts) {
         this.onLoadScripts = new ArrayList<String>();
         for(String onLoadScript : onLoadScripts) {
@@ -144,6 +165,7 @@ public class PageHeaderConfiguration implements HeaderConfiguration {
         }
     }
 
+    @Override
     public void setScripts(List<String> scripts) {
         this.scripts = new ArrayList<String>();
         for(String script : scripts) {
@@ -151,10 +173,12 @@ public class PageHeaderConfiguration implements HeaderConfiguration {
         }
     }
 
+    @Override
     public List<String> getDojoBundles() {
         return this.dojoBundles;
     }
 
+    @Override
     public void addDojoBundles(List<String> dojoBundles) {
         for(String bundle : dojoBundles){
             this.addDojoBundle(bundle);
@@ -162,6 +186,7 @@ public class PageHeaderConfiguration implements HeaderConfiguration {
         
     }
 
+    @Override
     public void addDojoModules(List<String> dojoModules) {
         for(String dojoModule : dojoModules) {
             this.addDojoModule(dojoModule);

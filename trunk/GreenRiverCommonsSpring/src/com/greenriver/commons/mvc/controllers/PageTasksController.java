@@ -57,15 +57,22 @@ public class PageTasksController extends ConfigurablePageController implements P
         // but inclussion of the required jsp templates and other things must
         // be done in a page-task-oriented jsp file defined in the app.
 
+        if (getPageTaskManager().getStartTask() == null) {
+            throw new IllegalArgumentException("A start task definition is required.");
+        }
+        configurePageProperties(getPageTaskManager().getStartTask(), modelAndView);
+        modelAndView.addObject("startTaskInfo", getPageTaskManager().getStartTask());
+
         // We add all the included elements in the header configurer.
+        User user = getUserSessionInfo().getCurrentUser();
         for (PageTask pageTask : getPageTaskManager().getTasks()) {
             // We need to check if the current user has permissions to see the
             // task, if not we will not configure it. If allowed is added to
             // the list of tasks
-            if (!isAllowedTaskForUser(pageTask)) {
-                continue;
-            } else {
+            if (pageTask.isAllowedForUser(user)) {
                 allowedTasks.add(pageTask);
+            } else {
+                continue;
             }
 
             // We have to add to the previously configured properties,
@@ -78,18 +85,7 @@ public class PageTasksController extends ConfigurablePageController implements P
         // it in the view so the tasks and toolbar can be rendered.
         // Be careful
         modelAndView.addObject("pageTasksInfo", allowedTasks);
-    }
 
-    /**
-     * Gets if a task is allowed for the current user.
-     * @param pageTask
-     * @return if the current user is allowed or not.
-     */
-    private boolean isAllowedTaskForUser(PageTask pageTask) {
-        User user = getUserSessionInfo().getCurrentUser();
-
-        boolean result = user.hasAnyRole(pageTask.getAllowedRoles());
-        return result;
     }
 
     private void configurePageProperties(
@@ -101,7 +97,7 @@ public class PageTasksController extends ConfigurablePageController implements P
         // The properties that are files need to have their path relative
         // to the task's name, and inside a "js" folder.
         getPageConfiguration().getJavaScriptFiles().addAll(addPathPrefixToFileNames(
-                "tasks/"+taskName,
+                "tasks/" + taskName,
                 pageTask.getJavaScriptFiles()));
 
         getPageConfiguration().getCssFiles().addAll(
@@ -109,19 +105,32 @@ public class PageTasksController extends ConfigurablePageController implements P
 
         getPageConfiguration().getDojoBundles().addAll(pageTask.getDojoBundles());
         getPageConfiguration().getDojoModules().addAll(pageTask.getDojoModules());
+
         getPageConfiguration().getDwrServices().addAll(pageTask.getDwrServices());
-        getPageConfiguration().getOnLoadScripts().addAll(pageTask.getOnLoadScripts());
+
+
+        if (pageTask.isLoadedOnPageLoad()) {
+            getPageConfiguration().getOnLoadScripts().addAll(pageTask.getOnLoadScripts());
+            //Forms ids are prefixed with the task name
+            configureFormEntities(pageTask.getFormEntities(), mav,
+                    pageTask.getTaskName() + "_");
+        } else {
+            getPageConfiguration().addOnLoadScript(String.format(
+                    "window['%s_onLoad']=function(){",
+                    pageTask.getTaskName()));
+            getPageConfiguration().getOnLoadScripts().addAll(pageTask.getOnLoadScripts());
+            //Forms ids are prefixed with the task name
+            configureFormEntities(pageTask.getFormEntities(), mav,
+                    pageTask.getTaskName() + "_");
+            getPageConfiguration().addOnLoadScript(String.format(
+                    "} // End of %s.onLoad function",
+                    pageTask.getTaskName()));
+        }
+
         getPageConfiguration().getScripts().addAll(pageTask.getScripts());
 
-        //Forms ids are prefixed with the task name
-        configureFormEntities(pageTask.getFormEntities(), mav,
-                pageTask.getTaskName() + "_");
 
         configurePropertiesView(pageTask.getPropertiesView(), mav,
                 pageTask.getTaskName() + "_");
     }
-
-  
-
-
 }
