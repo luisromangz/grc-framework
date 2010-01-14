@@ -11,6 +11,7 @@ import com.greenriver.commons.data.fieldProperties.FieldProperties;
 import com.greenriver.commons.data.fieldProperties.FieldType;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.Entity;
@@ -26,10 +27,11 @@ import javax.persistence.InheritanceType;
  */
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public abstract class RepeaterSubtemplate<T extends TemplateReplacement> 
-        implements Template<T,String>,Serializable {
+public abstract class RepeaterSubtemplate<T extends TemplateReplacement, K extends Collection<?>>
+        implements Template<T,String,K>,Serializable {
 
     public static final String TABLE_CELL_SEPARATOR="||";
+    public static final String TABLE_CELL_SEPARATOR_REGEX="\\|\\|";
 
     @FieldProperties(label="Tipo de repetición", type=FieldType.SELECTION,
         possibleValues={"true","false"}, possibleValueLabels={"Tabla","Lista"})
@@ -52,23 +54,32 @@ public abstract class RepeaterSubtemplate<T extends TemplateReplacement>
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    public String fillTemplates(List<Map<T,String>> replacements){
+    protected String fillTemplatesAux(List<Map<T,String>> replacements){
         String result = "<ul>";
         
         if(isTable) {
-            result="<table><thead><tr><th>";
-            String[] split = tableHeader.split(RepeaterSubtemplate.TABLE_CELL_SEPARATOR);
 
-            result +=Strings.join(Arrays.asList(split), "</th><th>");
+            String[] splitHeader = tableHeader.split(RepeaterSubtemplate.TABLE_CELL_SEPARATOR_REGEX);
+            int columnSize = 100/(splitHeader.length);
+
+            result=String.format("<table cellspacing=\"0\"><thead><tr><th style=\"width:%s%%\">",
+                    columnSize);
+            result+= Strings.join(Arrays.asList(splitHeader),
+                    String.format("</th><th style=\"width:%s%%\">",
+                    columnSize));
 
             result+="</th></tr></thead><tbody>";
         }
 
         for(Map<T,String> elementReplacements : replacements) {
-            result+=String.format(isTable?"<tr><td>${0}</td></tr>":"<li>${0}</li>",
-                    this.fillTemplate(elementReplacements).replace(
-                        RepeaterSubtemplate.TABLE_CELL_SEPARATOR,
-                        isTable?"</td><td>":""));
+            String elementString = this.fillTemplateAux(elementReplacements);
+            if(isTable) {
+                elementString = elementString.replace(RepeaterSubtemplate.TABLE_CELL_SEPARATOR,"</td><td>");
+            }
+
+            result+=String.format(
+                    isTable?"<tr><td>%s</td></tr>":"<li>%s</li>",
+                    elementString);
         }
 
         result+=isTable?"</tbody>":"</ul>";
@@ -77,8 +88,7 @@ public abstract class RepeaterSubtemplate<T extends TemplateReplacement>
 
     }
 
-    @Override
-    public String fillTemplate(Map<T,String> replacements){
+    private String fillTemplateAux(Map<T,String> replacements){
         String result = new String(this.elementFormat);
         for(T replacement : replacements.keySet()) {
             String replacementValue = replacements.get(replacement);
