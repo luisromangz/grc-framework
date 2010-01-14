@@ -25,8 +25,8 @@ import javax.persistence.OneToOne;
  */
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public abstract class PrintingTemplate<T extends TemplateReplacement>
-        implements Serializable, Template<T, PrintableDocument>{
+public abstract class PrintingTemplate<T extends TemplateReplacement,K>
+        implements Serializable, Template<T, PrintableDocument,K>{
 
     @FieldProperties(label = "Cuerpo del documento", type = FieldType.RICHTEXT)
     @Column(length=2048)
@@ -41,8 +41,8 @@ public abstract class PrintingTemplate<T extends TemplateReplacement>
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Override
-    public PrintableDocument fillTemplate(Map<T, String> replacements) {
+    
+    protected PrintableDocument fillTemplateAux(Map<T, String> replacements) {
         String documentBody = new String(body);
         for (T replacement : replacements.keySet()) {
             String replacementValue = replacements.get(replacement);

@@ -8,8 +8,8 @@ import java.util.Map;
  *
  * @author luis
  */
-public interface Template<T extends TemplateReplacement, R> extends Copieable<Template> {
-    R fillTemplate(Map<T,String> replacements);
+public interface Template<T extends TemplateReplacement, R,K> extends Copieable<Template> {
+    R fillTemplate(K source, Map<T,String> externalReplacements);
 
     List<T> getTemplateReplacements();
 }
