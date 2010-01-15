@@ -1,7 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 
 package com.greenriver.commons.templating;
 
@@ -25,7 +22,7 @@ public class PageConfiguration implements Serializable, Copieable<PageConfigurat
     // <editor-fold defaultstate="collapsed" desc="Fields">
     private static long serialVersionUID = 1L;
 
-    private static final float INCH_IN_MM = 245;
+    private static final float INCH_IN_MM = 25.4f;
 
     /**
      * @return the serialVersionUID
@@ -60,20 +57,45 @@ public class PageConfiguration implements Serializable, Copieable<PageConfigurat
     private boolean landscape;
     // </editor-fold>
 
-    public Map<String,String> getCustomJsPrintConfiguration() {
-        Map<String,String> configuration = new HashMap<String,String>();
+    public Map<String,Object> getCustomJsPrintConfiguration() {
+        Map<String,Object> configuration = new HashMap<String,Object>();
 
-        configuration.put("print_margin_top", String.valueOf(topMargin*10/INCH_IN_MM));
-        configuration.put("print_margin_bottom",String.valueOf(bottomMargin*10/INCH_IN_MM));
-        configuration.put("print_margin_left", String.valueOf(leftMargin*10/INCH_IN_MM));
-        configuration.put("print_margin_right", String.valueOf(rightMargin*10/INCH_IN_MM));
+        // We set the page's margins
+        configuration.put("print_margin_top", topMargin*10/INCH_IN_MM);
+        configuration.put("print_margin_bottom",bottomMargin*10/INCH_IN_MM);
+        configuration.put("print_margin_left", leftMargin*10/INCH_IN_MM);
+        configuration.put("print_margin_right", rightMargin*10/INCH_IN_MM);
 
-        configuration.put("print_orientation", String.valueOf(landscape?1:0));
-        configuration.put("print_paper_size_unit",String.valueOf(1));//in mm, please.
+        // We clear undesired offsets
+        configuration.put("print_unwriteable_margin_top", 0);
+        configuration.put("print_unwriteable_margin_bottom", 0);
+        configuration.put("print_unwriteable_margin_right", 0);
+        configuration.put("print_unwriteable_margin_left", 0);
 
-        configuration.put("print_paper_width", String.valueOf(pageWidth));
-        configuration.put("print_paper_height", String.valueOf(pageHeight));
-        
+        Map<String, Object> printer_ = new HashMap<String,Object>();
+        printer_.put("print_margin_top", 0);
+        printer_.put("print_margin_bottom",0);
+        printer_.put("print_margin_left", 0);
+        printer_.put("print_margin_right", 0);
+
+        configuration.put("print_orientation", landscape?1:0);
+        configuration.put("print_paper_size_unit",1);//in mm, please.
+        configuration.put("print_paper_size_type",1);//in mm, please.
+
+        configuration.put("print_paper_width", pageWidth);
+        configuration.put("print_paper_height", pageHeight);
+
+        // We remove the page's header and footers
+        configuration.put("print_headerleft", "");
+        configuration.put("print_headercenter", "");
+        configuration.put("print_headerright", "");
+        configuration.put("print_footerleft", "");
+        configuration.put("print_footercenter", "");
+        configuration.put("print_footerright", "");
+
+        configuration.put("print_bgcolor",true);
+        configuration.put("print_bgimages",true);
+
         return configuration;
         
     }

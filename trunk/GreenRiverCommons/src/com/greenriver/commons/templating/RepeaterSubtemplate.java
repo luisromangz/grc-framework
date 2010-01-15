@@ -82,7 +82,7 @@ public abstract class RepeaterSubtemplate<T extends TemplateReplacement, K exten
                     elementString);
         }
 
-        result+=isTable?"</tbody>":"</ul>";
+        result+=isTable?"</tbody></table>":"</ul>";
 
         return result;
 
