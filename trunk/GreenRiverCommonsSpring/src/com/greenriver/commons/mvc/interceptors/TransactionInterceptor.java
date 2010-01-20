@@ -30,15 +30,18 @@ public class TransactionInterceptor implements HandlerInterceptor {
         this.transactionManager = transactionManager;
     }
 
+    @Override
     public boolean preHandle(HttpServletRequest arg0, HttpServletResponse arg1, Object arg2) throws Exception {
         transactionManager.begin();
         return true;
     }
 
+    @Override
     public void postHandle(HttpServletRequest arg0, HttpServletResponse arg1, Object arg2, ModelAndView arg3) throws Exception {
         // Nothing to do here
     }
 
+    @Override
     public void afterCompletion(
             HttpServletRequest arg0,
             HttpServletResponse arg1,
