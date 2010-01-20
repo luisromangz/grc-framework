@@ -38,8 +38,12 @@ public abstract class RepeaterSubtemplate<T extends TemplateReplacement, K exten
     private boolean isTable;
 
     @FieldProperties(label="Encabezados de la tabla", required=false, widgetWidth="98%",
-    deactivationConditions={@FieldDeactivationCondition(equals="'false'",newValue="''",triggerField="isTable")})
+    deactivationConditions={@FieldDeactivationCondition(equals="'false'",triggerField="isTable")})
     private String tableHeader;
+
+    @FieldProperties(label="Anchuras de las columnas", required=false, widgetWidth="98%",
+    deactivationConditions={@FieldDeactivationCondition(equals="'false'",triggerField="isTable")})    
+    private String columnSizes;
 
     @FieldProperties(label="Lista ordenada", type=FieldType.BOOLEAN, deactivationConditions={
         @FieldDeactivationCondition(equals="'true'",newValue="false",triggerField="isTable")
@@ -56,19 +60,26 @@ public abstract class RepeaterSubtemplate<T extends TemplateReplacement, K exten
 
     protected String fillTemplatesAux(List<Map<T,String>> replacements){
         String result = "<ul>";
-        
         if(isTable) {
-
             String[] splitHeader = tableHeader.split(RepeaterSubtemplate.TABLE_CELL_SEPARATOR_REGEX);
-            int columnSize = 100/(splitHeader.length);
 
-            result=String.format("<table cellspacing=\"0\"><thead><tr><th style=\"width:%s%%\">",
-                    columnSize);
-            result+= Strings.join(Arrays.asList(splitHeader),
-                    String.format("</th><th style=\"width:%s%%\">",
-                    columnSize));
+            result="<table cellspacing=\"0\"><thead><tr>";
 
-            result+="</th></tr></thead><tbody>";
+            String[] sizes = new String[]{};
+            if(!Strings.isNullOrEmpty(columnSizes)) {
+                sizes = this.columnSizes.split(RepeaterSubtemplate.TABLE_CELL_SEPARATOR_REGEX);
+            }
+
+            for(int i=0; i< splitHeader.length; i++) {
+                String columnSize ="auto";
+                if(i< sizes.length) {
+                    columnSize = sizes[i];
+                }
+
+                result+=String.format("<th style=\"width:%s\">%s</th>", columnSize,splitHeader[i]);
+            }
+
+            result+="</tr></thead><tbody>";
         }
 
         for(Map<T,String> elementReplacements : replacements) {
@@ -105,6 +116,7 @@ public abstract class RepeaterSubtemplate<T extends TemplateReplacement, K exten
     @Override
     public void copyTo(Template copyTarget) {
         RepeaterSubtemplate targetTemplate = (RepeaterSubtemplate) copyTarget;
+        targetTemplate.setColumnSizes(columnSizes);
         targetTemplate.setElementFormat(elementFormat);
         targetTemplate.setIsOrderedList(isOrderedList);
         targetTemplate.setIsTable(isTable);
@@ -177,6 +189,20 @@ public abstract class RepeaterSubtemplate<T extends TemplateReplacement, K exten
      */
     public void setIsOrderedList(boolean orderedList) {
         this.isOrderedList = orderedList;
+    }
+
+    /**
+     * @return the columnSizes
+     */
+    public String getColumnSizes() {
+        return columnSizes;
+    }
+
+    /**
+     * @param columnSizes the columnSizes to set
+     */
+    public void setColumnSizes(String columnSizes) {
+        this.columnSizes = columnSizes;
     }
     // </editor-fold>
 
