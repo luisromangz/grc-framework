@@ -24,12 +24,14 @@ public class LoggingInterceptor extends Log4jLogger
      * @param arg3
      * @throws Exception
      */
+    @Override
     public void postHandle(HttpServletRequest arg0, 
             HttpServletResponse arg1,
             Object arg2, ModelAndView arg3) throws Exception {
         // Nothing to do here
     }
 
+    @Override
     public void afterCompletion(
             HttpServletRequest arg0,
             HttpServletResponse arg1,
@@ -44,6 +46,7 @@ public class LoggingInterceptor extends Log4jLogger
         } 
     }
 
+    @Override
     public boolean preHandle(
             HttpServletRequest arg0,
             HttpServletResponse arg1,
