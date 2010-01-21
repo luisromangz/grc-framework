@@ -1,6 +1,7 @@
 package com.greenriver.commons;
 
 import java.text.NumberFormat;
+import java.util.HashMap;
 import javax.swing.text.NumberFormatter;
 
 /**
@@ -8,6 +9,17 @@ import javax.swing.text.NumberFormatter;
  * @author luis
  */
 public class Numbers {
+
+    private static HashMap<Float,String> fractions;
+
+    static {
+        fractions=new HashMap<Float, String>();
+        fractions.put(0.25f, "¼");
+        fractions.put(0.50f,"½");
+        fractions.put(0.75f,"¾");
+
+        // TODO: Add more equivaliencies here
+    }
 
     /**
      * Calculates the ceiling of a number, in steps of quarter of a unit.
@@ -19,6 +31,7 @@ public class Numbers {
      * An small number is therefore recommended.
      * @return
      */
+    // TODO: Generalize this, should accept the step used.
     public static float ceilInQuarterSteps(float number, float epsilon) {
         epsilon = Math.abs(epsilon);
         float integerPart = new Float(number).intValue();
@@ -50,24 +63,20 @@ public class Numbers {
     }
 
     /**
-     * Tries to format the given number with quarter fractions, and if the number
+     * Tries to format the given number with fractions, and if the number
      * doesn't have a quarter then its formatted with the number of decimals
      * told.
      * @param number The number to be formatted using fractions for the decimal part.
      * @param decimalsIfNotFractionAvalaible The decimals used, if fractions for the decimal part of the number are not avalaible.
      * @return
      */
-    public static String formatWithQuarters(float number, int decimalsIfNotFractionAvalaible) {
+    public static String formatWithFractions(float number, int decimalsIfNotFractionAvalaible) {
         float integerPart = Math.abs(new Float(number).intValue());
         float decimalPart = number - integerPart;
         String resultString = Integer.toString((int) integerPart);
 
-        if (decimalPart == 0.25f) {
-            resultString += "+¼";
-        } else if (decimalPart == 0.5f) {
-            resultString += "+½";
-        } else if (decimalPart == 0.75f) {
-            resultString += "+¾";
+        if(fractions.containsKey(decimalPart)){
+            resultString+="+"+fractions.get(decimalPart);
         } else {
             // We dont show quarters
             NumberFormat numberFormat = NumberFormat.getNumberInstance();
