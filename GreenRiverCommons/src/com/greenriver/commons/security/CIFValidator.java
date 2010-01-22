@@ -11,6 +11,7 @@ public class CIFValidator {
     public static String NUMERIC_CHECK_LETTERS = "ABDEFGHJUV";
     
     public boolean validate(String cif) {
+        // TODO: Finish this!
         throw new UnsupportedOperationException();
     }
 }
