@@ -76,7 +76,11 @@ public class Numbers {
         String resultString = Integer.toString((int) integerPart);
 
         if(fractions.containsKey(decimalPart)){
-            resultString+="+"+fractions.get(decimalPart);
+            if(integerPart>0) {
+                resultString+="+"+fractions.get(decimalPart);
+            } else {
+                resultString=fractions.get(decimalPart);
+            }            
         } else {
             // We dont show quarters
             NumberFormat numberFormat = NumberFormat.getNumberInstance();
@@ -84,8 +88,10 @@ public class Numbers {
             return numberFormat.format(number);
         }
 
-        if(number< 0) {
+        if(number< 0 && integerPart >0) {
             return "-("+resultString+")";
+        } else if (number <0) {
+            return "- " +resultString;
         }
 
         return resultString;
