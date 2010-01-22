@@ -1,11 +1,11 @@
 
-package com.greenriver.commons.hibernate;
+package com.greenriver.commons;
 
 /**
  * Utility methods
  * @author Miguel Angel
  */
-public class HibernateUtility {
+public class Ids {
 
     /**
      * Gets if two ids have the same value. If one or both id parameters are
@@ -14,7 +14,7 @@ public class HibernateUtility {
      * @param idB
      * @return true if the two ids are the same or false if the differ.
      */
-    public static boolean sameId(Long idA, Long idB) {
+    public static boolean equals(Long idA, Long idB) {
         if (idA == null || idB == null) {
             // If one or both ids are null we can only say that they are not
             // the same. Even if both are null that means the entities are
