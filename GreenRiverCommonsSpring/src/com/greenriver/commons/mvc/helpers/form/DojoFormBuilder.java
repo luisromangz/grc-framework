@@ -736,8 +736,8 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         }
 
 
-        if(!Strings.isNullOrEmpty(properties.widgetWidth())) {
-            element.setAttribute("style", "width:"+properties.widgetWidth());
+        if(!Strings.isNullOrEmpty(properties.widgetStyle())) {
+            element.setAttribute("style", properties.widgetStyle());
         }
 
     }
