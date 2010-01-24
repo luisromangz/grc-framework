@@ -17,7 +17,7 @@ public class Mail {
     private String from;
     @FieldProperties(label="Para", type=FieldType.EMAIL)
     private String to;
-    @FieldProperties(label="Asunto", widgetWidth="30em")
+    @FieldProperties(label="Asunto", widgetStyle="width:30em")
     private String subject;
     @FieldProperties(label="Cuerpo del correo", type=FieldType.RICHTEXT)
     private String body;

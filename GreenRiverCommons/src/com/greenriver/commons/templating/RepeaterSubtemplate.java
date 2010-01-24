@@ -37,11 +37,11 @@ public abstract class RepeaterSubtemplate<T extends TemplateReplacement, K exten
         possibleValues={"true","false"}, possibleValueLabels={"Tabla","Lista"})
     private boolean isTable;
 
-    @FieldProperties(label="Encabezados de la tabla", required=false, widgetWidth="98%",
+    @FieldProperties(label="Encabezados de la tabla", required=false, widgetStyle="width:98%",
     deactivationConditions={@FieldDeactivationCondition(equals="'false'",triggerField="isTable")})
     private String tableHeader;
 
-    @FieldProperties(label="Anchuras de las columnas", required=false, widgetWidth="98%",
+    @FieldProperties(label="Anchuras de las columnas", required=false, widgetStyle="width:98%",
     deactivationConditions={@FieldDeactivationCondition(equals="'false'",triggerField="isTable")})    
     private String columnSizes;
 
@@ -50,7 +50,7 @@ public abstract class RepeaterSubtemplate<T extends TemplateReplacement, K exten
     })
     private boolean isOrderedList;
 
-    @FieldProperties(label="Formato del elemento", widgetWidth="98%")
+    @FieldProperties(label="Formato del elemento", widgetStyle="width:98%")
     private String elementFormat;
 
     private static final long serialVersionUID = 1L;
