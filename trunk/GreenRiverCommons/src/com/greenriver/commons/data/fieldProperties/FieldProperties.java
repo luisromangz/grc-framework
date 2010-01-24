@@ -161,7 +161,7 @@ public @interface FieldProperties {
      * The desired widget size, in css format.
      * @return
      */
-    public String widgetWidth() default "";
+    public String widgetStyle() default "";
 
     /**
      * In case the getter or the setter arent called as the field in which the

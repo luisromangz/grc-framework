@@ -187,12 +187,40 @@ public class Lists {
         return true;
     }
 
-     public static <T,R> List<R> apply(List<T> list, ApplicableCommand<T,R> command){
+
+    public static <T,R> List<R> apply(List<T> set, ApplicableCommand<T,R> command){
+        return applyIf(set, command, new FilteringCondition<T>(){
+
+            @Override
+            public boolean condition(T element) {
+                return true;
+            }
+
+        });
+    }
+
+    public static <T,R> List<R> applyIf(
+            List<T> set,
+            ApplicableCommand<T, R> applicableCommand,
+            FilteringCondition<T> filteringCondition) {
         List<R> resultSet = new ArrayList<R>();
-        for(T setElement : list) {
-            resultSet.add(command.apply(setElement));
+        for(T setElement : set) {
+            if(filteringCondition.condition(setElement)){
+                resultSet.add(applicableCommand.apply(setElement));
+            }
         }
 
         return resultSet;
+    }
+
+    public static <T> List<T> filter(List<T> set, FilteringCondition<T> condition) {
+        return applyIf(set, new ApplicableCommand<T, T>(){
+
+            @Override
+            public T apply(T element) {
+                return element;
+            }
+
+        },condition);
     }
 }

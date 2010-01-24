@@ -27,7 +27,7 @@ public abstract class MailTemplate<T extends TemplateReplacement,K>
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @FieldProperties(label="Asunto del correo", widgetWidth="30em")
+    @FieldProperties(label="Asunto del correo", widgetStyle="width:30em")
     private String subject;
     @FieldProperties(label="Cuerpo del correo",type=FieldType.RICHTEXT)
     @Column(length=2048)
