@@ -30,35 +30,44 @@ import javax.persistence.InheritanceType;
 public abstract class RepeaterSubtemplate<T extends TemplateReplacement, K extends Collection<?>>
         implements Template<T,String,K>,Serializable {
 
-    public static final String TABLE_CELL_SEPARATOR="||";
-    public static final String TABLE_CELL_SEPARATOR_REGEX="\\|\\|";
-
-    @FieldProperties(label="Tipo de repetición", type=FieldType.SELECTION,
-        possibleValues={"true","false"}, possibleValueLabels={"Tabla","Lista"})
+    // <editor-fold defaultstate="collapsed" desc="Fields">
+    public static final String TABLE_CELL_SEPARATOR = "||";
+    public static final String TABLE_CELL_SEPARATOR_REGEX = "\\|\\|";
+    @FieldProperties(label = "Tipo de repetición", type = FieldType.SELECTION,
+    possibleValues = {"true", "false"}, possibleValueLabels = {"Tabla", "Lista"})
     private boolean isTable;
-
-    @FieldProperties(label="Encabezados de la tabla", required=false, widgetStyle="width:98%",
-    deactivationConditions={@FieldDeactivationCondition(equals="'false'",triggerField="isTable")})
+    @FieldProperties(label = "Encabezados de la tabla", required = false, widgetStyle = "width:98%",
+    deactivationConditions = {
+        @FieldDeactivationCondition(equals = "'false'", triggerField = "isTable")})
     private String tableHeader;
-
-    @FieldProperties(label="Anchuras de las columnas", required=false, widgetStyle="width:98%",
-    deactivationConditions={@FieldDeactivationCondition(equals="'false'",triggerField="isTable")})    
+    @FieldProperties(label = "Anchuras de las columnas", required = false, widgetStyle = "width:98%",
+    deactivationConditions = {
+        @FieldDeactivationCondition(equals = "'false'", triggerField = "isTable")})
     private String columnSizes;
-
-    @FieldProperties(label="Lista ordenada", type=FieldType.BOOLEAN, deactivationConditions={
-        @FieldDeactivationCondition(equals="'true'",newValue="false",triggerField="isTable")
+    @FieldProperties(label = "Lista ordenada", type = FieldType.BOOLEAN, deactivationConditions = {
+        @FieldDeactivationCondition(equals = "'true'", newValue = "false", triggerField = "isTable")
     })
     private boolean isOrderedList;
-
-    @FieldProperties(label="Formato del elemento", widgetStyle="width:98%")
+    @FieldProperties(label = "Formato del elemento", widgetStyle = "width:98%")
     private String elementFormat;
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    protected String fillTemplatesAux(List<Map<T,String>> replacements){
+    // </editor-fold>
+
+    @Override
+    public final String fillTemplate(K source, Map<T, String> externalReplacements) {
+        List<Map<T,String>> replacements = this.createReplacements(source);
+
+        return this.fillTemplatesAux(replacements);
+    }
+    
+
+    protected abstract List<Map<T,String>> createReplacements(K source);
+
+    private String fillTemplatesAux(List<Map<T,String>> replacements){
         String result = "<ul>";
         if(isTable) {
             String[] splitHeader = tableHeader.split(RepeaterSubtemplate.TABLE_CELL_SEPARATOR_REGEX);

@@ -5,6 +5,7 @@ import com.greenriver.commons.data.mailing.Mail;
 import com.greenriver.commons.data.fieldProperties.FieldProperties;
 import com.greenriver.commons.data.fieldProperties.FieldType;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -33,8 +34,20 @@ public abstract class MailTemplate<T extends TemplateReplacement,K>
     @Column(length=2048)
     private String body;
 
+    @Override
+    public Mail fillTemplate(K source, Map<T, String> externalReplacements) {
+        Map<T,String> replacements = createReplacements(source);
+        if(externalReplacements!=null) {
+            replacements.putAll(externalReplacements);
+        }
 
-    protected Mail fillTemplateAux(
+        return this.fillTemplateAux(replacements);
+    }
+
+    protected abstract Map<T,String> createReplacements(K source);
+
+
+    private final Mail fillTemplateAux(
             Map<T,String> replacements){
 
         String mailBody = this.getBody();
