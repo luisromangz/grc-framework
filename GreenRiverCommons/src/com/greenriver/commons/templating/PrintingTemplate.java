@@ -41,8 +41,20 @@ public abstract class PrintingTemplate<T extends TemplateReplacement,K>
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Override
+    public final PrintableDocument fillTemplate(K source, Map<T, String> externalReplacements) {
+        Map<T,String> replacements = this.createReplacements(source);
+
+        if(externalReplacements!=null) {
+            replacements.putAll(externalReplacements);
+        }
+
+        return this.fillTemplateAux(replacements);
+    }
     
-    protected PrintableDocument fillTemplateAux(Map<T, String> replacements) {
+    protected abstract Map<T, String> createReplacements(K source);
+
+    private PrintableDocument fillTemplateAux(Map<T, String> replacements) {
         String documentBody = new String(body);
         for (T replacement : replacements.keySet()) {
             String replacementValue = replacements.get(replacement);
