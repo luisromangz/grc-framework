@@ -2,7 +2,6 @@ package com.greenriver.commons;
 
 import java.text.NumberFormat;
 import java.util.HashMap;
-import javax.swing.text.NumberFormatter;
 
 /**
  * This class is intended to hold static methods to be applied to numbers.
@@ -13,7 +12,7 @@ public class Numbers {
     private static HashMap<Float,String> fractions;
 
     static {
-        fractions=new HashMap<Float, String>();
+        fractions = new HashMap<Float, String>();
         fractions.put(0.25f, "¼");
         fractions.put(0.50f,"½");
         fractions.put(0.75f,"¾");
@@ -95,5 +94,39 @@ public class Numbers {
         }
 
         return resultString;
+    }
+
+    /**
+     * Rounds a floating point number at the given number of decimal places
+     * @param number
+     * @param places
+     * @return
+     */
+    public static float round(float number, int places) {
+        double decimalsDivider = Math.pow(10, places);
+        return (float)(Math.round(number*decimalsDivider) / decimalsDivider);
+    }
+
+    /**
+     * Truncates a floating point number at the given number of decimal places
+     * @param number
+     * @param places
+     * @return
+     */
+    public static float trunc(float number, int places) {
+        double decimalsDivider = Math.pow(10, places);
+        return (float)(Math.floor(number*decimalsDivider) / decimalsDivider);
+    }
+
+    /**
+     * Compares to floats using a deviation. The floats will be equal if the
+     * difference between them is less or equal than delta parameter;
+     * @param floatA
+     * @param floatB
+     * @param delta
+     * @return
+     */
+    public static boolean equals(float floatA, float floatB, double delta) {
+        return Math.abs(floatA - floatB) <= delta;
     }
 }
