@@ -62,6 +62,10 @@ public abstract class MailTemplate<T extends TemplateReplacement,K>
 
         Mail result = new Mail();
         result.setBody(mailBody);
+
+        // We replace spacial symbols with their html equivalents.
+        mailSubject = mailSubject.replace("€", "&#x20AC;");
+
         result.setSubject(mailSubject);
 
         return result;
