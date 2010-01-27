@@ -39,6 +39,7 @@ public class NumberTest {
 
     @Test
     public void testCeilInQuarterSteps() {
+        System.out.println("testCeilInQuarterSteps");
         assertEquals(1, Numbers.ceilInQuarterSteps(0.8f,0.01f),0.0000001f);
         assertEquals(0, Numbers.ceilInQuarterSteps(0.009f,0.01f),0.0001f);
         assertEquals(0, Numbers.ceilInQuarterSteps(0,0.01f),0.00001f);
@@ -58,4 +59,20 @@ public class NumberTest {
          assertEquals(-3.25f, Numbers.ceilInQuarterSteps(-3.3f, 0),0);
     }
 
+    @Test
+    public void testRound_float() {
+        System.out.println("testRound_float");
+        assertEquals(1.4500F, Numbers.round(1.454545F, 2), 0.00001);
+        assertEquals(1.4600F, Numbers.round(1.455545F, 2), 0.00001);
+        assertEquals(1.4600F, Numbers.round(1.456545F, 2), 0.00001);
+        assertEquals(2F, Numbers.round(1.99765434F, 2), 0.00001);
+    }
+
+    @Test
+    public void testTrunc_float() {
+        System.out.println("testRound_float");
+        assertEquals(1.4500F, Numbers.trunc(1.454545F, 2), 0.00001);
+        assertEquals(1.6500F, Numbers.trunc(1.655545F, 2), 0.00001);
+        assertEquals(1.7500F, Numbers.trunc(1.756545F, 2), 0.00001);
+    }
 }
