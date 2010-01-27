@@ -10,7 +10,6 @@ import com.greenriver.commons.data.fieldProperties.FieldDeactivationCondition;
 import com.greenriver.commons.data.fieldProperties.FieldProperties;
 import com.greenriver.commons.data.fieldProperties.FieldType;
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
