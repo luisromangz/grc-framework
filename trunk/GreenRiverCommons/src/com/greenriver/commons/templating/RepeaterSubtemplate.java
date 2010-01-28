@@ -27,7 +27,7 @@ import javax.persistence.InheritanceType;
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class RepeaterSubtemplate<T extends TemplateReplacement, K extends Collection<?>>
-        implements Template<T,String,K>,Serializable {
+        implements Subtemplate<T,String,K>,Serializable {
 
     // <editor-fold defaultstate="collapsed" desc="Fields">
     public static final String TABLE_CELL_SEPARATOR = "||";
@@ -57,21 +57,22 @@ public abstract class RepeaterSubtemplate<T extends TemplateReplacement, K exten
     // </editor-fold>
 
     @Override
-    public final String fillTemplate(K source, Map<T, String> externalReplacements) {
+    public final String fillTemplate(SubtemplatedReplacement replacement, K source) {
+        
         List<Map<T,String>> replacements = this.createReplacements(source);
 
-        return this.fillTemplatesAux(replacements);
+        return this.fillTemplatesAux(replacement.getPlaceholder(), replacements);
     }
     
 
     protected abstract List<Map<T,String>> createReplacements(K source);
 
-    private String fillTemplatesAux(List<Map<T,String>> replacements){
-        String result = "<ul>";
+    private String fillTemplatesAux(String placeholder, List<Map<T,String>> replacements){
+        String result = "<ul class=\""+placeholder+"\">";
         if(isTable) {
             String[] splitHeader = tableHeader.split(RepeaterSubtemplate.TABLE_CELL_SEPARATOR_REGEX);
 
-            result="<table cellspacing=\"0\"><thead><tr>";
+            result="<table class=\""+placeholder+"\" cellspacing=\"0\"><thead><tr>";
 
             String[] sizes = new String[]{};
             if(!Strings.isNullOrEmpty(columnSizes)) {
@@ -115,14 +116,14 @@ public abstract class RepeaterSubtemplate<T extends TemplateReplacement, K exten
                 replacementValue="";
             }
 
-            result = result.replace(replacement.getPlaceholder(), replacementValue);
+            result = result.replace(replacement.getDecoratedPlaceholder(), replacementValue);
         }
 
         return result;
     }
 
     @Override
-    public void copyTo(Template copyTarget) {
+    public void copyTo(Subtemplate copyTarget) {
         RepeaterSubtemplate targetTemplate = (RepeaterSubtemplate) copyTarget;
         targetTemplate.setColumnSizes(columnSizes);
         targetTemplate.setElementFormat(elementFormat);
