@@ -5,14 +5,14 @@ package com.greenriver.commons.templating;
  *
  * @author luis
  */
-public class SubtemplateReplacementData
+public class SubtemplatedReplacementData
         extends TemplateReplacementData
         implements SubtemplatedReplacement {
         
     private String editionClientCallback;
     private String subtemplateField;
 
-    public SubtemplateReplacementData(
+    public SubtemplatedReplacementData(
             String placeholder,
             String description,
             String editionClientCallback,

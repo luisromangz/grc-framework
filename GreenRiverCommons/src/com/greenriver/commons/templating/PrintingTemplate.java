@@ -63,7 +63,7 @@ public abstract class PrintingTemplate<T extends TemplateReplacement,K>
             }
 
             documentBody = documentBody.replace(
-                    replacement.getPlaceholder(),
+                    replacement.getDecoratedPlaceholder(),
                     replacementValue);
         }
 

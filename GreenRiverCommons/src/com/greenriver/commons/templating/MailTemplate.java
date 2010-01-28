@@ -65,11 +65,11 @@ public abstract class MailTemplate<T extends TemplateReplacement,K>
             }
 
             mailBody = mailBody.replace(
-                    replacementType.getPlaceholder(),
+                    replacementType.getDecoratedPlaceholder(),
                     replacement);
 
             mailSubject = mailSubject.replace(
-                    replacementType.getPlaceholder(),
+                    replacementType.getDecoratedPlaceholder(),
                     replacement);
         }
 

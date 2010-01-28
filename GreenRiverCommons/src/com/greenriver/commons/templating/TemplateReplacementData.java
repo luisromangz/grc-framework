@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.greenriver.commons.templating;
 
 /**
@@ -23,6 +18,13 @@ public class TemplateReplacementData implements TemplateReplacement {
 
     @Override
     public String getPlaceholder() {
+        return placeHolder;
+    }
+
+
+
+    @Override
+    public String getDecoratedPlaceholder() {
         return String.format("%s%s%s",
                 PLACEHOLDER_MARK,
                 this.placeHolder.toUpperCase(),

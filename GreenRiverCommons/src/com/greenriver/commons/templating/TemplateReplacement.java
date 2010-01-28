@@ -7,5 +7,6 @@ package com.greenriver.commons.templating;
  */
 public interface TemplateReplacement {
     String getPlaceholder();
+    String getDecoratedPlaceholder();
     String getDescription();
 }
