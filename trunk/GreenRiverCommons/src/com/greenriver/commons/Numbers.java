@@ -120,13 +120,13 @@ public class Numbers {
 
     /**
      * Compares to floats using a deviation. The floats will be equal if the
-     * difference between them is less or equal than delta parameter;
+     * difference between them is less or equal than epsilon parameter;
      * @param floatA
      * @param floatB
-     * @param delta
+     * @param epsilon
      * @return
      */
-    public static boolean equals(float floatA, float floatB, double delta) {
-        return Math.abs(floatA - floatB) <= delta;
+    public static boolean equals(float floatA, float floatB, double epsilon) {
+        return Math.abs(floatA - floatB) <= epsilon;
     }
 }
