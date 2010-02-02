@@ -406,18 +406,32 @@ public class Dates {
                 date2, part));
     }
 
-    public static boolean lessOrEqual(Date date1, Date date2, DatePart part) {
+    public static boolean beforeOrEquals(Date date1, Date date2, DatePart part) {
         long x1 = date1 != null ? getDateTimePart(date1, part) : Long.MIN_VALUE;
         long x2 = date2 != null ? getDateTimePart(date2, part) : Long.MAX_VALUE;
 
         return x1 <= x2;
     }
 
-    public static boolean greaterOrEqual(Date date1, Date date2, DatePart part) {
+    public static boolean before(Date date1, Date date2, DatePart part) {
+        long x1 = date1 != null ? getDateTimePart(date1, part) : Long.MIN_VALUE;
+        long x2 = date2 != null ? getDateTimePart(date2, part) : Long.MAX_VALUE;
+
+        return x1 < x2;
+    }
+
+    public static boolean afterOrEquals(Date date1, Date date2, DatePart part) {
         long x1 = date1 != null ? getDateTimePart(date1, part) : Long.MIN_VALUE;
         long x2 = date2 != null ? getDateTimePart(date2, part) : Long.MAX_VALUE;
 
         return x1 >= x2;
+    }
+
+    public static boolean after(Date date1, Date date2, DatePart part) {
+        long x1 = date1 != null ? getDateTimePart(date1, part) : Long.MIN_VALUE;
+        long x2 = date2 != null ? getDateTimePart(date2, part) : Long.MAX_VALUE;
+
+        return x1 > x2;
     }
 
     public static int getDayOfYear(Date date) {

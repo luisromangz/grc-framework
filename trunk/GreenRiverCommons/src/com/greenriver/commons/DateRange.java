@@ -268,7 +268,7 @@ public class DateRange implements Comparable<DateRange>, Cloneable, Serializable
      * @return
      */
     public boolean before(DateRange dateRange) {
-        return !Dates.greaterOrEqual(this.max, dateRange.min, DatePart.DATE);
+        return !Dates.afterOrEquals(this.max, dateRange.min, DatePart.DATE);
     }
 
     /**
@@ -279,15 +279,15 @@ public class DateRange implements Comparable<DateRange>, Cloneable, Serializable
      * @return
      */
     public boolean before(DateRange dateRange, DatePart part) {
-        return !Dates.greaterOrEqual(this.max, dateRange.min, part);
+        return !Dates.afterOrEquals(this.max, dateRange.min, part);
     }
 
     public boolean after(DateRange dateRange) {
-        return !Dates.lessOrEqual(this.min, dateRange.max, DatePart.DATE);
+        return !Dates.beforeOrEquals(this.min, dateRange.max, DatePart.DATE);
     }
 
     public boolean after(DateRange dateRange, DatePart part) {
-        return !Dates.lessOrEqual(this.min, dateRange.max, part);
+        return !Dates.beforeOrEquals(this.min, dateRange.max, part);
     }
 
     public int compareTo(DateRange o, DatePart part) {
@@ -329,8 +329,8 @@ public class DateRange implements Comparable<DateRange>, Cloneable, Serializable
             return false;
         }
 
-        return (this.max == null || Dates.lessOrEqual(time, this.max, part)) &&
-                (this.min == null || Dates.greaterOrEqual(time, this.min, part));
+        return (this.max == null || Dates.beforeOrEquals(time, this.max, part)) &&
+                (this.min == null || Dates.afterOrEquals(time, this.min, part));
     }
 
     public DateRange getIntersection(DateRange range) {
@@ -349,13 +349,13 @@ public class DateRange implements Comparable<DateRange>, Cloneable, Serializable
 
         DateRange result = new DateRange();
 
-        if (Dates.lessOrEqual(min, range.min, part)) {
+        if (Dates.beforeOrEquals(min, range.min, part)) {
             result.setMin(new Date(range.min.getTime()));
         } else {
             result.setMin(new Date(min.getTime()));
         }
 
-        if (Dates.greaterOrEqual(max, range.max, part)) {
+        if (Dates.afterOrEquals(max, range.max, part)) {
             result.setMax(new Date(range.max.getTime()));
         } else {
             result.setMax(new Date(max.getTime()));
@@ -380,8 +380,8 @@ public class DateRange implements Comparable<DateRange>, Cloneable, Serializable
      * @return
      */
     public boolean isContained(DateRange target, DatePart part) {
-        return Dates.lessOrEqual(target.min, min, part) &&
-                Dates.greaterOrEqual(target.max, max, part);
+        return Dates.beforeOrEquals(target.min, min, part) &&
+                Dates.afterOrEquals(target.max, max, part);
     }
 
     /**
@@ -418,13 +418,13 @@ public class DateRange implements Comparable<DateRange>, Cloneable, Serializable
             cal.setTime(target.max);
             cal.add(GregorianCalendar.DAY_OF_MONTH, 1);
             result.add(new DateRange(cal.getTime(), max));
-        } else if (!Dates.greaterOrEqual(min, target.min, part) ||
+        } else if (!Dates.afterOrEquals(min, target.min, part) ||
                 Dates.equals(max, target.max, part)) {
 
             cal.setTime(target.min);
             cal.add(GregorianCalendar.DAY_OF_MONTH, -1);
             result.add(new DateRange(min, cal.getTime()));
-        } else if (!Dates.lessOrEqual(max, target.max, part) ||
+        } else if (!Dates.beforeOrEquals(max, target.max, part) ||
                 Dates.equals(min, target.min, part)) {
 
             cal.setTime(target.max);
@@ -511,7 +511,7 @@ public class DateRange implements Comparable<DateRange>, Cloneable, Serializable
 
         @Override
         public boolean hasNext() {
-            return Dates.lessOrEqual(next, end, part);
+            return Dates.beforeOrEquals(next, end, part);
         }
 
         @Override
