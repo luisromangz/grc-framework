@@ -22,14 +22,17 @@ public class MySqlPagedDataQueryImpl implements PagedDataQuery {
     private Query query;
     private Session session;
 
+    @Override
     public Query getQuery() {
         return query;
     }
 
+    @Override
     public void setQuery(Query query) {
         this.query = query;
     }
 
+    @Override
     public void setQuery(String hql) {
         if (session == null) {
             throw new IllegalStateException("Session not initiallized");
@@ -51,6 +54,7 @@ public class MySqlPagedDataQueryImpl implements PagedDataQuery {
      * @return
      * @throws HibernateException if the scroll operation fails
      */
+    @Override
     public PagedResult fetch(int pageNumber, int pageSize) {
         ScrollableResults scroll = query.scroll(ScrollMode.FORWARD_ONLY);
         PagedResult pagedResult = new PagedResult(0, null, -1);
