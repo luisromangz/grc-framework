@@ -45,6 +45,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
 
         HtmlFormElementInfo formFieldElement = new HtmlFormElementInfo(fieldId);
 
+        formFieldElement.setAttribute("intermediateChanges", "true");
         setupFieldElement(formFieldElement, fieldType, properties);
 
         setFieldProperties(properties, formFieldElement);
@@ -303,12 +304,12 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
      * values. These parameters are minValue, maxValue and decimalPlaces.
      */
     private void assertNotNumber(FieldProperties properties) {
-        if (properties.minValue() != -Double.MAX_VALUE) {
+        if (properties.minValue() != Integer.MIN_VALUE) {
             throw new FormBuildingException(
                     "Min value specified but property is not a number.");
         }
 
-        if (properties.maxValue() != Double.MAX_VALUE) {
+        if (properties.maxValue() != Integer.MAX_VALUE) {
             throw new FormBuildingException(
                     "Min value specified but property is not a number.");
         }
@@ -597,19 +598,23 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         assertNotSelection(properties);
         assertNotFile(properties);
 
-        element.getAttributes().setProperty("dojoType",
-                "dijit.form.NumberSpinner");
+        element.setAttribute("dojoType","dijit.form.NumberSpinner");
+
+
+        element.getAttributes().remove("intermediateChanges");
         configuration.addDojoModule("dijit.form.NumberSpinner");
 
         //Here we set the range, note that if min or max are float it must
         //use a dot as decimal separator (representation independent in javascript).
         String min = properties.minValue() + "";
         String max = properties.maxValue() + "";
-        String places = properties.decimalPlaces() + "";
+        String pattern = "#,##0."+Strings.repeat("#", properties.decimalPlaces());
 
-        element.getAttributes().setProperty(
+        this.configuration.addOnLoadScript("dijit.byId('"+element.getId()+"').intermediateChanges=false;");
+
+        element.setAttribute(
                 "constraints",
-                String.format("{min: %s, max: %s, places:%s}", min, max, places));
+                String.format("{min: %s, max: %s, pattern:'%s'}", min, max, pattern));
     }
 
     private void setupAutocompletionField(HtmlFormElementInfo element,
@@ -706,13 +711,14 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
      * @param properties
      * @param element
      */
+
     private void setFieldProperties(FieldProperties properties,
             HtmlFormElementInfo element) {
         if (properties.required()) {
             element.getAttributes().setProperty("required", "true");
         }
 
-        element.getAttributes().setProperty("intermediateChanges", "true");
+        
         element.getAttributes().setProperty("unit", properties.unit());
 
         // Custom options are set now.
