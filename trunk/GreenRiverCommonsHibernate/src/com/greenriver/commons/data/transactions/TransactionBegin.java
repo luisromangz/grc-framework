@@ -11,6 +11,6 @@ import java.lang.annotation.Target;
  * @author Miguel Angel
  */
 @Target(value={ElementType.CONSTRUCTOR, ElementType.METHOD})
-public @interface TransactionStart {
+public @interface TransactionBegin {
 
 }
