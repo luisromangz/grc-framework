@@ -52,14 +52,14 @@ public @interface FieldProperties {
      * field types.
      * @return 
      */
-    double minValue() default -Double.MAX_VALUE;
+    double minValue() default Integer.MIN_VALUE;
 
     /**
      * The max numeric value the field allows. Only for DECIMAL or NUMBER field
      * types.
      * @return
      */
-    double maxValue() default Double.MAX_VALUE;
+    double maxValue() default Integer.MAX_VALUE;
     
     /**
      * The field's type, that will determinate input type and the validation
