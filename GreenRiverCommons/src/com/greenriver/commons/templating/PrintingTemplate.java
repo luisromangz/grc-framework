@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.util.Map;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -25,16 +26,16 @@ import javax.persistence.OneToOne;
  */
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public abstract class PrintingTemplate<T extends TemplateReplacement,K>
-        implements Serializable, Template<T, PrintableDocument,K>{
+@DiscriminatorColumn(length = 255)
+public abstract class PrintingTemplate<T extends TemplateReplacement, K>
+        implements Serializable, Template<T, PrintableDocument, K> {
 
     @FieldProperties(label = "Cuerpo del documento", type = FieldType.RICHTEXT)
-    @Column(length=2048)
+    @Column(length = 2048)
     private String body;
-
-    @Column(length=2048)
+    @Column(length = 2048)
     private String cssStyles;
-    @OneToOne(cascade=CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     private PageConfiguration pageConfiguration;
     private static final long serialVersionUID = 1L;
     @Id
@@ -43,23 +44,23 @@ public abstract class PrintingTemplate<T extends TemplateReplacement,K>
 
     @Override
     public final PrintableDocument fillTemplate(K source, Map<T, String> externalReplacements) {
-        Map<T,String> replacements = this.createReplacements(source);
+        Map<T, String> replacements = this.createReplacements(source);
 
-        if(externalReplacements!=null) {
+        if (externalReplacements != null) {
             replacements.putAll(externalReplacements);
         }
 
         return this.fillTemplateAux(replacements);
     }
-    
+
     protected abstract Map<T, String> createReplacements(K source);
 
     private PrintableDocument fillTemplateAux(Map<T, String> replacements) {
         String documentBody = new String(body);
         for (T replacement : replacements.keySet()) {
             String replacementValue = replacements.get(replacement);
-            if(replacementValue ==null){
-                replacementValue="";
+            if (replacementValue == null) {
+                replacementValue = "";
             }
 
             documentBody = documentBody.replace(
@@ -77,13 +78,11 @@ public abstract class PrintingTemplate<T extends TemplateReplacement,K>
 
     @Override
     public void copyTo(Template copyTarget) {
-       PrintingTemplate targetTemplate = (PrintingTemplate) copyTarget;
-       targetTemplate.setBody(this.getBody());
-       targetTemplate.setCssStyles(cssStyles);
-       this.getPageConfiguration().copyTo(targetTemplate.getPageConfiguration());
+        PrintingTemplate targetTemplate = (PrintingTemplate) copyTarget;
+        targetTemplate.setBody(this.getBody());
+        targetTemplate.setCssStyles(cssStyles);
+        this.getPageConfiguration().copyTo(targetTemplate.getPageConfiguration());
     }
-
-    
 
     // <editor-fold defaultstate="collapsed" desc="Auto generated stuff">
     @Override

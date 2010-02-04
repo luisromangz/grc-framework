@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.greenriver.commons.templating;
 
 import com.greenriver.commons.Strings;
@@ -13,6 +8,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -26,6 +22,7 @@ import javax.persistence.InheritanceType;
  */
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(length = 255)
 public abstract class RepeaterSubtemplate<T extends TemplateReplacement, K extends Collection<?>>
         implements Subtemplate<T,String,K>,Serializable {
 

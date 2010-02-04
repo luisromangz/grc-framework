@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -21,6 +22,7 @@ import javax.persistence.InheritanceType;
  */
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(length = 255)
 public abstract class MailTemplate<T extends TemplateReplacement,K>
         implements Serializable, Template<T,Mail,K> {
     private static final long serialVersionUID = 1L;
