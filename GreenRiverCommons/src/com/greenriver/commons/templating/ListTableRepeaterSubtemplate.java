@@ -21,10 +21,10 @@ import javax.persistence.InheritanceType;
  * @author luis
  */
 @Entity
-@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(length = 255)
 public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement, K extends Collection<?>>
-        implements Subtemplate<T,String,K>,Serializable {
+          implements Subtemplate<T, String, K>, Serializable {
 
     // <editor-fold defaultstate="collapsed" desc="Fields">
     public static final String TABLE_CELL_SEPARATOR = "||";
@@ -32,9 +32,16 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
     @FieldProperties(label = "Tipo de repetición", type = FieldType.SELECTION,
     possibleValues = {"true", "false"}, possibleValueLabels = {"Tabla", "Lista"})
     private boolean isTable;
+    @FieldProperties(label = "Mostrar encabezados de la tabla", type = FieldType.BOOLEAN,
+    deactivationConditions = {
+        @FieldDeactivationCondition(equals = "'false'", triggerField = "isTable", newValue = "false")
+    })
+    private boolean showTableHeaders = true;
     @FieldProperties(label = "Encabezados de la tabla", required = false, widgetStyle = "width:98%",
     deactivationConditions = {
-        @FieldDeactivationCondition(equals = "'false'", triggerField = "isTable")})
+        @FieldDeactivationCondition(equals = "'false'", triggerField = "isTable"),
+        @FieldDeactivationCondition(equals = "false", triggerField = "showTableHeaders")
+    })
     private String tableHeader;
     @FieldProperties(label = "Anchuras de las columnas", required = false, widgetStyle = "width:98%",
     deactivationConditions = {
@@ -52,65 +59,64 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
     private Long id;
 
     // </editor-fold>
-
     @Override
     public final String fillTemplate(SubtemplatedReplacement replacement, K source) {
-        
-        List<Map<T,String>> replacements = this.createReplacements(source);
+
+        List<Map<T, String>> replacements = this.createReplacements(source);
 
         return this.fillTemplatesAux(replacement.getPlaceholder(), replacements);
     }
-    
 
-    protected abstract List<Map<T,String>> createReplacements(K source);
+    protected abstract List<Map<T, String>> createReplacements(K source);
 
-    private String fillTemplatesAux(String placeholder, List<Map<T,String>> replacements){
-        String result = "<ul class=\""+placeholder+"\">";
-        if(isTable) {
+    private String fillTemplatesAux(String placeholder, List<Map<T, String>> replacements) {
+        String result = "<ul class=\"" + placeholder + "\">";
+
+        String[] sizes = null;
+        if (isTable) {
             String[] splitHeader = tableHeader.split(ListTableRepeaterSubtemplate.TABLE_CELL_SEPARATOR_REGEX);
 
-            result="<table class=\""+placeholder+"\" cellspacing=\"0\"><thead><tr>";
+            result = "<table class=\"" + placeholder + "\" cellspacing=\"0\"><thead><tr>";
 
-            String[] sizes = new String[]{};
-            if(!Strings.isNullOrEmpty(columnSizes)) {
+            sizes = new String[]{};
+            if (!Strings.isNullOrEmpty(columnSizes)) {
                 sizes = this.columnSizes.split(ListTableRepeaterSubtemplate.TABLE_CELL_SEPARATOR_REGEX);
             }
 
-            for(int i=0; i< splitHeader.length; i++) {
-                String columnSize ="auto";
-                if(i< sizes.length) {
-                    columnSize = sizes[i];
+            if (this.showTableHeaders) {
+                for (int i = 0; i < splitHeader.length; i++) {
+                    result += String.format("<th>%s</th>", splitHeader[i]);
                 }
-
-                result+=String.format("<th style=\"width:%s\">%s</th>", columnSize,splitHeader[i]);
             }
 
-            result+="</tr></thead><tbody>";
+            result += "</tr></thead><tbody>";
         }
 
-        for(Map<T,String> elementReplacements : replacements) {
+        for (int i =0;i<replacements.size(); i++) {
+            Map<T, String> elementReplacements = replacements.get(i);
             String elementString = this.fillTemplateAux(elementReplacements);
-            if(isTable) {
-                elementString = elementString.replace(ListTableRepeaterSubtemplate.TABLE_CELL_SEPARATOR,"</td><td>");
+            if (isTable) {
+                elementString = elementString.replace(ListTableRepeaterSubtemplate.TABLE_CELL_SEPARATOR, "</td><td>");
             }
 
-            result+=String.format(
-                    isTable?"<tr><td>%s</td></tr>":"<li>%s</li>",
+            result += String.format(
+                    isTable ? "<tr><td style=\"width:%s\">%s</td></tr>" : "<li>%s</li>",
+                    sizes!=null?sizes[i]:"",
                     elementString);
         }
 
-        result+=isTable?"</tbody></table>":"</ul>";
+        result += isTable ? "</tbody></table>" : "</ul>";
 
         return result;
 
     }
 
-    private String fillTemplateAux(Map<T,String> replacements){
+    private String fillTemplateAux(Map<T, String> replacements) {
         String result = new String(this.elementFormat);
-        for(T replacement : replacements.keySet()) {
+        for (T replacement : replacements.keySet()) {
             String replacementValue = replacements.get(replacement);
-            if(replacementValue==null){
-                replacementValue="";
+            if (replacementValue == null) {
+                replacementValue = "";
             }
 
             result = result.replace(replacement.getDecoratedPlaceholder(), replacementValue);
@@ -127,13 +133,11 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
         targetTemplate.setIsOrderedList(isOrderedList);
         targetTemplate.setIsTable(isTable);
         targetTemplate.setTableHeader(tableHeader);
+        targetTemplate.setShowTableHeaders(showTableHeaders);
     }
 
-
-  
     // <editor-fold defaultstate="collapsed" desc="Getters & setters">
-
-      public Long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -210,6 +214,19 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
     public void setColumnSizes(String columnSizes) {
         this.columnSizes = columnSizes;
     }
-    // </editor-fold>
 
+    /**
+     * @return the showTableHeaders
+     */
+    public boolean getShowTableHeaders() {
+        return showTableHeaders;
+    }
+
+    /**
+     * @param showTableHeaders the showTableHeaders to set
+     */
+    public void setShowTableHeaders(boolean showTableHeaders) {
+        this.showTableHeaders = showTableHeaders;
+    }
+    // </editor-fold>
 }

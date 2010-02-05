@@ -82,7 +82,11 @@ public abstract class PrintingTemplate<T extends TemplateReplacement, K>
         targetTemplate.setBody(this.getBody());
         targetTemplate.setCssStyles(cssStyles);
         this.getPageConfiguration().copyTo(targetTemplate.getPageConfiguration());
+
+        copySubtemplatesTo(copyTarget);
     }
+
+    protected abstract void copySubtemplatesTo(Template copyTarget);
 
     // <editor-fold defaultstate="collapsed" desc="Auto generated stuff">
     @Override
