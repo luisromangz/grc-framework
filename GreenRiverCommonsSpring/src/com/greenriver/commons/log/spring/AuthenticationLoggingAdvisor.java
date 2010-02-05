@@ -12,6 +12,9 @@ public interface AuthenticationLoggingAdvisor {
     /**
      * Wraps a call to Spring Security's
      * AuthenticationProvider.authenticate().
+     * @param call
+     * @return
+     * @throws Throwable 
      */
     Object logAuth(ProceedingJoinPoint call) throws Throwable;
 
