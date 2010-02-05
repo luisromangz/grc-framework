@@ -37,7 +37,7 @@ public abstract class HibernateDaoBase {
 
     // <editor-fold defaultstate="collapsed" desc="QueryArguments related methods">
     @SuppressWarnings("unchecked")
-    protected Criteria createCriteriaFromQueryArguments(
+    protected final Criteria createCriteriaFromQueryArguments(
              EntityQueryArguments queryArguments) {
 
         Class argumentClass = queryArguments.getClass();
@@ -68,7 +68,7 @@ public abstract class HibernateDaoBase {
         return crit;
     }
 
-    protected Criteria createPaginatedCriteriaFromQueryArguments(
+    protected final Criteria createPaginatedCriteriaFromQueryArguments(
             int page,
             int pageSize,
             EntityQueryArguments queryArguments) {

@@ -44,6 +44,7 @@ public class HibernateTransactionManager implements TransactionManager {
     public void rollback() {
         Transaction tran = sessionFactory.getCurrentSession().getTransaction();
 
+        sessionFactory.getCurrentSession().clear();
         if (tran.isActive()) {
             try{
                 tran.rollback();
@@ -51,9 +52,7 @@ public class HibernateTransactionManager implements TransactionManager {
                 // Do nothing;
                 tE.printStackTrace(System.out);
             }
-        }
-
-        sessionFactory.getCurrentSession().clear();
+        }        
 
         sessionFactory.getCurrentSession().close();
     }
