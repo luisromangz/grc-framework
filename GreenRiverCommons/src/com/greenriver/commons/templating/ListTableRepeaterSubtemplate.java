@@ -23,7 +23,7 @@ import javax.persistence.InheritanceType;
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(length = 255)
-public abstract class RepeaterSubtemplate<T extends TemplateReplacement, K extends Collection<?>>
+public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement, K extends Collection<?>>
         implements Subtemplate<T,String,K>,Serializable {
 
     // <editor-fold defaultstate="collapsed" desc="Fields">
@@ -67,13 +67,13 @@ public abstract class RepeaterSubtemplate<T extends TemplateReplacement, K exten
     private String fillTemplatesAux(String placeholder, List<Map<T,String>> replacements){
         String result = "<ul class=\""+placeholder+"\">";
         if(isTable) {
-            String[] splitHeader = tableHeader.split(RepeaterSubtemplate.TABLE_CELL_SEPARATOR_REGEX);
+            String[] splitHeader = tableHeader.split(ListTableRepeaterSubtemplate.TABLE_CELL_SEPARATOR_REGEX);
 
             result="<table class=\""+placeholder+"\" cellspacing=\"0\"><thead><tr>";
 
             String[] sizes = new String[]{};
             if(!Strings.isNullOrEmpty(columnSizes)) {
-                sizes = this.columnSizes.split(RepeaterSubtemplate.TABLE_CELL_SEPARATOR_REGEX);
+                sizes = this.columnSizes.split(ListTableRepeaterSubtemplate.TABLE_CELL_SEPARATOR_REGEX);
             }
 
             for(int i=0; i< splitHeader.length; i++) {
@@ -91,7 +91,7 @@ public abstract class RepeaterSubtemplate<T extends TemplateReplacement, K exten
         for(Map<T,String> elementReplacements : replacements) {
             String elementString = this.fillTemplateAux(elementReplacements);
             if(isTable) {
-                elementString = elementString.replace(RepeaterSubtemplate.TABLE_CELL_SEPARATOR,"</td><td>");
+                elementString = elementString.replace(ListTableRepeaterSubtemplate.TABLE_CELL_SEPARATOR,"</td><td>");
             }
 
             result+=String.format(
@@ -121,7 +121,7 @@ public abstract class RepeaterSubtemplate<T extends TemplateReplacement, K exten
 
     @Override
     public void copyTo(Subtemplate copyTarget) {
-        RepeaterSubtemplate targetTemplate = (RepeaterSubtemplate) copyTarget;
+        ListTableRepeaterSubtemplate targetTemplate = (ListTableRepeaterSubtemplate) copyTarget;
         targetTemplate.setColumnSizes(columnSizes);
         targetTemplate.setElementFormat(elementFormat);
         targetTemplate.setIsOrderedList(isOrderedList);
