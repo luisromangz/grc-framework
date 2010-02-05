@@ -53,6 +53,8 @@ public class HibernateTransactionManager implements TransactionManager {
             }
         }
 
+        sessionFactory.getCurrentSession().clear();
+
         sessionFactory.getCurrentSession().close();
     }
     
