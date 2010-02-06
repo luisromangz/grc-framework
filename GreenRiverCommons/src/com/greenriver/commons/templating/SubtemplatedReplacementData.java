@@ -9,23 +9,23 @@ public class SubtemplatedReplacementData
         extends TemplateReplacementData
         implements SubtemplatedReplacement {
         
-    private String editionClientCallback;
+    private String subtemplateBaseClass;
     private String subtemplateField;
 
     public SubtemplatedReplacementData(
             String placeholder,
             String description,
-            String editionClientCallback,
+            String subtemplateBaseClass,
             String subtemplateField) {
         
         super(placeholder,description);
-        this.editionClientCallback=editionClientCallback;
+        this.subtemplateBaseClass=subtemplateBaseClass;
         this.subtemplateField = subtemplateField;
     }
 
     @Override
-    public String getEditionClientCallback() {
-        return editionClientCallback;
+    public String getSubtemplateBaseClass() {
+        return subtemplateBaseClass;
     }
 
     @Override
