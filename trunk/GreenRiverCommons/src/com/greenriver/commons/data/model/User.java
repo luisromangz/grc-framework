@@ -50,6 +50,10 @@ public class User implements Serializable, Comparable<User> {
     // to log in.
     private Boolean deleted = false;
 
+    public User() {
+        roles = new String[]{};
+    }
+
     public boolean hasRole(String role) {
         return Arrays.asList(this.roles).contains(role);
     }
@@ -89,6 +93,7 @@ public class User implements Serializable, Comparable<User> {
         return getClass().getName() + "[id=" + getId() + "]";
     }
 
+    @Override
     public int compareTo(User o) {
         // We compare by the username so we can compare non-persited objects.
         return this.getUsername().compareTo(o.getUsername());
