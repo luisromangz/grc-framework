@@ -9,7 +9,7 @@ package com.greenriver.commons.templating;
  * @author luis
  */
 public interface SubtemplatedReplacement extends TemplateReplacement{
-    String getEditionClientCallback();
+    String getSubtemplateBaseClass();
     String getSubtemplateField();
 }
 
