@@ -18,6 +18,7 @@ public class UserSessionInfoImpl implements UserSessionInfo {
      * Retrieves the current User objecte for the session.
      * @return The session's User.
      */
+    @Override
     public User getCurrentUser() {
 
         if (currentUser == null) {
@@ -28,8 +29,8 @@ public class UserSessionInfoImpl implements UserSessionInfo {
             // If the user still is null, it wasn't in the database, so it MUST be
             // the anonimous user.
             if (currentUser == null) {
-                User anonimousUser = new User();
-                anonimousUser.setUsername("anonymous");
+                currentUser = new User();
+                currentUser.setUsername("anonymous");
             }
         }
 
@@ -40,6 +41,7 @@ public class UserSessionInfoImpl implements UserSessionInfo {
      * Wires a UserDao bean to this bean.
      * @param userDao the userDao to set
      */
+    @Override
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
     }
