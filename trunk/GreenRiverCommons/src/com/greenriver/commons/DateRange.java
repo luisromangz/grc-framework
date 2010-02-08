@@ -99,8 +99,8 @@ public class DateRange implements Comparable<DateRange>, Cloneable, Serializable
 
     public DateRange(Date min, Date max) {
         this(
-                min != null ? min.getTime() : null,
-                max != null ? max.getTime() : null);
+                (Long)(min != null ? min.getTime() : null),
+                (Long)(max != null ? max.getTime() : null));
     }
 
     public DateRange(Long min, Long max) {
