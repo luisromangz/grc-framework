@@ -353,4 +353,14 @@ public class Strings {
 
         return result;
     }
+
+
+    /**
+     * Joins a series of strings passed as an array.
+     * @param elements
+     * @param glue
+     */
+    public static String join(String[] elements, String glue) {
+        return Strings.join(Arrays.asList(elements), glue);
+    }
 }
