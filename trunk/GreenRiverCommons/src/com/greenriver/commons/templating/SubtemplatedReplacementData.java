@@ -9,13 +9,13 @@ public class SubtemplatedReplacementData
         extends TemplateReplacementData
         implements SubtemplatedReplacement {
         
-    private String subtemplateBaseClass;
+    private Class subtemplateBaseClass;
     private String subtemplateField;
 
     public SubtemplatedReplacementData(
             String placeholder,
             String description,
-            String subtemplateBaseClass,
+            Class subtemplateBaseClass,
             String subtemplateField) {
         
         super(placeholder,description);
@@ -24,13 +24,13 @@ public class SubtemplatedReplacementData
     }
 
     @Override
-    public String getSubtemplateBaseClass() {
-        return subtemplateBaseClass;
+    public String getSubtemplateField() {
+        return subtemplateField;
     }
 
     @Override
-    public String getSubtemplateField() {
-        return subtemplateField;
+    public String getSubtemplateBaseClassName() {
+        return this.subtemplateBaseClass.getSimpleName();
     }
 
 }
