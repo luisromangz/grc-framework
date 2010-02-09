@@ -30,6 +30,9 @@ public class SubtemplatedReplacementData
 
     @Override
     public String getSubtemplateBaseClassName() {
+        if(this.subtemplateBaseClass==null) {
+            return "No definido";
+        }
         return this.subtemplateBaseClass.getSimpleName();
     }
 
