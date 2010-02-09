@@ -43,10 +43,10 @@ public class HibernateTransactionManager implements TransactionManager {
     @Override
     public void rollback() {
         Transaction tran = sessionFactory.getCurrentSession().getTransaction();
-
-        sessionFactory.getCurrentSession().clear();
+        
         if (tran.isActive()) {
             try{
+                sessionFactory.getCurrentSession().clear();
                 tran.rollback();
             } catch (TransactionException tE){
                 // Do nothing;
