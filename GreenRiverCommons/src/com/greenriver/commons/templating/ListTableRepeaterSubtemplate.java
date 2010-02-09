@@ -24,7 +24,7 @@ import javax.persistence.InheritanceType;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(length = 255)
 public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement, K extends Collection<?>>
-          implements Subtemplate<T, String, K>, Serializable {
+            implements Subtemplate<T, String, K>, Serializable {
 
     // <editor-fold defaultstate="collapsed" desc="Fields">
     public static final String TABLE_CELL_SEPARATOR = "||";
@@ -70,42 +70,71 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
     protected abstract List<Map<T, String>> createReplacements(K source);
 
     private String fillTemplatesAux(String placeholder, List<Map<T, String>> replacements) {
+
+        if (isTable) {
+            return fillTableTemplates(placeholder, replacements);
+        } else {
+            return fillListTemplates(placeholder, replacements);
+        }
+
+    }
+
+    private String fillListTemplates(String placeholder, List<Map<T, String>> replacements) {
         String result = "<ul class=\"" + placeholder + "\">";
 
-        String[] sizes = null;
-        if (isTable) {
-            String[] splitHeader = tableHeader.split(ListTableRepeaterSubtemplate.TABLE_CELL_SEPARATOR_REGEX);
-
-            result = "<table class=\"" + placeholder + "\" cellspacing=\"0\"><thead><tr>";
-
-            sizes = new String[]{};
-            if (!Strings.isNullOrEmpty(columnSizes)) {
-                sizes = this.columnSizes.split(ListTableRepeaterSubtemplate.TABLE_CELL_SEPARATOR_REGEX);
-            }
-
-            if (this.showTableHeaders) {
-                for (int i = 0; i < splitHeader.length; i++) {
-                    result += String.format("<th>%s</th>", splitHeader[i]);
-                }
-            }
-
-            result += "</tr></thead><tbody>";
-        }
-
-        for (int i =0;i<replacements.size(); i++) {
-            Map<T, String> elementReplacements = replacements.get(i);
+        for (Map<T, String> elementReplacements : replacements) {
             String elementString = this.fillTemplateAux(elementReplacements);
-            if (isTable) {
-                elementString = elementString.replace(ListTableRepeaterSubtemplate.TABLE_CELL_SEPARATOR, "</td><td>");
-            }
-
-            result += String.format(
-                    isTable ? "<tr><td style=\"width:%s\">%s</td></tr>" : "<li>%s</li>",
-                    sizes!=null?sizes[i]:"",
-                    elementString);
+            result += String.format("<li>%s</li>", elementString);
         }
 
-        result += isTable ? "</tbody></table>" : "</ul>";
+        result += "</ul>";
+
+        return result;
+    }
+
+    private String fillTableTemplates(String placeholder, List<Map<T, String>> replacements) {
+
+        if (Strings.isNullOrEmpty(columnSizes)) {
+            throw new IllegalStateException("Can't be a table and not having column sizes.");
+        }
+
+        String[] sizes = this.columnSizes.split(ListTableRepeaterSubtemplate.TABLE_CELL_SEPARATOR_REGEX);
+
+        String result = "<table class=\"" + placeholder + "\" cellspacing=\"0\">";
+
+        String[] splitHeader = tableHeader.split(ListTableRepeaterSubtemplate.TABLE_CELL_SEPARATOR_REGEX);
+        if (this.showTableHeaders) {
+
+            result+="<thead><tr>";
+
+            for (int i = 0; i < splitHeader.length; i++) {
+                result += String.format("<th>%s</th>", splitHeader[i]);
+            }
+
+            result+="</tr></thead>";
+        }
+
+        result += "<tbody>";
+
+
+        for (Map<T, String> elementReplacements : replacements) {
+
+            String elementString = this.fillTemplateAux(elementReplacements);
+
+            String[] columnElements = elementString.split(
+                    ListTableRepeaterSubtemplate.TABLE_CELL_SEPARATOR_REGEX);
+
+            for (int i = 0; i < columnElements.length; i++) {
+                columnElements[i] = String.format(
+                        "<td style=\"width:%s\">%s</td>",
+                        sizes[i],
+                        columnElements[i]);
+            }
+
+            result += String.format("<tr>%s</tr>",Strings.join(columnElements,""));
+        }
+
+        result += "</tbody></table>";
 
         return result;
 
