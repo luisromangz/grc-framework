@@ -64,23 +64,23 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
 
         List<Map<T, String>> replacements = this.createReplacements(source);
 
-        return this.fillTemplatesAux(this.getSubtemplatedReplacement().getPlaceholder(), replacements);
+        return this.fillTemplatesAux(replacements);
     }
 
     protected abstract List<Map<T, String>> createReplacements(K source);
 
-    private String fillTemplatesAux(String placeholder, List<Map<T, String>> replacements) {
+    private String fillTemplatesAux(List<Map<T, String>> replacements) {
 
         if (isTable) {
-            return fillTableTemplates(placeholder, replacements);
+            return fillTableTemplates(replacements);
         } else {
-            return fillListTemplates(placeholder, replacements);
+            return fillListTemplates(replacements);
         }
 
     }
 
-    private String fillListTemplates(String placeholder, List<Map<T, String>> replacements) {
-        String result = "<ul class=\"" + placeholder + "\">";
+    private String fillListTemplates(List<Map<T, String>> replacements) {
+        String result = "<ul>";
 
         for (Map<T, String> elementReplacements : replacements) {
             String elementString = this.fillTemplateAux(elementReplacements);
@@ -92,7 +92,7 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
         return result;
     }
 
-    private String fillTableTemplates(String placeholder, List<Map<T, String>> replacements) {
+    private String fillTableTemplates(List<Map<T, String>> replacements) {
 
         if (Strings.isNullOrEmpty(columnSizes)) {
             throw new IllegalStateException("Can't be a table and not having column sizes.");
@@ -101,7 +101,7 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
         String[] sizes = this.getColumnSizes().split(
                 ListTableRepeaterSubtemplate.TABLE_CELL_SEPARATOR_REGEX);
 
-        String result = "<table class=\"" + placeholder + "\" cellspacing=\"0\">";
+        String result = "<table cellspacing=\"0\">";
 
         String[] splitHeader = getTableHeader().split(
                 ListTableRepeaterSubtemplate.TABLE_CELL_SEPARATOR_REGEX);
@@ -146,10 +146,10 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
     private String fillTemplateAux(Map<T, String> replacements) {
         String result = new String(this.getElementFormat());
         for (T replacement : replacements.keySet()) {
-            String replacementValue = replacements.get(replacement);
-            if (replacementValue == null) {
-                replacementValue = "Reemplazo no sustituido";
-            }
+            String replacementValue = TemplatingUtils.formatTemplateReplacement(
+                    replacement,
+                    replacements.get(replacement));
+            
 
             result = result.replace(replacement.getDecoratedPlaceholder(), replacementValue);
         }
