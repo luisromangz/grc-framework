@@ -9,4 +9,5 @@ public interface TemplateReplacement {
     String getPlaceholder();
     String getDecoratedPlaceholder();
     String getDescription();
+    
 }
