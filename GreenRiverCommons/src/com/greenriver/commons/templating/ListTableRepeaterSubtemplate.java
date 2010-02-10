@@ -98,11 +98,13 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
             throw new IllegalStateException("Can't be a table and not having column sizes.");
         }
 
-        String[] sizes = this.columnSizes.split(ListTableRepeaterSubtemplate.TABLE_CELL_SEPARATOR_REGEX);
+        String[] sizes = this.getColumnSizes().split(
+                ListTableRepeaterSubtemplate.TABLE_CELL_SEPARATOR_REGEX);
 
         String result = "<table class=\"" + placeholder + "\" cellspacing=\"0\">";
 
-        String[] splitHeader = tableHeader.split(ListTableRepeaterSubtemplate.TABLE_CELL_SEPARATOR_REGEX);
+        String[] splitHeader = getTableHeader().split(
+                ListTableRepeaterSubtemplate.TABLE_CELL_SEPARATOR_REGEX);
         if (this.showTableHeaders) {
 
             result+="<thead><tr>";
@@ -117,11 +119,12 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
         result += "<tbody>";
 
 
+        // We walk the replacements for the table rows.
         for (Map<T, String> elementReplacements : replacements) {
 
             String elementString = this.fillTemplateAux(elementReplacements);
 
-            String[] columnElements = elementString.split(
+            String[] columnElements =elementString.split(
                     ListTableRepeaterSubtemplate.TABLE_CELL_SEPARATOR_REGEX);
 
             for (int i = 0; i < columnElements.length; i++) {
@@ -141,11 +144,11 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
     }
 
     private String fillTemplateAux(Map<T, String> replacements) {
-        String result = new String(this.elementFormat);
+        String result = new String(this.getElementFormat());
         for (T replacement : replacements.keySet()) {
             String replacementValue = replacements.get(replacement);
             if (replacementValue == null) {
-                replacementValue = "";
+                replacementValue = "Reemplazo no sustituido";
             }
 
             result = result.replace(replacement.getDecoratedPlaceholder(), replacementValue);
@@ -192,7 +195,7 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
      * @return the tableHeader
      */
     public String getTableHeader() {
-        return tableHeader;
+        return tableHeader+" ";
     }
 
     /**
@@ -206,7 +209,7 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
      * @return the elementFormat
      */
     public String getElementFormat() {
-        return elementFormat;
+        return elementFormat+" ";
     }
 
     /**
@@ -234,7 +237,7 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
      * @return the columnSizes
      */
     public String getColumnSizes() {
-        return columnSizes;
+        return columnSizes+" ";
     }
 
     /**
