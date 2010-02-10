@@ -60,11 +60,11 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
 
     // </editor-fold>
     @Override
-    public final String fillTemplate(SubtemplatedReplacement replacement, K source) {
+    public final String fillTemplate(K source) {
 
         List<Map<T, String>> replacements = this.createReplacements(source);
 
-        return this.fillTemplatesAux(replacement.getPlaceholder(), replacements);
+        return this.fillTemplatesAux(this.getSubtemplatedReplacement().getPlaceholder(), replacements);
     }
 
     protected abstract List<Map<T, String>> createReplacements(K source);

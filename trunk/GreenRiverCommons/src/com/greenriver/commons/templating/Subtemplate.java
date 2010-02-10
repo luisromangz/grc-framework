@@ -10,8 +10,8 @@ import java.util.Map;
  * @author luis
  */
 public interface Subtemplate<T extends TemplateReplacement, R,K> extends Copieable<Subtemplate> {
-    R fillTemplate(SubtemplatedReplacement replacement, K source);
-
+    R fillTemplate(K source);
     List<T> getTemplateReplacements();
 
+    SubtemplatedReplacement getSubtemplatedReplacement();
 }
