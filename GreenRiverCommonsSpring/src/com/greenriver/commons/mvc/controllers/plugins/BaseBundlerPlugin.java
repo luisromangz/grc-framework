@@ -35,6 +35,7 @@ public abstract class BaseBundlerPlugin implements ControllerPlugin {
        
     }
 
+    @Override
     public void doWork(HttpServletRequest request, PageConfiguration configuration) {
 
         if (javascriptBasePath == null) {
