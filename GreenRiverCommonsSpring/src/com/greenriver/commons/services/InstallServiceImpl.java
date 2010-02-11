@@ -23,6 +23,7 @@ public class InstallServiceImpl implements InstallService, Serializable {
     private FieldsValidator fieldsValidator;
     private PasswordEncoder passwordEncoder;
 
+    @Override
     public ServiceResult checkKeyFile() {
         ServiceResult serviceResult = new ServiceResult();
 
@@ -69,6 +70,7 @@ public class InstallServiceImpl implements InstallService, Serializable {
     }
 
     @SuppressWarnings("unchecked")
+    @Override
     public ServiceResult addAdminUser(User adminUser) {
         ServiceResult serviceResult = new ServiceResult();
 
@@ -85,7 +87,6 @@ public class InstallServiceImpl implements InstallService, Serializable {
 
             // The user is an admin, and we ensure it is active;
             adminUser.setRoles(new String[]{"ROLE_ADMIN"});
-
             
             if (validationResult.isValid()) {
                 try {

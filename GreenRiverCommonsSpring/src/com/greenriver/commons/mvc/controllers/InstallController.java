@@ -21,13 +21,13 @@ public class InstallController extends ConfigurablePageController
     private PasswordEncoder passwordEncoder;
     private UserDao userDao;
     private InstallHelper installHelper;
-    private String userClass;    
+    private String userClass;
     private String pageToRedirectIfInstalled;
     private String keyFileName;
 
     public InstallController() {
         keyFileName = "key.txt";
-        pageToRedirectIfInstalled="login.htm";
+        pageToRedirectIfInstalled = "login.htm";
     }
 
     /**
@@ -35,7 +35,6 @@ public class InstallController extends ConfigurablePageController
      * @param request
      * @param response
      * @param modelAndView
-     * @return
      * @throws Exception
      */
     @Override
@@ -44,9 +43,9 @@ public class InstallController extends ConfigurablePageController
             HttpServletResponse response,
             ModelAndView modelAndView) throws Exception {
 
-        if(userDao.getUserCount()>0) {
+        if (userDao.getUserCount() > 0) {
             response.sendRedirect(this.pageToRedirectIfInstalled);
-            return ;
+            return;
         }
 
         Date now = new Date();
@@ -55,12 +54,12 @@ public class InstallController extends ConfigurablePageController
         installHelper.setKey(key);
 
         String path = request.getSession().getServletContext().getRealPath("");
-        installHelper.setKeyFilePath(path+"/"+ keyFileName);
+        installHelper.setKeyFilePath(path + "/" + keyFileName);
 
-        modelAndView.addObject("keyPath",  path);
+        modelAndView.addObject("keyPath", path);
         modelAndView.addObject("key", key);
 
-        getFormBuilder().addForm("adminForm",this.getPageConfiguration(),modelAndView);
+        getFormBuilder().addForm("adminForm", this.getPageConfiguration(), modelAndView);
         getFormBuilder().addFieldsFromModel(Class.forName(userClass));
         getFormBuilder().removeField("roles");
         getFormBuilder().removeField("enabled");
@@ -90,11 +89,11 @@ public class InstallController extends ConfigurablePageController
     }
 
     public String getUserClass() {
-	return userClass;
+        return userClass;
     }
 
     public void setUserClass(String userClass) {
-	this.userClass = userClass;
+        this.userClass = userClass;
     }
 
     /**
