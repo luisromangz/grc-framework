@@ -5,6 +5,8 @@ import com.greenriver.commons.data.validation.FieldsValidationResult;
 import com.greenriver.commons.data.validation.FieldsValidator;
 import com.greenriver.commons.data.validation.ValidationRegex;
 import com.greenriver.commons.roleManagement.RoleManager;
+import com.greenriver.commons.validators.CIFOrNIFValidator;
+import com.greenriver.commons.validators.CIFValidator;
 import com.greenriver.commons.validators.NIFValidator;
 import java.io.ByteArrayInputStream;
 import java.lang.reflect.Field;
@@ -428,6 +430,12 @@ public class FieldPropertiesValidator implements FieldsValidator {
             case NIF:
                 validateNIF(value, properties, validationMessages);
                 break;
+            case CIF:
+                validateCIF(value, properties, validationMessages);
+                break;
+            case CIF_OR_NIF:
+                validateCIFOrNIF(value, properties, validationMessages);
+                break;
         }
     }
 
@@ -451,7 +459,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
             }
 
             selections = valueString.split(",");
-        } else if(value instanceof String[]) {         
+        } else if (value instanceof String[]) {
             // We have a value list.
             selections = (String[]) value;
             if (selections.length == 0 && properties.required()) {
@@ -462,9 +470,9 @@ public class FieldPropertiesValidator implements FieldsValidator {
             } else if (selections.length == 0 && !properties.required()) {
                 return;
             }
-        } else if(value instanceof List) {
+        } else if (value instanceof List) {
             List list = (List) value;
-            if(list.size()==0 && properties.required()){
+            if (list.size() == 0 && properties.required()) {
                 validationMessages.add(String.format(
                         "Es necesario seleccionar una opción el campo «%s».",
                         properties.label()));
@@ -627,6 +635,54 @@ public class FieldPropertiesValidator implements FieldsValidator {
         if (!validator.validate(nif)) {
             validationMessages.add(String.format(
                     "El valor del campo «%s» no es un NIF válido.",
+                    properties.label()));
+        }
+    }
+
+    private void validateCIF(Object value, FieldProperties properties,
+            List<String> validationMessages) {
+
+        if (properties.required() && value == null) {
+            validationMessages.add(String.format(
+                    "El valor del campo «%s» es requerido.",
+                    properties.label()));
+            return;
+        } else if (!properties.required() && value == null) {
+            return;
+        }
+
+        CIFValidator validator = new CIFValidator();
+        String cif = (String) value;
+        // remove unwanted characters to left only numbers and letters
+        cif = cif.replaceAll("[/b-]+", "");
+
+        if (!validator.validate(cif)) {
+            validationMessages.add(String.format(
+                    "El valor del campo «%s» no es un CIF válido.",
+                    properties.label()));
+        }
+    }
+
+    private void validateCIFOrNIF(Object value, FieldProperties properties,
+            List<String> validationMessages) {
+
+                if (properties.required() && value == null) {
+            validationMessages.add(String.format(
+                    "El valor del campo «%s» es requerido.",
+                    properties.label()));
+            return;
+        } else if (!properties.required() && value == null) {
+            return;
+        }
+
+        CIFOrNIFValidator validator = new CIFOrNIFValidator();
+        String cifOrNif = (String) value;
+        // remove unwanted characters to left only numbers and letters
+        cifOrNif = cifOrNif.replaceAll("[/b-]+", "");
+
+        if (!validator.validate(cifOrNif)) {
+            validationMessages.add(String.format(
+                    "El valor del campo «%s» no es ni un CIF ni un NIF válido.",
                     properties.label()));
         }
     }
