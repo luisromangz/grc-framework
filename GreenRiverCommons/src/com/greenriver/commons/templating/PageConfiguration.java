@@ -61,16 +61,19 @@ public class PageConfiguration implements Serializable, Copieable<PageConfigurat
         Map<String,Object> configuration = new HashMap<String,Object>();
 
         // We set the page's margins
-        configuration.put("print_margin_top", topMargin*10/INCH_IN_MM);
-        configuration.put("print_margin_bottom",bottomMargin*10/INCH_IN_MM);
-        configuration.put("print_margin_left", leftMargin*10/INCH_IN_MM);
-        configuration.put("print_margin_right", rightMargin*10/INCH_IN_MM);
+        // Se set them as strings as the margin_* keys in firerfox have
+        // to show decimal numbers, and if we return a number then
+        // they key type would be integer, which won't work.
+        configuration.put("print_margin_top",topMargin*10/INCH_IN_MM +"");
+        configuration.put("print_margin_bottom",bottomMargin*10/INCH_IN_MM+"");
+        configuration.put("print_margin_right",rightMargin*10/INCH_IN_MM +"");
+        configuration.put("print_margin_left",leftMargin*10/INCH_IN_MM+"");
 
         // We clear undesired offsets
-        configuration.put("print_unwriteable_margin_top", 0);
-        configuration.put("print_unwriteable_margin_bottom", 0);
-        configuration.put("print_unwriteable_margin_right", 0);
-        configuration.put("print_unwriteable_margin_left", 0);
+        configuration.put("print_unwriteable_margin_top",0 );
+        configuration.put("print_unwriteable_margin_bottom",0);
+        configuration.put("print_unwriteable_margin_right",0 );
+        configuration.put("print_unwriteable_margin_left",0);
 
         Map<String, Object> printer_ = new HashMap<String,Object>();
         printer_.put("print_margin_top", 0);
@@ -95,6 +98,8 @@ public class PageConfiguration implements Serializable, Copieable<PageConfigurat
 
         configuration.put("print_bgcolor",true);
         configuration.put("print_bgimages",true);
+
+        configuration.put("use_global_configuration",true);
 
         return configuration;
         
