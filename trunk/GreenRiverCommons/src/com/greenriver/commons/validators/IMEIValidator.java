@@ -9,7 +9,7 @@ http://www.greenriverconsulting.es/licensing/greenriverlicense
 
 Author: mangelp
 ###################################################################*/
-package com.greenriver.commons.security;
+package com.greenriver.commons.validators;
 
 /**
  * Validates an imei using Lunh's algorithm.

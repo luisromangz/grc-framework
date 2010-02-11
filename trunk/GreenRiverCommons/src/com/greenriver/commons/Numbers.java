@@ -129,4 +129,8 @@ public class Numbers {
     public static boolean equals(float floatA, float floatB, double epsilon) {
         return Math.abs(floatA - floatB) <= epsilon;
     }
+
+    public static int sumDigits(int number) {
+        return Strings.sumDigits(number + "");
+    }
 }
