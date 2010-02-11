@@ -7,7 +7,7 @@ and conditions of the GreenRiverLicense.
 If you haven't received a copy of the license you can obtain it at
 http://www.greenriverconsulting.es/licensing/greenriverlicense
 
-Author: mangelp
+Author: Miguel Angel
 ###################################################################*/
 package com.greenriver.commons;
 
@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Random;
+import java.util.regex.Pattern;
 
 /**
  * String utilities
@@ -38,6 +39,7 @@ public class Strings {
     private static String NUMBERS = "0123456789";
     private static Random random = new Random();
     private static Charset asciiCharset = Charset.forName("US-ASCII");
+    private static Pattern digitsRegex = Pattern.compile("^\\d+$");
 
     /**
      * Formats an integer as hex
@@ -359,8 +361,48 @@ public class Strings {
      * Joins a series of strings passed as an array.
      * @param elements
      * @param glue
+     * @return 
      */
     public static String join(String[] elements, String glue) {
         return Strings.join(Arrays.asList(elements), glue);
+    }
+
+    /**
+     * Checks if the string represents an integer value
+     * @param str
+     * @return
+     */
+    public static boolean isInteger(String str) {
+        if (str == null || str.isEmpty()) {
+            return false;
+        }
+
+        return digitsRegex.matcher(str).matches();
+    }
+
+    /**
+     * Sums all the digits of a number and the digits of the result until only
+     * one number of a single digit is left. If the input argument is negative
+     * the sign is changed to positive.
+     * @param digits String with the digits to convert
+     * @return the recurrent sum of digits until only one digit is left
+     */
+    public static int sumDigits(String digits) {
+        if (!isInteger(digits)) {
+            throw new IllegalArgumentException("Argument is not an integer");
+        }
+
+        int result = Math.abs(Integer.parseInt(digits));
+        digits = result + "";
+
+        while(digits.length() > 1) {
+            result = 0;
+            for (int i=0; i< digits.length(); i++) {
+                result += (int)Integer.parseInt(digits.charAt(i) + "");
+            }
+            digits = result + "";
+        }
+
+        return result;
     }
 }

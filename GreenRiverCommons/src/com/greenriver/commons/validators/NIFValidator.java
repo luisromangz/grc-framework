@@ -1,5 +1,5 @@
 
-package com.greenriver.commons.security;
+package com.greenriver.commons.validators;
 
 import com.greenriver.commons.Strings;
 
@@ -38,10 +38,6 @@ public class NIFValidator {
         Character ch = nif.charAt(nif.length() - 1);
         long numNif = 0L;
 
-        if (!Character.isLetter(ch)) {
-            return false;
-        }
-
         nif = nif.substring(0, nif.length() - 1);
 
         try {
@@ -54,6 +50,9 @@ public class NIFValidator {
     }
 
     public boolean validate(long nif, Character ch) {
+        if (ch == null || !Character.isLetter(ch)) {
+            return false;
+        }
         ch = Character.toUpperCase(ch);
         return ch.equals(NIF_LETTERS.charAt((int)nif % 23));
     }
@@ -61,25 +60,26 @@ public class NIFValidator {
     /**
      * Gets the letter of the nif
      * @param nif Nif number as an string
-     * @return
+     * @return the character or null if it fails
      */
-    public Character calculateNIFLetter(String nif) {
+    public Character getNifControlCharacter(String nif) {
         
         if (Strings.isNullOrEmpty(nif)) {
             return null;
         }
 
-        if(nif.length() < MIN_LENGTH ||
-                nif.length() > MAX_LENGTH) {
-            return null;
-        }
-
+        // We only want to get the cif without the check char if specified
         Character ch = nif.charAt(nif.length() - 1);
-        long numNif = 0L;
 
         if (Character.isLetter(ch)) {
+            nif = nif.substring(0, nif.length() - 1);
+        }
+
+        if(nif.length() < MIN_LENGTH - 1 || nif.length() > MAX_LENGTH - 1) {
             return null;
         }
+        
+        long numNif = 0L;
 
         try {
             numNif = Long.parseLong(nif);
@@ -87,10 +87,10 @@ public class NIFValidator {
             return null;
         }
 
-        return calculateNIFLetter(numNif);
+        return getNifControlCharacter(numNif);
     }
 
-    public Character calculateNIFLetter(long nif) {
+    public Character getNifControlCharacter(long nif) {
         // It's as easy as calculating mod 23 to get a number in the range 0-22
         // and then get the letter from the letters string.
         return NIF_LETTERS.charAt((int)nif % 23);

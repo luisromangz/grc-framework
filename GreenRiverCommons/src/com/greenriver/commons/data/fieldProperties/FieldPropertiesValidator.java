@@ -5,7 +5,7 @@ import com.greenriver.commons.data.validation.FieldsValidationResult;
 import com.greenriver.commons.data.validation.FieldsValidator;
 import com.greenriver.commons.data.validation.ValidationRegex;
 import com.greenriver.commons.roleManagement.RoleManager;
-import com.greenriver.commons.security.NIFValidator;
+import com.greenriver.commons.validators.NIFValidator;
 import java.io.ByteArrayInputStream;
 import java.lang.reflect.Field;
 import java.text.DecimalFormat;
