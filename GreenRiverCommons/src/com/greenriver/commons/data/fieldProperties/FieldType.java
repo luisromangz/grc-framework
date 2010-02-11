@@ -108,9 +108,14 @@ public enum FieldType {
     DATE,
 
     /**
-     * Spanish NIF with validation code
+     * Spanish NIF id code
      */
     NIF,
+
+    /**
+     * Spanish CIF id code
+     */
+    CIF,
 
     /**
      * Field that can hold both a CIF or a NIF
