@@ -48,8 +48,9 @@ public class PagedResult<T> {
     /**
      * Gets the returned page number (0-based). If the requested page was not
      * present this will be the number of the returned page of data.
-     * If there was no data (totalPages is 0) this value should be ignored.
-     * By default is set to -1.
+     * If there was no data (totalPages is 0) or this value is -1 (the default
+     * value) this value must be ignored and the client must use the number
+     * of the requested page.
      * @return the returned page number
      */
     public int getPageNumber() {
