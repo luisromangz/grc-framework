@@ -53,6 +53,10 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
     private boolean isOrderedList;
     @FieldProperties(label = "Formato del elemento", widgetStyle = "width:98%")
     private String elementFormat;
+
+    @FieldProperties(label="Mensaje a mostrar si no hay elementos", widgetStyle="width:89%")
+    private String noElementsMessage;
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -70,6 +74,10 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
     protected abstract List<Map<T, String>> createReplacements(K source);
 
     private String fillTemplatesAux(List<Map<T, String>> replacements) {
+
+        if(replacements.isEmpty() && !Strings.isNullOrEmpty(noElementsMessage)) {
+            return noElementsMessage;
+        }
 
         if (isTable) {
             return fillTableTemplates(replacements);
@@ -259,6 +267,20 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
      */
     public void setShowTableHeaders(boolean showTableHeaders) {
         this.showTableHeaders = showTableHeaders;
+    }
+
+    /**
+     * @return the noElementsMessage
+     */
+    public String getNoElementsMessage() {
+        return noElementsMessage;
+    }
+
+    /**
+     * @param noElementsMessage the noElementsMessage to set
+     */
+    public void setNoElementsMessage(String noElementsMessage) {
+        this.noElementsMessage = noElementsMessage;
     }
     // </editor-fold>
 }
