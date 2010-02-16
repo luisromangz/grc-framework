@@ -14,6 +14,7 @@ package com.greenriver.commons;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
@@ -540,5 +541,17 @@ public class Dates {
             default:
                 throw new IllegalArgumentException("Invalid part");
         }
+    }
+
+    /**
+     * Returns a Calendar instance set to the given date.
+     * @param toDate The date we want to obtain a Calendar for.
+     * @return The Calendar object with set to represent the given date.
+     */
+    public static Calendar getCalendar(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+
+        return cal;
     }
 }
