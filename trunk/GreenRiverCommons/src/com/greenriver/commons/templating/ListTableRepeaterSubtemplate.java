@@ -66,6 +66,11 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
     @Override
     public final String fillTemplate(K source) {
 
+         if(source.isEmpty() && !Strings.isNullOrEmpty(noElementsMessage)) {
+            return noElementsMessage;
+        }
+
+
         List<Map<T, String>> replacements = this.createReplacements(source);
 
         return this.fillTemplatesAux(replacements);
@@ -75,10 +80,7 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
 
     private String fillTemplatesAux(List<Map<T, String>> replacements) {
 
-        if(replacements.isEmpty() && !Strings.isNullOrEmpty(noElementsMessage)) {
-            return noElementsMessage;
-        }
-
+       
         if (isTable) {
             return fillTableTemplates(replacements);
         } else {
