@@ -29,6 +29,6 @@ public @interface QueryArgumentsProperties {
      * The fields agaist the query argument's textFilter value is matched.
      * @return
      */
-    public String[] textFilterFields();
+    public String[] textFilterFields() default {};
     
 }

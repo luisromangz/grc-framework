@@ -18,5 +18,6 @@ public enum QueryArgumentType {
     EQUALS,
     LOWER_EQUALS,
     LOWER_THAN,
-    LIKE
+    LIKE,
+    IN_RANGE
 }
