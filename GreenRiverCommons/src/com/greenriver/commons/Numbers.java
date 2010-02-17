@@ -123,7 +123,7 @@ public class Numbers {
      * difference between them is less or equal than epsilon parameter;
      * @param floatA
      * @param floatB
-     * @param epsilon
+     * @param epsilon Maximum allowed difference between floatA and floatB
      * @return
      */
     public static boolean equals(float floatA, float floatB, double epsilon) {

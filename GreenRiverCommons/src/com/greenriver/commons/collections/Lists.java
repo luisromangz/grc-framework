@@ -32,19 +32,19 @@ public class Lists {
      */
     @Deprecated
     public static String join(List list, String glue) {
-	if (list == null || list.size() == 0) {
-	    return "";
-	}
+        if (list == null || list.size() == 0) {
+            return "";
+        }
 
-	StringBuilder sb = new StringBuilder(list.size() * 4);
+        StringBuilder sb = new StringBuilder(list.size() * 4);
 
-	sb.append(list.get(0) + "");
+        sb.append(list.get(0) + "");
 
-	for (int i = 1; i < list.size(); i++) {
-	    sb.append(glue + list.get(i) + "");
-	}
+        for (int i = 1; i < list.size(); i++) {
+            sb.append(glue + list.get(i) + "");
+        }
 
-	return sb.toString();
+        return sb.toString();
     }
 
     /**
@@ -55,7 +55,6 @@ public class Lists {
     public static boolean isNullOrEmpty(List list) {
         return list == null || list.isEmpty();
     }
-
 
     /**
      * Returns the element of maximum value of a given list regarding to a
@@ -70,16 +69,16 @@ public class Lists {
             List<T> elements,
             SortingCriteria<T> criteria) {
 
-        if(elements.isEmpty()) {
+        if (elements.isEmpty()) {
             return null;
         }
-        
+
         float max = Float.NEGATIVE_INFINITY;
         T returnedElement = null;
 
-        for(T element : elements) {
+        for (T element : elements) {
             float criteriaValue = criteria.criteriaValue(element);
-            if(criteriaValue > max) {
+            if (criteriaValue > max) {
                 max = criteriaValue;
                 returnedElement = element;
             }
@@ -101,17 +100,16 @@ public class Lists {
             List<T> elements,
             SortingCriteria<T> criteria) {
 
-        if(elements.isEmpty()) {
+        if (elements.isEmpty()) {
             return null;
         }
-        
 
         float min = Float.POSITIVE_INFINITY;
         T returnedElement = null;
 
-        for(T element : elements) {
+        for (T element : elements) {
             float criteriaValue = criteria.criteriaValue(element);
-            if(criteriaValue < min) {
+            if (criteriaValue < min) {
                 min = criteriaValue;
                 returnedElement = element;
             }
@@ -131,7 +129,7 @@ public class Lists {
      */
     public static <T> int indexOf(T obj, List<T> list, Comparator<T> comparator) {
 
-        for (int i=0; i<list.size(); i++) {
+        for (int i = 0; i < list.size(); i++) {
             if (comparator.compare(list.get(i), obj) == 0) {
                 return i;
             }
@@ -157,17 +155,17 @@ public class Lists {
             List<? extends Object> listA,
             List<? extends Object> listB,
             boolean structural) {
-        
-        if ((listA == null && listB != null) ||
-                (listA != null && listB == null) ||
-                listA.size() != listB.size()) {
+
+        if ((listA == null && listB != null)
+                || (listA != null && listB == null)
+                || listA.size() != listB.size()) {
             return false;
         }
 
         Object objA = null;
 
         if (!structural) {
-            for (int i=0; i<listA.size(); i++) {
+            for (int i = 0; i < listA.size(); i++) {
                 objA = listA.get(i);
 
                 if (!listB.contains(objA)) {
@@ -175,7 +173,7 @@ public class Lists {
                 }
             }
         } else {
-            for (int i=0; i<listA.size(); i++) {
+            for (int i = 0; i < listA.size(); i++) {
                 objA = listA.get(i);
 
                 if (!objA.equals(listB.get(i))) {
@@ -187,25 +185,23 @@ public class Lists {
         return true;
     }
 
-
-    public static <T,R> List<R> apply(List<T> set, ApplicableCommand<T,R> command){
-        return applyIf(set, command, new FilteringCondition<T>(){
+    public static <T, R> List<R> apply(List<T> set, ApplicableCommand<T, R> command) {
+        return applyIf(set, command, new FilteringCondition<T>() {
 
             @Override
             public boolean condition(T element) {
                 return true;
             }
-
         });
     }
 
-    public static <T,R> List<R> applyIf(
+    public static <T, R> List<R> applyIf(
             List<T> set,
             ApplicableCommand<T, R> applicableCommand,
             FilteringCondition<T> filteringCondition) {
         List<R> resultSet = new ArrayList<R>();
-        for(T setElement : set) {
-            if(filteringCondition.condition(setElement)){
+        for (T setElement : set) {
+            if (filteringCondition.condition(setElement)) {
                 resultSet.add(applicableCommand.apply(setElement));
             }
         }
@@ -214,15 +210,12 @@ public class Lists {
     }
 
     public static <T> List<T> filter(List<T> set, FilteringCondition<T> condition) {
-        return applyIf(set, new ApplicableCommand<T, T>(){
+        return applyIf(set, new ApplicableCommand<T, T>() {
 
             @Override
             public T apply(T element) {
                 return element;
             }
-
-        },condition);
+        }, condition);
     }
-
-
 }

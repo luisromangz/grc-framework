@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.greenriver.commons;
 
 import org.junit.After;
@@ -40,23 +39,23 @@ public class NumberTest {
     @Test
     public void testCeilInQuarterSteps() {
         System.out.println("testCeilInQuarterSteps");
-        assertEquals(1, Numbers.ceilInQuarterSteps(0.8f,0.01f),0.0000001f);
-        assertEquals(0, Numbers.ceilInQuarterSteps(0.009f,0.01f),0.0001f);
-        assertEquals(0, Numbers.ceilInQuarterSteps(0,0.01f),0.00001f);
-        assertEquals(3.25f, Numbers.ceilInQuarterSteps(3.1f,0.01f),0.0000001f);
-        assertEquals(0.25f, Numbers.ceilInQuarterSteps(0.25f,0.01f),0.000001f);
-        assertEquals(0.25f, Numbers.ceilInQuarterSteps(0.2501f,0.001f),0.0001f);
-        assertEquals(5.5f, Numbers.ceilInQuarterSteps(5.3f,0.01f),0.0000001f);
-        assertEquals(0.5f, Numbers.ceilInQuarterSteps(0.5f,0.01f),0.000001f);
-        assertEquals(0.75f, Numbers.ceilInQuarterSteps(0.501f,0.0f),0.0000001f);
-        assertEquals(7.75f, Numbers.ceilInQuarterSteps(7.65f,0.01f),0.00001f);
-        assertEquals(10.75f, Numbers.ceilInQuarterSteps(10.75f,0.01f),0.00001f);
-        assertEquals(11f, Numbers.ceilInQuarterSteps(10.7501f,0.000000001f),0.00001f);
+        assertEquals(1, Numbers.ceilInQuarterSteps(0.8f, 0.01f), 0.0000001f);
+        assertEquals(0, Numbers.ceilInQuarterSteps(0.009f, 0.01f), 0.0001f);
+        assertEquals(0, Numbers.ceilInQuarterSteps(0, 0.01f), 0.00001f);
+        assertEquals(3.25f, Numbers.ceilInQuarterSteps(3.1f, 0.01f), 0.0000001f);
+        assertEquals(0.25f, Numbers.ceilInQuarterSteps(0.25f, 0.01f), 0.000001f);
+        assertEquals(0.25f, Numbers.ceilInQuarterSteps(0.2501f, 0.001f), 0.0001f);
+        assertEquals(5.5f, Numbers.ceilInQuarterSteps(5.3f, 0.01f), 0.0000001f);
+        assertEquals(0.5f, Numbers.ceilInQuarterSteps(0.5f, 0.01f), 0.000001f);
+        assertEquals(0.75f, Numbers.ceilInQuarterSteps(0.501f, 0.0f), 0.0000001f);
+        assertEquals(7.75f, Numbers.ceilInQuarterSteps(7.65f, 0.01f), 0.00001f);
+        assertEquals(10.75f, Numbers.ceilInQuarterSteps(10.75f, 0.01f), 0.00001f);
+        assertEquals(11f, Numbers.ceilInQuarterSteps(10.7501f, 0.000000001f), 0.00001f);
 
-        assertEquals(10.75f, Numbers.ceilInQuarterSteps(10.8f,0.1f),0.1f);
+        assertEquals(10.75f, Numbers.ceilInQuarterSteps(10.8f, 0.1f), 0.1f);
 
-        assertEquals(-3f, Numbers.ceilInQuarterSteps(-3.1f, 0),0);
-         assertEquals(-3.25f, Numbers.ceilInQuarterSteps(-3.3f, 0),0);
+        assertEquals(-3f, Numbers.ceilInQuarterSteps(-3.1f, 0), 0);
+        assertEquals(-3.25f, Numbers.ceilInQuarterSteps(-3.3f, 0), 0);
     }
 
     @Test
@@ -70,9 +69,18 @@ public class NumberTest {
 
     @Test
     public void testTrunc_float() {
-        System.out.println("testRound_float");
+        System.out.println("testTrunc_float");
         assertEquals(1.4500F, Numbers.trunc(1.454545F, 2), 0.00001);
         assertEquals(1.6500F, Numbers.trunc(1.655545F, 2), 0.00001);
         assertEquals(1.7500F, Numbers.trunc(1.756545F, 2), 0.00001);
+    }
+
+    @Test
+    public void testEquals() {
+        System.out.println("TestEquals");
+        assertTrue(Numbers.equals(0.0199999f, 0.019010201f, 0.01));
+        assertTrue(Numbers.equals(0.0199999f, 0.01999999f, 0.01));
+        assertTrue(Numbers.equals(0.0200000f, 0.01999999f, 0.01));
+        assertFalse(Numbers.equals(0.0212345f, 0.0312345f, 0.01));
     }
 }
