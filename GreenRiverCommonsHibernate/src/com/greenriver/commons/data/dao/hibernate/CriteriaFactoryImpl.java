@@ -1,6 +1,7 @@
 
 package com.greenriver.commons.data.dao.hibernate;
 
+import antlr.debug.GuessingEvent;
 import com.greenriver.commons.DateRange;
 import com.greenriver.commons.Strings;
 import com.greenriver.commons.data.dao.queryArguments.EntityQueryArguments;
@@ -9,14 +10,22 @@ import com.greenriver.commons.data.dao.queryArguments.QueryArgumentsProperties;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.Subqueries;
+import org.hibernate.tool.ide.completion.HQLAnalyzer.SubQuery;
 
 /**
  * Criteria factory impl that references the dao that is using it.
@@ -128,10 +137,58 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
         if (!Strings.isNullOrEmpty(queryArguments.getTextFilter())) {
             Disjunction disjunction = Restrictions.disjunction();
 
+            // We create a mapping to avoid serveral retrievals for the same field
+            // which hiberante despises.
+            Map<String, List<String>> queryMappings =
+                    new HashMap<String,List<String>>();
+
             for (String fieldName : queryProperties.textFilterFields()) {
-                disjunction.add(Restrictions.ilike(
-                        fieldName,
-                        queryArguments.getTextFilter(), MatchMode.ANYWHERE));
+
+                int index = fieldName.lastIndexOf(".");
+
+                String field;
+                String property=null;
+
+                if(index>=0) {
+                    field = fieldName.substring(0, index);
+                    property = fieldName.substring(index+1);                   
+                } else {
+                    field=fieldName;
+                    property = null;
+                }
+
+                List<String> properties = null;
+                if(!queryMappings.containsKey(field)) {
+                    properties = new ArrayList<String>();
+                    queryMappings.put(field, properties);
+                } else {
+                    properties = queryMappings.get(field);
+                }
+
+                if(property!=null) {
+                    properties.add(property);
+                }
+            }
+
+            for(String field : queryMappings.keySet()) {
+                List<String> properties = queryMappings.get(field);
+
+                if(properties.isEmpty()) {
+                    disjunction.add(Restrictions.ilike(field,
+                            queryArguments.getTextFilter(),
+                            MatchMode.ANYWHERE));
+                } else {
+                    Criteria subCriteria = crit.createCriteria(field);
+                    Disjunction subDisjunction = Restrictions.disjunction();
+
+                    subCriteria.add(subDisjunction);
+                    for(String property : properties) {
+                        subDisjunction.add(Restrictions.ilike(property,
+                                queryArguments.getTextFilter(),
+                                MatchMode.ANYWHERE));
+                    }
+
+                }
             }
 
             crit.add(disjunction);
