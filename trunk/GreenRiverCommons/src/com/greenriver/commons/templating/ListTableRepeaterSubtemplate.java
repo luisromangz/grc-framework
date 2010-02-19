@@ -1,6 +1,7 @@
 package com.greenriver.commons.templating;
 
 import com.greenriver.commons.Strings;
+import com.greenriver.commons.data.fieldProperties.EntityFieldsProperties;
 import com.greenriver.commons.data.fieldProperties.FieldDeactivationCondition;
 import com.greenriver.commons.data.fieldProperties.FieldProperties;
 import com.greenriver.commons.data.fieldProperties.FieldType;
@@ -23,8 +24,9 @@ import javax.persistence.InheritanceType;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(length = 255)
+@EntityFieldsProperties(appendSuperClassFields=true)
 public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement, K extends Collection<?>>
-            implements Subtemplate<T, String, K>, Serializable {
+            extends RepeaterSubtemplate<T, K>{
 
     // <editor-fold defaultstate="collapsed" desc="Fields">
     public static final String TABLE_CELL_SEPARATOR = "||";
@@ -54,8 +56,7 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
     @FieldProperties(label = "Formato del elemento", widgetStyle = "width:98%")
     private String elementFormat;
 
-    @FieldProperties(label="Mensaje a mostrar si no hay elementos", widgetStyle="width:89%")
-    private String noElementsMessage;
+   
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -63,22 +64,9 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
     private Long id;
 
     // </editor-fold>
+   
     @Override
-    public final String fillTemplate(K source) {
-
-         if(source.isEmpty() && !Strings.isNullOrEmpty(noElementsMessage)) {
-            return noElementsMessage;
-        }
-
-
-        List<Map<T, String>> replacements = this.createReplacements(source);
-
-        return this.fillTemplatesAux(replacements);
-    }
-
-    protected abstract List<Map<T, String>> createReplacements(K source);
-
-    private String fillTemplatesAux(List<Map<T, String>> replacements) {
+    protected String fillTemplatesInternal(List<Map<T, String>> replacements) {
 
        
         if (isTable) {
@@ -169,6 +157,8 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
 
     @Override
     public void copyTo(Subtemplate copyTarget) {
+        super.copyTo(copyTarget);
+
         ListTableRepeaterSubtemplate targetTemplate = (ListTableRepeaterSubtemplate) copyTarget;
         targetTemplate.setColumnSizes(columnSizes);
         targetTemplate.setElementFormat(elementFormat);
@@ -270,19 +260,6 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
     public void setShowTableHeaders(boolean showTableHeaders) {
         this.showTableHeaders = showTableHeaders;
     }
-
-    /**
-     * @return the noElementsMessage
-     */
-    public String getNoElementsMessage() {
-        return noElementsMessage;
-    }
-
-    /**
-     * @param noElementsMessage the noElementsMessage to set
-     */
-    public void setNoElementsMessage(String noElementsMessage) {
-        this.noElementsMessage = noElementsMessage;
-    }
+   
     // </editor-fold>
 }
