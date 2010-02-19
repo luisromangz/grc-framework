@@ -28,8 +28,9 @@ import javax.persistence.InheritanceType;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(length = 255)
 @EntityFieldsProperties(appendSuperClassFields=true)
-public abstract class TextRepeaterSubtemplate
-        extends RepeaterSubtemplate<TemplateReplacement, Collection<?>>implements Serializable {
+public abstract class TextRepeaterSubtemplate<T extends TemplateReplacement, K extends Collection<?>>
+        extends RepeaterSubtemplate<T, K>
+        implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -43,10 +44,10 @@ public abstract class TextRepeaterSubtemplate
     private boolean newLineAfterText = true;
   
     @Override
-    protected String fillTemplatesInternal(List<Map<TemplateReplacement, String>> replacements) {
+    protected String fillTemplatesInternal(List<Map<T, String>> replacements) {
         String result="";
 
-        for(Map<TemplateReplacement,String> elementReplacement: replacements) {
+        for(Map<T,String> elementReplacement: replacements) {
             String elementResult = body;
 
             for(TemplateReplacement replacement : elementReplacement.keySet()) {
