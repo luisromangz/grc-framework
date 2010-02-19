@@ -13,5 +13,9 @@ public interface Subtemplate<T extends TemplateReplacement, R,K> extends Copieab
     R fillTemplate(K source);
     List<T> getTemplateReplacements();
 
+    /**
+     * Gets the replacement this subtemplate will replace in the parent template.
+     * @return
+     */
     SubtemplatedReplacement getSubtemplatedReplacement();
 }
