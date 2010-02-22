@@ -18,7 +18,7 @@ import javax.persistence.MappedSuperclass;
 public abstract class RepeaterSubtemplate<T extends TemplateReplacement, K extends Collection<?>>
           implements Subtemplate<T, String, K>, Serializable {
 
-    @FieldProperties(label = "Mensaje a mostrar si no hay elementos", widgetStyle = "width:89%")
+    @FieldProperties(label = "Mensaje a mostrar si no hay elementos", widgetStyle = "width:89%", required=false)
     private String noElementsMessage;
 
     @Override
