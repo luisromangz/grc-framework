@@ -44,11 +44,11 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
         @FieldDeactivationCondition(equals = "'false'", triggerField = "isTable"),
         @FieldDeactivationCondition(equals = "false", triggerField = "showTableHeaders")
     })
-    private String tableHeader;
+    private String tableHeader="";
     @FieldProperties(label = "Anchuras de las columnas", required = false, widgetStyle = "width:98%",
     deactivationConditions = {
         @FieldDeactivationCondition(equals = "'false'", triggerField = "isTable")})
-    private String columnSizes;
+    private String columnSizes="";
     @FieldProperties(label = "Lista ordenada", type = FieldType.BOOLEAN, deactivationConditions = {
         @FieldDeactivationCondition(equals = "'true'", newValue = "false", triggerField = "isTable")
     })
