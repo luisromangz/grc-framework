@@ -36,7 +36,7 @@ public abstract class ListTableInnerRepeaterSubtemplate<T extends TemplateReplac
     private Long id;
 
     @FieldProperties(label="Formato del elemento", widgetStyle="width:98%")
-    private String elementFormat;
+    private String elementFormat="";
 
     @Transient // This must be set in the setter method for this template in the parent template.
     private ListTableRepeaterSubtemplate parentTemplate;
