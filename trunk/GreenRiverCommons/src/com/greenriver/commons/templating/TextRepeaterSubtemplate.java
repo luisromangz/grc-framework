@@ -12,6 +12,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -38,6 +39,7 @@ public abstract class TextRepeaterSubtemplate<T extends TemplateReplacement, K e
 
 
     @FieldProperties(label="Texto que se repite",type=FieldType.RICHTEXT)
+    @Column(length=2048)
     private String body;
 
     @FieldProperties(label="Añadir nueva línea tras el texto", type=FieldType.BOOLEAN)
