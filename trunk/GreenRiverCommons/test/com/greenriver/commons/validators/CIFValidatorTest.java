@@ -51,6 +51,12 @@ public class CIFValidatorTest {
         result = instance.validate(cif);
         assertEquals(expResult, result);
 
+        // Unknnown CIF
+        cif = "G21163944";
+        expResult = true;
+        result = instance.validate(cif);
+        assertEquals(expResult, result);
+
         cif = "B91789215";
         expResult = false;
         result = instance.validate(cif);
