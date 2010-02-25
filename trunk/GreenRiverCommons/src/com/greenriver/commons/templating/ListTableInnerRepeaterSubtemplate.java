@@ -123,9 +123,9 @@ public abstract class ListTableInnerRepeaterSubtemplate<T extends TemplateReplac
             String result = elementFormat;
 
             for(T replacement : element.keySet()) {
-                result = result.replace(
-                        replacement.getDecoratedPlaceholder(),
-                        element.get(replacement));
+                result = TemplatingUtils.formatTemplateReplacement(
+                        replacement,
+                        element.get(replacement)) ;
             }
 
             return result;

@@ -27,9 +27,9 @@ public abstract class PrintingTemplate<T extends TemplateReplacement, K>
         implements Serializable, Template<T, PrintableDocument, K> {
 
     @FieldProperties(label = "Cuerpo del documento", type = FieldType.RICHTEXT)
-    @Column(length = 2048)
+    @Column(length = 10240)
     private String body;
-    @Column(length = 2048)
+    @Column(length = 10240)
     private String cssStyles;
     @OneToOne(cascade = CascadeType.ALL)
     private PageConfiguration pageConfiguration;
