@@ -120,7 +120,7 @@ public class Numbers {
 
     /**
      * Compares to floats using a deviation. The floats will be equal if the
-     * difference between them is less or equal than epsilon parameter;
+     * difference between them is less or equal than epsilon parameter.
      * @param floatA
      * @param floatB
      * @param epsilon Maximum allowed difference between floatA and floatB
@@ -130,6 +130,41 @@ public class Numbers {
         return Math.abs(floatA - floatB) <= epsilon;
     }
 
+    /**
+     * Compares to floats using a deviation. The floats will be equal if the
+     * difference between them is less or equal than epsilon parameter. Otherwise
+     * a regular arithmetic comparison is used to determine what is floatA is
+     * greater than floatB.
+     * @param floatA
+     * @param floatB
+     * @param epsilon
+     * @return
+     */
+    public static boolean greaterOrEqual(float floatA, float floatB, double epsilon) {
+        float result = Math.abs(floatA - floatB);
+        return result <= epsilon || floatA > floatB;
+    }
+
+    /**
+     * Compares to floats using a deviation. The floats will be equal if the
+     * difference between them is less or equal than epsilon parameter. Otherwise
+     * a regular arithmetic comparison is used to determine what is floatA is
+     * lesser than floatB.
+     * @param floatA
+     * @param floatB
+     * @param epsilon
+     * @return
+     */
+    public static boolean lessOrEqual(float floatA, float floatB, double epsilon) {
+        float result = Math.abs(floatA - floatB);
+        return result <= epsilon || floatA < floatB;
+    }
+
+    /**
+     * Sums all the digits of a number until there is only a single-digit number.
+     * @param number
+     * @return
+     */
     public static int sumDigits(int number) {
         return Strings.sumDigits(number + "");
     }
