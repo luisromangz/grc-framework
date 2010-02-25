@@ -39,7 +39,7 @@ public abstract class TextRepeaterSubtemplate<T extends TemplateReplacement, K e
 
 
     @FieldProperties(label="Texto que se repite",type=FieldType.RICHTEXT)
-    @Column(length=2048)
+    @Column(length=10240)
     private String body;
 
     @FieldProperties(label="Añadir nueva línea tras el texto", type=FieldType.BOOLEAN)
@@ -49,13 +49,13 @@ public abstract class TextRepeaterSubtemplate<T extends TemplateReplacement, K e
     protected String fillTemplatesInternal(List<Map<T, String>> replacements) {
         String result="";
 
-        for(Map<T,String> elementReplacement: replacements) {
+        for(Map<T,String> elementReplacements: replacements) {
             String elementResult = body;
 
-            for(TemplateReplacement replacement : elementReplacement.keySet()) {
-                elementResult = elementResult.replace(
-                        replacement.getDecoratedPlaceholder(),
-                        elementReplacement.get(replacement));
+            for(T replacement : elementReplacements.keySet()) {
+                elementResult = TemplatingUtils.formatTemplateReplacement(
+                        replacement,
+                        elementReplacements.get(replacement));
             }
 
             result+=elementResult;

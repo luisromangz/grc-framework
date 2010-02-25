@@ -33,7 +33,7 @@ public abstract class MailTemplate<T extends TemplateReplacement,K>
     @FieldProperties(label="Asunto del correo", widgetStyle="width:30em")
     private String subject;
     @FieldProperties(label="Cuerpo del correo",type=FieldType.RICHTEXT)
-    @Column(length=2048)
+    @Column(length=10240)
     private String body;
 
     @Override
