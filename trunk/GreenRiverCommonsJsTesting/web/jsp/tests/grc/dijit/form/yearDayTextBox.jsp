@@ -12,7 +12,7 @@
         <title>Testing</title>
         <link rel="stylesheet" href="${dojoRoot}/dojo/resources/dojo.css" />
         <link rel="stylesheet" href="${dojoRoot}/dijit/themes/tundra/tundra.css" />
-        <link rel="stylesheet" href="${jsRoot}/grc/dijit/themes/tundra/form.css" />
+        <link rel="stylesheet" href="${jsRoot}/grc/dijit/themes/tundra/tundra.css" />
         <style media="all" type="text/css">
             #body {
                 padding: 12px;
@@ -33,24 +33,53 @@
             var onDojoLoad = function() {
                 dojo.registerModulePath("grc", "../../grc");
                 dojo.require("grc.string");
-                dojo.require("dojo.parser");
                 dojo.require("grc.dijit.form.YearDayTextBox");
+                dojo.require("grc.dijit.ModalDialog");
+                dojo.require('grc.debug');
+                dojo.require("dojo.parser");
                 dojo.parser.parse();
-
-                var widget = dijit.byId('yearDay');
-                widget.connect(widget, 'onClick', function(value) {
-                    console.debug(this.id + " value: " + grc.string.toString(this.attr('value')));
-                    console.debug(this.id + " day: " + grc.string.toString(this.attr('yearDay')));
-                });
-                widget.attr('value', new Date());
             }
             dojo.addOnLoad(onDojoLoad);
         </script>
     </head>
     <body class="tundra">
         <div id="body">
-            <div style="background-color: #cfcfcf;min-width: 700px; min-height: 450px;padding: 12px">
+            <p>Basic test</p>
+            <div>
                 <button dojoType="grc.dijit.form.YearDayTextBox" id="yearDay"></button>
+            </div>
+            <br/>
+            <p>Test in dialog</p>
+            <div>
+                <input type="button" onclick="dijit.byId('testDialog').show()" value="Test me!"/>
+                <div dojoType="grc.dijit.ModalDialog" id="testDialog" title="test me!" style="width:25em;height:12em">
+                    <table border="0" cellpadding="12" cellspacing="12">
+                        <thead>
+                            <tr>
+                                <th>Etiqueta</th>
+                                <th>Control</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <label for="yearDay2">Pruebas</label>
+                                </td>
+                                <td>
+                                    <button dojoType="grc.dijit.form.YearDayTextBox" id="yearDay2" value="today"></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <p>Set date to null</p>
+            <div>
+                <button dojoType="grc.dijit.form.YearDayTextBox" id="yearDay3"></button>
+            </div>
+            <p>Set date to 28/12</p>
+            <div>
+                <button dojoType="grc.dijit.form.YearDayTextBox" id="yearDay4" displayedValue="28/12"></button>
             </div>
         </div>
     </body>
