@@ -21,6 +21,14 @@ public class TemplatingUtils {
             return "No definido";
         }
 
+        if(SubtemplatedReplacement.class.isInstance(replacement)){
+            if(((SubtemplatedReplacement)replacement).getSubtemplateBaseClassName().equals(
+                    ListTableRepeaterSubtemplate.class.getSimpleName())){
+                    
+                return value;
+            }
+        }
+
         return String.format("<span class=\"%s\">%s</span>",
                 replacement.getPlaceholder(),
                 value);
