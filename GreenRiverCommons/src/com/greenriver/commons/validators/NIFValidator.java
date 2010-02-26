@@ -4,10 +4,13 @@ package com.greenriver.commons.validators;
 import com.greenriver.commons.Strings;
 
 /**
- * Validates an spanish NIF
+ * Validator for those ids used in spain for private individuals. Since 2008 the
+ * term NIF also relates to the ids given to legal entities, but here these are
+ * excluded.
+ * related (public individual)
  * @author Miguel Angel
  */
-public class NIFValidator {
+public class NIFValidator implements DataValidator<String> {
     /**
      * Ordered list of the 23 characters used as the validation code for NIF
      */

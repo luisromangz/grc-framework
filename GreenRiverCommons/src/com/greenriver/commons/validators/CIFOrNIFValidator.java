@@ -4,14 +4,16 @@ package com.greenriver.commons.validators;
 import com.greenriver.commons.Strings;
 
 /**
+ * Validator for those
  * @author Miguel Angel
  */
-public class CIFOrNIFValidator {
+public class CIFOrNIFValidator implements DataValidator<String> {
 
     /**
      * @param cifOrNif
      * @return
      */
+    @Override
     public boolean validate(String cifOrNif) {
 
         if (Strings.isNullOrEmpty(cifOrNif)) {
