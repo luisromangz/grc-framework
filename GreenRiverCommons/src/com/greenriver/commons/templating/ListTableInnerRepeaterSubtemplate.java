@@ -26,48 +26,44 @@ import javax.persistence.Transient;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(length = 255)
-@EntityFieldsProperties(appendSuperClassFields=true)
-public abstract class ListTableInnerRepeaterSubtemplate<T extends TemplateReplacement,K extends Collection<?>>
-        extends RepeaterSubtemplate<T ,K >
+@EntityFieldsProperties(appendSuperClassFields = true)
+public abstract class ListTableInnerRepeaterSubtemplate<T extends TemplateReplacement, K extends Collection<?>>
+         extends RepeaterSubtemplate<T, K>
         implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
-    @FieldProperties(label="Formato del elemento", widgetStyle="width:98%")
-    private String elementFormat="";
-
+    @FieldProperties(label = "Formato del elemento", widgetStyle = "width:98%")
+    private String elementFormat = "";
     @Transient // This must be set in the setter method for this template in the parent template.
     private ListTableRepeaterSubtemplate parentTemplate;
-    
+
     @Override
     protected String fillTemplatesInternal(List<Map<T, String>> replacements) {
-       if(getParentTemplate() ==null) {
+        if (getParentTemplate() == null) {
             throw new IllegalStateException("Parent template for a ListTableInnerRepeaterTemplate hasn't been set.");
-       }
+        }
 
-       List<String> elementStrings = Lists.apply(replacements, new ElementFormatter(this.elementFormat));
+        List<String> elementStrings = Lists.apply(replacements, new ElementFormatter(this.elementFormat));
 
-       String glue = "; ";
+        String glue = "; ";
 
-       if(getParentTemplate().getIsTable()) {
-           glue = ListTableRepeaterSubtemplate.TABLE_CELL_SEPARATOR;
-       }
+        if (getParentTemplate().getIsTable()) {
+            glue = ListTableRepeaterSubtemplate.TABLE_CELL_SEPARATOR;
+        }
 
-       return Strings.join(elementStrings, glue);
+        return Strings.join(elementStrings, glue);
     }
 
     @Override
     public void copyTo(Subtemplate copyTarget) {
         super.copyTo(copyTarget);
 
-        ((ListTableInnerRepeaterSubtemplate)copyTarget).elementFormat = elementFormat;
-        
+        ((ListTableInnerRepeaterSubtemplate) copyTarget).elementFormat = elementFormat;
+
     }
-
-    
-
 
     // <editor-fold defaultstate="collapsed" desc="Getters and setters">
     public Long getId() {
@@ -106,10 +102,7 @@ public abstract class ListTableInnerRepeaterSubtemplate<T extends TemplateReplac
         this.parentTemplate = parentTemplate;
     }
 
-   
     // </editor-fold>
-
-
     private class ElementFormatter implements ApplicableCommand<Map<T, String>, String> {
 
         private String elementFormat;
@@ -122,15 +115,13 @@ public abstract class ListTableInnerRepeaterSubtemplate<T extends TemplateReplac
         public String apply(Map<T, String> element) {
             String result = elementFormat;
 
-            for(T replacement : element.keySet()) {
-                result = TemplatingUtils.formatTemplateReplacement(
-                        replacement,
-                        element.get(replacement)) ;
+            for (T replacement : element.keySet()) {
+                result = result.replace(
+                        replacement.getDecoratedPlaceholder(),
+                        TemplatingUtils.formatTemplateReplacement(replacement,element.get(replacement)));
             }
 
             return result;
         }
-        
     }
-
 }
