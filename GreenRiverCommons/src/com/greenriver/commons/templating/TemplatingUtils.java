@@ -1,5 +1,6 @@
 package com.greenriver.commons.templating;
 
+import com.greenriver.commons.Strings;
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,12 +22,8 @@ public class TemplatingUtils {
             return "No definido";
         }
 
-        if(SubtemplatedReplacement.class.isInstance(replacement)){
-            if(((SubtemplatedReplacement)replacement).getSubtemplateBaseClassName().equals(
-                    ListTableRepeaterSubtemplate.class.getSimpleName())){
-                    
-                return value;
-            }
+        if(Strings.isNullOrEmpty(value)) {
+            return "";
         }
 
         return String.format("<span class=\"%s\">%s</span>",
