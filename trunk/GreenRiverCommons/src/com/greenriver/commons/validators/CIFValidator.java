@@ -4,9 +4,12 @@ package com.greenriver.commons.validators;
 import com.greenriver.commons.Strings;
 
 /**
+ * Validator for those ids given to legal entities. Since 2008 these ids are also
+ * known as NIFs but CIF was the previous name given to them. The current validation
+ * works only for legal entities and not for private individuals.
  * @author Miguel Angel
  */
-public class CIFValidator {
+public class CIFValidator implements DataValidator<String> {
     // CIF chars
     public static String CIF_CHARS = "ABCDEFGHJKLMNPQRSUVW";
     public static String CHAR_CHECK = "OABCDEFGHIJ";
