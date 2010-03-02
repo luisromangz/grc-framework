@@ -108,17 +108,19 @@ public enum FieldType {
     DATE,
 
     /**
-     * Spanish NIF id code
+     * Spanish OLD_NIF id code
      */
-    NIF,
+    OLD_NIF,
 
     /**
-     * Spanish CIF id code
+     * Spanish OLD_CIF id code
      */
-    CIF,
+    OLD_CIF,
 
     /**
-     * Field that can hold both a CIF or a NIF
+     * A field used to hold an Spanish's identifier used by individuals and
+     * fiscal entities. This one mixes OLD_NIF and OLD_CIF formats and 
+     * validations.
      */
-    CIF_OR_NIF
+    NIF;
 }
