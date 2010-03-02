@@ -847,10 +847,10 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
             case DATE:
                 setupDateField(formFieldElement, fieldType, properties);
                 break;
-            case NIF:
+            case OLD_NIF:
                 setupNifField(formFieldElement, fieldType, properties);
                 break;
-            case CIF_OR_NIF:
+            case NIF:
                 setupCifOrNifField(formFieldElement, fieldType, properties);
                 break;
             default:
@@ -901,7 +901,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         formFieldElement.setAttribute("type", "text");
         formFieldElement.setAttribute("dojoType","grc.dijit.form.CustomValidationTextBox");
 
-        // TODO: Add validation to NIF type
+        // TODO: Add validation to OLD_NIF type
         formFieldElement.setAttribute("trim", "true");
         formFieldElement.setAttribute("promptMessage", "Introduzca un NIF sin espacios u otros caracteres.");
         formFieldElement.setAttribute("invalidMessage", "NIF incorrecto.");
@@ -925,12 +925,12 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         formFieldElement.setAttribute("type", "text");
         formFieldElement.setAttribute("dojoType","grc.dijit.form.CustomValidationTextBox");
 
-        // TODO: Add validation to NIF type
+        // TODO: Add validation to OLD_NIF type
         formFieldElement.setAttribute("trim", "true");
-        formFieldElement.setAttribute("promptMessage", "Introduzca un CIF o NIF.");
-        formFieldElement.setAttribute("invalidMessage", "CIF o NIF incorrecto.");
+        formFieldElement.setAttribute("promptMessage", "Introduzca un NIF.");
+        formFieldElement.setAttribute("invalidMessage", "NIF incorrecto.");
         // In client-side the validation is done by a custom validator 
-        formFieldElement.setAttribute("validation", "cifOrNif");
+        formFieldElement.setAttribute("validation", "nif");
         formFieldElement.setAttribute("style", "width:12em");
     }
 }

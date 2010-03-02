@@ -1,5 +1,6 @@
 package com.greenriver.commons.mvc.helpers.properties;
 
+import com.greenriver.commons.ClassFields;
 import com.greenriver.commons.mvc.helpers.PropertyOptions;
 import com.greenriver.commons.Strings;
 import com.greenriver.commons.collections.Lists;
@@ -122,10 +123,9 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
 
         assertCurrent();
 
-        if(!Strings.isNullOrEmpty(properties.accesorFieldName())){
-            id= properties.accesorFieldName();
+        if (!Strings.isNullOrEmpty(properties.accesorFieldName())) {
+            id = properties.accesorFieldName();
         }
-
 
         PropertyOptions options = PropertyOptions.parseString(id);
 
@@ -214,52 +214,30 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
             Class modelClass,
             List<String> propertiesToShow) {
 
-
-        EntityFieldsProperties entityProperties =
-                (EntityFieldsProperties) modelClass.getAnnotation(
-                EntityFieldsProperties.class);
-
-        List<String> originalPropertiesToShow =
-                propertiesToShow==null?null:new ArrayList<String>(propertiesToShow);
-
-        if (entityProperties == null || !entityProperties.appendSuperClassFields()) {
-            if (modelClass.getSuperclass() != Object.class) {
-                addPropertyViewsFromModel(modelClass.getSuperclass(),originalPropertiesToShow);
-            }
-        }
-
         Field classField = null;
         FieldProperties fieldProperties = null;
 
         assertCurrent();
 
         if (Lists.isNullOrEmpty(propertiesToShow)) {
+            // If the list of properties is empty we include all of them.
             propertiesToShow = generatePropertyList(modelClass);
         }
 
         for (String propName : propertiesToShow) {
-            try {
-                classField = modelClass.getDeclaredField(propName);
-            } catch (NoSuchFieldException ex) {
-                continue; // We cant crash because the field might be defined in the superclass.
-            }
+            // Let this throw an exception if the field is not defined. This
+            // looks also in the super class so if the field is not defined it
+            // will throw an exception.
+            classField = ClassFields.get(propName, modelClass, true, true);
 
             fieldProperties =
                     classField.getAnnotation(FieldProperties.class);
 
             //Only go ahead if there is a field property
             if (fieldProperties != null) {
-                addPropertyView(propName, fieldProperties,
-                        classField.getType());
+                addPropertyView(propName, fieldProperties, classField.getType());
             }
         }
-
-        if (entityProperties != null && entityProperties.appendSuperClassFields()) {
-            if (modelClass.getSuperclass() != Object.class) {
-                addPropertyViewsFromModel(modelClass.getSuperclass(),originalPropertiesToShow);
-            }
-        }
-
     }
 
     /**
@@ -276,21 +254,19 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
 
         //Temporal object to put values got from the map.
         Object obj = config.get(KEY_MODEL);
-        //Name of the entity's class
-        String entityName = null;
-        Class entityClass = null;
-        //List of properties to be added to the view.
-        List<String> properties = new ArrayList<String>();
-        List<String> virtualProperties = new ArrayList<String>();
 
         if (obj == null || !(obj instanceof String)) {
             throw new IllegalArgumentException(
-                    "The configuration must include '" + KEY_MODEL
-                    + "' key with the entity full name as value");
+                    "The configuration must include a '" + KEY_MODEL
+                    + "' key with the entity's full name as the value");
         }
 
-        entityName = (String) obj;
-        entityClass = getClassFromName(entityName);
+        //Name of the entity's class
+        String entityName = (String) obj;
+        Class entityClass = getClassFromName(entityName);
+        //List of properties to be added to the view.
+        List<String> properties = new ArrayList<String>();
+        List<String> virtualProperties = new ArrayList<String>();
 
         //We process the properties key if set
         if (config.containsKey(KEY_PROPERTIES)) {
@@ -309,7 +285,22 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
                     properties);
         }
 
-        addPropertyViewsFromModel(entityClass, properties);
+        try {
+            addPropertyViewsFromModel(entityClass, properties);
+        } catch (RuntimeException rex) {
+            String msg =
+                    "Failed to create the properties view from configuration."
+                    + " Review the properties view configuration for class "
+                    + ((String)config.get(KEY_MODEL)) + " and ";
+            
+            if (config.containsKey(KEY_PROPERTIES)) {
+                msg += "fields [" + Strings.join(properties, ", ") + "].";
+            } else {
+                msg += "all fields declared.";
+            }
+
+            throw new RuntimeException(msg, rex);
+        }
 
         if (config.containsKey(KEY_VIRTUAL_PROPERTIES)) {
             processPropertiesListObject(
@@ -364,30 +355,39 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
     }
 
     /**
-     * Generates a list with all the annotated properties in the class.
-     * (The annotation to find is FieldProperties).
+     * Generates a list with all the annotated properties in the class
+     * (The annotation to find is FieldProperties) and all its super classes.
      * @param entityClass
      * @return a list of properties
      */
     private List<String> generatePropertyList(Class entityClass) {
 
-        Field[] classFields = entityClass.getDeclaredFields();
-        List<String> result = new ArrayList<String>();
-
-        for (Field field : classFields) {
-            FieldProperties props = field.getAnnotation(FieldProperties.class);
-
-            if (props != null) {
-                // We only add the field if was annotated
-                result.add(field.getName());
-            }
+        if (entityClass == null) {
+            throw new NullPointerException("Parameter entityClass is null.");
         }
 
-        return result;
+        if (entityClass == Object.class) {
+            return new ArrayList<String>(0);
+        }
+
+        EntityFieldsProperties entityProperties =
+                (EntityFieldsProperties) entityClass.getAnnotation(
+                EntityFieldsProperties.class);
+
+        boolean appendSupperClassfields = entityProperties != null &&
+                entityProperties.appendSuperClassFields();
+
+        return ClassFields.getNames(
+                entityClass,
+                true,
+                appendSupperClassfields,
+                new Class[]{FieldProperties.class});
     }
 
     /**
-     * 
+     * Adds/removes all the properties specified to/from the list of properties
+     * to be included in the view. The last parameter controls if the property
+     * names will be added or removed from the view.
      * @param obj
      * @param ignore If true the properties are removed from the current list
      * of properties instead of being added.
