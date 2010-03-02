@@ -81,7 +81,7 @@ public interface PropertiesViewBuilder {
     /**
      * Adds a view for the properties of an entity configured in a map. The
      * map should contain the keys as described in javadoc of
-     * <b>PropertiesViewConfiguration.addPropertiesViewConfiguration</b>.
+     * <b>com.greenriver.commons.mvc.configuration.PropertiesViewConfiguration.addPropertiesViewConfiguration</b>.
      * @param config
      */
     void addPropertyViewFromConfiguration(Map<String, Object> config);

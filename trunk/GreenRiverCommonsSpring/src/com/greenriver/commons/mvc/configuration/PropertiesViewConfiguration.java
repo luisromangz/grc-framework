@@ -3,6 +3,8 @@ package com.greenriver.commons.mvc.configuration;
 import java.util.Map;
 
 /**
+ * Operations that allow to configure a view of the properties of a entity from
+ * the app model.
  * @author Miguel Angel
  */
 public interface PropertiesViewConfiguration {
