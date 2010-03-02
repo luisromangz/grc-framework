@@ -53,9 +53,10 @@ public abstract class TextRepeaterSubtemplate<T extends TemplateReplacement, K e
             String elementResult = body;
 
             for(T replacement : elementReplacements.keySet()) {
-                elementResult = TemplatingUtils.formatTemplateReplacement(
+                elementResult = elementResult.replace(
+                        replacement.getDecoratedPlaceholder(),TemplatingUtils.formatTemplateReplacement(
                         replacement,
-                        elementReplacements.get(replacement));
+                        elementReplacements.get(replacement)));
             }
 
             result+=elementResult;
