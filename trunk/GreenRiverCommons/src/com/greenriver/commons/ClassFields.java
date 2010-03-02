@@ -53,7 +53,7 @@ public class ClassFields {
 
         if (throwExOnFail && field == null) {
             String msg = "The field '" + name + "' is not defined in class "
-                        + cls.getSimpleName();
+                        + target.getName();
             if (recursive) {
                 throw new FieldNotFoundException(msg + " or any superclass.");
             } else {
