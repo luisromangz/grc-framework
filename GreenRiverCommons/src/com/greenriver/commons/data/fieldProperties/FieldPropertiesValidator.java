@@ -427,13 +427,13 @@ public class FieldPropertiesValidator implements FieldsValidator {
             case DATE:
                 validateDate(value, properties, validationMessages);
                 break;
-            case NIF:
+            case OLD_NIF:
                 validateNIF(value, properties, validationMessages);
                 break;
-            case CIF:
+            case OLD_CIF:
                 validateCIF(value, properties, validationMessages);
                 break;
-            case CIF_OR_NIF:
+            case NIF:
                 validateCIFOrNIF(value, properties, validationMessages);
                 break;
         }
@@ -658,7 +658,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
 
         if (!validator.validate(cif)) {
             validationMessages.add(String.format(
-                    "El valor del campo «%s» no es un CIF válido.",
+                    "El valor del campo «%s» no es un NIF válido.",
                     properties.label()));
         }
     }
@@ -682,7 +682,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
 
         if (!validator.validate(cifOrNif)) {
             validationMessages.add(String.format(
-                    "El valor del campo «%s» no es ni un CIF ni un NIF válido.",
+                    "El valor del campo «%s» no es un NIF válido.",
                     properties.label()));
         }
     }

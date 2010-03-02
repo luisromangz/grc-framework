@@ -51,7 +51,7 @@ public class CIFValidatorTest {
         result = instance.validate(cif);
         assertEquals(expResult, result);
 
-        // Unknnown CIF
+        // Asociación Nacional de Criadores de Ganado Marismeño
         cif = "G21163944";
         expResult = true;
         result = instance.validate(cif);
