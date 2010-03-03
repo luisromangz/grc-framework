@@ -66,7 +66,7 @@ public abstract class PrintingTemplate<T extends TemplateReplacement, K>
         PrintableDocument document = new PrintableDocument();
         document.setBody(documentBody);
         document.setCssStyles(this.getCssStyles());
-        document.setPageConfiguration(this.getPageConfiguration());
+        document.setPageConfiguration(getPageConfiguration().fillTemplate(replacements));
 
         return document;
     }
