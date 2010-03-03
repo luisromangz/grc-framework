@@ -16,6 +16,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
 
@@ -37,7 +38,8 @@ public abstract class ListTableInnerRepeaterSubtemplate<T extends TemplateReplac
     private Long id;
     @FieldProperties(label = "Formato del elemento", widgetStyle = "width:98%")
     private String elementFormat = "";
-    @Transient // This must be set in the setter method for this template in the parent template.
+    @OneToOne
+    // This must be set in the setter method for this template in the parent template.
     private ListTableRepeaterSubtemplate parentTemplate;
 
     @Override
@@ -62,6 +64,7 @@ public abstract class ListTableInnerRepeaterSubtemplate<T extends TemplateReplac
         super.copyTo(copyTarget);
 
         ((ListTableInnerRepeaterSubtemplate) copyTarget).elementFormat = elementFormat;
+
 
     }
 
