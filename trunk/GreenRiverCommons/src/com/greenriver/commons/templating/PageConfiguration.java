@@ -63,7 +63,7 @@ public class PageConfiguration implements Serializable, Copieable<PageConfigurat
     @FieldProperties(label="Pie de página (centro)", required=false)
     private String footerCenter;
     @FieldProperties(label="Pie de página (derecha)", required=false)
-    private String footerRight;
+    private String footerRight="&PT";
     // </editor-fold>
 
     public Map<String,Object> getCustomJsPrintConfiguration() {
