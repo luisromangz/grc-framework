@@ -3,6 +3,7 @@
 package com.greenriver.commons.templating;
 
 import com.greenriver.commons.Copieable;
+import com.greenriver.commons.Strings;
 import com.greenriver.commons.data.fieldProperties.FieldProperties;
 import com.greenriver.commons.data.fieldProperties.FieldType;
 import java.io.Serializable;
@@ -53,8 +54,16 @@ public class PageConfiguration implements Serializable, Copieable<PageConfigurat
     private float pageWidth = 210;
     @FieldProperties(label = "Altura del papel", minValue = 0, type = FieldType.DECIMAL, unit = "mm")
     private float pageHeight = 297;
-    @FieldProperties(label = "Papel apaisado", type = FieldType.BOOLEAN)
+    @FieldProperties(label = "Orientación del papel", type = FieldType.SELECTION,
+    possibleValues={"false","true"},possibleValueLabels={"Vertical","Apaisado"}, getterPrefix="is")
     private boolean landscape;
+
+    @FieldProperties(label="Pie de página (izquierda)", required=false)
+    private String footerLeft;
+    @FieldProperties(label="Pie de página (centro)", required=false)
+    private String footerCenter;
+    @FieldProperties(label="Pie de página (derecha)", required=false)
+    private String footerRight;
     // </editor-fold>
 
     public Map<String,Object> getCustomJsPrintConfiguration() {
@@ -92,9 +101,9 @@ public class PageConfiguration implements Serializable, Copieable<PageConfigurat
         configuration.put("print_headerleft", "");
         configuration.put("print_headercenter", "");
         configuration.put("print_headerright", "");
-        configuration.put("print_footerleft", "");
-        configuration.put("print_footercenter", "");
-        configuration.put("print_footerright", "");
+        configuration.put("print_footerleft", getFooterLeft());
+        configuration.put("print_footercenter", getFooterCenter());
+        configuration.put("print_footerright", getFooterRight());
 
         configuration.put("print_bgcolor",true);
         configuration.put("print_bgimages",true);
@@ -122,6 +131,35 @@ public class PageConfiguration implements Serializable, Copieable<PageConfigurat
         copyTarget.setPageHeight(pageHeight);
         copyTarget.setTopMargin(topMargin);
         copyTarget.setPageWidth(pageWidth);
+
+        copyTarget.setFooterCenter(footerCenter);
+        copyTarget.setFooterLeft(footerLeft);
+        copyTarget.setFooterRight(footerRight);
+    }
+
+    public <T extends TemplateReplacement> PageConfiguration fillTemplate(Map<T, String> replacements) {
+        PageConfiguration pageConfiguration = new PageConfiguration();
+        this.copyTo(pageConfiguration);
+
+        for(T replacement : replacements.keySet()) {
+            pageConfiguration.setFooterLeft(pageConfiguration.getFooterLeft().replace(
+                    replacement.getDecoratedPlaceholder(),
+                    replacements.get(replacement)));
+
+            pageConfiguration.setFooterCenter(pageConfiguration.getFooterCenter().replace(
+                    replacement.getDecoratedPlaceholder(),
+                    replacements.get(replacement)));
+
+            pageConfiguration.setFooterRight(pageConfiguration.getFooterRight().replace(
+                    replacement.getDecoratedPlaceholder(),
+                    replacements.get(replacement)));
+        }
+
+        pageConfiguration.setFooterLeft(Strings.asciify(pageConfiguration.getFooterLeft()));
+        pageConfiguration.setFooterCenter(Strings.asciify(pageConfiguration.getFooterCenter()));
+        pageConfiguration.setFooterRight(Strings.asciify(pageConfiguration.getFooterRight()));
+
+        return pageConfiguration;
     }
 
 
@@ -248,6 +286,48 @@ public class PageConfiguration implements Serializable, Copieable<PageConfigurat
      */
     public void setLandscape(boolean landscape) {
         this.landscape = landscape;
+    }
+
+    /**
+     * @return the footerLeft
+     */
+    public String getFooterLeft() {
+        return footerLeft==null?"":footerLeft;
+    }
+
+    /**
+     * @param footerLeft the footerLeft to set
+     */
+    public void setFooterLeft(String footerLeft) {
+        this.footerLeft = footerLeft;
+    }
+
+    /**
+     * @return the footerCenter
+     */
+    public String getFooterCenter() {
+        return footerCenter==null?"":footerCenter;
+    }
+
+    /**
+     * @param footerCenter the footerCenter to set
+     */
+    public void setFooterCenter(String footerCenter) {
+        this.footerCenter = footerCenter;
+    }
+
+    /**
+     * @return the footerRight
+     */
+    public String getFooterRight() {
+        return footerRight==null?"":footerRight;
+    }
+
+    /**
+     * @param footerRight the footerRight to set
+     */
+    public void setFooterRight(String footerRight) {
+        this.footerRight = footerRight;
     }
     // </editor-fold>
 }

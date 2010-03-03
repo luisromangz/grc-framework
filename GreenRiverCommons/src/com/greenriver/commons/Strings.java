@@ -17,6 +17,7 @@ import java.util.List;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
@@ -349,13 +350,12 @@ public class Strings {
     public final static String repeat(String string, int count) {
         String result = "";
         // Yeah, it's probably the most innefficient way to do this. So what?
-        for(int i=0;i<count;i++){
-            result+=string;
+        for (int i = 0; i < count; i++) {
+            result += string;
         }
 
         return result;
     }
-
 
     /**
      * Joins a series of strings passed as an array.
@@ -395,14 +395,34 @@ public class Strings {
         int result = Math.abs(Integer.parseInt(digits));
         digits = result + "";
 
-        while(digits.length() > 1) {
+        while (digits.length() > 1) {
             result = 0;
-            for (int i=0; i< digits.length(); i++) {
-                result += (int)Integer.parseInt(digits.charAt(i) + "");
+            for (int i = 0; i < digits.length(); i++) {
+                result += (int) Integer.parseInt(digits.charAt(i) + "");
             }
             digits = result + "";
         }
 
         return result;
+    }
+
+    /**
+     * Checks if a string contains only ASCII characters.
+     * @param input The string to be checked.
+     * @return True if input contains only ASCII characters.
+     */
+    public static boolean isPureAscii(String input) {
+        CharsetEncoder asciiEncoder =
+                Charset.forName("US-ASCII").newEncoder();
+        return asciiEncoder.canEncode(input);
+    }
+
+    /**
+     * 
+     * @param input
+     * @return
+     */
+    public static String asciify(String input) {
+        return input.replaceAll("[^\\p{ASCII}]", "?");
     }
 }
