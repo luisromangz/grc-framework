@@ -6,6 +6,7 @@
 package com.greenriver.commons.templating;
 
 import com.greenriver.commons.data.fieldProperties.EntityFieldsProperties;
+import com.greenriver.commons.data.fieldProperties.FieldDeactivationCondition;
 import com.greenriver.commons.data.fieldProperties.FieldProperties;
 import com.greenriver.commons.data.fieldProperties.FieldType;
 import java.io.Serializable;
@@ -42,7 +43,13 @@ public abstract class TextRepeaterSubtemplate<T extends TemplateReplacement, K e
     @Column(length=10240)
     private String body;
 
-    @FieldProperties(label="Añadir nueva línea tras el texto", type=FieldType.BOOLEAN)
+     @FieldProperties(label="Página nueva tras el texto", type=FieldType.BOOLEAN)
+    private boolean newPageAfterText = false;
+
+    @FieldProperties(label="Añadir nueva línea tras el texto", type=FieldType.BOOLEAN,
+    deactivationConditions={
+        @FieldDeactivationCondition(triggerField="newPageAfterText",equals="'on'")
+    })
     private boolean newLineAfterText = true;
   
     @Override
@@ -61,7 +68,9 @@ public abstract class TextRepeaterSubtemplate<T extends TemplateReplacement, K e
 
             result+=elementResult;
 
-            if(newLineAfterText) {
+            if(newPageAfterText){             
+                result = "<div style=\"page-break-after:always\">"+result+"</div>";
+            } else if(newLineAfterText) {
                 result+="<br>";
             }
         }
@@ -112,6 +121,20 @@ public abstract class TextRepeaterSubtemplate<T extends TemplateReplacement, K e
      */
     public void setNewLineAfterText(boolean newLineAfterText) {
         this.newLineAfterText = newLineAfterText;
+    }
+
+    /**
+     * @return the newPageAfterText
+     */
+    public boolean getNewPageAfterText() {
+        return newPageAfterText;
+    }
+
+    /**
+     * @param newPageAfterText the newPageAfterText to set
+     */
+    public void setNewPageAfterText(boolean newPageAfterText) {
+        this.newPageAfterText = newPageAfterText;
     }
     // </editor-fold>
 }
