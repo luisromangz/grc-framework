@@ -143,13 +143,14 @@ public class Lists {
      * The element comparison relies on equals implementation so this will work
      * if the objects in the lists have a proper implementation of it.
      * If one or both the lists allows null values you can expect this method
-     * to trhow a null pointer exception in these cases.
+     * to throw a null pointer exception in these cases.
      * @param listA
      * @param listB
      * @param structural If true the elements are supposed to be in the same
      * order, if false the elements of the first list are checked to exists in
      * the second list.
      * @return
+     * @throws NullPointerException if any element is a null pointer.
      */
     public static boolean equals(
             List<? extends Object> listA,

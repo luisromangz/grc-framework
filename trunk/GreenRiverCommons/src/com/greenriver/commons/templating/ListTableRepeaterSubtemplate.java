@@ -5,7 +5,6 @@ import com.greenriver.commons.data.fieldProperties.EntityFieldsProperties;
 import com.greenriver.commons.data.fieldProperties.FieldDeactivationCondition;
 import com.greenriver.commons.data.fieldProperties.FieldProperties;
 import com.greenriver.commons.data.fieldProperties.FieldType;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;

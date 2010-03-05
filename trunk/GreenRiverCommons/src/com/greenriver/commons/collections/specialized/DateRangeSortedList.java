@@ -261,7 +261,7 @@ public class DateRangeSortedList extends SortedArrayList<DateRange> {
             // collection surely updated
             modified = true;
             // Case a- is always done, case b- is only done when the ranges 
-            // doesn't match and we need to add the remains of the candidate
+            // doesn't match and we need to addDateToRange the remains of the candidate
             this.remove(pos);
 
             if (candidate.isContained(target, datePart)) {
@@ -279,6 +279,7 @@ public class DateRangeSortedList extends SortedArrayList<DateRange> {
     }
 
     @Override
+    @SuppressWarnings("element-type-mismatch")
     public boolean removeAll(Collection<?> c) {
         boolean updated = false;
         for (Object obj : c) {
