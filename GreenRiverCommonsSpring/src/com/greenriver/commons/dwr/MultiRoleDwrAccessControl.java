@@ -9,7 +9,7 @@ import org.directwebremoting.impl.DefaultAccessControl;
 
 /**
  * Extends default access control to add support to specify more than one role
- * in the same dwr:auth tag tp overcome a bug in dwr 2-3.RC1.
+ * in the same dwr:auth tag to overcome a bug in dwr 2-3.RC1.
  * The multiple roles are specified separating them by commas.
  * @author Miguel Angel
  */

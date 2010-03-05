@@ -1,7 +1,6 @@
 
 package com.greenriver.commons.data.dao.hibernate;
 
-import antlr.debug.GuessingEvent;
 import com.greenriver.commons.DateRange;
 import com.greenriver.commons.Strings;
 import com.greenriver.commons.data.dao.queryArguments.EntityQueryArguments;
@@ -17,15 +16,11 @@ import java.util.List;
 import java.util.Map;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.criterion.Subqueries;
-import org.hibernate.tool.ide.completion.HQLAnalyzer.SubQuery;
 
 /**
  * Criteria factory impl that references the dao that is using it.

@@ -44,6 +44,7 @@ public class SortedArrayList<T> extends ArrayList<T> {
      */
     private class ComparableComparator<T> implements Comparator<T>, Serializable {
 
+        @Override
         public int compare(T o1, T o2) {
             if (o1 instanceof Comparable) {
                 return ((Comparable) o1).compareTo(o2);

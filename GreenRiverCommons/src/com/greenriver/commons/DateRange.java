@@ -99,8 +99,8 @@ public class DateRange implements Comparable<DateRange>, Cloneable, Serializable
 
     public DateRange(Date min, Date max) {
         this(
-                (Long)(min != null ? min.getTime() : null),
-                (Long)(max != null ? max.getTime() : null));
+                (Long) (min != null ? min.getTime() : null),
+                (Long) (max != null ? max.getTime() : null));
     }
 
     public DateRange(Long min, Long max) {
@@ -147,8 +147,8 @@ public class DateRange implements Comparable<DateRange>, Cloneable, Serializable
         }
         DateRange dateRange = (DateRange) obj;
 
-        return Dates.equals(this.min, dateRange.min, part) &&
-                Dates.equals(this.max, dateRange.max, part);
+        return Dates.equals(this.min, dateRange.min, part)
+                && Dates.equals(this.max, dateRange.max, part);
     }
 
     @Override
@@ -265,33 +265,55 @@ public class DateRange implements Comparable<DateRange>, Cloneable, Serializable
 
     /**
      * Checks if the maximum of this range is before the minimum of another
-     * range. That means this range goes before the another one
+     * range. That means this range goes before the another one.
+     * The comparison is done only with the date part.
      * @param dateRange
      * @return
      */
     public boolean before(DateRange dateRange) {
-        return !Dates.afterOrEquals(this.max, dateRange.min, DatePart.DATE);
+        return Dates.before(this.max, dateRange.min, DatePart.DATE);
+    }
+
+    /**
+     * Checks if the maximum of this range is before the minimum of another
+     * range. That means this range goes before the another one.
+     * @param dateRange
+     * @param part 
+     * @return
+     */
+    public boolean before(DateRange dateRange, DatePart part) {
+        return Dates.before(this.max, dateRange.min, part);
+    }
+
+    /**
+     * Checks if the minimum of this range is after the maximum of another
+     * range. That means this range goes after the another one.
+     * The comparison is done only with the date part.
+     * @param dateRange
+     * @return
+     */
+    public boolean after(DateRange dateRange) {
+        return Dates.after(this.min, dateRange.max, DatePart.DATE);
     }
 
     /**
      * Checks if the minimum of this range is after the maximum of another
      * range. That means this range goes after the another one.
      * @param dateRange
-     * @param part 
+     * @param part Part to use in the comparison
      * @return
      */
-    public boolean before(DateRange dateRange, DatePart part) {
-        return !Dates.afterOrEquals(this.max, dateRange.min, part);
-    }
-
-    public boolean after(DateRange dateRange) {
-        return !Dates.beforeOrEquals(this.min, dateRange.max, DatePart.DATE);
-    }
-
     public boolean after(DateRange dateRange, DatePart part) {
-        return !Dates.beforeOrEquals(this.min, dateRange.max, part);
+        return Dates.after(this.min, dateRange.max, part);
     }
 
+    /**
+     * This comparison returns 0 if the ranges intersects. If not it will return
+     * 1 or -1
+     * @param o
+     * @param part
+     * @return
+     */
     public int compareTo(DateRange o, DatePart part) {
         if (this.before(o, part)) {
             return -1;
@@ -302,6 +324,11 @@ public class DateRange implements Comparable<DateRange>, Cloneable, Serializable
         }
     }
 
+    /**
+     * The comparison is done with both the time and date parts.
+     * @param o
+     * @return
+     */
     @Override
     public int compareTo(DateRange o) {
         return this.compareTo(o, DatePart.DATE_TIME);
@@ -317,32 +344,59 @@ public class DateRange implements Comparable<DateRange>, Cloneable, Serializable
         if (this.isEmpty()) {
             return "(EMPTY)";
         } else {
-            return "(" + (min == null ? "Infinite" : Dates.formatAsMysqlDate(min)) + ", " +
-                    (max == null ? "Infinite" : Dates.formatAsMysqlDate(max)) + ")";
+            return "(" + (min == null ? "Infinite" : Dates.formatAsMysqlDate(min)) + ", "
+                    + (max == null ? "Infinite" : Dates.formatAsMysqlDate(max)) + ")";
         }
     }
 
-    public boolean contains(Date time) {
-        return contains(time, DatePart.DATE_TIME);
+    /**
+     * The comparison to check the existance is done with only the date part.
+     * @param date
+     * @return
+     */
+    public boolean contains(Date date) {
+        return contains(date, DatePart.DATE);
     }
 
-    public boolean contains(Date time, DatePart part) {
+    /**
+     * Gets if a given date is contained within the range
+     * @param date
+     * @param part
+     * @return
+     */
+    public boolean contains(Date date, DatePart part) {
         if (this.isEmpty()) {
             return false;
         }
 
-        return (this.max == null || Dates.beforeOrEquals(time, this.max, part)) &&
-                (this.min == null || Dates.afterOrEquals(time, this.min, part));
+        return (this.max == null || Dates.beforeOrEquals(date, this.max, part))
+                && (this.min == null || Dates.afterOrEquals(date, this.min, part));
     }
 
+    /**
+     * Gets a date range with the intersection of this date range with another
+     * one. If the two ranges don't intersects an empty date range is returned.
+     * If one range is empty or infinite an exception is thrown.
+     * This overload compares using only the date part.
+     * @param range 
+     * @return
+     */
     public DateRange getIntersection(DateRange range) {
         return getIntersection(range, DatePart.DATE);
     }
 
+    /**
+     * Gets a date range with the intersection of this date range with another
+     * one. If the two ranges don't intersects an empty date range is returned.
+     * If one range is empty or infinite an exception is thrown.
+     * @param range
+     * @param part
+     * @return
+     */
     public DateRange getIntersection(DateRange range, DatePart part) {
         if (this.isEmpty() || this.isInfinite() || range.isEmpty() || range.isInfinite()) {
-            throw new IllegalArgumentException("One of the ranges is empty or " +
-                    "infinite, can't get an intersection");
+            throw new IllegalArgumentException("One of the ranges is empty or "
+                    + "infinite, can't get an intersection");
         }
 
         if (this.before(range, part) || this.after(range, part)) {
@@ -367,7 +421,8 @@ public class DateRange implements Comparable<DateRange>, Cloneable, Serializable
     }
 
     /**
-     * Gets if a date range is entirely contained within another range
+     * Gets if a date range is entirely contained within another range.
+     * This overload compares using only the date part.
      * @param target
      * @return
      */
@@ -376,20 +431,21 @@ public class DateRange implements Comparable<DateRange>, Cloneable, Serializable
     }
 
     /**
-     * Gets if a date range is entirely contained within another range
+     * Gets if a date range is entirely contained within another range.
      * @param target
      * @param part 
      * @return
      */
     public boolean isContained(DateRange target, DatePart part) {
-        return Dates.beforeOrEquals(target.min, min, part) &&
-                Dates.afterOrEquals(target.max, max, part);
+        return Dates.beforeOrEquals(target.min, min, part)
+                && Dates.afterOrEquals(target.max, max, part);
     }
 
     /**
      * Gets the difference within another range. The resulting range(s) will be
      * made up of those days that are not in the other range. If no days matches
      * the condition an empty list of ranges will be returned.
+     * This overload compares using only the date part.
      * @param target
      * @return
      */
@@ -397,6 +453,14 @@ public class DateRange implements Comparable<DateRange>, Cloneable, Serializable
         return getDifference(target, DatePart.DATE);
     }
 
+    /**
+     * Gets the difference within another range. The resulting range(s) will be
+     * made up of those days that are not in the other range. If no days matches
+     * the condition an empty list of ranges will be returned.
+     * @param target
+     * @param part 
+     * @return
+     */
     public List<DateRange> getDifference(DateRange target, DatePart part) {
         List<DateRange> result = new ArrayList<DateRange>(2);
 
@@ -420,14 +484,14 @@ public class DateRange implements Comparable<DateRange>, Cloneable, Serializable
             cal.setTime(target.max);
             cal.add(GregorianCalendar.DAY_OF_MONTH, 1);
             result.add(new DateRange(cal.getTime(), max));
-        } else if (!Dates.afterOrEquals(min, target.min, part) ||
-                Dates.equals(max, target.max, part)) {
+        } else if (!Dates.afterOrEquals(min, target.min, part)
+                || Dates.equals(max, target.max, part)) {
 
             cal.setTime(target.min);
             cal.add(GregorianCalendar.DAY_OF_MONTH, -1);
             result.add(new DateRange(min, cal.getTime()));
-        } else if (!Dates.beforeOrEquals(max, target.max, part) ||
-                Dates.equals(min, target.min, part)) {
+        } else if (!Dates.beforeOrEquals(max, target.max, part)
+                || Dates.equals(min, target.min, part)) {
 
             cal.setTime(target.max);
             cal.add(GregorianCalendar.DAY_OF_MONTH, 1);
@@ -440,7 +504,7 @@ public class DateRange implements Comparable<DateRange>, Cloneable, Serializable
     /**
      * Gets an iterator over days since the minimun date of the range to the
      * maximum date.
-     * @param part
+     * @param part Part to use in the comparisons.
      * @return
      * @throws IllegalStateException If one or both range dates are not specified.
      */
@@ -451,10 +515,9 @@ public class DateRange implements Comparable<DateRange>, Cloneable, Serializable
         }
 
         return new DateRangeIterator(
-                    this.min,
-                    this.max,
-                    part
-                );
+                this.min,
+                this.max,
+                part);
     }
 
     /**
@@ -465,14 +528,14 @@ public class DateRange implements Comparable<DateRange>, Cloneable, Serializable
         if (this.isInfinite()) {
             throw new IllegalStateException("The range is infinite");
         }
-        
+
         return Dates.daysDifference(min, max);
     }
 
     /**
      * Increases the range width with the specified amount in both limits so
      * the real width increment is the double of the specified amount.
-     * @param amount Milliseconds to add to the max and to substract from the
+     * @param amount Milliseconds to addDateToRange to the max and to substract from the
      * min
      * @param component Date component affected by the change. Take into account
      * that NANOSECONDS are not supported and that NONE causes this method to
@@ -496,9 +559,33 @@ public class DateRange implements Comparable<DateRange>, Cloneable, Serializable
     }
 
     /**
+     * Adds a date to the range increasing it if needed.<br/>
+     * First tests the date to add within the limits of the current range, if
+     * is between them this method then does nothing, this date range includes
+     * the date. If not the interval is incresed using the date as one of the
+     * limits.
+     * @param dateTime
+     * @param datePart
+     */
+    public void addDateToRange(Date dateTime, DatePart datePart) {
+        if (this.contains(dateTime, datePart)) {
+            return;
+        }
+
+        if (this.min != null && Dates.before(dateTime, this.min, datePart)) {
+            this.setMin(dateTime);
+        }
+
+        if (this.max != null && Dates.after(dateTime, this.max, datePart)) {
+            this.setMax(dateTime);
+        }
+    }
+
+    /**
      * Iterator that iterates dates from min to max
      */
     private class DateRangeIterator implements Iterator<Date> {
+
         private Date end;
         private Date next;
         private DatePart part;
@@ -520,8 +607,8 @@ public class DateRange implements Comparable<DateRange>, Cloneable, Serializable
         public Date next() {
             Date result = this.next;
             cal.setTime(this.next);
-            
-            switch(part) {
+
+            switch (part) {
                 case DATE:
                     cal.add(GregorianCalendar.DAY_OF_MONTH, 1);
                     break;
@@ -530,7 +617,7 @@ public class DateRange implements Comparable<DateRange>, Cloneable, Serializable
                     cal.add(GregorianCalendar.SECOND, 1);
                     break;
             }
-            
+
             this.next = cal.getTime();
             return result;
         }
@@ -539,6 +626,5 @@ public class DateRange implements Comparable<DateRange>, Cloneable, Serializable
         public void remove() {
             throw new UnsupportedOperationException("Not supported.");
         }
-        
     }
 }
