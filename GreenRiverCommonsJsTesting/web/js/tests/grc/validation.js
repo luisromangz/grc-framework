@@ -8,6 +8,10 @@ function testNIFValidation () {
             valid: true
         },
         {
+            nif: 'q2818002d',
+            valid: true
+        },
+        {
             nif: 'B91789214',
             valid: true
         },
@@ -26,12 +30,16 @@ function testNIFValidation () {
         {
             nif: '2222222222222222',
             valid: false
+        },
+        {
+            nif: '2910832H',
+            valid: false
         }
     ];
 
     var validateCif = function (data) {
         var result = grc.validation.nif.validate(data.nif);
-        console.debug("Validating " + data.nif);
+        console.debug("Validating " + data.nif + ", expected: " + (data.valid? 'valid' : 'invalid'));
         assertEquals("NIF " + data.nif + " validation failed.", result, data.valid);
         console.debug("  OK");
     }
