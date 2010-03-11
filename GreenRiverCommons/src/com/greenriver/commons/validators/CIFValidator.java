@@ -22,6 +22,7 @@ public class CIFValidator implements DataValidator<String> {
     // Minimum length of the nif string plus letter (7 digit plus letter)
     private static int MIN_LENGTH = 9;
     
+    @Override
     public boolean validate(String cif) {
 
         if (Strings.isNullOrEmpty(cif)) {

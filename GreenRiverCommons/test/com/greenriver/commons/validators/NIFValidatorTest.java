@@ -48,9 +48,42 @@ public class NIFValidatorTest {
         result = validator.validate(nifNum, letter);
         assertEquals(expectedResult, result);
 
+        nif = "1234567L";
+        expectedResult = true;
+        nifNum = 1234567L;
+        letter = nif.charAt(nif.length() - 1);
+
+        result = validator.validate(nif);
+        assertEquals(expectedResult, result);
+
+        result = validator.validate(nifNum, letter);
+        assertEquals(expectedResult, result);
+
         nif = "2342345J";
         expectedResult = false;
         nifNum = 2342345L;
+        letter = nif.charAt(nif.length() - 1);
+
+        result = validator.validate(nif);
+        assertEquals(expectedResult, result);
+
+        result = validator.validate(nifNum, letter);
+        assertEquals(expectedResult, result);
+
+        nif="2910832H";
+        expectedResult = false;
+        nifNum = 2910832L;
+        letter = nif.charAt(nif.length() - 1);
+
+        result = validator.validate(nif);
+        assertEquals(expectedResult, result);
+
+        result = validator.validate(nifNum, letter);
+        assertEquals(expectedResult, result);
+
+        nif="28910832H";
+        expectedResult = false;
+        nifNum = 2910832L;
         letter = nif.charAt(nif.length() - 1);
 
         result = validator.validate(nif);
