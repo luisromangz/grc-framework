@@ -67,6 +67,11 @@ public class CIFValidatorTest {
         result = instance.validate(cif);
         assertEquals(expResult, result);
 
+        cif = "28910832H";
+        expResult = false;
+        result = instance.validate(cif);
+        assertEquals(expResult, result);
+
         cif = null;
         expResult = false;
         result = instance.validate(cif);
