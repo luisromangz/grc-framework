@@ -23,7 +23,9 @@ public class TemplatingUtils {
         }
 
         if(Strings.isNullOrEmpty(value)) {
-            return "";
+            // We dont' return the empty string so, e.g. an empty cell doesn't
+            // desappear.
+            return " ";
         }
 
         return String.format("<span class=\"%s\">%s</span>",
