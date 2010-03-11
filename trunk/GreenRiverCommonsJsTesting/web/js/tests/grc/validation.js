@@ -20,6 +20,14 @@ function testNIFValidation () {
             valid: true
         },
         {
+            nif: '1234567l',
+            valid: true
+        },
+        {
+            nif: '12345678Z',
+            valid: true
+        },
+        {
             nif: 'B91789215',
             valid: false
         },
@@ -33,6 +41,10 @@ function testNIFValidation () {
         },
         {
             nif: '2910832H',
+            valid: false
+        },
+        {
+            nif: '28910832H',
             valid: false
         }
     ];
