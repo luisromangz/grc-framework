@@ -115,6 +115,7 @@ public class PageTasksController extends ConfigurablePageController implements P
             configureFormEntities(pageTask.getFormEntities(), mav,
                     pageTask.getTaskName() + "_");
         } else {
+            // If the load of the task is on demand, we add global functions intended for loading this.
             getPageConfiguration().addOnLoadScript(String.format(
                     "window['%s_onLoad']=function(){",
                     pageTask.getTaskName()));
