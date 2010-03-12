@@ -30,6 +30,9 @@ public class PageTool implements FormsConfiguration,
      */
     private List<String> setupPaneJspFiles;
     private PageConfiguration pageConfiguration;
+
+
+    private boolean loadedOnPageLoad = true;
     // </editor-fold>
 
     public PageTool() {
@@ -39,6 +42,7 @@ public class PageTool implements FormsConfiguration,
         pageConfiguration = new PageConfiguration();
     }
 
+    @Override
     public boolean equals(Object o) {
         if(o.getClass() != PageTool.class) {
             return false;
@@ -216,6 +220,20 @@ public class PageTool implements FormsConfiguration,
 
     public void addDojoModules(List<String> dojoModules) {
         pageConfiguration.addDojoModules(dojoModules);
+    }
+
+    /**
+     * @return the loadedOnPageLoad
+     */
+    public boolean isLoadedOnPageLoad() {
+        return loadedOnPageLoad;
+    }
+
+    /**
+     * @param loadedOnPageLoad the loadedOnPageLoad to set
+     */
+    public void setLoadedOnPageLoad(boolean loadedOnPageLoad) {
+        this.loadedOnPageLoad = loadedOnPageLoad;
     }
     // </editor-fold>
 }

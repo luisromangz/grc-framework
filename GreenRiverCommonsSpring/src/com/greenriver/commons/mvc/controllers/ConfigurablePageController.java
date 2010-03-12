@@ -71,8 +71,7 @@ public class ConfigurablePageController extends AbstractController
 
         customHandleRequest(request, response, mav);
 
-        PageConfiguration configuration = (PageConfiguration)
-                this.pageConfiguration.clone();
+        PageConfiguration configuration = (PageConfiguration) this.pageConfiguration.clone();
         //PageConfiguration configuration = this.pageConfiguration;
 
         for (ControllerPlugin plugin : this.getPlugins()) {
@@ -161,23 +160,41 @@ public class ConfigurablePageController extends AbstractController
         }
     }
 
-    private void configurePageTools(ModelAndView mav) 
+    private void configurePageTools(ModelAndView mav)
             throws ClassNotFoundException {
-        
+
         List<String> dialogJspFiles = new ArrayList<String>();
         List<String> setupJspFiles = new ArrayList<String>();
 
-        if (pageToolManager != null) {
+       if (pageToolManager != null) {
 
             for (PageTool pageTool : this.pageToolManager.getTools()) {
 
-                dialogJspFiles.addAll(addPathPrefixToFileNames(
-                        "tools/" + pageTool.getName(),
-                        pageTool.getDialogJspFiles()));
+                if (pageTool.isLoadedOnPageLoad()) {
+                    // We only load the jsp files if we are loading the
+                    // tool with the page.
+                    dialogJspFiles.addAll(addPathPrefixToFileNames(
+                            "tools/" + pageTool.getName(),
+                            pageTool.getDialogJspFiles()));
 
-                dialogJspFiles.addAll(addPathPrefixToFileNames(
-                        "tools/" + pageTool.getName(),
-                        pageTool.getSetupPaneJspFiles()));
+                    dialogJspFiles.addAll(addPathPrefixToFileNames(
+                            "tools/" + pageTool.getName(),
+                            pageTool.getSetupPaneJspFiles()));
+
+                    //Forms ids are prefixed with the task name
+                    configureFormEntities(pageTool.getFormEntities(), mav,
+                            pageTool.getName() + "_");
+
+                    configurePropertiesView(pageTool.getPropertiesView(), mav,
+                            pageTool.getName() + "_");
+                    
+                    pageConfiguration.getOnLoadScripts().addAll(
+                            pageTool.getOnLoadScripts());
+                } 
+
+                // We always include the rest of things, so we are sure
+                // we bundle (if bundling is activated) all the required modules
+                // and js files.
 
                 pageConfiguration.getJavaScriptFiles().addAll(addPathPrefixToFileNames(
                         "tools/" + pageTool.getName(),
@@ -194,16 +211,9 @@ public class ConfigurablePageController extends AbstractController
                         pageTool.getDojoModules());
                 pageConfiguration.getDwrServices().addAll(
                         pageTool.getDwrServices());
-                pageConfiguration.getOnLoadScripts().addAll(
-                        pageTool.getOnLoadScripts());
+
                 pageConfiguration.getScripts().addAll(pageTool.getScripts());
 
-                //Forms ids are prefixed with the task name
-                configureFormEntities(pageTool.getFormEntities(), mav,
-                        pageTool.getName() + "_");
-
-                configurePropertiesView(pageTool.getPropertiesView(), mav,
-                        pageTool.getName() + "_");
             }
 
         }
@@ -238,7 +248,7 @@ public class ConfigurablePageController extends AbstractController
 
     public void setPropertiesViewBuilder(
             PropertiesViewBuilder propertiesViewBuilder) {
-        
+
         this.propertiesViewBuilder = propertiesViewBuilder;
     }
 
