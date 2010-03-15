@@ -166,7 +166,9 @@ public class ConfigurablePageController extends AbstractController
         List<String> dialogJspFiles = new ArrayList<String>();
         List<String> setupJspFiles = new ArrayList<String>();
 
-       if (pageToolManager != null) {
+        pageConfiguration.addOnLoadScript("window['onToolsLoaded']=function(){");
+
+        if (pageToolManager != null) {
 
             for (PageTool pageTool : this.pageToolManager.getTools()) {
 
@@ -181,16 +183,23 @@ public class ConfigurablePageController extends AbstractController
                             "tools/" + pageTool.getName(),
                             pageTool.getSetupPaneJspFiles()));
 
-                    //Forms ids are prefixed with the task name
-                    configureFormEntities(pageTool.getFormEntities(), mav,
-                            pageTool.getName() + "_");
+
 
                     configurePropertiesView(pageTool.getPropertiesView(), mav,
                             pageTool.getName() + "_");
-                    
+
                     pageConfiguration.getOnLoadScripts().addAll(
                             pageTool.getOnLoadScripts());
-                } 
+                }
+
+                // We always process forms, even if loading on demand, so
+                // we can ensure that we are getting all the dojo.requires
+                // actually needed.
+
+                //Forms ids are prefixed with the task name
+                configureFormEntities(pageTool.getFormEntities(), mav,
+                        pageTool.getName() + "_");
+
 
                 // We always include the rest of things, so we are sure
                 // we bundle (if bundling is activated) all the required modules
@@ -217,6 +226,8 @@ public class ConfigurablePageController extends AbstractController
             }
 
         }
+
+        pageConfiguration.addOnLoadScript("}");
 
         mav.addObject("toolsDialogJspFiles", dialogJspFiles);
         mav.addObject("toolsSetupJspFiles", setupJspFiles);
