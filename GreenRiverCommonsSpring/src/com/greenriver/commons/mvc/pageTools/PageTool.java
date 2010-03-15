@@ -32,7 +32,7 @@ public class PageTool implements FormsConfiguration,
     private PageConfiguration pageConfiguration;
 
 
-    private boolean loadedOnPageLoad = true;
+    private boolean loadedOnPageLoad = false;
     // </editor-fold>
 
     public PageTool() {
