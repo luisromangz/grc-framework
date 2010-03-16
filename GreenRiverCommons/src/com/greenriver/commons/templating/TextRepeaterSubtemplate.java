@@ -78,7 +78,12 @@ public abstract class TextRepeaterSubtemplate<T extends TemplateReplacement, K e
     public void copyTo(Subtemplate copyTarget) {
         super.copyTo(copyTarget);
 
-        ((TextRepeaterSubtemplate)copyTarget).body = this.body;
+        TextRepeaterSubtemplate templateTarget = ((TextRepeaterSubtemplate)copyTarget);
+        templateTarget.body = this.body;
+        templateTarget.newLineAfterText = this.newLineAfterText;
+        templateTarget.newPageAfterText= this.newPageAfterText;
+
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="Getters and setters">
