@@ -1,15 +1,17 @@
-
 package com.greenriver.commons.data.dao.hibernate;
 
 import com.greenriver.commons.DateRange;
+import com.greenriver.commons.Dates;
 import com.greenriver.commons.Strings;
 import com.greenriver.commons.data.dao.queryArguments.EntityQueryArguments;
+import com.greenriver.commons.data.dao.queryArguments.QueryArgumentType;
 import com.greenriver.commons.data.dao.queryArguments.QueryArgumentsFieldProperties;
 import com.greenriver.commons.data.dao.queryArguments.QueryArgumentsProperties;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -135,40 +137,40 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
             // We create a mapping to avoid serveral retrievals for the same field
             // which hiberante despises.
             Map<String, List<String>> queryMappings =
-                    new HashMap<String,List<String>>();
+                    new HashMap<String, List<String>>();
 
             for (String fieldName : queryProperties.textFilterFields()) {
 
                 int index = fieldName.lastIndexOf(".");
 
                 String field;
-                String property=null;
+                String property = null;
 
-                if(index>=0) {
+                if (index >= 0) {
                     field = fieldName.substring(0, index);
-                    property = fieldName.substring(index+1);                   
+                    property = fieldName.substring(index + 1);
                 } else {
-                    field=fieldName;
+                    field = fieldName;
                     property = null;
                 }
 
                 List<String> properties = null;
-                if(!queryMappings.containsKey(field)) {
+                if (!queryMappings.containsKey(field)) {
                     properties = new ArrayList<String>();
                     queryMappings.put(field, properties);
                 } else {
                     properties = queryMappings.get(field);
                 }
 
-                if(property!=null) {
+                if (property != null) {
                     properties.add(property);
                 }
             }
 
-            for(String field : queryMappings.keySet()) {
+            for (String field : queryMappings.keySet()) {
                 List<String> properties = queryMappings.get(field);
 
-                if(properties.isEmpty()) {
+                if (properties.isEmpty()) {
                     disjunction.add(Restrictions.ilike(field,
                             queryArguments.getTextFilter(),
                             MatchMode.ANYWHERE));
@@ -177,7 +179,7 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
                     Disjunction subDisjunction = Restrictions.disjunction();
 
                     subCriteria.add(subDisjunction);
-                    for(String property : properties) {
+                    for (String property : properties) {
                         subDisjunction.add(Restrictions.ilike(property,
                                 queryArguments.getTextFilter(),
                                 MatchMode.ANYWHERE));
@@ -209,6 +211,7 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
         }
 
         String fieldName = queryFieldProperties.fieldName();
+
         // We add a condition based on the field specified comparison type.
         switch (queryFieldProperties.type()) {
             case EQUALS:
@@ -221,7 +224,17 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
                 crit.add(Restrictions.gt(fieldName, value));
                 break;
             case LOWER_EQUALS:
-                crit.add(Restrictions.le(fieldName, value));
+                if (value.getClass() == Date.class
+                        && queryFieldProperties.fullDay()) {
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(Dates.getDatePart((Date) value));
+                    cal.roll(Calendar.DATE, 1);
+                    value = cal.getTime();
+                    crit.add(Restrictions.lt(fieldName, value));
+                } else {
+                    crit.add(Restrictions.le(fieldName, value));
+                }
+
                 break;
             case LOWER_THAN:
                 crit.add(Restrictions.lt(fieldName, value));
@@ -234,8 +247,8 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
                 this.addInRangeFieldRestriction(fieldName, value, crit);
                 break;
             default:
-                throw new IllegalStateException("Type " +
-                        queryFieldProperties.type() + " not handled properly.");
+                throw new IllegalStateException("Type "
+                        + queryFieldProperties.type() + " not handled properly.");
         }
     }
 
