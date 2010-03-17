@@ -28,5 +28,15 @@ public @interface QueryArgumentsFieldProperties {
      * @return
      */
     public String fieldName();
+    /**
+     * The type of the argument's comparison.
+     * @return
+     */
     public QueryArgumentType type();
+    /**
+     * If its a date comparison, we should consider just the date and
+     * ignore time info.
+     * @return
+     */
+    public boolean fullDay() default true;
 }
