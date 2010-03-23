@@ -371,6 +371,14 @@ public class Dates {
                 || (y1 >= x1 && y1 <= x2) || (y2 >= x1 && y2 <= x2);
     }
 
+    /**
+     * gets if a date is in a range, including the start and end dates.
+     * This check is done with both date and time components.
+     * @param date DATE to check that is into the range
+     * @param start Start of the range (included)
+     * @param end End of the range (included)
+     * @return True if the date is in the range or false if not
+     */
     public static boolean inRange(Date date, Date start, Date end) {
         return inRange(date, start, end, DatePart.DATE_TIME);
     }
