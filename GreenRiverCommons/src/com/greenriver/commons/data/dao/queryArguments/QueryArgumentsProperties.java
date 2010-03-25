@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package com.greenriver.commons.data.dao.queryArguments;
 
@@ -30,5 +26,18 @@ public @interface QueryArgumentsProperties {
      * @return
      */
     public String[] textFilterFields() default {};
-    
+
+    /**
+     * Default fields to sort if there are no fields in this type with the
+     * annotation <c>QueryArgumentsSorting</c>. If no value is set for
+     * <b>defaultSortTypes</b> all the sorting will be done as ASCENDING.
+     * @return
+     */
+    public String[] defaultSortFields() default {};
+    /**
+     * Default fields sorting to apply if there are no fields in this type
+     * with the annotation <c>QueryArgumentsSorting</c>
+     * @return
+     */
+    public QueryArgumentsSortType[] defaultSortTypes() default {};
 }
