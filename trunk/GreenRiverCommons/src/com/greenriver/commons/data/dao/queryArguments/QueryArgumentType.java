@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.greenriver.commons.data.dao.queryArguments;
 
 /**
@@ -13,6 +8,7 @@ package com.greenriver.commons.data.dao.queryArguments;
  * @author luis
  */
 public enum QueryArgumentType {
+
     GREATER_THAN,
     GREATER_EQUALS,
     EQUALS,
