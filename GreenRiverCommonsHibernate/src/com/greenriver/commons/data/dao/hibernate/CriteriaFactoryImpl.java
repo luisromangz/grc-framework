@@ -3,10 +3,13 @@ package com.greenriver.commons.data.dao.hibernate;
 import com.greenriver.commons.DateRange;
 import com.greenriver.commons.Dates;
 import com.greenriver.commons.Strings;
+import com.greenriver.commons.collections.Lists;
 import com.greenriver.commons.data.dao.queryArguments.EntityQueryArguments;
-import com.greenriver.commons.data.dao.queryArguments.QueryArgumentType;
+import com.greenriver.commons.data.dao.queryArguments.QueryArgumentSorting;
+import com.greenriver.commons.data.dao.queryArguments.QueryArgumentsFieldOrder;
 import com.greenriver.commons.data.dao.queryArguments.QueryArgumentsFieldProperties;
 import com.greenriver.commons.data.dao.queryArguments.QueryArgumentsProperties;
+import com.greenriver.commons.data.dao.queryArguments.QueryArgumentsSortType;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -26,6 +29,16 @@ import org.hibernate.criterion.Restrictions;
 
 /**
  * Criteria factory impl that references the dao that is using it.
+ * <br/>
+ * This factory uses criteria api to build the queries to run, but an error have
+ * been detected when running these in hsqldb. The error is thrown when having
+ * a count along with order by clauses in the same query.<br/>
+ * This happens only in hsqldb as mysql runs them fine, and may be related due
+ * to a bug in hsqldb or in hibernate hsqldb dialect's implementation. The
+ * solution for this was to add a flag so when the total count of query results
+ * is required we don't add sorting and otherwise we do it.
+ * This stack overflow's thread may be related as well:
+ * http://stackoverflow.com/questions/581043/sql-query-throws-not-in-aggregate-function-or-group-by-clause-exception
  * @author Miguel Angel
  */
 public class CriteriaFactoryImpl implements CriteriaFactory {
@@ -54,6 +67,24 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
     public Criteria createCriteriaFromQueryArguments(
             EntityQueryArguments queryArguments) {
 
+        return internalCreateCriteriaFromQueryArguments(queryArguments, true);
+    }
+
+    @Override
+    public Criteria createPaginatedCriteriaFromQueryArguments(
+            int page,
+            int pageSize,
+            EntityQueryArguments queryArguments) {
+        
+        Criteria crit = internalCreateCriteriaFromQueryArguments(queryArguments, true);
+        // We set the pagination values
+        crit.setMaxResults(pageSize);
+        crit.setFirstResult(page * pageSize);
+
+        return crit;
+    }
+
+    private Criteria internalCreateCriteriaFromQueryArguments(EntityQueryArguments queryArguments, boolean doSorting) {
         Class argumentClass = queryArguments.getClass();
         QueryArgumentsProperties queryProperties =
                 (QueryArgumentsProperties) argumentClass.getAnnotation(
@@ -68,25 +99,12 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
         Criteria crit = getSession().createCriteria(
                 queryProperties.targetClass());
 
-        setBasicCriteriaParameters(crit, queryArguments, queryProperties);
+        setBasicCriteriaParameters(crit, queryArguments, queryProperties, doSorting);
+        setRestrictions(argumentClass, crit, queryArguments);
 
-        // For the fields of the query argument annotated with @QueryArgumentsFieldProperties
-        for (Field queryArgumentField : argumentClass.getDeclaredFields()) {
-            addFieldRestriction(crit, queryArgumentField, queryArguments);
+        if (doSorting) {
+            setSorting(crit, queryArguments, argumentClass, queryProperties);
         }
-
-        return crit;
-    }
-
-    @Override
-    public Criteria createPaginatedCriteriaFromQueryArguments(
-            int page,
-            int pageSize,
-            EntityQueryArguments queryArguments) {
-        Criteria crit = createCriteriaFromQueryArguments(queryArguments);
-        // We set the pagination values
-        crit.setMaxResults(pageSize);
-        crit.setFirstResult(page * pageSize);
 
         return crit;
     }
@@ -118,11 +136,11 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
     private void setBasicCriteriaParameters(
             Criteria crit,
             EntityQueryArguments queryArguments,
-            QueryArgumentsProperties queryProperties) {
-
+            QueryArgumentsProperties queryProperties,
+            boolean doSorting) {
 
         // We manage the sorting field.
-        if (!Strings.isNullOrEmpty(queryArguments.getSortFieldName())) {
+        if (doSorting && !Strings.isNullOrEmpty(queryArguments.getSortFieldName())) {
             if (queryArguments.isSortAscending()) {
                 crit.addOrder(Order.asc(queryArguments.getSortFieldName()));
             } else {
@@ -189,6 +207,13 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
             }
 
             crit.add(disjunction);
+        }
+    }
+
+    private void setRestrictions(Class argumentClass, Criteria crit, EntityQueryArguments queryArguments) throws SecurityException {
+        // For the fields of the query argument annotated with @QueryArgumentsFieldProperties
+        for (Field queryArgumentField : argumentClass.getDeclaredFields()) {
+            addFieldRestriction(crit, queryArgumentField, queryArguments);
         }
     }
 
@@ -274,10 +299,112 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
 
     @Override
     public Criteria createCountingCriteriaFromQueryArguments(EntityQueryArguments entityQueryArguments) {
-        Criteria crit = createCriteriaFromQueryArguments(entityQueryArguments);
+        Criteria crit = internalCreateCriteriaFromQueryArguments(entityQueryArguments, false);
         crit.setProjection(Projections.rowCount());
 
         return crit;
+    }
+
+    private boolean addFieldSorting(
+            Criteria crit,
+            Field field,
+            EntityQueryArguments queryArguments) {
+
+        QueryArgumentsFieldOrder queryFieldProperties =
+                field.getAnnotation(
+                QueryArgumentsFieldOrder.class);
+
+        if (queryFieldProperties == null) {
+            // We skip non annotated fields
+            return false;
+        }
+
+        Object value = getValueForField(field, queryArguments);
+        if (value == null) {
+            // We dont apply sorting for null values.
+            return false;
+        }
+
+        if (QueryArgumentSorting.class.isAssignableFrom(value.getClass())) {
+            this.addSorting(crit, (QueryArgumentSorting) value);
+            return true;
+        } else if (List.class.isAssignableFrom(value.getClass())) {
+            return this.addSorting(crit, (List<QueryArgumentSorting>) value);
+        } else {
+            throw new IllegalStateException(
+                    "The field " + field.getName() + " has a type not "
+                    + "compatible with annotation QueryArgumentsFieldOrder.");
+        }
+    }
+
+    private void addSorting(Criteria crit, QueryArgumentSorting sorting) {
+        if (sorting.getType() == QueryArgumentsSortType.ASCENDING) {
+            crit.addOrder(Order.asc(sorting.getFieldName()));
+        } else {
+            crit.addOrder(Order.desc(sorting.getFieldName()));
+        }
+    }
+
+    private boolean addSorting(Criteria crit, List<QueryArgumentSorting> list) {
+        if (Lists.isNullOrEmpty(list)) {
+            return false;
+        }
+
+        for (QueryArgumentSorting sorting : list) {
+            this.addSorting(crit, sorting);
+        }
+
+        return true;
+    }
+
+    private void setSorting(Criteria crit, EntityQueryArguments queryArguments, Class argumentClass, QueryArgumentsProperties queryProperties) {
+        boolean sortingSpecified = false;
+        boolean oldSortingSpecified = !Strings.isNullOrEmpty(queryArguments.getSortFieldName());
+
+        // For the fields of the query argument annotated with @QueryArgumentsSorting
+        for (Field queryArgumentField : argumentClass.getDeclaredFields()) {
+            if (queryArgumentField.getAnnotation(QueryArgumentsFieldOrder.class) != null) {
+                sortingSpecified = this.addFieldSorting(crit, queryArgumentField, queryArguments);
+
+                if (sortingSpecified && oldSortingSpecified) {
+                    throw new IllegalStateException(
+                            "Can't add sorting from both argument specific "
+                            + "single-field parameter and from configured field "
+                            + "with QueryArgumentsSorting annotation");
+                }
+
+            }
+        }
+
+        if (!sortingSpecified && !oldSortingSpecified) {
+            // If no sorting was specified we try the default sorting stuff
+            addDefaultSorting(crit, queryProperties);
+        }
+    }
+
+    private void addDefaultSorting(Criteria crit, QueryArgumentsProperties queryProperties) {
+        if (queryProperties.defaultSortFields() == null || queryProperties.defaultSortFields().length == 0) {
+            // Nothing to do if there isn't at least one field
+            return;
+        }
+
+        int typesLength = -1;
+
+        if (queryProperties.defaultSortTypes() != null) {
+            typesLength = queryProperties.defaultSortTypes().length;
+        }
+
+        for (int i = 0; i < queryProperties.defaultSortFields().length; i++) {
+            QueryArgumentSorting sorting = new QueryArgumentSorting(
+                    queryProperties.defaultSortFields()[i],
+                    QueryArgumentsSortType.ASCENDING);
+
+            if (typesLength > i) {
+                sorting.setType(queryProperties.defaultSortTypes()[i]);
+            }
+
+            this.addSorting(crit, sorting);
+        }
     }
     // </editor-fold>
 }
