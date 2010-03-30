@@ -32,7 +32,6 @@ public class PageTool implements FormsConfiguration,
     private PageConfiguration pageConfiguration;
 
 
-    private boolean loadedOnPageLoad = false;
     // </editor-fold>
 
     public PageTool() {
@@ -95,6 +94,7 @@ public class PageTool implements FormsConfiguration,
         this.setupPaneJspFiles = setupPaneJspFiles;
     }
 
+    @Override
     public List<String> getJavaScriptFiles() {
         return this.pageConfiguration.getJavaScriptFiles();
     }
@@ -102,140 +102,157 @@ public class PageTool implements FormsConfiguration,
     /**
      * @param javaScriptFiles the javaScriptFiles to set
      */
+    @Override
     public void setJavaScriptFiles(List<String> javaScriptFiles) {
         this.pageConfiguration.setJavaScriptFiles(javaScriptFiles);
     }
 
+    @Override
     public void addFormEntity(String id, String entityName) {
         this.pageConfiguration.addFormEntity(id, entityName);
     }
 
+    @Override
     public Map<String, String> getFormEntities() {
         return pageConfiguration.getFormEntities();
     }
 
+    @Override
     public void setFormEntities(Map<String, String> formEntities) {
         pageConfiguration.setFormEntities(formEntities);
     }
 
+    @Override
     public void addPropertiesView(String id, Object configuration) {
         pageConfiguration.addPropertiesView(id, configuration);
     }
 
+    @Override
     public void setPropertiesView(Map<String, Object> configuration) {
         pageConfiguration.setPropertiesView(configuration);
     }
 
+    @Override
     public Map<String, Object> getPropertiesView() {
         return pageConfiguration.getPropertiesView();
     }
 
+    @Override
     public void addCssFile(String cssFilename) {
         pageConfiguration.addCssFile(cssFilename);
     }
 
+    @Override
     public void addDwrService(String name) {
         pageConfiguration.addDwrService(name);
     }
 
+    @Override
     public void addDojoBundle(String bundleName) {
         pageConfiguration.addDojoBundle(bundleName);
     }
 
+    @Override
     public void addDojoModule(String dojoModule) {
         pageConfiguration.addDojoModule(dojoModule);
     }
 
+    @Override
     public void addJavaScriptFile(String jsFilename) {
         pageConfiguration.addJavaScriptFile(jsFilename);
     }
 
+    @Override
     public void addOnLoadScript(String code) {
         pageConfiguration.addOnLoadScript(code);
     }
 
+    @Override
     public void addScript(String script) {
         pageConfiguration.addScript(script);
     }
 
+    @Override
     public List<String> getCssFiles() {
         return pageConfiguration.getCssFiles();
     }
 
+    @Override
     public List<String> getDojoModules() {
         return pageConfiguration.getDojoModules();
     }
 
+    @Override
     public List<String> getDojoBundles() {
         return pageConfiguration.getDojoBundles();
     }
 
+    @Override
     public List<String> getDwrServices() {
         return pageConfiguration.getDwrServices();
     }
 
+    @Override
     public List<String> getOnLoadScripts() {
         return pageConfiguration.getOnLoadScripts();
     }
 
+    @Override
     public List<String> getScripts() {
         return pageConfiguration.getScripts();
     }
 
+    @Override
     public String getTitle() {
         return pageConfiguration.getTitle();
     }
 
+    @Override
     public void setTitle(String title) {
         pageConfiguration.setTitle(title);
     }
 
+    @Override
     public void setCssFiles(List<String> cssFiles) {
         pageConfiguration.setCssFiles(cssFiles);
     }
 
+    @Override
     public void setDwrServices(List<String> dwrServices) {
         pageConfiguration.setDwrServices(dwrServices);
     }
 
+    @Override
     public void setDojoBundles(List<String> dojoBundles) {
         pageConfiguration.setDojoBundles(dojoBundles);
     }
 
+    @Override
     public void setDojoModules(List<String> dojoModules) {
         pageConfiguration.setDojoModules(dojoModules);
     }
 
+    @Override
     public void setOnLoadScripts(List<String> onLoadScripts) {
         pageConfiguration.setOnLoadScripts(onLoadScripts);
     }
 
+    @Override
     public void setScripts(List<String> scripts) {
         pageConfiguration.setScripts(scripts);
     }
 
+    @Override
     public void addDojoBundles(List<String> dojoBundles) {
         pageConfiguration.addDojoBundles(dojoBundles);
     }
 
+    @Override
     public void addDojoModules(List<String> dojoModules) {
         pageConfiguration.addDojoModules(dojoModules);
     }
 
-    /**
-     * @return the loadedOnPageLoad
-     */
-    public boolean isLoadedOnPageLoad() {
-        return loadedOnPageLoad;
-    }
-
-    /**
-     * @param loadedOnPageLoad the loadedOnPageLoad to set
-     */
-    public void setLoadedOnPageLoad(boolean loadedOnPageLoad) {
-        this.loadedOnPageLoad = loadedOnPageLoad;
-    }
-    // </editor-fold>
+   // </editor-fold>
 }
 
 

@@ -20,24 +20,24 @@ public class PageToolsController extends ConfigurablePageController {
         List<String> setupJspFiles = new ArrayList<String>();
         for (PageTool pageTool : this.getPageToolManager().getTools()) {
 
-            if (!pageTool.isLoadedOnPageLoad()) {
-                // We only load the jsp files if we are loading the
-                // tool defferredly, as otherwise the tool has already been loaded.
-                dialogJspFiles.addAll(addPathPrefixToFileNames(
-                        "tools/" + pageTool.getName(),
-                        pageTool.getDialogJspFiles()));
 
-                dialogJspFiles.addAll(addPathPrefixToFileNames(
-                        "tools/" + pageTool.getName(),
-                        pageTool.getSetupPaneJspFiles()));
+            // We only load the jsp files if we are loading the
+            // tool defferredly, as otherwise the tool has already been loaded.
+            dialogJspFiles.addAll(addPathPrefixToFileNames(
+                    "tools/" + pageTool.getName(),
+                    pageTool.getDialogJspFiles()));
 
-                //Forms ids are prefixed with the task name
-                configureFormEntities(pageTool.getFormEntities(), mav,
-                        pageTool.getName() + "_");
+            dialogJspFiles.addAll(addPathPrefixToFileNames(
+                    "tools/" + pageTool.getName(),
+                    pageTool.getSetupPaneJspFiles()));
 
-                configurePropertiesView(pageTool.getPropertiesView(), mav,
-                        pageTool.getName() + "_");
-            }
+            //Forms ids are prefixed with the task name
+            configureFormEntities(pageTool.getFormEntities(), mav,
+                    pageTool.getName() + "_");
+
+            configurePropertiesView(pageTool.getPropertiesView(), mav,
+                    pageTool.getName() + "_");
+
         }
 
 
