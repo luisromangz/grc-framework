@@ -114,7 +114,7 @@ public class DojoBundlerPlugin extends BaseBundlerPlugin {
 
         loadedModules.add(moduleName);
 
-        File moduleFile = new File(getPathFromModuleName(moduleName));
+        File moduleFile = new File(getPathFromModuleName(moduleName.trim()));
         Scanner scanner = null;
 
         try {

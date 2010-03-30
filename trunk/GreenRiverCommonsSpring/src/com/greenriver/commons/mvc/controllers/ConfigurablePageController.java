@@ -46,6 +46,7 @@ public class ConfigurablePageController extends AbstractController
     private UserSessionInfo userSessionInfo;
     private PageToolManager pageToolManager;
     private List<ControllerPlugin> plugins;
+    private boolean toolsLoadDelayed=true;
     // </editor-fold>
 
     public ConfigurablePageController() {
@@ -172,7 +173,7 @@ public class ConfigurablePageController extends AbstractController
 
             for (PageTool pageTool : this.pageToolManager.getTools()) {
 
-                if (pageTool.isLoadedOnPageLoad()) {
+                if (!this.toolsLoadDelayed) {
                     // We only load the jsp files if we are loading the
                     // tool with the page.
                     dialogJspFiles.addAll(addPathPrefixToFileNames(
@@ -585,6 +586,20 @@ public class ConfigurablePageController extends AbstractController
      */
     protected PageConfiguration getPageConfiguration() {
         return pageConfiguration;
+    }
+
+    /**
+     * @return the toolsLoadDelayed
+     */
+    public boolean isToolsLoadDelayed() {
+        return toolsLoadDelayed;
+    }
+
+    /**
+     * @param toolsLoadDelayed the toolsLoadDelayed to set
+     */
+    public void setToolsLoadDelayed(boolean toolsLoadDelayed) {
+        this.toolsLoadDelayed = toolsLoadDelayed;
     }
     // </editor-fold>
 }
