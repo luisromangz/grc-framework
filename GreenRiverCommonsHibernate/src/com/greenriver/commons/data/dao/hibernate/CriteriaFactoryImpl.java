@@ -235,6 +235,13 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
             return;
         }
 
+        if(value.getClass()==Integer.class || value.getClass()==Float.class|| value.getClass()==Double.class) {
+            // A better number detection would be necessary.
+            if(value.toString().equals("NaN")) {
+                return;
+            }
+        }
+        
         String fieldName = queryFieldProperties.fieldName();
 
         // We add a condition based on the field specified comparison type.
