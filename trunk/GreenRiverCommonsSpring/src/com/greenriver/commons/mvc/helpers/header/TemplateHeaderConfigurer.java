@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.greenriver.commons.mvc.helpers.header;
 
 import org.springframework.web.servlet.ModelAndView;
@@ -48,6 +43,7 @@ public class TemplateHeaderConfigurer
      * @param mav
      * @param configuration
      */
+    @Override
     public void configure(ModelAndView mav, HeaderConfiguration configuration) {
        mav.addObject("jsFiles", configuration.getJavaScriptFiles());
        mav.addObject("jsScripts", configuration.getScripts());
