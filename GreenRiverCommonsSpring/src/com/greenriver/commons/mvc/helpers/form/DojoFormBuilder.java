@@ -51,8 +51,9 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         setFieldProperties(properties, formFieldElement);
 
         // The field is added to the form.
-        FormField field =
-                new FormField(fieldId, formFieldElement.getElementType(),
+        FormField field = new FormField(
+                formFieldElement.getId(),
+                formFieldElement.getElementType(),
                 properties.label(),
                 formFieldElement.getContents(),
                 formFieldElement.getAttributes());
@@ -158,15 +159,15 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
             FieldProperties props = field.getAnnotation(FieldProperties.class);
             if (props != null && props.visible()) {
                 String fieldName =
-                        Strings.isNullOrEmpty(props.accesorFieldName())?
-                            field.getName()
-                            : props.accesorFieldName();
+                        Strings.isNullOrEmpty(props.accesorFieldName())
+                        ? field.getName()
+                        : props.accesorFieldName();
                 this.addField(fieldName, props, field.getType());
             }
         }
 
-        if(entityProperties!=null
-               && entityProperties.appendSuperClassFields()) {
+        if (entityProperties != null
+                && entityProperties.appendSuperClassFields()) {
 
             if (modelClass.getSuperclass() != null) {
                 addFieldsFromModel(modelClass.getSuperclass());
@@ -404,8 +405,8 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         element.getAttributes().setProperty("regExp",
                 ValidationRegex.PASSWORD_ALPHA_6);
         element.getAttributes().setProperty("invalidMessage",
-                "La contraseña debe tener al menos 6 carácteres y " +
-                "sólo carácteres alfabéticos.");
+                "La contraseña debe tener al menos 6 carácteres y "
+                + "sólo carácteres alfabéticos.");
     }
 
     private void setupLongTextField(HtmlFormElementInfo element,
@@ -432,15 +433,15 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         element.getAttributes().setProperty("dojoType", "dijit.Editor");
         element.setAttribute("plugins",
                 "[{name:'grc.dijit._editor.plugins.FontChoice', command:'fontName', generic:false},"
-                +"{name:'grc.dijit._editor.plugins.FontChoice', command:'formatBlock', generic:false},"
-                +"{name:'grc.dijit._editor.plugins.FontChoice', command:'fontSize'},"
-                +"'foreColor','hiliteColor',"
-                +"'|','undo','redo','|','bold','italic','underline','strikethrough'," 
-                +"'|', 'indent', 'outdent', 'justifyLeft', 'justifyCenter', 'justifyRight',"
-                +"'|','createLink','insertImage']");
-        
+                + "{name:'grc.dijit._editor.plugins.FontChoice', command:'formatBlock', generic:false},"
+                + "{name:'grc.dijit._editor.plugins.FontChoice', command:'fontSize'},"
+                + "'foreColor','hiliteColor',"
+                + "'|','undo','redo','|','bold','italic','underline','strikethrough',"
+                + "'|', 'indent', 'outdent', 'justifyLeft', 'justifyCenter', 'justifyRight',"
+                + "'|','createLink','insertImage']");
+
         element.setElementType("div");
-        configuration.addDojoModule("dijit.Editor");        
+        configuration.addDojoModule("dijit.Editor");
         configuration.addDojoModule("dijit._editor.plugins.TextColor");
         configuration.addDojoModule("dijit._editor.plugins.LinkDialog");
         configuration.addDojoModule("grc.dijit._editor.plugins.FontChoice");
@@ -598,7 +599,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         assertNotSelection(properties);
         assertNotFile(properties);
 
-        element.setAttribute("dojoType","dijit.form.NumberSpinner");
+        element.setAttribute("dojoType", "dijit.form.NumberSpinner");
 
 
         element.getAttributes().remove("intermediateChanges");
@@ -608,9 +609,9 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         //use a dot as decimal separator (representation independent in javascript).
         String min = properties.minValue() + "";
         String max = properties.maxValue() + "";
-        String pattern = "#,##0."+Strings.repeat("#", properties.decimalPlaces());
+        String pattern = "#,##0." + Strings.repeat("#", properties.decimalPlaces());
 
-        this.configuration.addOnLoadScript("dijit.byId('"+element.getId()+"').intermediateChanges=false;");
+        this.configuration.addOnLoadScript("dijit.byId('" + element.getId() + "').intermediateChanges=false;");
 
         element.setAttribute(
                 "constraints",
@@ -711,14 +712,13 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
      * @param properties
      * @param element
      */
-
     private void setFieldProperties(FieldProperties properties,
             HtmlFormElementInfo element) {
         if (properties.required()) {
             element.getAttributes().setProperty("required", "true");
         }
 
-        
+
         element.getAttributes().setProperty("unit", properties.unit());
 
         // Custom options are set now.
@@ -742,7 +742,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         }
 
 
-        if(!Strings.isNullOrEmpty(properties.widgetStyle())) {
+        if (!Strings.isNullOrEmpty(properties.widgetStyle())) {
             element.setAttribute("style", properties.widgetStyle());
         }
 
@@ -899,7 +899,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         configuration.addDojoModule("grc.dijit.form.CustomValidationTextBox");
 
         formFieldElement.setAttribute("type", "text");
-        formFieldElement.setAttribute("dojoType","grc.dijit.form.CustomValidationTextBox");
+        formFieldElement.setAttribute("dojoType", "grc.dijit.form.CustomValidationTextBox");
 
         // TODO: Add validation to OLD_NIF type
         formFieldElement.setAttribute("trim", "true");
@@ -923,7 +923,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         configuration.addDojoModule("grc.dijit.form.CustomValidationTextBox");
 
         formFieldElement.setAttribute("type", "text");
-        formFieldElement.setAttribute("dojoType","grc.dijit.form.CustomValidationTextBox");
+        formFieldElement.setAttribute("dojoType", "grc.dijit.form.CustomValidationTextBox");
 
         // TODO: Add validation to OLD_NIF type
         formFieldElement.setAttribute("trim", "true");
