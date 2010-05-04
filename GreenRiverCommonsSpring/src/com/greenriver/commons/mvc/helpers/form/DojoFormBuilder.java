@@ -611,6 +611,8 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         String max = properties.maxValue() + "";
         String pattern = "#,##0." + Strings.repeat("#", properties.decimalPlaces());
 
+        
+        // Just setting the intermediateChanges property in the element just dont work.
         this.configuration.addOnLoadScript("dijit.byId('" + element.getId() + "').intermediateChanges=false;");
 
         element.setAttribute(
