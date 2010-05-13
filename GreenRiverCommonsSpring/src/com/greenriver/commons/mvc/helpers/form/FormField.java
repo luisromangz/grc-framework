@@ -9,11 +9,13 @@ import java.util.Properties;
 public class FormField implements Comparable<FormField> {
 
     private String labelElement;
+    private String label;
     private String widgetElement;
     private String id;
 
     public FormField(String id, String element, String label, String contents, Properties properties) {
         this.id = id;
+        this.label = label;
         labelElement = String.format(
                 "<label id='%s_label' for='%1$s'>%2$s</label>", id, label);
 
@@ -60,6 +62,7 @@ public class FormField implements Comparable<FormField> {
         this.id = id;
     }
 
+    @Override
     public int compareTo(FormField o) {
         return this.getId().compareTo(o.getId());
     }
@@ -78,5 +81,12 @@ public class FormField implements Comparable<FormField> {
         int hash = 5;
         hash = 89 * hash + (this.id != null ? this.id.hashCode() : 0);
         return hash;
+    }
+
+    /**
+     * @return the label
+     */
+    public String getLabel() {
+        return label;
     }
 }
