@@ -6,10 +6,10 @@ import java.util.List;
  *
  * @author luis
  */
-public class ErrorMessagesException extends RuntimeException {
+public class ErrorMessagesException extends Exception {
     private List<String> messages;
     public ErrorMessagesException(List<String> messages) {
-        
+        this.messages = messages;
     }
 
     /**
