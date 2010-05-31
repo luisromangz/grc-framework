@@ -19,13 +19,19 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.PropertyExpression;
+import org.hibernate.criterion.PropertySubqueryExpression;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.SubqueryExpression;
 
 /**
  * Criteria factory impl that references the dao that is using it.
@@ -62,7 +68,6 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
     }
 
     // <editor-fold defaultstate="collapsed" desc="QueryArguments related methods">
-    @SuppressWarnings("unchecked")
     @Override
     public Criteria createCriteriaFromQueryArguments(
             EntityQueryArguments queryArguments) {
@@ -84,7 +89,8 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
         return crit;
     }
 
-    private Criteria internalCreateCriteriaFromQueryArguments(EntityQueryArguments queryArguments, boolean doSorting) {
+    private Criteria internalCreateCriteriaFromQueryArguments(
+            EntityQueryArguments queryArguments, boolean doSorting) {
         Class argumentClass = queryArguments.getClass();
         QueryArgumentsProperties queryProperties =
                 (QueryArgumentsProperties) argumentClass.getAnnotation(
@@ -153,7 +159,7 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
             Disjunction disjunction = Restrictions.disjunction();
 
             // We create a mapping to avoid serveral retrievals for the same field
-            // which hiberante despises.
+            // which hibernate despises.
             Map<String, List<String>> queryMappings =
                     new HashMap<String, List<String>>();
 
@@ -165,6 +171,7 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
                 String property = null;
 
                 if (index >= 0) {
+                    // In practice we are only supporting property.field at most.
                     field = fieldName.substring(0, index);
                     property = fieldName.substring(index + 1);
                 } else {
@@ -193,12 +200,12 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
                             queryArguments.getTextFilter(),
                             MatchMode.ANYWHERE));
                 } else {
-                    Criteria subCriteria = crit.createCriteria(field);
-                    Disjunction subDisjunction = Restrictions.disjunction();
 
-                    subCriteria.add(subDisjunction);
+                    crit.createAlias(field, field);
+                                        
                     for (String property : properties) {
-                        subDisjunction.add(Restrictions.ilike(property,
+                       
+                        disjunction.add(Restrictions.ilike(field+"."+property,
                                 queryArguments.getTextFilter(),
                                 MatchMode.ANYWHERE));
                     }
