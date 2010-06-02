@@ -161,6 +161,7 @@ public abstract class OsService extends IterativeWorker {
      */
     protected class OsServiceShutdownTask implements ShutdownManager {
 
+        @Override
 	public void run() {
 	    shutdown();
 	}
@@ -433,19 +434,19 @@ public abstract class OsService extends IterativeWorker {
 	StringBuilder sb = new StringBuilder();
 
 	sb.append("OsService " + getName() + " running with pid " +
-		getPid() + (isDaemon() ? " as daemon." : "."));
+		getPid() + (isDaemon() ? " as daemon." : ".") + "\n");
 	sb.append("Java version: " + System.getProperty("java.version") +
 		", Vendor: " + System.getProperty("java.vendor") +
 		", OS: " + System.getProperty("os.name") +
-		", ARCH: " + System.getProperty("os.arch"));
+		", ARCH: " + System.getProperty("os.arch") + "\n");
 	sb.append(
 		"VM version: " + System.getProperty("java.vm.version") +
 		", VM vendor: " + System.getProperty("java.vm.vendor") +
-		", VM name: " + System.getProperty("java.vm.name"));
-	sb.append("JAVAHOME: " + System.getProperty("java.home"));
-	sb.append("CLASSPATH: " + System.getProperty("java.class.path"));
-	sb.append("LIBPATH: " + System.getProperty("java.library.path"));
-	sb.append("PIDFILE: " + getPidFile().getAbsolutePath());
+		", VM name: " + System.getProperty("java.vm.name") + "\n");
+	sb.append("JAVAHOME: " + System.getProperty("java.home") + "\n");
+	sb.append("CLASSPATH: " + System.getProperty("java.class.path") + "\n");
+	sb.append("LIBPATH: " + System.getProperty("java.library.path") + "\n");
+	sb.append("PIDFILE: " + getPidFile().getAbsolutePath() + "\n");
 
 	if (logFile != null) {
 	    sb.append("LOGFILE: " + logFile.getAbsolutePath());
@@ -667,6 +668,7 @@ public abstract class OsService extends IterativeWorker {
      * Method called continuously after setup() and that stops only if stop()
      * is called
      */
+    @Override
     protected abstract void work();
 
     @Override
