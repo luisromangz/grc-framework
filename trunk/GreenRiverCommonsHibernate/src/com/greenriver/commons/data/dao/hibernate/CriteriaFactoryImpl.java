@@ -19,19 +19,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.PropertyExpression;
-import org.hibernate.criterion.PropertySubqueryExpression;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.criterion.SubqueryExpression;
 
 /**
  * Criteria factory impl that references the dao that is using it.
@@ -80,7 +74,7 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
             int page,
             int pageSize,
             EntityQueryArguments queryArguments) {
-        
+
         Criteria crit = internalCreateCriteriaFromQueryArguments(queryArguments, true);
         // We set the pagination values
         crit.setMaxResults(pageSize);
@@ -202,10 +196,10 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
                 } else {
 
                     crit.createAlias(field, field);
-                                        
+
                     for (String property : properties) {
-                       
-                        disjunction.add(Restrictions.ilike(field+"."+property,
+
+                        disjunction.add(Restrictions.ilike(field + "." + property,
                                 queryArguments.getTextFilter(),
                                 MatchMode.ANYWHERE));
                     }
@@ -242,13 +236,13 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
             return;
         }
 
-        if(value.getClass()==Integer.class || value.getClass()==Float.class|| value.getClass()==Double.class) {
+        if (value.getClass() == Integer.class || value.getClass() == Float.class || value.getClass() == Double.class) {
             // A better number detection would be necessary.
-            if(value.toString().equals("NaN")) {
+            if (value.toString().equals("NaN")) {
                 return;
             }
         }
-        
+
         String fieldName = queryFieldProperties.fieldName();
 
         // We add a condition based on the field specified comparison type.
@@ -371,7 +365,12 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
         return true;
     }
 
-    private void setSorting(Criteria crit, EntityQueryArguments queryArguments, Class argumentClass, QueryArgumentsProperties queryProperties) {
+    private void setSorting(
+            Criteria crit,
+            EntityQueryArguments queryArguments,
+            Class argumentClass,
+            QueryArgumentsProperties queryProperties) {
+
         boolean sortingSpecified = false;
         boolean oldSortingSpecified = !Strings.isNullOrEmpty(queryArguments.getSortFieldName());
 
@@ -402,10 +401,9 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
             return;
         }
 
-        int typesLength = -1;
-
-        if (queryProperties.defaultSortTypes() != null) {
-            typesLength = queryProperties.defaultSortTypes().length;
+        if(queryProperties.defaultSortFields().length!=
+                queryProperties.defaultSortTypes().length) {
+            throw new IllegalArgumentException("Sorting modes not defined for all default sort fields.");
         }
 
         for (int i = 0; i < queryProperties.defaultSortFields().length; i++) {
@@ -413,12 +411,13 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
                     queryProperties.defaultSortFields()[i],
                     QueryArgumentsSortType.ASCENDING);
 
-            if (typesLength > i) {
-                sorting.setType(queryProperties.defaultSortTypes()[i]);
-            }
 
+            sorting.setType(queryProperties.defaultSortTypes()[i]);
             this.addSorting(crit, sorting);
         }
+
+        
     }
-    // </editor-fold>
 }
+// </editor-fold>
+
