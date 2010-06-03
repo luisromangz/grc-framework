@@ -41,6 +41,7 @@ public class HibernateMultipleResultsDao<T>
     public void save(T entity) {
         
         getCurrentSession().saveOrUpdate(entity);
+        getCurrentSession().flush();
 
     }
 
