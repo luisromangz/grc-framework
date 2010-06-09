@@ -5,7 +5,6 @@ import org.apache.log4j.Logger;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.springframework.security.Authentication;
 import org.springframework.security.BadCredentialsException;
-import org.springframework.util.StringUtils;
 
 /**
  * This class both extends Log4jLogger and implements AuthenticationLoggerAdvisor,
@@ -21,6 +20,7 @@ public class Log4jAuthenticationLoggingAdvisor extends Log4jLogger
      * Wraps a call to Spring Security's
      * AuthenticationProvider.authenticate().
      */
+    @Override
     public Object logAuth(ProceedingJoinPoint call) throws Throwable {
 
         Logger authLog = this.getLogger();
