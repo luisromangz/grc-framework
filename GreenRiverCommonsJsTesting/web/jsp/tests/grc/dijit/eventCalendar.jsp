@@ -41,7 +41,7 @@
     </head>
     <body class="tundra">
         <div id="body">
-            <div style="background-color: #cfcfcf;min-width: 700px; min-height: 450px;padding: 12px">
+            <div style="background-color: #cfcfcf;min-width: 700px; min-height: 650px;padding: 12px">
                 <dl>
                     <dt>Por defecto</dt>
                     <dd>
@@ -70,11 +70,23 @@
                              allowViewOfDisabledMonths="false"
                              constraints="{min:'today'}"></div>
                     </dd>
-                    <dt>Restricción inicializada a varios objetos siendo uno inválido por
-                    lo que debe lanzar una excepción</dt>
+                    <dt>Modo de cambio de selección mediante rangos establecido a añadir. Modo
+                    cambio de selección con un click activado.</dt>
                     <dd>
                         <div dojoType="grc.dijit.EventCalendar" id="eventCalendar6"
-                             constraints="[{min:'today'},{max:'2010/09/20'},{p:'j'}]"></div>
+                             rangeSelectionMode="add" singleClickToggle="true"></div>
+                    </dd>
+                    <dt>Funcionamiento similar a la selección de archivos</dt>
+                    <dd>
+                        <div dojoType="grc.dijit.EventCalendar" id="eventCalendar7"
+                             rangeSelectionMode="replace" emulateFileBrowser="true"></div>
+                    </dd>
+                    <dt>Funcionamiento similar a la selección de archivos. Modo cambio de
+                        selección con un click activado</dt>
+                    <dd>
+                        <div dojoType="grc.dijit.EventCalendar" id="eventCalendar8"
+                             singleClickToggle="true"
+                             rangeSelectionMode="replace" emulateFileBrowser="true"></div>
                     </dd>
                 </dl>
             </div>
