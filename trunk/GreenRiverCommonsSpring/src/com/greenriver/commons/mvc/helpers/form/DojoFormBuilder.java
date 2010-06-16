@@ -526,6 +526,8 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         element.getAttributes().setProperty("dojoType",
                 "dijit.form.FilteringSelect");
         element.setElementType("select");
+        // Changed because of client request.
+        element.setAttribute("ignoreCase", "true");
 
         element.setContents(createSelectionContents(fieldType, properties,
                 properties.possibleValues(),
@@ -631,7 +633,8 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         element.setElementType("select");
         element.getAttributes().setProperty("class",
                 "backgroundlessComboBoxButton");
-        element.setAttribute("ignoreCase", "false");
+        // Case ignored because of client request
+        element.setAttribute("ignoreCase", "true");
 
         try {
             element.setContents(createSelectionContents(fieldType, properties,
