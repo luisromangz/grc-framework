@@ -70,8 +70,8 @@ public class ServiceResult<T> {
         this.errorMessages.addAll(errorMessages);
     }
 
-    public void addErrorMessage(String message) {
-        errorMessages.add(message);
+    public void addErrorMessage(String message, Object ... submessages) {
+       this.errorMessages.add(String.format(message, submessages));
     }
 
     
