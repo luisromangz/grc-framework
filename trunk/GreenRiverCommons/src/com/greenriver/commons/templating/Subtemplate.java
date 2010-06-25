@@ -26,7 +26,7 @@ public interface Subtemplate<T extends TemplateReplacement, R,K> extends Copieab
      * Gets all the replacements defined in the template
      * @return
      */
-    List<T> getTemplateReplacements();
+    T[] getTemplateReplacements();
 
     /**
      * Gets the replacement this subtemplate will replace in the parent template.
