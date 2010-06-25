@@ -38,7 +38,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
         FieldsValidationResult result = new FieldsValidationResult();
 
         if(object==null) {
-            result.addErrorMessage("El objecto recivido es inválido.");
+            result.addErrorMessage("El objeto recibido es nulo.");
             result.setValid(false);
             return result;
         }
