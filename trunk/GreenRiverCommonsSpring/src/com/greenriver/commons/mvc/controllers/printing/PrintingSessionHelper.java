@@ -5,6 +5,7 @@
 
 package com.greenriver.commons.mvc.controllers.printing;
 
+import com.greenriver.commons.services.ServiceResult;
 import com.greenriver.commons.templating.PrintableDocument;
 import java.io.Serializable;
 import java.util.List;
@@ -25,10 +26,10 @@ public interface PrintingSessionHelper extends Serializable {
     /**
      * @param document the document to set
      */
-    void setDocument(PrintableDocument document);
+    boolean setDocument(PrintableDocument document, ServiceResult sr);
 
-    void setDocuments(List<PrintableDocument> documents);
+    boolean setDocuments(List<PrintableDocument> documents, ServiceResult sr);
 
-    void addDocument(PrintableDocument document);
-
+    byte[] getPDFContent();
+   
 }
