@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <title>TODO supply a title</title>
+        <style type="text/css">
+
+            body {
+
+                font-family: Tahoma, Arial, sans-serif;
+            }
+
+            div.body {
+                page:body;
+            }
+
+            @page body {
+                counter-reset: page;
+                size: 25cm 21cm;
+                margin: 3cm 1cm 5cm 0cm;
+                background-color:red;
+            }
+
+            td {
+                border: 0.5mm solid black;
+                padding: 1mm;
+                vertical-align: baseline;
+            }
+
+            div.footer {
+                page: body;
+                region:bottom;
+                height:2em;
+                border-top: 0.5mm solid black;
+            }
+
+
+            span.pageCounter:before {
+                content : counter(page);
+            }
+        </style>
+
+    </head>
+    <body>
+        <div class="footer">
+            Ummm <span class="pageCounter"/>
+        </div>
+
+        <div class="body">
+            <h1> Hola holita con suertecita</h1>
+
+
+            <table style="width:7em;">
+                <tbody>
+                    <tr>
+                        <td>
+                            Mola
+                        </td>
+                        <td>
+                            Mucho
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+
+            <table style="float:right;height:10em;width:3em">
+                <tbody>
+                    <tr>
+                        <td>
+                            Mola
+                        </td>
+                        <td>
+                            Mucho
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+
+            <table style="width:7em;">
+                <tbody>
+                    <tr>
+                        <td>
+                            Mola
+                        </td>
+                        <td>
+                            Mucho
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+
+    </body>
+</html>
