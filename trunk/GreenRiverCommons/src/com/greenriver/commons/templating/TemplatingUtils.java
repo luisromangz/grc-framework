@@ -28,7 +28,8 @@ public class TemplatingUtils {
         }
 
         String element="span";
-        if(isSubtemplatedReplacement(replacement)){
+        if(isSubtemplatedReplacement(replacement)
+                && ((SubtemplatedReplacement)replacement).getSubtemplateField()!=null){
             element="div";
         }
 
