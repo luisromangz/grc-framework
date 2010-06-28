@@ -155,9 +155,9 @@ public class PageConfiguration implements Serializable, Copieable<PageConfigurat
                     replacements.get(replacement)));
         }
 
-        pageConfiguration.setFooterLeft(Strings.asciify(pageConfiguration.getFooterLeft()));
-        pageConfiguration.setFooterCenter(Strings.asciify(pageConfiguration.getFooterCenter()));
-        pageConfiguration.setFooterRight(Strings.asciify(pageConfiguration.getFooterRight()));
+        pageConfiguration.setFooterLeft(pageConfiguration.getFooterLeft());
+        pageConfiguration.setFooterCenter(pageConfiguration.getFooterCenter());
+        pageConfiguration.setFooterRight(pageConfiguration.getFooterRight());
 
         return pageConfiguration;
     }
@@ -328,6 +328,11 @@ public class PageConfiguration implements Serializable, Copieable<PageConfigurat
      */
     public void setFooterRight(String footerRight) {
         this.footerRight = footerRight;
+    }
+
+    public boolean hasFooter() {
+        return !(Strings.isNullOrEmpty(footerLeft) && Strings.isNullOrEmpty(footerCenter)
+                && Strings.isNullOrEmpty(footerRight));
     }
     // </editor-fold>
 }
