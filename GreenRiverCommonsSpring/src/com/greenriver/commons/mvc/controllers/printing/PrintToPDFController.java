@@ -55,7 +55,7 @@ public class PrintToPDFController extends AbstractController {
         try {
             converter.convertToPDF(
                     new ByteArrayInputStream(html.getBytes()),
-                    new ByteArrayOutputStream());
+                    pdfOutput);
         } catch (RuntimeException e) {
             return new ModelAndView("printError");
         }
@@ -67,9 +67,9 @@ public class PrintToPDFController extends AbstractController {
         response.setHeader("Content-Disposition",
                 String.format("attachment; filename=\"%s\"",
                 Strings.isNullOrEmpty(document.getTitle()) ? "print.pdf"
-                : document.getTitle() + ".pdf"));
+                : Strings.asciify(document.getTitle()) + ".pdf"));
 
-        response.getOutputStream().print(pdfOutput.toString());
+        response.getOutputStream().write(pdfOutput.toByteArray());
         response.getOutputStream().flush();
         response.getOutputStream().close();
 
