@@ -3,6 +3,7 @@ package com.greenriver.commons.templating;
 import com.greenriver.commons.Strings;
 import java.util.Arrays;
 import java.util.List;
+import org.apache.bcel.generic.INSTANCEOF;
 
 /**
  *
@@ -11,9 +12,7 @@ import java.util.List;
 public class TemplatingUtils {
 
     public static boolean isSubtemplatedReplacement(TemplateReplacement replacement) {
-        List<Class<?>> interfaces = Arrays.asList(replacement.getClass().getInterfaces());
-        return interfaces.contains(SubtemplatedReplacement.class)
-                && ((SubtemplatedReplacement)replacement).getSubtemplateField()!=null;
+        return (replacement instanceof SubtemplatedReplacement);
     }
 
 
@@ -28,7 +27,13 @@ public class TemplatingUtils {
             return " ";
         }
 
-        return String.format("<span class=\"%s\">%s</span>",
+        String element="span";
+        if(isSubtemplatedReplacement(replacement)){
+            element="div";
+        }
+
+        return String.format("<%s class=\"%s\">%s</span>",
+                element,
                 replacement.getPlaceholder(),
                 value);
     }
