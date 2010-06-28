@@ -40,18 +40,26 @@ public abstract class PrintingTemplate<T extends TemplateReplacement, K>
 
     @Override
     public final PrintableDocument fillTemplate(K source, Map<T, String> externalReplacements) {
+        return this.fillTemplate("", source, externalReplacements);
+    }   
+
+    public final PrintableDocument fillTemplate(String documentTitle,K source, Map<T, String> externalReplacements) {
         Map<T, String> replacements = this.createReplacements(source);
 
         if (externalReplacements != null) {
             replacements.putAll(externalReplacements);
         }
 
-        return this.fillTemplateAux(replacements);
+        PrintableDocument document = new PrintableDocument(documentTitle);
+        this.fillTemplateAux(document, replacements);
+        return document;
     }
 
     protected abstract Map<T, String> createReplacements(K source);
 
-    private PrintableDocument fillTemplateAux(Map<T, String> replacements) {
+    private void fillTemplateAux(
+            PrintableDocument document,
+            Map<T, String> replacements) {
         String documentBody = new String(body);
         for (T replacement : replacements.keySet()) {
             String replacementValue = TemplatingUtils.formatTemplateReplacement(
@@ -63,12 +71,9 @@ public abstract class PrintingTemplate<T extends TemplateReplacement, K>
                     replacementValue);
         }
 
-        PrintableDocument document = new PrintableDocument();
         document.setBody(documentBody);
         document.setCssStyles(this.getCssStyles());
         document.setPageConfiguration(getPageConfiguration().fillTemplate(replacements));
-
-        return document;
     }
 
     @Override
