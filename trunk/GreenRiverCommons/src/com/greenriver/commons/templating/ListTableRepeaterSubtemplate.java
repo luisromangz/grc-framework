@@ -75,14 +75,14 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
     }
 
     private String fillListTemplates(List<Map<T, String>> replacements) {
-        String result = "<ul>";
+        String result = this.isOrderedList?"<ol>":"<ul>";
 
         for (Map<T, String> elementReplacements : replacements) {
             String elementString = this.fillTemplateAux(elementFormat, elementReplacements);
             result += String.format("<li>%s</li>", elementString);
         }
 
-        result += "</ul>";
+        result += this.isOrderedList?"</ol>":"</ul>";
 
         return result;
     }
