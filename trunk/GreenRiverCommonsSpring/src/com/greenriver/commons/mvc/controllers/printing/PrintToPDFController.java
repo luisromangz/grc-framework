@@ -9,6 +9,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,14 +32,17 @@ public class PrintToPDFController extends AbstractController {
     private String footerAndHeaderTemplate;
     private final String PAGE_COUNTER = "<span class=\"pageCounter\"/>";
     private final String PAGE_TOTAL = "<span class=\"totalPages\"/>";
+    private final String PAGE_SEPARATOR="<div style=\"page-break-after:always\"></div>";
 
     @Override
     protected ModelAndView handleRequestInternal(
             HttpServletRequest request,
             HttpServletResponse response) throws Exception {
 
-        PrintableDocument document = printingSessionHelper.getDocument();
-        if (document == null) {
+        List<PrintableDocument> documents = printingSessionHelper.getDocuments();
+
+
+        if (documents.isEmpty()) {
             // Nothing to print.
             return new ModelAndView("printError");
         }
@@ -48,7 +53,7 @@ public class PrintToPDFController extends AbstractController {
         footerAndHeaderTemplate = Strings.fromInputStream(
                 this.getClass().getResourceAsStream("footerAndHeaderTemplate.xml"));
 
-        String html = fillTemplate(document);
+        String html = fillTemplate(documents);
 
 
         ByteArrayOutputStream pdfOutput = new ByteArrayOutputStream();
@@ -66,24 +71,26 @@ public class PrintToPDFController extends AbstractController {
         response.setHeader("Cache-Control", "max-age=0");
         response.setHeader("Content-Disposition",
                 String.format("attachment; filename=\"%s\"",
-                Strings.isNullOrEmpty(document.getTitle()) ? "print.pdf"
-                : Strings.asciify(document.getTitle()) + ".pdf"));
+                Strings.isNullOrEmpty(documents.get(0).getTitle()) ? "print.pdf"
+                : Strings.asciify(documents.get(0).getTitle()) + ".pdf"));
 
         response.getOutputStream().write(pdfOutput.toByteArray());
         response.getOutputStream().flush();
         response.getOutputStream().close();
 
 
-        printingSessionHelper.clearDocument();
+        printingSessionHelper.clearDocuments();
 
         return null;
     }
 
-    private String fillTemplate(PrintableDocument document) {
-        String html = template.replace("%TITLE%", document.getTitle());
-        html = html.replace("%DOCUMENT_STYLES%", document.getCssStyles());
+    private String fillTemplate(List<PrintableDocument> documents) {
+        // All documents share template so share all info.
+        PrintableDocument firstDocument = documents.get(0);
+        String html = template.replace("%TITLE%", firstDocument.getTitle());
+        html = html.replace("%DOCUMENT_STYLES%", firstDocument.getCssStyles());
 
-        PageConfiguration pageConfig = document.getPageConfiguration();
+        PageConfiguration pageConfig = firstDocument.getPageConfiguration();
         if (pageConfig.isLandscape()) {
             html = html.replace("%PAGE_HEIGHT%", String.valueOf(pageConfig.getPageWidth()));
             html = html.replace("%PAGE_WIDTH%", String.valueOf(pageConfig.getPageHeight()));
@@ -116,14 +123,15 @@ public class PrintToPDFController extends AbstractController {
         tidier.setAsciiChars(false);
         tidier.setNumEntities(true);
 
-        StringWriter tidiedWriter = new StringWriter();
+        List<String> tidiedBodies = new ArrayList<String>();
+        // We process each document's body.
+        for (PrintableDocument document : documents) {
+            StringWriter tidiedWriter = new StringWriter();
+            tidier.parse(new StringReader(document.getBody()), tidiedWriter);
+            tidiedBodies.add(tidiedWriter.toString());
+        }
 
-        tidier.parse(new StringReader(document.getBody()), tidiedWriter);
-
-
-        String tidiedBody = tidiedWriter.toString();
-
-        html = html.replace("%DOCUMENT_BODY%", tidiedBody);
+        html = html.replace("%DOCUMENT_BODY%", Strings.join(tidiedBodies,this.PAGE_SEPARATOR));
 
         return html;
     }
