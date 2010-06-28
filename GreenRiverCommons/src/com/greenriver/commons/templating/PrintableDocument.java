@@ -5,14 +5,25 @@
 
 package com.greenriver.commons.templating;
 
+import java.io.Serializable;
+
 /**
- *
+ * This class hold the information necessary to print a template-generated
+ * document.
+ * 
  * @author luis
  */
-public class PrintableDocument {
+public class PrintableDocument implements Serializable{
     private String body;
     private String cssStyles;
     private PageConfiguration pageConfiguration;
+    private String title;
+
+    public PrintableDocument(String title) {
+        this.title = title;
+    }
+
+
     // <editor-fold defaultstate="collapsed" desc="Getters and setters">
 
     /**
@@ -55,6 +66,20 @@ public class PrintableDocument {
      */
     public void setPageConfiguration(PageConfiguration pageConfiguration) {
         this.pageConfiguration = pageConfiguration;
+    }
+
+    /**
+     * @return the title
+     */
+    public String getTitle() {
+        return title;
+    }
+
+    /**
+     * @param title the title to set
+     */
+    public void setTitle(String title) {
+        this.title = title;
     }
     // </editor-fold>
 }
