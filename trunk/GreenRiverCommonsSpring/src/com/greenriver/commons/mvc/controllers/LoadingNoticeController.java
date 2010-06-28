@@ -49,10 +49,12 @@ public class LoadingNoticeController extends ParameterizableViewController
     }
 
     private HeaderConfigurer headerConfigurer;
+    @Override
     public void setHeaderConfigurer(HeaderConfigurer bean) {
         headerConfigurer = bean;
     }
 
+    @Override
     public HeaderConfigurer getHeaderConfigurer() {
         return headerConfigurer;
     }
