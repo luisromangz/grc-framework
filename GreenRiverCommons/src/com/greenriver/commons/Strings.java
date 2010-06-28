@@ -11,6 +11,9 @@ Author: Miguel Angel
 ###################################################################*/
 package com.greenriver.commons;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -424,5 +427,20 @@ public class Strings {
      */
     public static String asciify(String input) {
         return input.replaceAll("[^\\p{ASCII}]", "?");
+    }
+
+    public static String fromInputStream(InputStream input) throws IOException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+        int readByte;
+
+        while ((readByte = input.read()) != -1) {
+            outputStream.write(readByte);
+        }
+
+        input.close();
+        outputStream.close();
+
+        return outputStream.toString();
     }
 }
