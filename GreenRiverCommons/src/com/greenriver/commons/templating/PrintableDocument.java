@@ -30,7 +30,7 @@ public class PrintableDocument implements Serializable{
      * @return the body
      */
     public String getBody() {
-        return body;
+        return body==null?"":body;
     }
 
     /**
@@ -44,7 +44,7 @@ public class PrintableDocument implements Serializable{
      * @return the cssStyles
      */
     public String getCssStyles() {
-        return cssStyles;
+        return cssStyles==null?"":cssStyles;
     }
 
     /**
