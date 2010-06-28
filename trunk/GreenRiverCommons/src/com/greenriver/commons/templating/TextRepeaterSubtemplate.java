@@ -1,11 +1,13 @@
 
 package com.greenriver.commons.templating;
 
+import com.greenriver.commons.Strings;
 import com.greenriver.commons.data.fieldProperties.EntityFieldsProperties;
 import com.greenriver.commons.data.fieldProperties.FieldDeactivationCondition;
 import com.greenriver.commons.data.fieldProperties.FieldProperties;
 import com.greenriver.commons.data.fieldProperties.FieldType;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -50,7 +52,7 @@ public abstract class TextRepeaterSubtemplate<T extends TemplateReplacement, K e
   
     @Override
     protected String fillTemplatesInternal(List<Map<T, String>> replacements) {
-        String result="";
+         List<String> texts = new ArrayList<String>();
 
         for(Map<T,String> elementReplacements: replacements) {
             String elementResult = body;
@@ -62,16 +64,18 @@ public abstract class TextRepeaterSubtemplate<T extends TemplateReplacement, K e
                         elementReplacements.get(replacement)));
             }
 
-            result+=elementResult;
 
-            if(newPageAfterText){             
-                result = "<div style=\"page-break-after:always\">"+result+"</div>";
-            } else if(newLineAfterText) {
-                result+="<br>";
-            }
+            texts.add(elementResult);
         }
 
-        return result;
+        String glue="";
+        if(newPageAfterText){
+                glue = "<div style=\"page-break-after:always\"></div>";
+            } else if(newLineAfterText) {
+                glue = "<br/>";
+            }
+
+        return Strings.join(texts, glue);
     }
 
     @Override
