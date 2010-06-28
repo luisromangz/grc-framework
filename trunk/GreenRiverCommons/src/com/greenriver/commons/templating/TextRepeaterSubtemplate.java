@@ -70,7 +70,7 @@ public abstract class TextRepeaterSubtemplate<T extends TemplateReplacement, K e
 
         String glue="";
         if(newPageAfterText){
-                glue = "<div style=\"page-break-after:always\"></div>";
+                glue = "<div style=\"page-break-after:always\"><!--Non empty--></div>";
             } else if(newLineAfterText) {
                 glue = "<br/>";
             }
