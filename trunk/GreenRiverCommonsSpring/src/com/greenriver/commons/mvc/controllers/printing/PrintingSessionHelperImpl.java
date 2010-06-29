@@ -77,9 +77,7 @@ public class PrintingSessionHelperImpl implements PrintingSessionHelper {
         html = html.replace("%MARGIN_TOP%", String.valueOf(pageConfig.getTopMargin()));
         html = html.replace("%MARGIN_BOTTOM%", String.valueOf(pageConfig.getBottomMargin()));
         html = html.replace("%MARGIN_LEFT%", String.valueOf(pageConfig.getLeftMargin()));
-        html = html.replace("%MARGIN_RIGTH%", String.valueOf(pageConfig.getRightMargin()));
-
-        html = html.replace("%MARGIN_RIGTH%", String.valueOf(pageConfig.getRightMargin()));
+        html = html.replace("%MARGIN_RIGHT%", String.valueOf(pageConfig.getRightMargin()));
 
         if (pageConfig.hasFooter()) {
             String footer = footerAndHeaderTemplate.replace("%REGION_CLASS%", "footer");
