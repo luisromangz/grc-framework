@@ -1,9 +1,6 @@
 package com.greenriver.commons.templating;
 
 import com.greenriver.commons.Strings;
-import java.util.Arrays;
-import java.util.List;
-import org.apache.bcel.generic.INSTANCEOF;
 
 /**
  *
@@ -24,7 +21,7 @@ public class TemplatingUtils {
         if(Strings.isNullOrEmpty(value)) {
             // We dont' return the empty string so, e.g. an empty cell doesn't
             // desappear.
-            return " ";
+            return "<!--Not empty-->";
         }
 
         String element="span";
@@ -33,10 +30,10 @@ public class TemplatingUtils {
             element="div";
         }
 
-        return String.format("<%s class=\"%s\">%s</span>",
+        return String.format("<%s class=\"%s\">%s</%s>",
                 element,
                 replacement.getPlaceholder(),
-                value);
+                value,element);
     }
 
 }
