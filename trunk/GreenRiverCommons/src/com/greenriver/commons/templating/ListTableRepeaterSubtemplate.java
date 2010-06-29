@@ -74,9 +74,9 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
     deactivationConditions = {
     @FieldDeactivationCondition(triggerField="isTable",equals="'false'")})
     private String textAlign="center";
-    @FieldProperties(label = "Bordes", type = FieldType.MULTISELECTION,
-    possibleValueLabels = {"Superior", "Inferior","Izquierdo","Derecho"},
-    possibleValues = {"border-top", "border-bottom", "border-left","border-right"},
+    @FieldProperties(label = "Bordes", type = FieldType.SELECTION,
+    possibleValueLabels = {"Todos","Horizontales","Verticales"},
+    possibleValues = {"border-top,border-bottom,border-left,border-right","border-top,border-bottom", "border-left,border-right"},
     deactivationConditions = {
     @FieldDeactivationCondition(triggerField="isTable",equals="'false'")})
     private String borders="border-top,border-bottom,border-left,border-right";
