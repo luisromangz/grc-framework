@@ -261,7 +261,7 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
                         && queryFieldProperties.fullDay()) {
                     Calendar cal = Calendar.getInstance();
                     cal.setTime(Dates.getDatePart((Date) value));
-                    cal.roll(Calendar.DATE, 1);
+                    cal.add(Calendar.DATE, 1);
                     value = cal.getTime();
                     crit.add(Restrictions.lt(fieldName, value));
                 } else {
