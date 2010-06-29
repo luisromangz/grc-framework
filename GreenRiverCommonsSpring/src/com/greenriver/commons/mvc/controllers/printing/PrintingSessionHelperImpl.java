@@ -7,10 +7,13 @@ import com.greenriver.commons.templating.PageConfiguration;
 import com.greenriver.commons.templating.PrintableDocument;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import org.apache.log4j.Logger;
 import org.w3c.tidy.Tidy;
 
 /**
@@ -28,35 +31,37 @@ public class PrintingSessionHelperImpl implements PrintingSessionHelper {
     private final String PAGE_TOTAL = "<span class=\"totalPages\"/>";
     private final String PAGE_SEPARATOR = "<div style=\"page-break-after:always\"><!--Non empty--></div>";
 
-   
     // <editor-fold defaultstate="collapsed" desc="PDF-creation methods">
     private boolean convertDocuments(ServiceResult sr) {
-        pdfContent=null;
-        try {
+        Logger logger = Logger.getRootLogger();
+        try {           
             template = Strings.fromInputStream(
                     this.getClass().getResourceAsStream("printingTemplate.xhtml"));
-
             footerAndHeaderTemplate = Strings.fromInputStream(
                     this.getClass().getResourceAsStream("footerAndHeaderTemplate.xml"));
 
-            String html = fillTemplate(documents);
-
-
-            ByteArrayOutputStream pdfOutput = new ByteArrayOutputStream();
-
-            converter.convertToPDF(
-                    new ByteArrayInputStream(html.getBytes()),
-                    pdfOutput);
-
-            this.pdfContent = pdfOutput.toByteArray();
-
-        } catch (Exception e) {
+        } catch (IOException ex) {
             sr.setSuccess(false);
-            sr.addErrorMessage("Error al imprimir. Puede que la estructura de la plantilla sea errónea.");
+            sr.addErrorMessage("No se pudo acceder a las plantillas de impresión.");
+            logger.error(ex,ex);
             return false;
         }
 
+        String html = fillTemplate(documents);
+        try {
+             pdfContent = null;
+            ByteArrayOutputStream pdfOutput = new ByteArrayOutputStream();
+            converter.convertToPDF(new ByteArrayInputStream(html.getBytes()), pdfOutput);
+            this.pdfContent = pdfOutput.toByteArray();
+        } catch (Exception e) {
+            sr.setSuccess(false);
+            sr.addErrorMessage("Error al generar el archivo PDF. Puede que la estructura de la plantilla sea errónea.");
+            
+            logger.error(e, e);
+            return false;
+        }
         return true;
+
     }
 
     private String fillTemplate(List<PrintableDocument> documents) {
