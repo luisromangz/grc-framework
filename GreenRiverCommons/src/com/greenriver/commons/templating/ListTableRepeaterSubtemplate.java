@@ -27,7 +27,7 @@ import javax.persistence.InheritanceType;
 @DiscriminatorColumn(length = 255)
 @EntityFieldsProperties(appendSuperClassFields = true)
 public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement, K extends Collection<?>>
-               extends RepeaterSubtemplate<T, K> {
+                extends RepeaterSubtemplate<T, K> {
 
     // <editor-fold defaultstate="collapsed" desc="Fields">
     private static final long serialVersionUID = 1L;
@@ -38,8 +38,8 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
     public static final String TABLE_CELL_SEPARATOR_REGEX = "\\|\\|";
     @FieldProperties(label = "Tipo de repetición", type = FieldType.SELECTION,
     possibleValues = {"true", "false"}, possibleValueLabels = {"Tabla", "Lista"})
-    private boolean isTable=true;
-     @FieldProperties(label = "Lista ordenada", type = FieldType.BOOLEAN, editable=false,deactivationConditions = {
+    private boolean isTable = true;
+    @FieldProperties(label = "Lista ordenada", type = FieldType.BOOLEAN, editable = false, deactivationConditions = {
         @FieldDeactivationCondition(equals = "'true'", newValue = "false", triggerField = "isTable")
     })
     private boolean isOrderedList;
@@ -58,28 +58,26 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
     deactivationConditions = {
         @FieldDeactivationCondition(equals = "'false'", triggerField = "isTable")})
     private String columnSizes = "";
-   
     @FieldProperties(label = "Formato del elemento", type = FieldType.LONGTEXT, widgetStyle = "width:98%")
-    private String elementFormat;    
-
-    @FieldProperties(label="Estilo del elemento", type=FieldType.SELECTION,
-        possibleValueLabels={"Normal","Negrita","Cursiva","Negrita y cursiva"},
-        possibleValues={" ","font-weight:bold","font-style:italic","font-weight:bold;font-style:italic"})
-    private String fontStyle=" ";
-    @FieldProperties(label="Tamaño de la fuente", type=FieldType.NUMBER,minValue=4,unit="pt")
+    private String elementFormat;
+    @FieldProperties(label = "Estilo del elemento", type = FieldType.SELECTION,
+    possibleValueLabels = {"Normal", "Negrita", "Cursiva", "Negrita y cursiva"},
+    possibleValues = {" ", "font-weight:bold", "font-style:italic", "font-weight:bold;font-style:italic"})
+    private String fontStyle = " ";
+    @FieldProperties(label = "Tamaño de la fuente", type = FieldType.NUMBER, minValue = 4, unit = "pt")
     private int fontSize = 9;
     @FieldProperties(label = "Alineación del texto en la celda", type = FieldType.SELECTION,
     possibleValueLabels = {"Izquierda", "Centro", "Derecha"},
     possibleValues = {"left", "center", "right"},
     deactivationConditions = {
-    @FieldDeactivationCondition(triggerField="isTable",equals="'false'")})
-    private String textAlign="center";
+        @FieldDeactivationCondition(triggerField = "isTable", equals = "'false'")})
+    private String textAlign = "center";
     @FieldProperties(label = "Bordes", type = FieldType.SELECTION,
-    possibleValueLabels = {"Todos","Horizontales","Verticales"},
-    possibleValues = {"border-top,border-bottom,border-left,border-right","border-top,border-bottom", "border-left,border-right"},
+    possibleValueLabels = {"Todos", "Horizontales", "Verticales"},
+    possibleValues = {"border-top,border-bottom,border-left,border-right", "border-top,border-bottom", "border-left,border-right"},
     deactivationConditions = {
-    @FieldDeactivationCondition(triggerField="isTable",equals="'false'")})
-    private String borders="border-top,border-bottom,border-left,border-right";
+        @FieldDeactivationCondition(triggerField = "isTable", equals = "'false'")})
+    private String borders = "border-top,border-bottom,border-left,border-right";
     // </editor-fold>
 
     @Override
@@ -100,7 +98,7 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
         String elementStyle = elementStyle();
         for (Map<T, String> elementReplacements : replacements) {
             String elementString = this.fillTemplateAux(elementFormat, elementReplacements);
-            result += String.format("<li style=\"%s\">%s</li>", elementStyle,elementString);
+            result += String.format("<li style=\"%s\">%s</li>", elementStyle, elementString);
         }
 
         result += this.isOrderedList ? "</ol>" : "</ul>";
@@ -119,7 +117,8 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
 
         String result = "<table cellspacing=\"0\">";
 
-       if (this.showTableHeaders) {
+        String elementStyle = elementStyle();
+        if (this.showTableHeaders) {
             // We use the first row to get the header's replacements.
             String header = fillTemplateAux(this.getTableHeader(), replacements.get(0));
 
@@ -129,7 +128,7 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
             result += "<thead><tr>";
 
             for (int i = 0; i < splitHeader.length; i++) {
-                result += String.format("<th>%s</th>",splitHeader[i]);
+                result += String.format("<th style=\"%s\">%s</th>", elementStyle, splitHeader[i]);
             }
 
             result += "</tr></thead>";
@@ -137,9 +136,9 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
 
         result += "<tbody>";
 
-         String elementStyle = elementStyle();
 
-        
+
+
         // We walk the replacements for the table rows.
         for (Map<T, String> elementReplacements : replacements) {
 
@@ -170,10 +169,11 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
     }
 
     private String elementStyle() {
-        String computedBorders="";
-        if(isTable){
-        for(String border : this.borders.split(","))
-            computedBorders+=border+":0.5mm solid black;";
+        String computedBorders = "";
+        if (isTable) {
+            for (String border : this.borders.split(",")) {
+                computedBorders += border + ":0.5mm solid black;";
+            }
         }
 
         return String.format("font-size:%spt;%s;text-align:%s;%s",
