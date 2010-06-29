@@ -39,7 +39,6 @@ public class HTMLToPDFConverterTest {
     public void tearDown() {
     }
 
-
     public void testConvertXMLToFop() throws Exception {
         System.out.println("./convertXMLToFop");
 
@@ -56,13 +55,13 @@ public class HTMLToPDFConverterTest {
     @Test
     public void testConvertHTMLToPDF() throws Exception {
         System.out.println("./convertHTMLToPDF");
-         InputStream input = this.getClass().getResourceAsStream("test.html");
+        InputStream input = this.getClass().getResourceAsStream("test.html");
 
 
         HTMLToPDFConverter instance = new HTMLToPDFConverter();
         File outputFile = new File("/tmp/html.pdf");
         outputFile.createNewFile();
-        
+
         instance.convertToPDF(input, new FileOutputStream(outputFile));
 
     }
