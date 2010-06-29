@@ -15,12 +15,13 @@
             body {
                 font-family: Tahoma,Arial,clean,sans-serif;
                 font-size:10pt;
+
             }
 
             @page body {
                 counter-reset: page;
                 size: 297.0mm 210.0mm;
-                margin: 1.0cm %MARGIN_RIGHT%cm 1.0cm 1.0cm;
+                margin: 1.0cm 
             }
 
             div.region {
@@ -68,10 +69,16 @@
             }
 
             th {
-               font-weight: bold
+                font-weight: bold
             }
 
+            ul > li {
+                list-style-type: disc
+            }
 
+            ol > li {
+                list-style: decimal
+            }
 
         </style>
 
@@ -83,210 +90,76 @@
     Author     : luisro
     Description:
         Template for the header and footers.
--->
+        -->
 
-<div class="region footer">
-    <table>
-        <tbody>
-            <tr>
-                <td class="left">
+        <div class="region footer">
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="left">
 
-                </td>
-                <td class="center">
+                        </td>
+                        <td class="center">
 
-                </td>
-                <td class="right">
-                    Pág. <span class="pageCounter"/> de <span class="totalPages"/>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</div>
+                        </td>
+                        <td class="right">
+                            Pág. <span class="pageCounter"/> de <span class="totalPages"/>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
 
         <div class="body">
-            <div class="DESCRIPCION">
-  <h1 style="text-align: center; font-weight: bold;">Lista de la
-  compra de productos para las comidas de bi&#243;logos, necesarios
-  entre el 22/06/10 y el 22/06/10 (a pagar con dinero entregado por
-  los bi&#243;logos)</h1>
-</div>
-<span style="font-weight: bold;">
-  <span style="font-size: 11pt; font-weight: bold;">
-  <br />&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-  Fecha en que se hace la compra:</span>
-</span>
-<br /> Creada el
-<div class="FECHA_CREACION">22-jun-2010 por
-<div class="NOMBRE_CREADOR">Juan Calder&#243;n.
-<span style="font-weight: bold;">
-  <span style="font-size: 11pt; font-weight: bold;">
-  <br />
-  <span style="font-size: 12pt; font-weight: bold;">Persona que
-  hace la
-  compra:</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+            <ul>
+                <li>Meh
+                    <ul>
+                        <li>
+                            jar
+                            <ol>
+                                <li>Meh
+                                    <ul>
+                                        <li>
+                                            jar
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>Meh
+                                    <ul>
+                                        <li>
+                                            jar
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ol>
 
-  <span style="font-size: 12pt; font-weight: bold;">Hora de
-  salida:&#160;&#160; &#160;&#160;
-  &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; Hora de
-  llegada:</span></span>
-</span>
-<div style="text-align: center;">
-  <div class="PRODUCTOS_A_COMPRAR">
-    <table cellspacing="0">
-      <thead>
-        <tr>
-          <th>Orden</th>
-          <th>Producto</th>
-          <th>Marca</th>
-          <th>Comprar</th>
-          <th>Precio</th>
-          <th>A pagar</th>
-          <th>Precio hoy</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td style="width:auto">
-            <span class="ORDEN_COMPRA">30.140</span>
-          </td>
-          <td style="width:auto">
-            <span class="TIPO_PRODUCTO">Or&#233;gano</span>
-          </td>
-          <td style="width:auto">
-            <span class="MARCA_FORMATO">LA PITORRA</span>
-          </td>
-          <td style="width:auto">
-          <span class="FORMATOS_A_COMPRAR">1</span>
-          <span class="FORMATO_Y_CANTIDAD">bote(s) de 5 gr
-          (neto)</span></td>
-          <td style="width:auto">
-          <span class="PRECIO_FORMATO">0,90 &#8364;</span> / 1
-          <span class="FORMATO">bote(s)</span></td>
-          <td style="width:auto">
-            <span class="PRECIO_TOTAL">0,90 &#8364;</span>
-          </td>
-          <td style="width:auto"></td>
-        </tr>
-        <tr>
-          <td style="width:auto">
-            <span class="ORDEN_COMPRA">60.140</span>
-          </td>
-          <td style="width:auto">
-            <span class="TIPO_PRODUCTO">Patatas congeladas</span>
-          </td>
-          <td style="width:auto">
-            <span class="MARCA_FORMATO">CONGREMAR</span>
-          </td>
-          <td style="width:auto">
-          <span class="FORMATOS_A_COMPRAR">1</span>
-          <span class="FORMATO_Y_CANTIDAD">bolsa(s) de 1
-          kg</span></td>
-          <td style="width:auto">
-          <span class="PRECIO_FORMATO">1,36 &#8364;</span> / 1
-          <span class="FORMATO">bolsa(s)</span></td>
-          <td style="width:auto">
-            <span class="PRECIO_TOTAL">1,36 &#8364;</span>
-          </td>
-          <td style="width:auto"></td>
-        </tr>
-        <tr>
-          <td style="width:auto">
-            <span class="ORDEN_COMPRA">70.080</span>
-          </td>
-          <td style="width:auto">
-            <span class="TIPO_PRODUCTO">Pl&#225;tanos</span>
-          </td>
-          <td style="width:auto">
-            <span class="MARCA_FORMATO">SIN MARCA</span>
-          </td>
-          <td style="width:auto">
-          <span class="FORMATOS_A_COMPRAR">&#188;</span>
-          <span class="FORMATO_Y_CANTIDAD">kg</span></td>
-          <td style="width:auto">
-          <span class="PRECIO_FORMATO">1,79 &#8364;</span> / 1
-          <span class="FORMATO">kg</span></td>
-          <td style="width:auto">
-            <span class="PRECIO_TOTAL">0,45 &#8364;</span>
-          </td>
-          <td style="width:auto"></td>
-        </tr>
-        <tr>
-          <td style="width:auto">
-            <span class="ORDEN_COMPRA">70.110</span>
-          </td>
-          <td style="width:auto">
-            <span class="TIPO_PRODUCTO">Berenjenas</span>
-          </td>
-          <td style="width:auto">
-            <span class="MARCA_FORMATO">SIN MARCA</span>
-          </td>
-          <td style="width:auto">
-          <span class="FORMATOS_A_COMPRAR">&#188;</span>
-          <span class="FORMATO_Y_CANTIDAD">kg</span></td>
-          <td style="width:auto">
-          <span class="PRECIO_FORMATO">1,89 &#8364;</span> / 1
-          <span class="FORMATO">kg</span></td>
-          <td style="width:auto">
-            <span class="PRECIO_TOTAL">0,47 &#8364;</span>
-          </td>
-          <td style="width:auto"></td>
-        </tr>
-        <tr>
-          <td style="width:auto">
-            <span class="ORDEN_COMPRA">70.120</span>
-          </td>
-          <td style="width:auto">
-            <span class="TIPO_PRODUCTO">Calabacines</span>
-          </td>
-          <td style="width:auto">
-            <span class="MARCA_FORMATO">SIN MARCA</span>
-          </td>
-          <td style="width:auto">
-          <span class="FORMATOS_A_COMPRAR">&#188;</span>
-          <span class="FORMATO_Y_CANTIDAD">kg</span></td>
-          <td style="width:auto">
-          <span class="PRECIO_FORMATO">1,49 &#8364;</span> / 1
-          <span class="FORMATO">kg</span></td>
-          <td style="width:auto">
-            <span class="PRECIO_TOTAL">0,37 &#8364;</span>
-          </td>
-          <td style="width:auto"></td>
-        </tr>
-        <tr>
-          <td style="width:auto">
-            <span class="ORDEN_COMPRA">80.040</span>
-          </td>
-          <td style="width:auto">
-            <span class="TIPO_PRODUCTO">Cerdo (lomo adobado)</span>
-          </td>
-          <td style="width:auto">
-            <span class="MARCA_FORMATO">SIN MARCA</span>
-          </td>
-          <td style="width:auto">
-          <span class="FORMATOS_A_COMPRAR">1</span>
-          <span class="FORMATO_Y_CANTIDAD">filete(s) de 100
-          gr</span></td>
-          <td style="width:auto">
-          <span class="PRECIO_FORMATO">0,60 &#8364;</span> / 1
-          <span class="FORMATO">filete(s)</span></td>
-          <td style="width:auto">
-            <span class="PRECIO_TOTAL">0,60 &#8364;</span>
-          </td>
-          <td style="width:auto"></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <span style="font-weight: bold;">
-    <span style="font-size: 11pt; font-weight: bold;">
-    <br />
-    <span style="font-size: 12pt; font-weight: bold;">Total a
-    pagar:</span></span>
-  </span>
-  <span class="COSTE_TOTAL">4,15 &#8364;.
-  <br /></span>
-</div></div></div>
+                        </li>
+                    </ul>
+                    <ul>
+                        <li>
+                            jar
+                            <ol>
+                                <li>Meh
+                                    <ul>
+                                        <li>
+                                            jar
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>Meh
+                                    <ul>
+                                        <li>
+                                            jar
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ol>
+
+                        </li>
+                    </ul>
+                </li>
+            </ul>
 
         </div>
     </body>
