@@ -27,7 +27,7 @@ import javax.persistence.InheritanceType;
 @DiscriminatorColumn(length = 255)
 @EntityFieldsProperties(appendSuperClassFields = true)
 public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement, K extends Collection<?>>
-                extends RepeaterSubtemplate<T, K> {
+                 extends RepeaterSubtemplate<T, K> {
 
     // <editor-fold defaultstate="collapsed" desc="Fields">
     private static final long serialVersionUID = 1L;
@@ -112,7 +112,8 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
             throw new IllegalStateException("Can't be a table and not having column sizes.");
         }
 
-        List<String> sizes = new ArrayList<String>(Arrays.asList(this.getColumnSizes().split(
+        List<String> sizes = new ArrayList<String>(Arrays.asList(
+                this.getColumnSizes().trim().split(
                 ListTableRepeaterSubtemplate.TABLE_CELL_SEPARATOR_REGEX)));
 
         String result = "<table cellspacing=\"0\">";
@@ -128,7 +129,8 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
             result += "<thead><tr>";
 
             for (int i = 0; i < splitHeader.length; i++) {
-                result += String.format("<th style=\"%s\">%s</th>", elementStyle, splitHeader[i]);
+                result += String.format("<th style=\"%s\">%s</th>",
+                      elementStyle, splitHeader[i]);
             }
 
             result += "</tr></thead>";
@@ -152,9 +154,10 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
             }
 
             for (int i = 0; i < columnElements.length; i++) {
+                String size = sizes.get(i);
                 columnElements[i] = String.format(
                         "<td style=\"width:%s;%s\">%s</td>",
-                        sizes.get(i),
+                        size,
                         elementStyle,
                         columnElements[i]);
             }
@@ -176,7 +179,7 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
             }
         }
 
-        return String.format("font-size:%spt;%s;text-align:%s;%s",
+        return String.format("font-size:%spt;%stext-align:%s;%s",
                 this.fontSize,
                 computedBorders,
                 this.textAlign,
