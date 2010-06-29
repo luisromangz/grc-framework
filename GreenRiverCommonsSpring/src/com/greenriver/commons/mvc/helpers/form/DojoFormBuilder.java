@@ -123,12 +123,13 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
 
         configuration.addOnLoadScript(onChangeCode);
 
-        String onValueSetCode = String.format(
+        String widgetInitCode = String.format(                
                 "dojo.connect(dijit.byId('%s'),'setValue',%s);",
+                fieldId,
                 currentForm.getId() + "_" + condition.triggerField(),
                 function);
 
-        configuration.addOnLoadScript(onValueSetCode);
+        configuration.addOnLoadScript(widgetInitCode);
     }
 
     @Override
@@ -420,6 +421,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
                 "dojoType",
                 "grc.dijit.form.DowngradableTextarea");
         element.setAttribute("trim", "true");
+        element.setAttribute("style", "width:98%");
         element.setElementType("textarea");
     }
 
@@ -432,8 +434,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
 
         element.getAttributes().setProperty("dojoType", "dijit.Editor");
         element.setAttribute("plugins",
-                "[{name:'grc.dijit._editor.plugins.FontChoice', command:'fontName', generic:false},"
-                + "{name:'grc.dijit._editor.plugins.FontChoice', command:'formatBlock', generic:false},"
+                "[{name:'grc.dijit._editor.plugins.FontChoice', command:'formatBlock', generic:false},"
                 + "{name:'grc.dijit._editor.plugins.FontChoice', command:'fontSize'},"
                 + "'foreColor','hiliteColor',"
                 + "'|','undo','redo','|','bold','italic','underline','strikethrough',"
