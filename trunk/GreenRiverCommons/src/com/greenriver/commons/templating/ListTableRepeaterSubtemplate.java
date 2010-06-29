@@ -27,41 +27,61 @@ import javax.persistence.InheritanceType;
 @DiscriminatorColumn(length = 255)
 @EntityFieldsProperties(appendSuperClassFields = true)
 public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement, K extends Collection<?>>
-              extends RepeaterSubtemplate<T, K> {
+               extends RepeaterSubtemplate<T, K> {
 
     // <editor-fold defaultstate="collapsed" desc="Fields">
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
     public static final String TABLE_CELL_SEPARATOR = "||";
     public static final String TABLE_CELL_SEPARATOR_REGEX = "\\|\\|";
     @FieldProperties(label = "Tipo de repetición", type = FieldType.SELECTION,
     possibleValues = {"true", "false"}, possibleValueLabels = {"Tabla", "Lista"})
-    private boolean isTable;
+    private boolean isTable=true;
+     @FieldProperties(label = "Lista ordenada", type = FieldType.BOOLEAN, editable=false,deactivationConditions = {
+        @FieldDeactivationCondition(equals = "'true'", newValue = "false", triggerField = "isTable")
+    })
+    private boolean isOrderedList;
     @FieldProperties(label = "Mostrar encabezados de la tabla", type = FieldType.BOOLEAN,
     deactivationConditions = {
         @FieldDeactivationCondition(equals = "'false'", triggerField = "isTable", newValue = "false")
     })
     private boolean showTableHeaders = true;
-    @FieldProperties(label = "Encabezados de la tabla", required = false, widgetStyle = "width:98%",
+    @FieldProperties(label = "Encabezados de la tabla", type = FieldType.LONGTEXT, required = false, widgetStyle = "width:98%",
     deactivationConditions = {
         @FieldDeactivationCondition(equals = "'false'", triggerField = "isTable"),
         @FieldDeactivationCondition(equals = "false", triggerField = "showTableHeaders")
     })
     private String tableHeader = "";
-    @FieldProperties(label = "Anchuras de las columnas", required = false, widgetStyle = "width:98%",
+    @FieldProperties(label = "Anchuras de las columnas", type = FieldType.LONGTEXT, required = false, widgetStyle = "width:98%",
     deactivationConditions = {
         @FieldDeactivationCondition(equals = "'false'", triggerField = "isTable")})
     private String columnSizes = "";
-    @FieldProperties(label = "Lista ordenada", type = FieldType.BOOLEAN, deactivationConditions = {
-        @FieldDeactivationCondition(equals = "'true'", newValue = "false", triggerField = "isTable")
-    })
-    private boolean isOrderedList;
-    @FieldProperties(label = "Formato del elemento", widgetStyle = "width:98%")
-    private String elementFormat;
-    private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+   
+    @FieldProperties(label = "Formato del elemento", type = FieldType.LONGTEXT, widgetStyle = "width:98%")
+    private String elementFormat;    
 
+    @FieldProperties(label="Estilo del elemento", type=FieldType.SELECTION,
+        possibleValueLabels={"Normal","Negrita","Cursiva","Negrita y cursiva"},
+        possibleValues={" ","font-weight:bold","font-style:italic","font-weight:bold;font-style:italic"})
+    private String fontStyle=" ";
+    @FieldProperties(label="Tamaño de la fuente", type=FieldType.NUMBER,minValue=4,unit="pt")
+    private int fontSize = 9;
+    @FieldProperties(label = "Alineación del texto en la celda", type = FieldType.SELECTION,
+    possibleValueLabels = {"Izquierda", "Centro", "Derecha"},
+    possibleValues = {"left", "center", "right"},
+    deactivationConditions = {
+    @FieldDeactivationCondition(triggerField="isTable",equals="'false'")})
+    private String textAlign="center";
+    @FieldProperties(label = "Bordes", type = FieldType.MULTISELECTION,
+    possibleValueLabels = {"Superior", "Inferior","Izquierdo","Derecho"},
+    possibleValues = {"border-top", "border-bottom", "border-left","border-right"},
+    deactivationConditions = {
+    @FieldDeactivationCondition(triggerField="isTable",equals="'false'")})
+    private String borders="border-top,border-bottom,border-left,border-right";
     // </editor-fold>
+
     @Override
     protected String fillTemplatesInternal(List<Map<T, String>> replacements) {
 
@@ -75,14 +95,15 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
     }
 
     private String fillListTemplates(List<Map<T, String>> replacements) {
-        String result = this.isOrderedList?"<ol>":"<ul>";
+        String result = this.isOrderedList ? "<ol>" : "<ul>";
 
+        String elementStyle = elementStyle();
         for (Map<T, String> elementReplacements : replacements) {
             String elementString = this.fillTemplateAux(elementFormat, elementReplacements);
-            result += String.format("<li>%s</li>", elementString);
+            result += String.format("<li style=\"%s\">%s</li>", elementStyle,elementString);
         }
 
-        result += this.isOrderedList?"</ol>":"</ul>";
+        result += this.isOrderedList ? "</ol>" : "</ul>";
 
         return result;
     }
@@ -98,8 +119,7 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
 
         String result = "<table cellspacing=\"0\">";
 
-        if (this.showTableHeaders) {
-
+       if (this.showTableHeaders) {
             // We use the first row to get the header's replacements.
             String header = fillTemplateAux(this.getTableHeader(), replacements.get(0));
 
@@ -109,17 +129,17 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
             result += "<thead><tr>";
 
             for (int i = 0; i < splitHeader.length; i++) {
-                result += String.format("<th>%s</th>", splitHeader[i]);
+                result += String.format("<th>%s</th>",splitHeader[i]);
             }
 
             result += "</tr></thead>";
-
-           
         }
 
         result += "<tbody>";
 
+         String elementStyle = elementStyle();
 
+        
         // We walk the replacements for the table rows.
         for (Map<T, String> elementReplacements : replacements) {
 
@@ -128,14 +148,15 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
             String[] columnElements = elementString.split(
                     ListTableRepeaterSubtemplate.TABLE_CELL_SEPARATOR_REGEX);
 
-             while(sizes.size()< columnElements.length) {
+            while (sizes.size() < columnElements.length) {
                 sizes.add("auto");
             }
 
             for (int i = 0; i < columnElements.length; i++) {
                 columnElements[i] = String.format(
-                        "<td style=\"width:%s\">%s</td>",
+                        "<td style=\"width:%s;%s\">%s</td>",
                         sizes.get(i),
+                        elementStyle,
                         columnElements[i]);
             }
 
@@ -146,6 +167,20 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
 
         return result;
 
+    }
+
+    private String elementStyle() {
+        String computedBorders="";
+        if(isTable){
+        for(String border : this.borders.split(","))
+            computedBorders+=border+":0.5mm solid black;";
+        }
+
+        return String.format("font-size:%spt;%s;text-align:%s;%s",
+                this.fontSize,
+                computedBorders,
+                this.textAlign,
+                this.fontStyle);
     }
 
     private String fillTemplateAux(String formatString, Map<T, String> replacements) {
@@ -173,6 +208,10 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
         targetTemplate.setIsTable(isTable);
         targetTemplate.setTableHeader(tableHeader);
         targetTemplate.setShowTableHeaders(showTableHeaders);
+        targetTemplate.setTextAlign(textAlign);
+        targetTemplate.setBorders(borders);
+        targetTemplate.setFontSize(fontSize);
+        targetTemplate.setFontStyle(fontStyle);
     }
 
     // <editor-fold defaultstate="collapsed" desc="Getters & setters">
@@ -266,6 +305,62 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
      */
     public void setShowTableHeaders(boolean showTableHeaders) {
         this.showTableHeaders = showTableHeaders;
+    }
+
+    /**
+     * @return the textAlign
+     */
+    public String getTextAlign() {
+        return textAlign;
+    }
+
+    /**
+     * @param textAlign the textAlign to set
+     */
+    public void setTextAlign(String textAlign) {
+        this.textAlign = textAlign;
+    }
+
+    /**
+     * @return the style
+     */
+    public String getFontStyle() {
+        return fontStyle;
+    }
+
+    /**
+     * @param style the style to set
+     */
+    public void setFontStyle(String style) {
+        this.fontStyle = style;
+    }
+
+    /**
+     * @return the borders
+     */
+    public String getBorders() {
+        return borders;
+    }
+
+    /**
+     * @param borders the borders to set
+     */
+    public void setBorders(String borders) {
+        this.borders = borders;
+    }
+
+    /**
+     * @return the fontSize
+     */
+    public int getFontSize() {
+        return fontSize;
+    }
+
+    /**
+     * @param fontSize the fontSize to set
+     */
+    public void setFontSize(int fontSize) {
+        this.fontSize = fontSize;
     }
     // </editor-fold>
 }

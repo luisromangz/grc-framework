@@ -5,6 +5,7 @@ import com.greenriver.commons.collections.ApplicableCommand;
 import com.greenriver.commons.collections.Lists;
 import com.greenriver.commons.data.fieldProperties.EntityFieldsProperties;
 import com.greenriver.commons.data.fieldProperties.FieldProperties;
+import com.greenriver.commons.data.fieldProperties.FieldType;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
@@ -34,7 +35,7 @@ public abstract class ListTableInnerRepeaterSubtemplate<T extends TemplateReplac
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @FieldProperties(label = "Formato del elemento", widgetStyle = "width:98%")
+    @FieldProperties(label = "Formato del elemento",type=FieldType.LONGTEXT)
     private String elementFormat = "";
     @OneToOne
     // This must be set in the setter method for this template in the parent template.
