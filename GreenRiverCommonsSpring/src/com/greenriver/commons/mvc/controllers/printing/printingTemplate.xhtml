@@ -62,13 +62,23 @@
                 content: counter(pages);
             }
 
-            td, th {
+            table {
                 border: 0.5mm solid black;
+            }
+
+            div.footer table,
+            div.header table {
+                border:none;
+            }
+
+            td,th {
+                
                 text-align: center;
             }
 
             th {
-               font-weight: bold
+               font-weight: bold;
+               border: 0.5mm solid black;
             }
 
              ul > li {
