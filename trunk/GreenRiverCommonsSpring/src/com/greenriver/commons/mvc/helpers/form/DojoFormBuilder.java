@@ -134,7 +134,6 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
 
     @Override
     public void addFieldsFromModel(Class modelClass) {
-        @SuppressWarnings("unchecked")
         EntityFieldsProperties entityProperties =
                 (EntityFieldsProperties) modelClass.getAnnotation(EntityFieldsProperties.class);
 
@@ -434,7 +433,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
 
         element.getAttributes().setProperty("dojoType", "dijit.Editor");
         element.setAttribute("plugins",
-                "[{name:'grc.dijit._editor.plugins.FontChoice', command:'formatBlock', generic:false},"
+                "[{name:'grc.dijit._editor.plugins.FontChoice', command:'fontName', generic:false},"
                 + "{name:'grc.dijit._editor.plugins.FontChoice', command:'fontSize'},"
                 + "'foreColor','hiliteColor',"
                 + "'|','undo','redo','|','bold','italic','underline','strikethrough',"
