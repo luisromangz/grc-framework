@@ -12,7 +12,6 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import org.apache.log4j.Logger;
 import org.w3c.tidy.Tidy;
 
@@ -33,7 +32,7 @@ public class PrintingSessionHelperImpl implements PrintingSessionHelper {
 
     // <editor-fold defaultstate="collapsed" desc="PDF-creation methods">
     private boolean convertDocuments(ServiceResult sr) {
-        Logger logger = Logger.getRootLogger();
+        Logger logger = Logger.getLogger("grc-commons");
         try {           
             template = Strings.fromInputStream(
                     this.getClass().getResourceAsStream("printingTemplate.xhtml"));
