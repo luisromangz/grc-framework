@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
     The template used to create valid xhtml documents to convert them into pdfs.
+    It doesn't have doctype (it should) because Apache FOP would try to download
+    the associated DTD and fail.
 -->
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
@@ -75,6 +77,8 @@
 
             td,th {                
                 text-align: center;
+                /*No borders as will be set by
+                when creating the printable document*/
             }
 
             th {
@@ -89,6 +93,16 @@
 
             ol > li {
                 list-style: decimal
+            }
+
+            hr{
+                width:100%;
+                background-color: black;
+                height: 0.5mm;
+                border:none;
+                margin:0;
+                padding:0;
+                padding-right: 1mm;
             }
                         
 
