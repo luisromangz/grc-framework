@@ -43,7 +43,7 @@ public class PrintingSessionHelperImpl implements PrintingSessionHelper {
         } catch (IOException ex) {
             sr.setSuccess(false);
             sr.addErrorMessage("No se pudo acceder a las plantillas de impresión.");
-            logger.error(ex,ex);
+            logger.error(ex,ex.getCause());
             return false;
         }
 
@@ -51,13 +51,13 @@ public class PrintingSessionHelperImpl implements PrintingSessionHelper {
         try {
              pdfContent = null;
             ByteArrayOutputStream pdfOutput = new ByteArrayOutputStream();
-            converter.convertToPDF(new ByteArrayInputStream(html.getBytes()), pdfOutput);
+            converter.convertToPDF(new ByteArrayInputStream(html.getBytes("UTF-8")), pdfOutput);
             this.pdfContent = pdfOutput.toByteArray();
         } catch (Exception e) {
             sr.setSuccess(false);
             sr.addErrorMessage("Error al generar el archivo PDF. Puede que la estructura de la plantilla sea errónea.");
             
-            logger.error(e, e);
+            logger.error(html, e.getCause());
             return false;
         }
         return true;
