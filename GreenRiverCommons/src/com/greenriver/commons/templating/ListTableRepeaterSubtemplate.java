@@ -70,7 +70,7 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
     possibleValueLabels = {"Izquierda", "Centro", "Derecha"},
     possibleValues = {"left", "center", "right"},
     deactivationConditions = {
-        @FieldDeactivationCondition(triggerField = "isTable", equals = "'false'")})
+        @FieldDeactivationCondition(triggerField = "isTable", equals = "'false'",newValue="left")})
     private String textAlign = "center";
     @FieldProperties(label = "Bordes", type = FieldType.SELECTION,
     possibleValueLabels = {"Todos", "Horizontales", "Verticales"},
@@ -173,16 +173,19 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
 
     private String elementStyle() {
         String computedBorders = "";
+        String alignment = "left";
         if (isTable) {
             for (String border : this.borders.split(",")) {
                 computedBorders += border + ":0.5mm solid black;";
             }
+
+            alignment = textAlign;
         }
 
         return String.format("font-size:%spt;%stext-align:%s;%s",
                 this.fontSize,
                 computedBorders,
-                this.textAlign,
+                alignment,
                 this.fontStyle);
     }
 
