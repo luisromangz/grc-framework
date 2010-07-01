@@ -125,7 +125,6 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
 
         String widgetInitCode = String.format(                
                 "dojo.connect(dijit.byId('%s'),'setValue',%s);",
-                fieldId,
                 currentForm.getId() + "_" + condition.triggerField(),
                 function);
 
