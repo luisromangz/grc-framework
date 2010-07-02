@@ -1,4 +1,3 @@
-
 package com.greenriver.commons.templating;
 
 import com.greenriver.commons.Strings;
@@ -14,6 +13,8 @@ import java.util.Map;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -27,39 +28,43 @@ import javax.persistence.InheritanceType;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(length = 255)
-@EntityFieldsProperties(appendSuperClassFields=true)
+@EntityFieldsProperties(appendSuperClassFields = true)
 public abstract class TextRepeaterSubtemplate<T extends TemplateReplacement, K extends Collection<?>>
-        extends RepeaterSubtemplate<T, K>
+           extends RepeaterSubtemplate<T, K>
         implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
-
-    @FieldProperties(label="Texto que se repite",type=FieldType.RICHTEXT)
-    @Column(length=10240)
+    @FieldProperties(label = "Texto que se repite", type = FieldType.RICHTEXT)
+    @Column(length = 10240)
     private String body;
-
-     @FieldProperties(label="Página nueva tras el texto", type=FieldType.BOOLEAN)
+    @FieldProperties(label = "Número de repeticiones horizontales", type = FieldType.NUMBER, minValue = 1)
+    private int horizontalRepetitions = 1;
+    @FieldProperties(label = "Bordes de la tabla", type = FieldType.SELECTION, enumLabelMethod = "getLabel",
+    deactivationConditions = {
+        @FieldDeactivationCondition(triggerField = "horizontalRepetitions", equals = "1", newValue = "'NONE'")})
+    @Enumerated(EnumType.STRING)
+    private BorderType borderType = BorderType.NONE;
+    @FieldProperties(label = "Página nueva tras el texto", type = FieldType.BOOLEAN)
     private boolean newPageAfterText = false;
-
-    @FieldProperties(label="Añadir nueva línea tras el texto", type=FieldType.BOOLEAN,
-    deactivationConditions={
-        @FieldDeactivationCondition(triggerField="newPageAfterText",equals="'on'")
+    @FieldProperties(label = "Añadir nueva línea tras el texto", type = FieldType.BOOLEAN,
+    deactivationConditions = {
+        @FieldDeactivationCondition(triggerField = "newPageAfterText", equals = "'on'")
     })
     private boolean newLineAfterText = true;
-  
+
     @Override
     protected String fillTemplatesInternal(List<Map<T, String>> replacements) {
-         List<String> texts = new ArrayList<String>();
+        List<String> texts = new ArrayList<String>();
 
-        for(Map<T,String> elementReplacements: replacements) {
+        for (Map<T, String> elementReplacements : replacements) {
             String elementResult = body;
 
-            for(T replacement : elementReplacements.keySet()) {
+            for (T replacement : elementReplacements.keySet()) {
                 elementResult = elementResult.replace(
-                        replacement.getDecoratedPlaceholder(),TemplatingUtils.formatTemplateReplacement(
+                        replacement.getDecoratedPlaceholder(), TemplatingUtils.formatTemplateReplacement(
                         replacement,
                         elementReplacements.get(replacement)));
             }
@@ -68,12 +73,44 @@ public abstract class TextRepeaterSubtemplate<T extends TemplateReplacement, K e
             texts.add(elementResult);
         }
 
-        String glue="";
-        if(newPageAfterText){
-                glue = "<div style=\"page-break-after:always\"><!--Non empty--></div>";
-            } else if(newLineAfterText) {
-                glue = "<br/>";
+        if (horizontalRepetitions > 1) {
+            List<String> tables = new ArrayList<String>();
+
+            int counter = 0;
+            List<String> currentTable = new ArrayList<String>();
+            for (String text : texts) {
+                currentTable.add(text);
+                counter = (counter + 1) % horizontalRepetitions;
+
+                if (counter == 0) {
+                    //
+                    String table = String.format("<table style=\"%s\"><tbody><tr>",
+                            this.borderType.getTableStyle());
+
+                    for (String cell : currentTable) {
+                        table += String.format(
+                                "<td style=\"%s\">%s</td>",
+                                this.borderType.getCellStyle(),
+                                cell);
+                    }
+
+                    table += "</tr></tbody></table>";
+
+                    tables.add(table);
+                    currentTable = new ArrayList<String>();
+                }
             }
+
+            texts = tables;
+        }
+
+
+        String glue = "";
+        if (newPageAfterText) {
+            glue = "<div style=\"page-break-after:always\"><!--Non empty--></div>";
+        } else if (newLineAfterText) {
+            glue = "<br/>";
+        }
 
         return Strings.join(texts, glue);
     }
@@ -82,16 +119,16 @@ public abstract class TextRepeaterSubtemplate<T extends TemplateReplacement, K e
     public void copyTo(Subtemplate copyTarget) {
         super.copyTo(copyTarget);
 
-        TextRepeaterSubtemplate templateTarget = ((TextRepeaterSubtemplate)copyTarget);
+        TextRepeaterSubtemplate templateTarget = ((TextRepeaterSubtemplate) copyTarget);
         templateTarget.body = this.body;
         templateTarget.newLineAfterText = this.newLineAfterText;
-        templateTarget.newPageAfterText= this.newPageAfterText;
-
+        templateTarget.newPageAfterText = this.newPageAfterText;
+        templateTarget.horizontalRepetitions =horizontalRepetitions;
+        templateTarget.borderType = borderType;
 
     }
 
     // <editor-fold defaultstate="collapsed" desc="Getters and setters">
-
     /**
      * @return the body
      */
@@ -140,6 +177,34 @@ public abstract class TextRepeaterSubtemplate<T extends TemplateReplacement, K e
      */
     public void setNewPageAfterText(boolean newPageAfterText) {
         this.newPageAfterText = newPageAfterText;
+    }
+
+    /**
+     * @return the horizontalRepetitions
+     */
+    public int getHorizontalRepetitions() {
+        return horizontalRepetitions;
+    }
+
+    /**
+     * @param horizontalRepetitions the horizontalRepetitions to set
+     */
+    public void setHorizontalRepetitions(int horizontalRepetitions) {
+        this.horizontalRepetitions = horizontalRepetitions;
+    }
+
+    /**
+     * @return the borderType
+     */
+    public BorderType getBorderType() {
+        return borderType;
+    }
+
+    /**
+     * @param borderType the borderType to set
+     */
+    public void setBorderType(BorderType borderType) {
+        this.borderType = borderType;
     }
     // </editor-fold>
 }
