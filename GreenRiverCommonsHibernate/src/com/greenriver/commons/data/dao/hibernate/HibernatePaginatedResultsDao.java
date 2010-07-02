@@ -7,6 +7,7 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.ScrollableResults;
+import org.hibernate.criterion.Criterion;
 
 /**
  *
@@ -15,12 +16,16 @@ import org.hibernate.ScrollableResults;
 public class HibernatePaginatedResultsDao<T, Q extends EntityQueryArguments>
         extends HibernateMultipleResultsDao<T> {
 
-    public PagedResult<List<T>> getAllForPage(int page, int pageSize, Q args) {
+    public PagedResult<List<T>> getAllForPage(int page, int pageSize, Q args, Criterion... criterions) {
         PagedResult<List<T>> pagedResult = new PagedResult<List<T>>();
 
 
         List<T> result = new ArrayList<T>();
         Criteria crit = createCriteriaFromQueryArguments(args);
+
+        for(Criterion c : criterions) {
+            crit.add(c);
+        }
 
         int numResults = 0;
 

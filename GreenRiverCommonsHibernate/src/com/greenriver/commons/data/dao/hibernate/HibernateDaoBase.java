@@ -3,16 +3,22 @@ package com.greenriver.commons.data.dao.hibernate;
 import com.greenriver.commons.data.dao.hibernate.pagination.CriteriaPagingHelperImpl;
 import com.greenriver.commons.data.dao.queryArguments.EntityQueryArguments;
 import com.greenriver.commons.data.dao.hibernate.pagination.CriteriaPagingHelper;
+import java.lang.reflect.ParameterizedType;
+import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 
 /**
  *
  * @author luis
  */
-public abstract class HibernateDaoBase {
+public abstract class HibernateDaoBase<T> {
 
+    private Class entityClass = null;
     private SessionFactory sessionFactory;
 
     protected SessionFactory getSessionFactory() {
@@ -25,6 +31,29 @@ public abstract class HibernateDaoBase {
 
     protected Session getCurrentSession() {
         return sessionFactory.getCurrentSession();
+    }
+
+    public <T> List<T> getFieldValues(String fieldName, Criterion... criterions) {
+
+        Criteria crit = getCurrentSession().createCriteria(getEntityClass());
+        crit.setProjection(Projections.groupProperty(fieldName).as("groupedName"));
+        crit.addOrder(Order.asc("groupedName"));
+
+        for(Criterion r : criterions) {
+            crit.add(r);
+        }
+
+        return crit.list();
+    }
+
+    protected Class getEntityClass () {
+        if(entityClass!=null) {
+            return entityClass;
+        }
+        ParameterizedType parameterizedType =
+                (ParameterizedType) getClass().getGenericSuperclass();
+        entityClass= (Class)parameterizedType.getActualTypeArguments()[0];
+        return entityClass;
     }
 
     // <editor-fold defaultstate="collapsed" desc="Criteria factory related methods">

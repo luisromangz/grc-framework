@@ -8,7 +8,7 @@ import org.hibernate.Criteria;
  * @author luis
  */
 public class HibernateUniqueResultDao<T>
-        extends HibernateDaoBase {
+        extends HibernateDaoBase<T> {
 
     public T get() {
 
