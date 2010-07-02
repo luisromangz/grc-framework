@@ -168,4 +168,17 @@ public class Numbers {
     public static int sumDigits(int number) {
         return Strings.sumDigits(number + "");
     }
+
+    /**
+     * Returns a NumberFormat object with the maximum decimal places property
+     * already set.
+     * 
+     * @param maxDecimalPlaces
+     * @return
+     */
+    public static NumberFormat getNumberFormat(int maxDecimalPlaces) {
+        NumberFormat numberFormat = NumberFormat.getNumberInstance();
+        numberFormat.setMaximumFractionDigits(2);
+        return numberFormat;
+    }
 }
