@@ -89,7 +89,7 @@ public abstract class TextRepeaterSubtemplate<T extends TemplateReplacement, K e
 
                     for (String cell : currentTable) {
                         table += String.format(
-                                "<td style=\"%s\">%s</td>",
+                                "<td style=\"%s;text-align:left\">%s</td>",
                                 this.borderType.getCellStyle(),
                                 cell);
                     }
