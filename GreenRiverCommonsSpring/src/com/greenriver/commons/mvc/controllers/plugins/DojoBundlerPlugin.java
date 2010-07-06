@@ -15,6 +15,7 @@ import java.util.regex.MatchResult;
  * Creates a bundle of dojo javascript files on the fly reducing the number of
  * request for dojo components to almost 1. Also supports minimizing the size of
  * the bundle by using a javascript compressor like yui's javascript compressor.
+ * 
  * @author luis
  */
 public class DojoBundlerPlugin extends BaseBundlerPlugin {
@@ -26,6 +27,8 @@ public class DojoBundlerPlugin extends BaseBundlerPlugin {
     private static final String MODULE_NAME_REGEX = "^(\\w+\\.)*\\w+$";
     private static final String DOJO_REQUIRE_LOCALIZATION_REGEX =
             "dojo\\.requireLocalization\\([\"']((?:\\w+\\.)*\\w+)['\"],[\"'](\\w+)['\"],.*\\)(?:;)";
+    private static final String TEMPLATE_PATH_REGEX =
+           "templatePath\\s*:\\s*dojo.moduleUrl\\(['\"]((?:\\w+\\.)*\\w+)['\"],['\"]((?:\\w+/)*\\w+\\.html)['\"]\\)";
 
     public DojoBundlerPlugin() {
         this.excludedNamespaces = new ArrayList<String>();
@@ -112,6 +115,7 @@ public class DojoBundlerPlugin extends BaseBundlerPlugin {
             return;
         }
 
+        // We wont further process this module.
         loadedModules.add(moduleName);
 
         File moduleFile = new File(getPathFromModuleName(moduleName.trim()));
@@ -119,6 +123,7 @@ public class DojoBundlerPlugin extends BaseBundlerPlugin {
 
         try {
             scanner = new Scanner(moduleFile);
+
         } catch (FileNotFoundException ex) {
             throw new RuntimeException(ex);
         }
@@ -134,12 +139,14 @@ public class DojoBundlerPlugin extends BaseBundlerPlugin {
             searchDojoRequire(
                     nextLine,
                     loadedModules, loadedLocalizations,
-                    scanner, fileWriter);
+                    fileWriter);
 
             searchDojoRequireLocalization(
                     nextLine,
                     loadedLocalizations,
-                    scanner, fileWriter);
+                    fileWriter);
+
+            nextLine = searchTemplatePathAttribute(nextLine);
 
             if (!nextLine.isEmpty()) {
                 lines.add(nextLine);
@@ -157,64 +164,111 @@ public class DojoBundlerPlugin extends BaseBundlerPlugin {
         scanner.close();
     }
 
+    private String searchTemplatePathAttribute(
+            String currentLine) throws FileNotFoundException {
+
+        Scanner scanner= new Scanner(currentLine);
+        String templatePathFound = scanner.findInLine(TEMPLATE_PATH_REGEX);
+        if (templatePathFound == null) {
+            return currentLine;
+        }
+
+        MatchResult matchResult = scanner.match();
+        for(int groupIndex = 0; groupIndex <matchResult.groupCount();groupIndex+=3) {
+            String templatePathStatement = matchResult.group(groupIndex);
+            String modulePath = matchResult.group(groupIndex+1);
+            String filePath = matchResult.group(groupIndex+2);
+
+            // We create the imported file's path.
+            filePath=getPathFromModuleName(modulePath).replace(".js", "/")+filePath;
+
+            Scanner resourceScanner = new Scanner(new File(filePath));
+
+            StringBuilder templateStringBuilder = new StringBuilder("templateString: '");
+            while(resourceScanner.hasNextLine()) {
+                String resourceLine = resourceScanner.nextLine();
+
+                templateStringBuilder.append(resourceLine.trim());
+            }
+            templateStringBuilder.append("'");
+
+            resourceScanner.close();
+
+            currentLine=
+                    currentLine.replace(templatePathStatement, templateStringBuilder.toString());
+        }
+
+        scanner.close();
+
+        return currentLine.trim();
+    }
+
     private void searchDojoRequire(
             String currentLine,
             List<String> loadedModules,
-            List<String> loadedLocalizations,
-            Scanner scanner,
+            List<String> loadedLocalizations,            
             BufferedWriter fileWriter) throws IOException {
+
+        Scanner scanner = new Scanner(currentLine);
         String requireFound = scanner.findInLine(DOJO_REQUIRE_REGEX);
 
-        if (requireFound != null) {
-            MatchResult matchResult = scanner.match();
-            for (int groupIndex = 1; groupIndex < matchResult.groupCount(); groupIndex++) {
-                String requiredModule = matchResult.group(groupIndex);
+        if (requireFound == null) {
+            return;
+        }
 
-                if (!requiredModule.matches(MODULE_NAME_REGEX)) {
-                    continue;
-                }
+        MatchResult matchResult = scanner.match();
+        for (int groupIndex = 1; groupIndex < matchResult.groupCount(); groupIndex++) {
+            String requiredModule = matchResult.group(groupIndex);
 
-                // We have found a declare statement, so we remove process it
-                // before we write anything to the file.
-                if (!isModuleExcluded(requiredModule)) {
-                    processModuleFile(
-                            loadedModules,
-                            loadedLocalizations,
-                            requiredModule,
-                            fileWriter);
-                    currentLine = currentLine.replaceAll(DOJO_REQUIRE_REGEX, "");
-                }
+            if (!requiredModule.matches(MODULE_NAME_REGEX)) {
+                continue;
+            }
+
+            // We have found a declare statement, so we remove process it
+            // before we write anything to the file.
+            if (!isModuleExcluded(requiredModule)) {
+                processModuleFile(
+                        loadedModules,
+                        loadedLocalizations,
+                        requiredModule,
+                        fileWriter);
             }
         }
+
+        scanner.close();
     }
 
     private void searchDojoRequireLocalization(
             String currentLine,
-            List<String> loadedLocalizations,
-            Scanner scanner,
+            List<String> loadedLocalizations,            
             BufferedWriter fileWriter) throws IOException {
+        Scanner scanner=new Scanner(currentLine);
         String requireFound = scanner.findInLine(DOJO_REQUIRE_LOCALIZATION_REGEX);
 
-        if (requireFound != null) {
-            MatchResult matchResult = scanner.match();
-            for (int groupIndex = 1; groupIndex < matchResult.groupCount(); groupIndex++) {
-                String modulePath = matchResult.group(groupIndex);
+        if (requireFound == null) {
+            return;
+            
+        }
+        MatchResult matchResult = scanner.match();
+        for (int groupIndex = 1; groupIndex < matchResult.groupCount(); groupIndex++) {
+            String modulePath = matchResult.group(groupIndex);
 
-                if (!modulePath.matches(MODULE_NAME_REGEX)) {
-                    continue;
-                }
+            if (!modulePath.matches(MODULE_NAME_REGEX)) {
+                continue;
+            }
 
-                // The next parameter is the module name.
-                groupIndex++;
-                String moduleName = matchResult.group(groupIndex);
+            // The next parameter is the module name.
+            groupIndex++;
+            String moduleName = matchResult.group(groupIndex);
 
-                String localizationName = modulePath + "." + moduleName;
-                if (!loadedLocalizations.contains(localizationName)) {
-                    loadedLocalizations.add(localizationName);
-                    addLocalizationFiles(modulePath, moduleName, fileWriter);
-                }
+            String localizationName = modulePath + "." + moduleName;
+            if (!loadedLocalizations.contains(localizationName)) {
+                loadedLocalizations.add(localizationName);
+                addLocalizationFiles(modulePath, moduleName, fileWriter);
             }
         }
+
+        scanner.close();
     }
 
     private void addLocalizationFiles(
