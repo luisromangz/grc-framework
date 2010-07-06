@@ -6,7 +6,7 @@ package com.greenriver.commons.templating;
  */
 public enum BorderType {
     NONE("Ninguno","border:none","border:none"),
-    ALL("Todos","border:0.5mm solid black","border:0,5mm solid black"),
+    ALL("Todos","border:0.5mm solid black","border:0.5mm solid black"),
     OUTER("Exterior","border:0.5mm solid black","border:none"),
     INNER("Interiores","border: 0.5mm solid white","border: 0.5mm solid black");
     private String label;
