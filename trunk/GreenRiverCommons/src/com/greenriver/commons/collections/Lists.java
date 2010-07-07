@@ -150,7 +150,7 @@ public class Lists {
      * order, if false the elements of the first list are checked to exists in
      * the second list.
      * @return
-     * @throws NullPointerException if any element is a null pointer.
+     * @throws NullPointerException if forAny element is a null pointer.
      */
     public static boolean equals(
             List<? extends Object> listA,
@@ -218,5 +218,24 @@ public class Lists {
                 return element;
             }
         }, condition);
+    }
+
+    /**
+     * Checks if the given condition applies to any of the passed list's element.
+     *
+     * @param <T> The type of the list's elements.
+     * @param elements The list containing the elements to be checked.
+     * @param filteringCondition The condition that will be applied to the elements.
+     * @return True, if for at least one element in the list the condition is true.
+     */
+    public static <T> boolean  forAny(List<T> elements, FilteringCondition<T> filteringCondition) {
+        
+        for(T element : elements) {
+            if(filteringCondition.condition(element)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
