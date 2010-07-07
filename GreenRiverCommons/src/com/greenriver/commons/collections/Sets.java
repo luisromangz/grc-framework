@@ -49,4 +49,22 @@ public class Sets {
         },condition);
     }
 
+     /**
+     * Checks if the given condition applies to any of the passed set's element.
+     *
+     * @param <T> The type of the set's elements.
+     * @param elements The set containing the elements to be checked.
+     * @param filteringCondition The condition that will be applied to the elements.
+     * @return True, if for at least one element in the set the condition is true.
+     */
+    public static <T> boolean  forAny(Set<T> elements, FilteringCondition<T> filteringCondition) {
+
+        for(T element : elements) {
+            if(filteringCondition.condition(element)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
