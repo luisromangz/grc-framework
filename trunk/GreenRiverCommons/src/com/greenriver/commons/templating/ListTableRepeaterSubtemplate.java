@@ -36,6 +36,7 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
     private Long id;
     public static final String TABLE_CELL_SEPARATOR = "||";
     public static final String TABLE_CELL_SEPARATOR_REGEX = "\\|\\|";
+    public static final String COLUMN_SORTING_SEPARATOR=";";
     @FieldProperties(label = "Tipo de repetición", type = FieldType.SELECTION,
     possibleValues = {"true", "false"}, possibleValueLabels = {"Tabla", "Lista"})
     private boolean isTable = true;
@@ -58,7 +59,7 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
     deactivationConditions = {
         @FieldDeactivationCondition(equals = "'false'", triggerField = "isTable")})
     private String columnSizes = "";
-    @FieldProperties(label="Columnas por las que se ordena", customRegExp="\\d+(,\\d+)*",required=false,
+    @FieldProperties(label="Columnas por las que se ordena", customRegExp="\\d+(;\\d+)*",required=false,
     deactivationConditions={
         @FieldDeactivationCondition(equals = "'false'", triggerField = "isTable")
     })
@@ -223,6 +224,7 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
         targetTemplate.setBorders(borders);
         targetTemplate.setFontSize(fontSize);
         targetTemplate.setFontStyle(fontStyle);
+        targetTemplate.setOrderByColumns(orderByColumns);
     }
 
     // <editor-fold defaultstate="collapsed" desc="Getters & setters">
