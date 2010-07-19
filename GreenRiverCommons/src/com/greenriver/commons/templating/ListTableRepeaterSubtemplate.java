@@ -1,15 +1,22 @@
 package com.greenriver.commons.templating;
 
 import com.greenriver.commons.Strings;
+import com.greenriver.commons.collections.SortedArrayList;
 import com.greenriver.commons.data.fieldProperties.EntityFieldsProperties;
 import com.greenriver.commons.data.fieldProperties.FieldDeactivationCondition;
 import com.greenriver.commons.data.fieldProperties.FieldProperties;
 import com.greenriver.commons.data.fieldProperties.FieldType;
+import java.text.DateFormat;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -27,7 +34,7 @@ import javax.persistence.InheritanceType;
 @DiscriminatorColumn(length = 255)
 @EntityFieldsProperties(appendSuperClassFields = true)
 public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement, K extends Collection<?>>
-                 extends RepeaterSubtemplate<T, K> {
+                   extends RepeaterSubtemplate<T, K> {
 
     // <editor-fold defaultstate="collapsed" desc="Fields">
     private static final long serialVersionUID = 1L;
@@ -36,7 +43,7 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
     private Long id;
     public static final String TABLE_CELL_SEPARATOR = "||";
     public static final String TABLE_CELL_SEPARATOR_REGEX = "\\|\\|";
-    public static final String COLUMN_SORTING_SEPARATOR=";";
+    public static final String COLUMN_SORTING_SEPARATOR = ";";
     @FieldProperties(label = "Tipo de repetición", type = FieldType.SELECTION,
     possibleValues = {"true", "false"}, possibleValueLabels = {"Tabla", "Lista"})
     private boolean isTable = true;
@@ -59,11 +66,11 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
     deactivationConditions = {
         @FieldDeactivationCondition(equals = "'false'", triggerField = "isTable")})
     private String columnSizes = "";
-    @FieldProperties(label="Columnas por las que se ordena", customRegExp="\\d+(;\\d+)*",required=false,
-    deactivationConditions={
+    @FieldProperties(label = "Columnas por las que se ordena", customRegExp = "\\d+(;\\d+)*", required = false,
+    deactivationConditions = {
         @FieldDeactivationCondition(equals = "'false'", triggerField = "isTable")
     })
-    private String orderByColumns="";
+    private String orderByColumns = "";
     @FieldProperties(label = "Formato del elemento", type = FieldType.LONGTEXT, widgetStyle = "width:98%")
     private String elementFormat;
     @FieldProperties(label = "Estilo del elemento", type = FieldType.SELECTION,
@@ -76,7 +83,7 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
     possibleValueLabels = {"Izquierda", "Centro", "Derecha"},
     possibleValues = {"left", "center", "right"},
     deactivationConditions = {
-        @FieldDeactivationCondition(triggerField = "isTable", equals = "'false'",newValue="left")})
+        @FieldDeactivationCondition(triggerField = "isTable", equals = "'false'", newValue = "left")})
     private String textAlign = "center";
     @FieldProperties(label = "Bordes", type = FieldType.SELECTION,
     possibleValueLabels = {"Todos", "Horizontales", "Verticales"},
@@ -136,16 +143,24 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
 
             for (int i = 0; i < splitHeader.length; i++) {
                 result += String.format("<th style=\"%s\">%s</th>",
-                      elementStyle, splitHeader[i]);
+                        elementStyle, splitHeader[i]);
             }
 
             result += "</tr></thead>";
         }
 
-        result += "<tbody>";
-
-
-
+        List<TableRow> tableRows = null;
+        if (Strings.isNullOrEmpty(this.getOrderByColumns())) {
+            tableRows = new ArrayList<TableRow>();
+        } else {
+            try {
+                // We have to sort the table rows before creating the table.
+                tableRows = new SortedArrayList<TableRow>(new TableRowComparator(this.getOrderByColumns()));
+            } catch (ParseException ex) {
+                // This shouldnt happen, as the order string was validated before saving.
+                Logger.getLogger(ListTableRepeaterSubtemplate.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
 
         // We walk the replacements for the table rows.
         for (Map<T, String> elementReplacements : replacements) {
@@ -159,16 +174,20 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
                 sizes.add("auto");
             }
 
+            TableRow row = new TableRow();
             for (int i = 0; i < columnElements.length; i++) {
                 String size = sizes.get(i);
-                columnElements[i] = String.format(
-                        "<td style=\"width:%s;%s\">%s</td>",
-                        size,
-                        elementStyle,
-                        columnElements[i]);
+                row.addCell(columnElements[i], size, elementStyle);
             }
 
-            result += String.format("<tr>%s</tr>", Strings.join(columnElements, ""));
+            tableRows.add(row);
+        }
+
+
+        result += "<tbody>";
+
+        for (TableRow row : tableRows) {
+            result += row.getRow();
         }
 
         result += "</tbody></table>";
@@ -390,4 +409,105 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
         this.orderByColumns = orderByColumns;
     }
     // </editor-fold>
+}
+
+class TableRowComparator implements Comparator<TableRow> {
+
+    private int[] columnIndexes;
+    private NumberFormat numberParser;
+    private DateFormat dateParser;
+
+    public TableRowComparator(String indexesString) throws ParseException {
+
+
+        String[] indexStrings = indexesString.split(
+                ListTableRepeaterSubtemplate.COLUMN_SORTING_SEPARATOR);
+
+        columnIndexes = new int[indexStrings.length];
+
+        numberParser = NumberFormat.getNumberInstance();
+        dateParser = DateFormat.getInstance();
+
+        for (int i = 0; i < indexStrings.length; i++) {
+            columnIndexes[i] = (int) ((Long) numberParser.parse(indexStrings[i]) - 1);
+        }
+    }
+
+    @Override
+    public int compare(TableRow o1, TableRow o2) {
+        for (int columnIndex : columnIndexes) {
+            String content1 = o1.getCellContent(columnIndex);
+            String content2 = o2.getCellContent(columnIndex);
+
+            // By default, we would compare the contents as strings.
+            Comparable c1 = content1;
+            Comparable c2 = content2;
+
+            // We try to convert the cell contents to numbers.
+            boolean numbers = true;
+            try {
+                c1 = (Comparable) numberParser.parse(content1);
+                c2 = (Comparable) numberParser.parse(content2);
+            } catch (ParseException ex) {
+                // The contents werent numbers.
+                numbers = false;
+            }
+
+
+            if (!numbers) {
+                try {
+                    // We try to get dates.
+                    c1 = dateParser.parse(content1);
+                    c2 = dateParser.parse(content2);
+                } catch (ParseException ex) {
+                    // Contents weren't dates.
+                }
+            }
+
+            int result = c1.compareTo(c2);
+            if (result != 0) {
+                // We return the first column comparation that isnt 0;
+                return result;
+            }
+        }
+
+        // If we are here, all comparations were equal.
+        return 0;
+    }
+}
+
+class TableRow {
+
+    List<String> cellStyles;
+    List<String> cellContents;
+
+    public TableRow() {
+        cellContents = new ArrayList<String>();
+        cellStyles = new ArrayList<String>();
+    }
+
+    public void addCell(String content, String width, String style) {
+        cellContents.add(content);
+        cellStyles.add(String.format("width:%s;%s", width, style));
+    }
+
+    public String getCellContent(int cellIndex) {
+        return cellContents.get(cellIndex);
+    }
+
+    public String getCellStyles(int cellIndex) {
+        return cellStyles.get(cellIndex);
+    }
+
+    public String getRow() {
+        String row = "<tr>";
+
+        for (int i = 0; i < cellContents.size(); i++) {
+            row += String.format("<td style=\"%s\">%s</td>",
+                    cellStyles.get(i),
+                    cellContents.get(i));
+        }
+
+        return row + "</tr>";
+    }
 }
