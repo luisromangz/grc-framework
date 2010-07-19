@@ -69,9 +69,13 @@ public class ServiceResult<T> {
     public void addErrorMessages(List<String> errorMessages) {
         this.errorMessages.addAll(errorMessages);
     }
-
-    public void addErrorMessage(String message, Object ... submessages) {
+    
+    public void formatErrorMessage(String message, Object ... submessages) {
        this.errorMessages.add(String.format(message, submessages));
+    }
+
+    public void addErrorMessage(String message) {
+       this.errorMessages.add(message);
     }
 
     
