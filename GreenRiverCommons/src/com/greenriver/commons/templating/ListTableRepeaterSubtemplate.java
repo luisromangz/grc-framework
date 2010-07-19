@@ -58,6 +58,11 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
     deactivationConditions = {
         @FieldDeactivationCondition(equals = "'false'", triggerField = "isTable")})
     private String columnSizes = "";
+    @FieldProperties(label="Columnas por las que se ordena", customRegExp="\\d+(,\\d+)*",required=false,
+    deactivationConditions={
+        @FieldDeactivationCondition(equals = "'false'", triggerField = "isTable")
+    })
+    private String orderByColumns="";
     @FieldProperties(label = "Formato del elemento", type = FieldType.LONGTEXT, widgetStyle = "width:98%")
     private String elementFormat;
     @FieldProperties(label = "Estilo del elemento", type = FieldType.SELECTION,
@@ -367,6 +372,20 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
      */
     public void setFontSize(int fontSize) {
         this.fontSize = fontSize;
+    }
+
+    /**
+     * @return the orderByColumns
+     */
+    public String getOrderByColumns() {
+        return orderByColumns;
+    }
+
+    /**
+     * @param orderByColumns the orderByColumns to set
+     */
+    public void setOrderByColumns(String orderByColumns) {
+        this.orderByColumns = orderByColumns;
     }
     // </editor-fold>
 }
