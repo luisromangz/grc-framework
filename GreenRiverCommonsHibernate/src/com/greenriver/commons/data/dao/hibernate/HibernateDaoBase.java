@@ -4,6 +4,7 @@ import com.greenriver.commons.data.dao.hibernate.pagination.CriteriaPagingHelper
 import com.greenriver.commons.data.dao.queryArguments.EntityQueryArguments;
 import com.greenriver.commons.data.dao.hibernate.pagination.CriteriaPagingHelper;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -50,8 +51,14 @@ public abstract class HibernateDaoBase<T> {
         if(entityClass!=null) {
             return entityClass;
         }
-        ParameterizedType parameterizedType =
-                (ParameterizedType) getClass().getGenericSuperclass();
+
+        Type superclass = getClass().getGenericSuperclass();
+        if(superclass == null
+                || !(superclass instanceof ParameterizedType)) {
+                throw new IllegalStateException("Entity template class needs to be specified when extending HibernateDaoBase.");
+        }
+
+        ParameterizedType parameterizedType = (ParameterizedType) superclass;
         entityClass= (Class)parameterizedType.getActualTypeArguments()[0];
         return entityClass;
     }
