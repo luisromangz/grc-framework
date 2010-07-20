@@ -14,7 +14,9 @@ import org.springframework.web.servlet.ModelAndView;
 public class PageToolsController extends ConfigurablePageController {
 
     @Override
-    public void customHandleRequest(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) throws Exception {
+    public void customHandleRequest(
+            HttpServletRequest request, HttpServletResponse response, ModelAndView mav)
+            throws Exception {
 
         List<String> dialogJspFiles = new ArrayList<String>();
         List<String> setupJspFiles = new ArrayList<String>();
