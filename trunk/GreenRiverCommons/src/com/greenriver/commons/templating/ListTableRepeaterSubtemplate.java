@@ -26,6 +26,12 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 
 /**
+ * This subtemplate base class allows creation of tables or lists from
+ * a collection of elements.
+ *
+ * It allows setting format for the elements of the list's elements/columns,
+ * and in case the output is selected to be a table, also the table's headers,
+ * columns widths. Also, an order for the columns can be defined.
  *
  * @author luis
  */
