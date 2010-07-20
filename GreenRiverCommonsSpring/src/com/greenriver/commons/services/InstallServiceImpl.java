@@ -69,7 +69,6 @@ public class InstallServiceImpl implements InstallService, Serializable {
         return serviceResult;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public ServiceResult addAdminUser(User adminUser) {
         ServiceResult serviceResult = new ServiceResult();
