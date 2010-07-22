@@ -89,7 +89,7 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
     possibleValueLabels = {"Izquierda", "Centro", "Derecha"},
     possibleValues = {"left", "center", "right"},
     deactivationConditions = {
-        @FieldDeactivationCondition(triggerField = "isTable", equals = "'false'", newValue = "left")})
+        @FieldDeactivationCondition(triggerField = "isTable", equals = "'false'", newValue = "'left'")})
     private String textAlign = "center";
     @FieldProperties(label = "Bordes", type = FieldType.SELECTION,
     possibleValueLabels = {"Todos", "Horizontales", "Verticales"},
