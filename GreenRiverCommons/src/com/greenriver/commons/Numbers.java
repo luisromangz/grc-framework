@@ -97,6 +97,18 @@ public class Numbers {
     }
 
     /**
+     * Formats a number with the given maximun decimal places.
+     *
+     * @param maxDecimalPlaces
+     * @return
+     */
+    public static String format(Number number, int maxDecimalPlaces) {
+        NumberFormat numberFormat = NumberFormat.getNumberInstance();
+        numberFormat.setMaximumFractionDigits(maxDecimalPlaces);
+        return numberFormat.format(number);
+    }
+
+    /**
      * Rounds a floating point number at the given number of decimal places
      * @param number
      * @param places
@@ -169,16 +181,5 @@ public class Numbers {
         return Strings.sumDigits(number + "");
     }
 
-    /**
-     * Returns a NumberFormat object with the maximum decimal places property
-     * already set.
-     * 
-     * @param maxDecimalPlaces
-     * @return
-     */
-    public static NumberFormat getNumberFormat(int maxDecimalPlaces) {
-        NumberFormat numberFormat = NumberFormat.getNumberInstance();
-        numberFormat.setMaximumFractionDigits(2);
-        return numberFormat;
-    }
+  
 }
