@@ -511,8 +511,15 @@ public class Dates {
         return (int) (difference(dateA, dateB) / DAY_MILLIS);
     }
 
+    /**
+     * Adds the givven amount to the days of the date.
+     * @param date
+     * @param amount
+     * @return
+     */
     public static Date addDays(Date date, int amount) {
         GregorianCalendar cal = (GregorianCalendar) GregorianCalendar.getInstance();
+        cal.setTime(date);
         cal.add(GregorianCalendar.DAY_OF_MONTH, amount);
         return cal.getTime();
     }
