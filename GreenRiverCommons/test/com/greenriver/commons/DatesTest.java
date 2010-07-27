@@ -1,12 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package com.greenriver.commons;
 
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import org.junit.After;
@@ -174,5 +171,19 @@ public class DatesTest {
 
         resultMillis = Dates.difference(dateA, dateB);
         assertEquals(expectedMillis, resultMillis);
+    }
+
+    @Test
+    public void testAddDays() {
+        System.out.println("testAddDays");
+        GregorianCalendar cal =
+                (GregorianCalendar)GregorianCalendar.getInstance();
+        cal.set(2009, 10, 10);
+        Date dateA = cal.getTime();
+        cal.add(Calendar.DAY_OF_MONTH, 1);
+        Date dateB = cal.getTime();
+        dateA = Dates.addDays(dateA, 1);
+
+        assertTrue(Dates.equals(dateA, dateB, DatePart.DATE));
     }
 }
