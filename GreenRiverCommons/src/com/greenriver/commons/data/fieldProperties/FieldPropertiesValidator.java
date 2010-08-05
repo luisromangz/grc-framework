@@ -75,7 +75,6 @@ public class FieldPropertiesValidator implements FieldsValidator {
         }
     }
 
-    @SuppressWarnings("unchecked")
     private List<String> validateField(
             Field field,
             FieldProperties properties,
