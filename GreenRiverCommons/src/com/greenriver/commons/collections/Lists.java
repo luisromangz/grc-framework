@@ -190,24 +190,25 @@ public class Lists {
         return applyIf(set, command, new FilteringCondition<T>() {
 
             @Override
-            public boolean condition(T element) {
+            public boolean condition(T element, int index) {
                 return true;
             }
         });
     }
 
     public static <T, R> List<R> applyIf(
-            List<T> set,
+            List<T> list,
             ApplicableCommand<T, R> applicableCommand,
             FilteringCondition<T> filteringCondition) {
-        List<R> resultSet = new ArrayList<R>();
-        for (T setElement : set) {
-            if (filteringCondition.condition(setElement)) {
-                resultSet.add(applicableCommand.apply(setElement));
+        List<R> resultList = new ArrayList<R>();
+        for (int index=0; index< list.size(); index++){
+            T element = list.get(index);
+            if (filteringCondition.condition(element,index)) {
+                resultList.add(applicableCommand.apply(element));
             }
         }
 
-        return resultSet;
+        return resultList;
     }
 
     public static <T> List<T> filter(List<T> set, FilteringCondition<T> condition) {
@@ -230,8 +231,9 @@ public class Lists {
      */
     public static <T> boolean  forAny(List<T> elements, FilteringCondition<T> filteringCondition) {
         
-        for(T element : elements) {
-            if(filteringCondition.condition(element)) {
+        for(int index=0; index < elements.size(); index++){
+            T element = elements.get(index);
+            if(filteringCondition.condition(element,index)) {
                 return true;
             }
         }

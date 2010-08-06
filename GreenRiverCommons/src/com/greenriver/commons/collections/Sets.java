@@ -17,7 +17,7 @@ public class Sets {
         return applyIf(set, command, new FilteringCondition<T>(){
 
             @Override
-            public boolean condition(T element) {
+            public boolean condition(T element, int index) {
                 return true;
             }
 
@@ -29,10 +29,13 @@ public class Sets {
             ApplicableCommand<T, R> applicableCommand,
             FilteringCondition<T> filteringCondition) {
         Set<R> resultSet = new HashSet<R>();
+        int index=0;
         for(T setElement : set) {
-            if(filteringCondition.condition(setElement)){
+            if(filteringCondition.condition(setElement,index)){
                 resultSet.add(applicableCommand.apply(setElement));
-            }            
+            }
+
+            index++;
         }
 
         return resultSet;
@@ -59,10 +62,12 @@ public class Sets {
      */
     public static <T> boolean  forAny(Set<T> elements, FilteringCondition<T> filteringCondition) {
 
+        int index =0;
         for(T element : elements) {
-            if(filteringCondition.condition(element)) {
+            if(filteringCondition.condition(element, index)) {
                 return true;
             }
+            index++;
         }
 
         return false;
