@@ -30,7 +30,7 @@ import javax.persistence.InheritanceType;
 @DiscriminatorColumn(length = 255)
 @EntityFieldsProperties(appendSuperClassFields = true)
 public abstract class TextRepeaterSubtemplate<T extends TemplateReplacement, K extends Collection<?>>
-           extends RepeaterSubtemplate<T, K>
+            extends RepeaterSubtemplate<T, K>
         implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -77,32 +77,58 @@ public abstract class TextRepeaterSubtemplate<T extends TemplateReplacement, K e
             List<String> tables = new ArrayList<String>();
 
             int counter = 0;
-            List<String> currentTable = new ArrayList<String>();
-            for (String text : texts) {
-                currentTable.add(text);
-                counter = (counter + 1) % horizontalRepetitions;
+            List<String> currentTableCells = new ArrayList<String>();
 
-                if (counter == 0) {
-                    //
-                    String table = String.format("<table style=\"%s\"><tbody><tr>",
+            
+            for (String text : texts) {
+                currentTableCells.add(text);
+                counter++;
+
+                if (counter == horizontalRepetitions) {
+                    // We reached the end of a row, so we format a table...
+                    String formattedTable = String.format("<table style=\"%s;\"><tbody><tr>",
                             this.borderType.getTableStyle());
 
-                    for (String cell : currentTable) {
-                        table += String.format(
+                    for (String cell : currentTableCells) {
+                        formattedTable += String.format(
                                 "<td style=\"%s;text-align:left\">%s</td>",
                                 this.borderType.getCellStyle(),
                                 cell);
                     }
 
-                    table += "</tr></tbody></table>";
+                    formattedTable += "</tr></tbody></table>";
 
-                    tables.add(table);
-                    currentTable = new ArrayList<String>();
+                    tables.add(formattedTable);
+
+                    // And reset the row.
+                    currentTableCells = new ArrayList<String>();
+                    counter = 0;
                 }
+            }
+
+            if (counter > 0) {
+                // We have an extra row with cellNumber < horizontalrepetitions.
+                String tableWidth = 100.0* currentTableCells.size()/horizontalRepetitions+"%";
+                String formattedTable = String.format("<table style=\"%s;width:%s\"><tbody><tr>",
+                        this.borderType.getTableStyle(),
+                        tableWidth);
+
+                for (String cell : currentTableCells) {
+                    formattedTable += String.format(
+                            "<td style=\"%s;text-align:left\">%s</td>",
+                            this.borderType.getCellStyle(),
+                            cell);
+                }
+
+                formattedTable += "</tr></tbody></table>";
+
+                tables.add(formattedTable);
             }
 
             texts = tables;
         }
+
+
 
 
         String glue = "";
@@ -123,7 +149,7 @@ public abstract class TextRepeaterSubtemplate<T extends TemplateReplacement, K e
         templateTarget.body = this.body;
         templateTarget.newLineAfterText = this.newLineAfterText;
         templateTarget.newPageAfterText = this.newPageAfterText;
-        templateTarget.horizontalRepetitions =horizontalRepetitions;
+        templateTarget.horizontalRepetitions = horizontalRepetitions;
         templateTarget.borderType = borderType;
 
     }
