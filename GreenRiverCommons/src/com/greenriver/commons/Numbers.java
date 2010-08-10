@@ -9,13 +9,13 @@ import java.util.HashMap;
  */
 public class Numbers {
 
-    private static HashMap<Float,String> fractions;
+    private static HashMap<Float, String> fractions;
 
     static {
         fractions = new HashMap<Float, String>();
         fractions.put(0.25f, "¼");
-        fractions.put(0.50f,"½");
-        fractions.put(0.75f,"¾");
+        fractions.put(0.50f, "½");
+        fractions.put(0.75f, "¾");
 
         // TODO: Add more equivaliencies here
     }
@@ -30,35 +30,9 @@ public class Numbers {
      * An small number is therefore recommended.
      * @return
      */
-    // TODO: Generalize this, should accept the step used.
-    public static float ceilInQuarterSteps(float number, float epsilon) {
-        epsilon = Math.abs(epsilon);
-        float integerPart = new Float(number).intValue();
-        float decimalPart = Math.abs(number - integerPart);
-
-        if (integerPart >= 0) {
-            if (decimalPart < epsilon) {
-                return integerPart;
-            } else if (decimalPart <= (0.25f + epsilon)) {
-                return integerPart + 0.25f;
-            } else if (decimalPart <= (0.50f + epsilon)) {
-                return integerPart + 0.50f;
-            } else if (decimalPart <= (0.75f + epsilon)) {
-                return integerPart + 0.75f;
-            } else {
-                return integerPart + 1;
-            }
-        } else {
-            if (decimalPart < (0.25f - epsilon)) {
-                return integerPart;
-            } else if (decimalPart < (0.50f - epsilon)) {
-                return integerPart - 0.25f;
-            } else if (decimalPart < (0.75f - epsilon)) {
-                return integerPart - 0.5f;
-            } else {
-                return integerPart -0.75f;
-            }
-        }
+    @Deprecated
+    public static float ceilInQuarterSteps(float number) {
+        return ceilingToSteps(number, 4);
     }
 
     /**
@@ -66,31 +40,31 @@ public class Numbers {
      * doesn't have a quarter then its formatted with the number of decimals
      * told.
      * @param number The number to be formatted using fractions for the decimal part.
-     * @param decimalsIfNotFractionAvalaible The decimals used, if fractions for the decimal part of the number are not avalaible.
+     * @param maxDecimalPlaces The decimals used, if fractions for the decimal part of the number are not avalaible.
      * @return
      */
-    public static String formatWithFractions(float number, int decimalsIfNotFractionAvalaible) {
+    public static String formatWithFractions(float number, int maxDecimalPlaces) {
         float integerPart = Math.abs(new Float(number).intValue());
         float decimalPart = number - integerPart;
         String resultString = Integer.toString((int) integerPart);
 
-        if(fractions.containsKey(decimalPart)){
-            if(integerPart>0) {
-                resultString+="+"+fractions.get(decimalPart);
+        if (fractions.containsKey(decimalPart)) {
+            if (integerPart > 0) {
+                resultString += "+" + fractions.get(decimalPart);
             } else {
-                resultString=fractions.get(decimalPart);
-            }            
+                resultString = fractions.get(decimalPart);
+            }
         } else {
             // We dont show quarters
             NumberFormat numberFormat = NumberFormat.getNumberInstance();
-            numberFormat.setMaximumFractionDigits(decimalsIfNotFractionAvalaible);
+            numberFormat.setMaximumFractionDigits(maxDecimalPlaces);
             return numberFormat.format(number);
         }
 
-        if(number< 0 && integerPart >0) {
-            return "-("+resultString+")";
-        } else if (number <0) {
-            return "- " +resultString;
+        if (number < 0 && integerPart > 0) {
+            return "-(" + resultString + ")";
+        } else if (number < 0) {
+            return "- " + resultString;
         }
 
         return resultString;
@@ -116,7 +90,7 @@ public class Numbers {
      */
     public static float round(float number, int places) {
         double decimalsDivider = Math.pow(10, places);
-        return (float)(Math.round(number*decimalsDivider) / decimalsDivider);
+        return (float) (Math.round(number * decimalsDivider) / decimalsDivider);
     }
 
     /**
@@ -127,7 +101,7 @@ public class Numbers {
      */
     public static float trunc(float number, int places) {
         double decimalsDivider = Math.pow(10, places);
-        return (float)(Math.floor(number*decimalsDivider) / decimalsDivider);
+        return (float) (Math.floor(number * decimalsDivider) / decimalsDivider);
     }
 
     /**
@@ -181,5 +155,40 @@ public class Numbers {
         return Strings.sumDigits(number + "");
     }
 
-  
+    public static float ceilingToSteps(float number, int roundingSteps) {
+        float integerPart = new Float(number).intValue();
+
+        float decimalPart = Math.abs(number - integerPart);
+
+        float delta = 1.0f / roundingSteps;
+
+
+        float accum = 0;
+        if (integerPart >= 0) {
+            for (int i = 0; i < roundingSteps; i++) {
+                if (decimalPart == accum) {
+                    return integerPart +accum;
+                } else if (decimalPart > accum && decimalPart < accum + delta) {
+                    return integerPart + accum + delta;
+                }
+
+                accum += delta;
+            }
+
+            return integerPart + 1;
+
+        } else {
+            for (int i = 0; i < roundingSteps - 1; i++) {
+                if (decimalPart == accum) {
+                    return integerPart -accum;
+                } else if (decimalPart >= accum && decimalPart < accum + delta) {
+                    return integerPart - accum;
+                }
+
+                accum += delta;
+            }
+
+            return integerPart - 1;
+        }
+    }
 }
