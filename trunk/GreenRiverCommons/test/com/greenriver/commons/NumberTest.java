@@ -39,23 +39,29 @@ public class NumberTest {
     @Test
     public void testCeilInQuarterSteps() {
         System.out.println("testCeilInQuarterSteps");
-        assertEquals(1, Numbers.ceilInQuarterSteps(0.8f, 0.01f), 0.0000001f);
-        assertEquals(0, Numbers.ceilInQuarterSteps(0.009f, 0.01f), 0.0001f);
-        assertEquals(0, Numbers.ceilInQuarterSteps(0, 0.01f), 0.00001f);
-        assertEquals(3.25f, Numbers.ceilInQuarterSteps(3.1f, 0.01f), 0.0000001f);
-        assertEquals(0.25f, Numbers.ceilInQuarterSteps(0.25f, 0.01f), 0.000001f);
-        assertEquals(0.25f, Numbers.ceilInQuarterSteps(0.2501f, 0.001f), 0.0001f);
-        assertEquals(5.5f, Numbers.ceilInQuarterSteps(5.3f, 0.01f), 0.0000001f);
-        assertEquals(0.5f, Numbers.ceilInQuarterSteps(0.5f, 0.01f), 0.000001f);
-        assertEquals(0.75f, Numbers.ceilInQuarterSteps(0.501f, 0.0f), 0.0000001f);
-        assertEquals(7.75f, Numbers.ceilInQuarterSteps(7.65f, 0.01f), 0.00001f);
-        assertEquals(10.75f, Numbers.ceilInQuarterSteps(10.75f, 0.01f), 0.00001f);
-        assertEquals(11f, Numbers.ceilInQuarterSteps(10.7501f, 0.000000001f), 0.00001f);
+        assertEquals("1",1, Numbers.ceilInQuarterSteps(0.8f), 0);
+        assertEquals("2",0.250f, Numbers.ceilInQuarterSteps(0.009f), 0);
+        assertEquals("3",0, Numbers.ceilInQuarterSteps(0), 0);
+        assertEquals("4",3.25f, Numbers.ceilInQuarterSteps(3.1f), 0);
+        assertEquals("5",0.25f, Numbers.ceilInQuarterSteps(0.25f), 0);
+        assertEquals("6",0.5f, Numbers.ceilInQuarterSteps(0.2501f), 0);
+        assertEquals("7",5.5f, Numbers.ceilInQuarterSteps(5.3f), 0);
+        assertEquals("8",0.5f, Numbers.ceilInQuarterSteps(0.5f), 0);
+        assertEquals("9",0.75f, Numbers.ceilInQuarterSteps(0.501f), 0);
+        assertEquals("10",7.75f, Numbers.ceilInQuarterSteps(7.65f), 0);
+        assertEquals("11",10.75f, Numbers.ceilInQuarterSteps(10.75f), 0);
+        assertEquals("12",11f, Numbers.ceilInQuarterSteps(10.7501f), 0);
 
-        assertEquals(10.75f, Numbers.ceilInQuarterSteps(10.8f, 0.1f), 0.1f);
+        assertEquals("13",11f, Numbers.ceilInQuarterSteps(10.8f),0);
 
-        assertEquals(-3f, Numbers.ceilInQuarterSteps(-3.1f, 0), 0);
-        assertEquals(-3.25f, Numbers.ceilInQuarterSteps(-3.3f, 0), 0);
+        assertEquals("14",-3f, Numbers.ceilInQuarterSteps(-3.1f),0);
+        assertEquals("15",-3.25f, Numbers.ceilInQuarterSteps(-3.3f),0);
+    }
+
+    @Test
+    public void testCeilToSteps() {
+         assertEquals("1",0.8f, Numbers.ceilingToSteps(0.8f,5), 0);
+         assertEquals("2", 0.2f, Numbers.ceilingToSteps(0.15f, 5),0);
     }
 
     @Test
