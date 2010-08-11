@@ -40,7 +40,8 @@ import javax.persistence.InheritanceType;
 @DiscriminatorColumn(length = 255)
 @EntityFieldsProperties(appendSuperClassFields = true)
 public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement, K extends Collection<?>>
-                   extends RepeaterSubtemplate<T, K> {
+         extends RepeaterSubtemplate<T, K>
+        implements Subtemplateable {
 
     // <editor-fold defaultstate="collapsed" desc="Fields">
     private static final long serialVersionUID = 1L;

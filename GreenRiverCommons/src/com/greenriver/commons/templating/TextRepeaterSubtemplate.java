@@ -31,7 +31,7 @@ import javax.persistence.InheritanceType;
 @EntityFieldsProperties(appendSuperClassFields = true)
 public abstract class TextRepeaterSubtemplate<T extends TemplateReplacement, K extends Collection<?>>
             extends RepeaterSubtemplate<T, K>
-        implements Serializable {
+        implements Serializable, Subtemplateable {
 
     private static final long serialVersionUID = 1L;
     @Id

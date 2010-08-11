@@ -24,7 +24,7 @@ import javax.persistence.OneToOne;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(length = 255)
 public abstract class PrintingTemplate<T extends TemplateReplacement, K>
-        implements Serializable, Template<T, PrintableDocument, K> {
+        implements Serializable, Template<T, PrintableDocument, K>, Subtemplateable {
 
     @FieldProperties(label = "Cuerpo del documento", type = FieldType.RICHTEXT)
     @Column(length = 10240)
