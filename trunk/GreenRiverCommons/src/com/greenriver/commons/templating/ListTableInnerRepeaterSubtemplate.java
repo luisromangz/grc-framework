@@ -29,7 +29,7 @@ import javax.persistence.OneToOne;
 @EntityFieldsProperties(appendSuperClassFields = true)
 public abstract class ListTableInnerRepeaterSubtemplate<T extends TemplateReplacement, K extends Collection<?>>
          extends RepeaterSubtemplate<T, K>
-        implements Serializable {
+        implements Serializable, Subtemplateable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -65,6 +65,13 @@ public abstract class ListTableInnerRepeaterSubtemplate<T extends TemplateReplac
         ((ListTableInnerRepeaterSubtemplate) copyTarget).elementFormat = elementFormat;
 
 
+    }
+
+    public boolean isTable() {
+        if(this.parentTemplate ==null) {
+            return true;
+        }
+        return this.getParentTemplate().getIsTable();
     }
 
     // <editor-fold defaultstate="collapsed" desc="Getters and setters">
