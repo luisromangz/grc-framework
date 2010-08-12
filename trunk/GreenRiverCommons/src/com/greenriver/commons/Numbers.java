@@ -32,7 +32,7 @@ public class Numbers {
      */
     @Deprecated
     public static float ceilInQuarterSteps(float number) {
-        return ceilingToSteps(number, 4);
+        return ceilingToSteps(number, 4,3);
     }
 
     /**
@@ -155,21 +155,21 @@ public class Numbers {
         return Strings.sumDigits(number + "");
     }
 
-    public static float ceilingToSteps(float number, int roundingSteps) {
+    public static float ceilingToSteps(float number, int roundingSteps, int maxPlaces) {
         float integerPart = new Float(number).intValue();
 
         float decimalPart = Math.abs(number - integerPart);
 
-        float delta = 1.0f / roundingSteps;
+        float delta =round(1.0f / roundingSteps,maxPlaces);
 
 
         float accum = 0;
         if (integerPart >= 0) {
             for (int i = 0; i < roundingSteps; i++) {
                 if (decimalPart == accum) {
-                    return integerPart +accum;
+                    return round(integerPart +accum,maxPlaces);
                 } else if (decimalPart > accum && decimalPart < accum + delta) {
-                    return integerPart + accum + delta;
+                    return round(integerPart + accum + delta,maxPlaces);
                 }
 
                 accum += delta;
@@ -180,9 +180,9 @@ public class Numbers {
         } else {
             for (int i = 0; i < roundingSteps - 1; i++) {
                 if (decimalPart == accum) {
-                    return integerPart -accum;
+                    return round(integerPart -accum,maxPlaces);
                 } else if (decimalPart >= accum && decimalPart < accum + delta) {
-                    return integerPart - accum;
+                    return round(integerPart - accum,maxPlaces);
                 }
 
                 accum += delta;

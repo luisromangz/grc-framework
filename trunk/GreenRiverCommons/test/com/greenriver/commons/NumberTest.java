@@ -60,8 +60,9 @@ public class NumberTest {
 
     @Test
     public void testCeilToSteps() {
-         assertEquals("1",0.8f, Numbers.ceilingToSteps(0.8f,5), 0);
-         assertEquals("2", 0.2f, Numbers.ceilingToSteps(0.15f, 5),0);
+         assertEquals("1",0.8f, Numbers.ceilingToSteps(0.8f,5,4), 0);
+         assertEquals("2", 0.2f, Numbers.ceilingToSteps(0.15f, 5,4),0);
+         assertEquals("3", 0.8, Numbers.ceilingToSteps(0.73f,10,4),0);
     }
 
     @Test
