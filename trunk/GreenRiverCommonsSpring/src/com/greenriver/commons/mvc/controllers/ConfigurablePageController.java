@@ -232,7 +232,7 @@ public class ConfigurablePageController extends AbstractController
         // Close of the init function.
         pageConfiguration.addOnLoadScript("}");
 
-        if(this.isToolsLoadDelayed()) {
+        if(!this.isToolsLoadDelayed()) {
             pageConfiguration.addOnLoadScript("window.onToolsLoaded()");
         }
 
