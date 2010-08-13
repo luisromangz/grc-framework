@@ -167,6 +167,7 @@ public class ConfigurablePageController extends AbstractController
         List<String> dialogJspFiles = new ArrayList<String>();
         List<String> setupJspFiles = new ArrayList<String>();
 
+        // This makes the initilization code needed by forms to be inside this function.
         pageConfiguration.addOnLoadScript("window['onToolsLoaded']=function(){");
 
         if (pageToolManager != null) {
@@ -228,7 +229,12 @@ public class ConfigurablePageController extends AbstractController
 
         }
 
+        // Close of the init function.
         pageConfiguration.addOnLoadScript("}");
+
+        if(this.isToolsLoadDelayed()) {
+            pageConfiguration.addOnLoadScript("window.onToolsLoaded()");
+        }
 
         mav.addObject("toolsDialogJspFiles", dialogJspFiles);
         mav.addObject("toolsSetupJspFiles", setupJspFiles);
