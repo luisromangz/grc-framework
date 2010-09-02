@@ -1,7 +1,9 @@
 package com.greenriver.commons.mvc.controllers.fileDownload;
 
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.log4j.Logger;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
@@ -22,6 +24,7 @@ public class FileDownloadController extends AbstractController {
 
         if (fileDownloadSessionHelper.getFileContent() == null) {
             // Nothing to print.
+            Logger.getRootLogger().error("No download content available!");
             return new ModelAndView("fileDownloadError");
         }
 
@@ -37,7 +40,7 @@ public class FileDownloadController extends AbstractController {
         response.getOutputStream().close();
 
 
-        fileDownloadSessionHelper.clearFileInfo();
+       // fileDownloadSessionHelper.clearFileInfo();
 
         return null;
     }
