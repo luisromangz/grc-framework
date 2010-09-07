@@ -123,7 +123,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
 
         configuration.addOnLoadScript(onChangeCode);
 
-        String widgetInitCode = String.format(                
+        String widgetInitCode = String.format(
                 "dojo.connect(dijit.byId('%s'),'setValue',%s);",
                 currentForm.getId() + "_" + condition.triggerField(),
                 function);
@@ -432,7 +432,8 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
 
         element.getAttributes().setProperty("dojoType", "dijit.Editor");
         element.setAttribute("plugins",
-                "[{name:'grc.dijit._editor.plugins.FontChoice', command:'fontName', generic:false},"
+                "[{name:'grc.dijit._editor.plugins.FontChoice', command:'formatBlock', generic:false},"
+                + "{name:'grc.dijit._editor.plugins.FontChoice', command:'fontName', generic:false},"
                 + "{name:'grc.dijit._editor.plugins.FontChoice', command:'fontSize'},"
                 + "'foreColor','hiliteColor',"
                 + "'|','undo','redo','|','bold','italic','underline','strikethrough',"
@@ -612,7 +613,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         String max = properties.maxValue() + "";
         String pattern = "#,##0." + Strings.repeat("#", properties.decimalPlaces());
 
-        
+
         // Just setting the intermediateChanges property in the element just dont work.
         this.configuration.addOnLoadScript("dijit.byId('" + element.getId() + "').intermediateChanges=false;");
 
