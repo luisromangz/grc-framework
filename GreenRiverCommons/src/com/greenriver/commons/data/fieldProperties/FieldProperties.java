@@ -171,4 +171,11 @@ public @interface FieldProperties {
      * @return
      */
     public String accesorFieldName() default "";
+
+    /**
+     * When the field is used in a Dojo form, is this is true, the widget will
+     * emit onChange when changes are done, without waiting for the widget to lose
+     * focus.
+     */
+    public boolean intermediateChanges() default true;
 }
