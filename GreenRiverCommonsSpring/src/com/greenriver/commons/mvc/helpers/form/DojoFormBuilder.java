@@ -44,9 +44,11 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         String fieldId = currentForm.getId() + "_" + id;
 
         HtmlFormElementInfo formFieldElement = new HtmlFormElementInfo(fieldId);
+        
+        
 
-        formFieldElement.setAttribute("intermediateChanges", "true");
         setupFieldElement(formFieldElement, fieldType, properties);
+
 
         setFieldProperties(properties, formFieldElement);
 
@@ -604,7 +606,6 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         element.setAttribute("dojoType", "dijit.form.NumberSpinner");
 
 
-        element.getAttributes().remove("intermediateChanges");
         configuration.addDojoModule("dijit.form.NumberSpinner");
 
         //Here we set the range, note that if min or max are float it must
@@ -612,10 +613,6 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         String min = properties.minValue() + "";
         String max = properties.maxValue() + "";
         String pattern = "#,##0." + Strings.repeat("#", properties.decimalPlaces());
-
-
-        // Just setting the intermediateChanges property in the element just dont work.
-        this.configuration.addOnLoadScript("dijit.byId('" + element.getId() + "').intermediateChanges=false;");
 
         element.setAttribute(
                 "constraints",
@@ -749,6 +746,12 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
 
         if (!Strings.isNullOrEmpty(properties.widgetStyle())) {
             element.setAttribute("style", properties.widgetStyle());
+        }
+
+        // This ugly hack is required because just writing
+        // intermediateChanges="false" in the element doesnt work.
+        if(!properties.intermediateChanges()) {
+            configuration.addOnLoadScript("dijit.byId('"+element.getId()+"').intermediateChanges=false");
         }
 
     }
