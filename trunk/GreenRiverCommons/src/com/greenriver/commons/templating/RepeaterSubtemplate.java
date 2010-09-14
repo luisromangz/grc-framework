@@ -38,7 +38,7 @@ public abstract class RepeaterSubtemplate<T extends TemplateReplacement, K exten
         List<Map<T, String>> replacements = this.createReplacements(source);
 
         if (replacements.isEmpty()) {
-            if (Strings.isNullOrEmpty(noElementsMessage)) {
+            if (!Strings.isNullOrEmpty(noElementsMessage)) {
                 return noElementsMessage;
             } else {
                 return "";
