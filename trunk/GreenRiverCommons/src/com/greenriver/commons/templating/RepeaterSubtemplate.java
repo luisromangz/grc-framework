@@ -19,7 +19,7 @@ import javax.persistence.MappedSuperclass;
  */
 @MappedSuperclass
 public abstract class RepeaterSubtemplate<T extends TemplateReplacement, K extends Collection<?>>
-           implements Subtemplate<T, String, K>, Serializable {
+            implements Subtemplate<T, String, K>, Serializable {
 
     @FieldProperties(label = "Mensaje a mostrar si no hay elementos", widgetStyle = "width:89%", required = false)
     private String noElementsMessage;
@@ -27,11 +27,23 @@ public abstract class RepeaterSubtemplate<T extends TemplateReplacement, K exten
     @Override
     public String fillTemplate(K source) {
         if (source.isEmpty() && !Strings.isNullOrEmpty(noElementsMessage)) {
-            return noElementsMessage;
+            if (Strings.isNullOrEmpty(noElementsMessage)) {
+                return noElementsMessage;
+            } else {
+                return "";
+            }
         }
 
 
         List<Map<T, String>> replacements = this.createReplacements(source);
+
+        if (replacements.isEmpty()) {
+            if (Strings.isNullOrEmpty(noElementsMessage)) {
+                return noElementsMessage;
+            } else {
+                return "";
+            }
+        }
 
         return this.fillTemplatesInternal(replacements);
     }
