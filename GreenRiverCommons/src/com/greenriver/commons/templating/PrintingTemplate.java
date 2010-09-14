@@ -26,6 +26,8 @@ import javax.persistence.OneToOne;
 public abstract class PrintingTemplate<T extends TemplateReplacement, K>
         implements Serializable, Template<T, PrintableDocument, K>, Subtemplateable {
 
+    public static final String PAGE_BREAK="<div style=\"page-break-after:always\"><!--Non empty--></div>";
+
     @FieldProperties(label = "Cuerpo del documento", type = FieldType.RICHTEXT)
     @Column(length = 10240)
     private String body;

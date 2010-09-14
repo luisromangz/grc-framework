@@ -133,7 +133,7 @@ public abstract class TextRepeaterSubtemplate<T extends TemplateReplacement, K e
 
         String glue = "";
         if (newPageAfterText) {
-            glue = "<div style=\"page-break-after:always\"><!--Non empty--></div>";
+            glue = PrintingTemplate.PAGE_BREAK;
         } else if (newLineAfterText) {
             glue = "<br/>";
         }
