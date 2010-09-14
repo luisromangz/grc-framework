@@ -12,6 +12,7 @@ Author: mangelp
 package com.greenriver.commons.collections;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class Lists {
      * Joins the elements of the list using the parameter glue as separator.
      * The elements of the list are converted to string using the toString
      * method.
-     * @param list List whose elements are going to be joined.
+     * @param collection List whose elements are going to be joined.
      * @param glue
      * @return An string with all the elements of the first list converted to
      * strings and using the glue as separator.
@@ -49,7 +50,7 @@ public class Lists {
 
     /**
      * Gets if a list is null or if it has zero elements.
-     * @param list
+     * @param collection
      * @return true if the list is null or if there are no elements.
      */
     public static boolean isNullOrEmpty(List list) {
@@ -60,7 +61,7 @@ public class Lists {
      * Returns the element of maximum value of a given list regarding to a
      * defined criteria.
      * @param <T> The type of the elements of the List.
-     * @param elements The list holding the elements from which the maximum will
+     * @param collection The list holding the elements from which the maximum will
      * be searched.
      * @param criteria The criteria used to determine the maximun value.
      * @return The element of the list with the maximum value.
@@ -91,7 +92,7 @@ public class Lists {
      * Returns the element of minimum value of a given list regarding to a
      * defined criteria.
      * @param <T> The type of the elements of the List.
-     * @param elements The list holding the elements from which the minimum will
+     * @param collection The list holding the elements from which the minimum will
      * be searched.
      * @param criteria The criteria used to determine the minimum value.
      * @return The element of the list with the minimum value.
@@ -123,7 +124,7 @@ public class Lists {
      * used to check if the element have been found (comparison == 0) or not.
      * @param <T> type of the element to look for
      * @param obj Element to find
-     * @param list List to iterate
+     * @param collection List to iterate
      * @param comparator Comparator to check if the element have been found
      * @return index of the element if found or -1 if not found
      */
@@ -186,8 +187,8 @@ public class Lists {
         return true;
     }
 
-    public static <T, R> List<R> apply(List<T> set, ApplicableCommand<T, R> command) {
-        return applyIf(set, command, new FilteringCondition<T>() {
+    public static <T, R> List<R> apply(Collection collection, ApplicableCommand<T, R> command) {
+        return applyIf(collection, command, new FilteringCondition<T>() {
 
             @Override
             public boolean condition(T element, int index) {
@@ -197,22 +198,25 @@ public class Lists {
     }
 
     public static <T, R> List<R> applyIf(
-            List<T> list,
+            Collection<T> list,
             ApplicableCommand<T, R> applicableCommand,
             FilteringCondition<T> filteringCondition) {
         List<R> resultList = new ArrayList<R>();
-        for (int index=0; index< list.size(); index++){
-            T element = list.get(index);
-            if (filteringCondition.condition(element,index)) {
+
+        int index = 0;
+        for(T element : list) {
+             if (filteringCondition.condition(element,index)) {
                 resultList.add(applicableCommand.apply(element));
             }
-        }
+
+            index ++;
+        }     
 
         return resultList;
     }
 
-    public static <T> List<T> filter(List<T> set, FilteringCondition<T> condition) {
-        return applyIf(set, new ApplicableCommand<T, T>() {
+    public static <T> List<T> filter(Collection collection, FilteringCondition<T> condition) {
+        return applyIf(collection, new ApplicableCommand<T, T>() {
 
             @Override
             public T apply(T element) {
@@ -225,17 +229,19 @@ public class Lists {
      * Checks if the given condition applies to any of the passed list's element.
      *
      * @param <T> The type of the list's elements.
-     * @param elements The list containing the elements to be checked.
+     * @param collection The list containing the elements to be checked.
      * @param filteringCondition The condition that will be applied to the elements.
      * @return True, if for at least one element in the list the condition is true.
      */
-    public static <T> boolean  forAny(List<T> elements, FilteringCondition<T> filteringCondition) {
+    public static <T> boolean  forAny(Collection<T> collection, FilteringCondition<T> filteringCondition) {
         
-        for(int index=0; index < elements.size(); index++){
-            T element = elements.get(index);
-            if(filteringCondition.condition(element,index)) {
-                return true;
+       int index = 0;
+        for(T element : collection) {
+             if (filteringCondition.condition(element,index)) {
+               return true;
             }
+
+            index ++;
         }
 
         return false;
