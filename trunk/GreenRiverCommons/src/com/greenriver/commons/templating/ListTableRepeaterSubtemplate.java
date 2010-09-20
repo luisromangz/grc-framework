@@ -471,9 +471,9 @@ class TableRowComparator implements Comparator<TableRow> {
                 }
             }
 
-            if(content1.contains("empty")) {
+            if(Strings.isNullOrEmpty(content1) || content1.contains("empty")) {
                 return 1;
-            } else if (content2.contains("empty")){
+            } else if (Strings.isNullOrEmpty(content2) || content2.contains("empty")){
                 return -1;
             }
 
