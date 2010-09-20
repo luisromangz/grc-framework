@@ -25,14 +25,7 @@ public abstract class RepeaterSubtemplate<T extends TemplateReplacement, K exten
     private String noElementsMessage;
 
     @Override
-    public String fillTemplate(K source) {
-        if (source.isEmpty() && !Strings.isNullOrEmpty(noElementsMessage)) {
-            if (Strings.isNullOrEmpty(noElementsMessage)) {
-                return noElementsMessage;
-            } else {
-                return "";
-            }
-        }
+    public String fillTemplate(K source) {       
 
 
         List<Map<T, String>> replacements = this.createReplacements(source);
