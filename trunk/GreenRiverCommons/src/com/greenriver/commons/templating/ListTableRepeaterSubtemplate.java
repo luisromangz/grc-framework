@@ -471,6 +471,12 @@ class TableRowComparator implements Comparator<TableRow> {
                 }
             }
 
+            if(content1.contains("empty")) {
+                return 1;
+            } else if (content2.contains("empty")){
+                return -1;
+            }
+
             int result = c1.compareTo(c2);
             if (result != 0) {
                 // We return the first column comparation that isnt 0;
