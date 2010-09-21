@@ -1,8 +1,8 @@
 package com.greenriver.commons.mvc.interceptors;
 
+import com.greenriver.commons.Exceptions;
 import com.greenriver.commons.log.Log4jLogger;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -40,9 +40,8 @@ public class LoggingInterceptor extends Log4jLogger
         if (exception != null 
                 && !getIgnoredExceptions().contains(
                     exception.getClass().getName())) {
-            StringWriter writer = new StringWriter();
-            exception.printStackTrace(new PrintWriter(writer));
-            this.getLogger().error(writer.toString());
+            
+            this.getLogger().error(Exceptions.formatException(exception, new Date()));
         } 
     }
 
