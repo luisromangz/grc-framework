@@ -11,6 +11,7 @@ Author: mangelp
 ###################################################################*/
 package com.greenriver.commons.log;
 
+import com.greenriver.commons.Exceptions;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.Format;
@@ -88,17 +89,7 @@ public class SimplifiedFormatter extends SimpleFormatter {
      * @return
      */
     private String formatException(Throwable t, GregorianCalendar cal) {
-        try {
-            StringWriter strWriter = new StringWriter();
-            PrintWriter print = new PrintWriter(strWriter);
-            t.printStackTrace(print);
-            print.close();
-            return t.getClass() + "(" + cal.getTime() + "): " +
-                    t.getMessage() + "\n" + strWriter.toString();
-        } catch (Exception ex) {
-        }
-
-        return "";
+        return Exceptions.formatException(t, cal.getTime());
     }
 
     @Override
