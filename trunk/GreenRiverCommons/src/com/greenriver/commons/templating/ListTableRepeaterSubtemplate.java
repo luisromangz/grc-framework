@@ -40,7 +40,7 @@ import javax.persistence.InheritanceType;
 @DiscriminatorColumn(length = 255)
 @EntityFieldsProperties(appendSuperClassFields = true)
 public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement, K extends Collection<?>>
-         extends RepeaterSubtemplate<T, K>
+           extends RepeaterSubtemplate<T, K>
         implements Subtemplateable {
 
     // <editor-fold defaultstate="collapsed" desc="Fields">
@@ -458,24 +458,34 @@ class TableRowComparator implements Comparator<TableRow> {
             } catch (ParseException ex) {
                 // The contents werent numbers.
                 numbers = false;
+                c1 = content1;
+                c2 = content2;
             }
 
 
+            boolean dates = true;
             if (!numbers) {
                 try {
                     // We try to get dates.
                     c1 = dateParser.parse(content1);
                     c2 = dateParser.parse(content2);
+
                 } catch (ParseException ex) {
                     // Contents weren't dates.
+                    dates = false;
+                    c1 = content1;
+                    c2 = content2;
                 }
             }
 
-            if(Strings.isNullOrEmpty(content1) || content1.contains("empty")) {
-                return 1;
-            } else if (Strings.isNullOrEmpty(content2) || content2.contains("empty")){
-                return -1;
+            if (!numbers && !dates) {
+                if (Strings.isNullOrEmpty(content1) || content1.contains("empty")) {
+                    return 1;
+                } else if (Strings.isNullOrEmpty(content2) || content2.contains("empty")) {
+                    return -1;
+                }
             }
+
 
             int result = c1.compareTo(c2);
             if (result != 0) {
