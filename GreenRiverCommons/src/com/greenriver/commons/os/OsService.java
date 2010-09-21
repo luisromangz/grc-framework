@@ -16,7 +16,7 @@ import com.greenriver.commons.ShutdownManager;
 import com.greenriver.commons.configuration.SettingsProvider;
 import com.greenriver.commons.configuration.ApplicationSettingsProvider;
 import com.greenriver.commons.log.LogHandlerType;
-import com.greenriver.commons.log.SimplifiedFormater;
+import com.greenriver.commons.log.SimplifiedFormatter;
 import com.greenriver.commons.tasks.IterativeWorker;
 import java.io.File;
 import java.io.IOException;
@@ -613,7 +613,7 @@ public abstract class OsService extends IterativeWorker {
 
 	if (handler != null) {
 	    handler.setLevel(Level.ALL);
-	    handler.setFormatter(new SimplifiedFormater(true));
+	    handler.setFormatter(new SimplifiedFormatter(true));
 	    logger.addHandler(handler);
 	}
     }
