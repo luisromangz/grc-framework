@@ -26,7 +26,7 @@ import java.util.logging.SimpleFormatter;
  * doesn't repeat message headers (date, source, level) if they haven't changed.
  * So that's why this is a simpler message formatter than the simple formatter.
  */
-public class SimplifiedFormater extends SimpleFormatter {
+public class SimplifiedFormatter extends SimpleFormatter {
 
     private String lastClass = "";
     private Level lastLevel = Level.OFF;
@@ -37,7 +37,7 @@ public class SimplifiedFormater extends SimpleFormatter {
 //    private long nextTime = -1;
 //    private long timeMarkTime = 5000;
 
-    public SimplifiedFormater() {
+    public SimplifiedFormatter() {
         super();
     }
 
@@ -45,7 +45,7 @@ public class SimplifiedFormater extends SimpleFormatter {
      * Initiallizes a new simpler formatter
      * @param maxSimplify True to enable maximum simplify or false to disable it.
      */
-    public SimplifiedFormater(boolean maxSimplify) {
+    public SimplifiedFormatter(boolean maxSimplify) {
         super();
         this.maxSimplify = maxSimplify;
     }
