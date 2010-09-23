@@ -716,9 +716,8 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
      */
     private void setFieldProperties(FieldProperties properties,
             HtmlFormElementInfo element) {
-        if (properties.required()) {
-            element.getAttributes().setProperty("required", "true");
-        }
+       
+        element.getAttributes().setProperty("required", properties.required()?"true":"false");
 
 
         element.getAttributes().setProperty("unit", properties.unit());
