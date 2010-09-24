@@ -88,7 +88,7 @@ public class Numbers {
      * @param places
      * @return
      */
-    public static float round(float number, int places) {
+    public static float round(double number, int places) {
         double decimalsDivider = Math.pow(10, places);
         return (float) (Math.round(number * decimalsDivider) / decimalsDivider);
     }
