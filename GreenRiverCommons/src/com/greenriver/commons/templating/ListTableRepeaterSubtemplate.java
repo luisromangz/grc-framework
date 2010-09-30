@@ -98,6 +98,10 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
     deactivationConditions = {
         @FieldDeactivationCondition(triggerField = "isTable", equals = "'false'")})
     private String borders = "border-top,border-bottom,border-left,border-right";
+
+    @FieldProperties(label="Filas vacías a añadir al final", type=FieldType.NUMBER, minValue=0)
+    @FieldDeactivationCondition(triggerField="isTable", equals="'false'")
+    private int emptyRowsAppended = 0;
     // </editor-fold>
 
     @Override
@@ -190,6 +194,16 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
             tableRows.add(row);
         }
 
+        for(int i=0; i< emptyRowsAppended; i++) {
+             // Then we add blanki lines.
+            TableRow emptyRow = new TableRow();
+            for(int j=0; j < sizes.size(); j++) {
+                emptyRow.addCell("<span style=\"color:white\">empty</span>", sizes.get(j), elementStyle);
+            }
+
+            tableRows.add(emptyRow);
+        }
+
 
         result += "<tbody>";
 
@@ -251,6 +265,7 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
         targetTemplate.setFontSize(fontSize);
         targetTemplate.setFontStyle(fontStyle);
         targetTemplate.setOrderByColumns(orderByColumns);
+        targetTemplate.setEmptyRowsAppended(emptyRowsAppended);
     }
 
     // <editor-fold defaultstate="collapsed" desc="Getters & setters">
@@ -414,6 +429,20 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
      */
     public void setOrderByColumns(String orderByColumns) {
         this.orderByColumns = orderByColumns;
+    }
+
+    /**
+     * @return the numberOfEmptyRowsAppended
+     */
+    public int getEmptyRowsAppended() {
+        return emptyRowsAppended;
+    }
+
+    /**
+     * @param numberOfEmptyRowsAppended the numberOfEmptyRowsAppended to set
+     */
+    public void setEmptyRowsAppended(int numberOfEmptyRowsAppended) {
+        this.emptyRowsAppended = numberOfEmptyRowsAppended;
     }
     // </editor-fold>
 }
