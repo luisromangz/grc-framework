@@ -9,13 +9,13 @@ import java.util.HashMap;
  */
 public class Numbers {
 
-    private static HashMap<Float, String> fractions;
+    private static HashMap<Double, String> fractions;
 
     static {
-        fractions = new HashMap<Float, String>();
-        fractions.put(0.25f, "¼");
-        fractions.put(0.50f, "½");
-        fractions.put(0.75f, "¾");
+        fractions = new HashMap<Double, String>();
+        fractions.put(0.25, "¼");
+        fractions.put(0.50, "½");
+        fractions.put(0.75, "¾");
 
         // TODO: Add more equivaliencies here
     }
@@ -31,7 +31,7 @@ public class Numbers {
      * @return
      */
     @Deprecated
-    public static float ceilInQuarterSteps(float number) {
+    public static double ceilInQuarterSteps(float number) {
         return ceilingToSteps(number, 4,3);
     }
 
@@ -43,9 +43,9 @@ public class Numbers {
      * @param maxDecimalPlaces The decimals used, if fractions for the decimal part of the number are not avalaible.
      * @return
      */
-    public static String formatWithFractions(float number, int maxDecimalPlaces) {
-        float integerPart = Math.abs(new Float(number).intValue());
-        float decimalPart = number - integerPart;
+    public static String formatWithFractions(double number, int maxDecimalPlaces) {
+        int integerPart = Math.abs(new Float(number).intValue());
+        double decimalPart = number - integerPart;
         String resultString = Integer.toString((int) integerPart);
 
         if (fractions.containsKey(decimalPart)) {
@@ -88,9 +88,10 @@ public class Numbers {
      * @param places
      * @return
      */
-    public static float round(double number, int places) {
+    public static double round(double number, int places) {
         double decimalsDivider = Math.pow(10, places);
-        return (float) (Math.round(number * decimalsDivider) / decimalsDivider);
+        double result = Math.round(number * decimalsDivider) / decimalsDivider;
+        return result;
     }
 
     /**
@@ -112,7 +113,7 @@ public class Numbers {
      * @param epsilon Maximum allowed difference between floatA and floatB
      * @return
      */
-    public static boolean equals(float floatA, float floatB, double epsilon) {
+    public static boolean equals(double floatA, double floatB, double epsilon) {
         return Math.abs(floatA - floatB) <= epsilon;
     }
 
@@ -155,15 +156,15 @@ public class Numbers {
         return Strings.sumDigits(number + "");
     }
 
-    public static float ceilingToSteps(float number, int roundingSteps, int maxPlaces) {
-        float integerPart = new Float(number).intValue();
+    public static double ceilingToSteps(double number, int roundingSteps, int maxPlaces) {
+        int integerPart = new Float(number).intValue();
 
-        float decimalPart = Math.abs(number - integerPart);
+        double decimalPart = Math.abs(number - integerPart);
 
-        float delta =round(1.0f / roundingSteps,maxPlaces);
+        double delta =round(1.0f / roundingSteps,maxPlaces);
 
 
-        float accum = 0;
+        double accum = 0;
         if (integerPart >= 0) {
             for (int i = 0; i < roundingSteps; i++) {
                 if (decimalPart == accum) {
