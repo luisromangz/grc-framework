@@ -1,0 +1,25 @@
+<!--
+    Document   : footerAndHeaderTemplate.xml
+    Created on : 26 de junio de 2010, 17:37
+    Author     : luisro
+    Description:
+        Template for the header and footers.
+-->
+
+<div class="region %REGION_CLASS%">
+    <table>
+        <tbody>
+            <tr>
+                <td class="left">
+                    %REGION_LEFT%
+                </td>
+                <td class="center">
+                    %REGION_CENTER%
+                </td>
+                <td class="right">
+                    %REGION_RIGHT%
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

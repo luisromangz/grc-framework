@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    The template used to create valid xhtml documents to convert them into pdfs.
+-->
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <title>Menu</title>
+        <style type="text/css">
+
+            div.body {
+                page:body;
+            }
+
+            body {
+                font-family: Tahoma,Arial,clean,sans-serif;
+                font-size:10pt;
+            }
+
+            @page body {
+                counter-reset: page;
+                size: 210.0mm 297.0mm;
+                margin: 2.0cm 2.0cm 2.0cm 2.0cm;
+            }
+
+            div.region {
+                height:1.5em;
+                padding-top:2mm;
+                margin-top:2mm;
+                border-top:0.5mm solid black;
+            }
+
+            div.region td {
+                border:none;
+            }
+
+            div.region td.left{
+                text-align: left;
+            }
+
+            div.region td.center{
+                text-align: center;
+            }
+
+            div.region td.right{
+                text-align: right;
+            }
+
+            div.header {
+                region:top;
+            }
+
+            div.footer {
+                region:bottom;
+            }
+
+
+            span.pageCounter:before {
+                content : counter(page);
+            }
+
+            span.totalPages:before {
+                content: counter(pages);
+            }
+
+            table {
+                border: 0.5mm solid black;
+                border-collapse: collapse;
+                width: 100%;
+            }
+
+            div.footer table,
+            div.header table {
+                border:none;
+            }
+
+            td,th {
+                text-align: center;
+                border: 0.5mm solid black;
+            }
+
+            th {
+                font-weight: bold;
+                border: 0.5mm solid black;
+                vertical-align: middle;
+            }
+
+
+            ul > li {
+                list-style-type: disc
+            }
+
+            ol > li {
+                list-style: decimal
+            }
+
+            hr{
+                width:100%;
+                background-color: black;
+                height: 0.5mm;
+                border:none;
+                margin:0;
+                padding:0;
+                padding-right: 1mm;
+            }
+
+        </style>
+
+    </head>
+    <body>
+        <!--
+    Document   : footerAndHeaderTemplate.xml
+    Created on : 26 de junio de 2010, 17:37
+    Author     : luisro
+    Description:
+        Template for the header and footers.
+        -->
+
+        <div class="region footer">
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="left">
+
+                        </td>
+                        <td class="center">
+
+                        </td>
+                        <td class="right">
+                            Página <span class="pageCounter"/> de <span class="totalPages"/>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+
+        <div class="body">
+            <table>
+                <tbody>
+                    <tr>
+                        <td>
+                            meh
+                            <hr/>
+                            Blagh
+                        </td>
+                        <td>
+                             meh
+                            <hr/>
+                            Blagh
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            bargh
+                        </td>
+                        <td>
+                            trag
+                        </td>
+                    </tr>
+                </tbody>
+
+            </table>
+
+        </div>
+    </body>
+</html>

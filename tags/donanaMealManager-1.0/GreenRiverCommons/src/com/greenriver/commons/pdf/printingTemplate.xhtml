@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    The template used to create valid xhtml documents to convert them into pdfs.
+    It doesn't have doctype (it should) because Apache FOP would try to download
+    the associated DTD and fail.
+-->
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <title>%TITLE%</title>
+        <style type="text/css">
+
+            div.body {
+                page:body;
+            }
+
+            body {
+                font-family: Tahoma,Arial,clean,sans-serif;
+                font-size:10pt;
+            }
+
+            @page body {
+                counter-reset: page;
+                size: %PAGE_WIDTH%mm %PAGE_HEIGHT%mm;
+                margin: %MARGIN_TOP%cm %MARGIN_RIGHT%cm %MARGIN_BOTTOM%cm %MARGIN_LEFT%cm;                
+            }
+
+            div.region {
+                height:1.5em;                
+            }
+
+            div.region td {
+                border:none;
+            }
+
+            div.region td.left{
+                text-align: left;
+            }
+
+            div.region td.center{
+                text-align: center;
+            }
+
+            div.region td.right{
+                text-align: right;
+            }
+
+            div.header {                
+                region:top;
+            }
+
+            div.footer {
+                region:bottom;
+                padding-top:2mm;
+                margin-top:2mm;
+                border-top:0.5mm solid black;
+            }
+
+            b {
+                font-weight: bold;
+            }
+
+            
+            span.pageCounter:before {
+                content : counter(page);
+            }
+
+            span.totalPages:before {
+                content: counter(pages);
+            }
+
+            table {
+                border: 0.5mm solid black;
+                width: 100%;
+            }
+
+            div.footer table,
+            div.header table {
+                border:none;
+            }
+
+            td,th {                
+                text-align: center;
+                /*No borders as will be set by
+                when creating the printable document*/
+            }
+
+            th {
+               font-weight: bold;
+               border: 0.5mm solid black;
+               vertical-align: middle;
+            }
+
+            ul > li {
+                list-style-type: disc
+            }
+
+            ol > li {
+                list-style: decimal
+            }
+
+            hr{
+                width:100%;
+                background-color: black;
+                height: 0.5mm;
+                border:none;
+                margin:0;
+                padding:0;
+                padding-right: 1mm;
+            }
+                        
+
+            %DOCUMENT_STYLES%
+        </style>
+
+    </head>
+    <body>
+        %FOOTER%
+
+        <div class="body">
+            %DOCUMENT_BODY%
+        </div>
+    </body>
+</html>
