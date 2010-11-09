@@ -10,6 +10,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import org.mozilla.javascript.EvaluatorException;
 import org.mozilla.javascript.tools.ToolErrorReporter;
@@ -25,14 +27,13 @@ public abstract class BaseBundlerPlugin implements ControllerPlugin {
     // <editor-fold defaultstate="collapsed" desc="Fields">
     private String javascriptBasePath;
     private boolean alwaysCreate;
-    private PasswordEncoder passwordEncoder;    
+    private PasswordEncoder passwordEncoder;
     private boolean applyCompression;
     private String pathPrefix = "js";
     private String bundlePrefix;
     // </editor-fold>
 
     public BaseBundlerPlugin() {
-       
     }
 
     @Override
@@ -41,7 +42,7 @@ public abstract class BaseBundlerPlugin implements ControllerPlugin {
         if (javascriptBasePath == null) {
             javascriptBasePath = String.format(
                     "%s/%s",
-                    request.getSession().getServletContext().getRealPath(""),getPathPrefix());
+                    request.getSession().getServletContext().getRealPath(""), getPathPrefix());
         }
 
         List<String> fileNames = getFileNames(configuration);
@@ -52,46 +53,53 @@ public abstract class BaseBundlerPlugin implements ControllerPlugin {
         // of the bundled file will change too, and thus will force a new
         // bundle generation.
         bundleName = passwordEncoder.encodePassword(bundleName, null);
-        bundleName = this.getBundlePrefix()+"-" + bundleName;
+        bundleName = this.getBundlePrefix() + "-" + bundleName;
 
         String bundlePath = String.format(
                 "%s/%s.js",
                 javascriptBasePath,
                 bundleName);
 
+       
+
         File bundleFile = new File(bundlePath);
         if (bundleFile.exists() && !alwaysCreate) {
-            addBundle(bundleName + (applyCompression ? ".js.compressed" : ""),
-                    configuration);
-            
+             addBundle(bundleName, configuration);
             return;
-        }        
+        }
 
-        bundleFiles(configuration, bundleFile);
+        File outFile = bundleFile;
+        if(applyCompression) {
+            // If we compress, the uncompressed bundle will be created to a temp file.
+            try {
+                outFile = File.createTempFile("bundle", ".tmp");
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
 
-        addBundle(bundleName + (applyCompression ? ".js.compressed" : ""), configuration);
+        bundleFiles(configuration, outFile);
+         addBundle(bundleName, configuration);
 
         if (applyCompression) {
             FileReader reader;
             try {
-                reader = new FileReader(bundlePath);
+                reader = new FileReader(outFile);
                 JavaScriptCompressor compressor = new JavaScriptCompressor(
                         reader,
                         new ToolErrorReporter(false));
-                FileWriter compressedWriter =
-                        new FileWriter(bundlePath + ".compressed.js");
-                compressor.compress(compressedWriter, 1000, false, false, false,
-                        false);
+                FileWriter compressedWriter = new FileWriter(bundleFile);
+                compressor.compress(compressedWriter, 1000, false, false, false,false);
 
+                compressedWriter.flush();
                 compressedWriter.close();
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             } catch (EvaluatorException ex) {
                 throw new RuntimeException(ex);
             }
-        }        
+        }
     }
-
 
     // <editor-fold defaultstate="collapsed" desc="Abstract methods">
     protected abstract List<String> getFileNames(PageConfiguration configuration);
@@ -100,7 +108,7 @@ public abstract class BaseBundlerPlugin implements ControllerPlugin {
 
     protected abstract void bundleFiles(PageConfiguration configuration, File bundleFile);
     // </editor-fold>
-   
+
     // <editor-fold defaultstate="collapsed" desc="Getters and setters">
     /**
      * @return the alwaysCreate
@@ -130,8 +138,6 @@ public abstract class BaseBundlerPlugin implements ControllerPlugin {
         this.passwordEncoder = passwordEncoder;
     }
 
-  
-
     /**
      * @return the getApplyCompression
      */
@@ -160,8 +166,7 @@ public abstract class BaseBundlerPlugin implements ControllerPlugin {
         this.pathPrefix = pathPrefix;
     }
 
-
-    protected  String getJavascriptBasePath() {
+    protected String getJavascriptBasePath() {
         return this.javascriptBasePath;
     }
 
