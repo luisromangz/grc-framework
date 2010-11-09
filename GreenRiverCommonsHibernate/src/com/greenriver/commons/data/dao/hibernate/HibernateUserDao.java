@@ -16,6 +16,7 @@ import org.hibernate.criterion.Restrictions;
  */
 public class HibernateUserDao extends HibernateDaoBase implements UserDao {
 
+    @Override
     public void save(User user, String encodedPassword) {
         User existingUser = null;
 
@@ -65,6 +66,7 @@ public class HibernateUserDao extends HibernateDaoBase implements UserDao {
         }
     }
 
+    @Override
     public int getUserCount() {
         Criteria c = getCurrentSession().createCriteria(User.class);
         c.setProjection(Projections.rowCount());
@@ -73,6 +75,7 @@ public class HibernateUserDao extends HibernateDaoBase implements UserDao {
         return count;
     }
 
+    @Override
     public void remove(User user) {
         // Firstly, we remove the authorities.
         removeAuthoritiesForUser(user);
@@ -88,12 +91,14 @@ public class HibernateUserDao extends HibernateDaoBase implements UserDao {
         q.executeUpdate();
     }
 
+    @Override
     public User get(User user) {
         User persistedUser = (User) getCurrentSession().get(User.class,
                 user.getId());
         return persistedUser;
     }
 
+    @Override
     public User getByUsername(String username) {
         Criteria crit = getCurrentSession().createCriteria(User.class);
         crit.add(Restrictions.eq("username", username));
@@ -101,6 +106,7 @@ public class HibernateUserDao extends HibernateDaoBase implements UserDao {
         return user;
     }
 
+    @Override
     public List<User> getAllNotDeletedUsers() {
 	String hql = "FROM " + User.class.getSimpleName() +
                 " WHERE deleted is null OR deleted = false";
@@ -108,6 +114,7 @@ public class HibernateUserDao extends HibernateDaoBase implements UserDao {
 	return query.list();
     }
 
+    @Override
     public List<User> getAllUsers() {
         Criteria crit = getCurrentSession().createCriteria(User.class);
         return crit.list();
