@@ -2,7 +2,7 @@ package com.greenriver.commons.session;
 
 import com.greenriver.commons.data.dao.UserDao;
 import com.greenriver.commons.data.model.User;
-import org.springframework.security.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
  * This class is used to store information about the logged user, so it is not

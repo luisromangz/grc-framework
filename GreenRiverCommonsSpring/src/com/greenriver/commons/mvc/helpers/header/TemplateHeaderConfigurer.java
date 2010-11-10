@@ -3,8 +3,8 @@ package com.greenriver.commons.mvc.helpers.header;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
- * This class implements a header configurer to be used with
- * the tiles template defined for the project.
+ * This class implements a header configurer to be used with the
+ * template defined for the project.
  *
  * If used as a bean, it must be used within a "request" scope, as if not,
  * it would carry state between requests.
