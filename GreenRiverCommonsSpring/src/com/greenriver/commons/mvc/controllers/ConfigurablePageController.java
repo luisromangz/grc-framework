@@ -74,8 +74,7 @@ public class ConfigurablePageController extends AbstractController
         customHandleRequest(request, response, mav);
 
         PageConfiguration configuration = (PageConfiguration) this.pageConfiguration.clone();
-        //PageConfiguration configuration = this.pageConfiguration;
-
+       
         for (ControllerPlugin plugin : this.getPlugins()) {
             plugin.doWork(request, configuration);
         }
