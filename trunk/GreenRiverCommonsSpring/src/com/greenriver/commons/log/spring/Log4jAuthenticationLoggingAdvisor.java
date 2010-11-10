@@ -3,8 +3,8 @@ package com.greenriver.commons.log.spring;
 import com.greenriver.commons.log.Log4jLogger;
 import org.apache.log4j.Logger;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.springframework.security.Authentication;
-import org.springframework.security.BadCredentialsException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.Authentication;
 
 /**
  * This class both extends Log4jLogger and implements AuthenticationLoggerAdvisor,
@@ -13,7 +13,8 @@ import org.springframework.security.BadCredentialsException;
  *
  * @author luis
  */
-public class Log4jAuthenticationLoggingAdvisor extends Log4jLogger
+public class Log4jAuthenticationLoggingAdvisor
+        extends Log4jLogger
         implements AuthenticationLoggingAdvisor {
 
     /**

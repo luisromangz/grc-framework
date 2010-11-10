@@ -10,7 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Serializable;
-import org.springframework.security.providers.encoding.PasswordEncoder;
+import org.springframework.security.authentication.encoding.PasswordEncoder;
 
 /**
  *

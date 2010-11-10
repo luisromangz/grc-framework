@@ -2,7 +2,6 @@ package com.greenriver.commons.mvc.controllers.plugins;
 
 // <editor-fold defaultstate="collapsed" desc="Imports">
 import com.greenriver.commons.Strings;
-import com.greenriver.commons.collections.Lists;
 import com.greenriver.commons.mvc.configuration.PageConfiguration;
 import com.yahoo.platform.yui.compressor.JavaScriptCompressor;
 import java.io.File;
@@ -10,12 +9,10 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import org.mozilla.javascript.EvaluatorException;
 import org.mozilla.javascript.tools.ToolErrorReporter;
-import org.springframework.security.providers.encoding.PasswordEncoder;
+import org.springframework.security.authentication.encoding.PasswordEncoder;
 // </editor-fold>
 
 /**
