@@ -28,6 +28,10 @@ public class User implements Serializable, Comparable<User> {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+
+    @FieldProperties(label = "Nombre y apellidos")
+    private String name;
+
     @FieldProperties(
         label = "Nombre de usuario",
         customRegExp = "[\\w]{6,}",
@@ -36,14 +40,12 @@ public class User implements Serializable, Comparable<User> {
     @Column(unique=true)
     private String username;
 
-    @FieldProperties(label = "Nombre y apellidos")
-    private String name;
+    @FieldProperties(label="Correo electrónico", type=FieldType.EMAIL, required=false)
+    private String emailAddress;
 
     @FieldProperties(label="Contraseña", type = FieldType.PASSWORDEDITOR)
     private String password;
 
-    @FieldProperties(label="Correo electrónico", type=FieldType.EMAIL, required=false)
-    private String emailAddress;
 
     @FieldProperties(label = "Permisos", type = FieldType.ROLESELECTOR, required=false)
     private String[] roles;
