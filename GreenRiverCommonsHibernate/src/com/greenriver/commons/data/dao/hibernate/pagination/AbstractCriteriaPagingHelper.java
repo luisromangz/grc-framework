@@ -58,7 +58,7 @@ public abstract class AbstractCriteriaPagingHelper implements CriteriaPagingHelp
         pagedResult.setTotalPages(pageCount);
         // If there are results to return go ahead, if not return the last
         // available page of data or nothing when there are no results available
-        if (pageCount > 0 && pageCount > pageNumber * pageSize) {
+        if (pageCount > 0 && pageNumber < pageCount) {
             crit.setMaxResults(pageSize);
             crit.setFirstResult(pageNumber * pageSize);
             pagedResult.setResult(crit.list());
