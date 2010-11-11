@@ -11,7 +11,8 @@ import org.springframework.security.authentication.encoding.PasswordEncoder;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
- *
+ * Controller used for the install page.
+ * 
  * @author luis
  */
 public class InstallController extends ConfigurablePageController
@@ -30,8 +31,9 @@ public class InstallController extends ConfigurablePageController
         pageToRedirectIfInstalled = "login.htm";
     }
 
+
     /**
-     * 
+     *
      * @param request
      * @param response
      * @param modelAndView
@@ -67,6 +69,7 @@ public class InstallController extends ConfigurablePageController
         getHeaderConfigurer().configure(modelAndView, this.getPageConfiguration());
     }
 
+    // <editor-fold defaultstate="collapsed" desc="Getters and setters">
     /**
      * @param passworEncoder the passworEncoder to set
      */
@@ -123,4 +126,5 @@ public class InstallController extends ConfigurablePageController
     public void setPageToRedirectIfInstalled(String pageToRedirectIfInstalled) {
         this.pageToRedirectIfInstalled = pageToRedirectIfInstalled.trim();
     }
+    // </editor-fold>
 }
