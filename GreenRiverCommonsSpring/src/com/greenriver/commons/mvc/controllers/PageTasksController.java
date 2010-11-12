@@ -33,6 +33,7 @@ public class PageTasksController extends ConfigurablePageController implements P
      *
      * @return the used pageTaskManager.
      */
+    @Override
     public PageTaskManager getPageTaskManager() {
         return pageTaskManager;
     }
@@ -41,6 +42,7 @@ public class PageTasksController extends ConfigurablePageController implements P
      * Sets the
      * @param pageTaskManager the pageTaskManager to set
      */
+    @Override
     public void setPageTaskManager(PageTaskManager pageTaskManager) {
         this.pageTaskManager = pageTaskManager;
     }
