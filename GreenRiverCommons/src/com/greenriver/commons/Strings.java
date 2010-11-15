@@ -11,9 +11,12 @@ Author: Miguel Angel
 ###################################################################*/
 package com.greenriver.commons;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -26,6 +29,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.regex.Pattern;
+import org.w3c.tidy.Tidy;
+import org.w3c.tidy.TidyUtils;
 
 /**
  * String utilities
@@ -442,5 +447,24 @@ public class Strings {
         outputStream.close();
 
         return outputStream.toString();
+    }
+
+
+    /**
+     * Uses JTidy to remove non-kosher html.
+     * @param input
+     * @return
+     */
+    public static String cleanHTML(String input) {
+        Tidy tidier = new Tidy();
+
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        tidier.setInputEncoding("utf-8");
+        tidier.parse(new ByteArrayInputStream(input.getBytes()),
+                output);
+
+        return output.toString();
+
+
     }
 }
