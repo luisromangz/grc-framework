@@ -459,9 +459,7 @@ public class Strings {
         Tidy tidier = new Tidy();
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        tidier.setInputEncoding("utf-8");
-        tidier.parse(new ByteArrayInputStream(input.getBytes()),
-                output);
+        tidier.parse(new ByteArrayInputStream(input.getBytes()), output);
 
         return output.toString();
 
