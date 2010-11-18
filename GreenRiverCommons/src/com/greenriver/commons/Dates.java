@@ -569,4 +569,8 @@ public class Dates {
 
         return cal;
     }
+
+    public static Date getToday() {
+        return Dates.getDatePart(new Date());
+    }
 }
