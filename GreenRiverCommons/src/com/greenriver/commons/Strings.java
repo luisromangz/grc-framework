@@ -11,12 +11,10 @@ Author: Miguel Angel
 ###################################################################*/
 package com.greenriver.commons;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -30,7 +28,6 @@ import java.util.Iterator;
 import java.util.Random;
 import java.util.regex.Pattern;
 import org.w3c.tidy.Tidy;
-import org.w3c.tidy.TidyUtils;
 
 /**
  * String utilities
@@ -464,5 +461,15 @@ public class Strings {
         return output.toString();
 
 
+    }
+
+    /**
+     * Strips html tags in a rather rude and imprecise way.
+     * @param cellContent
+     * @return
+     */
+    public static String stripTags(String cellContent) {
+        
+        return cellContent.replaceAll("<.+?>", "");
     }
 }
