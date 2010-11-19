@@ -56,7 +56,7 @@ public interface PropertiesViewBuilder {
      * Add a view for a property to the current properties view
      * @param entityFullName Full name of the entity
      */
-    void addPropertyViewsFromModel(String entityFullName);
+    void addPropertyViewsFromClass(String entityFullName);
 
     /**
      * Add a view for a property to the current properties view

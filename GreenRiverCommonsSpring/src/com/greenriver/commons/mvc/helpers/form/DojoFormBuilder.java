@@ -6,7 +6,7 @@ import com.greenriver.commons.data.fieldProperties.FieldDeactivationCondition;
 import com.greenriver.commons.data.fieldProperties.FieldProperties;
 import com.greenriver.commons.data.fieldProperties.FieldType;
 import com.greenriver.commons.data.validation.ValidationRegex;
-import com.greenriver.commons.mvc.helpers.header.HeaderConfiguration;
+import com.greenriver.commons.mvc.helpers.header.HeaderConfig;
 import com.greenriver.commons.roleManagement.RoleManager;
 import com.greenriver.commons.roleManagement.RoleManagerClient;
 import java.lang.reflect.Field;
@@ -28,7 +28,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
     private List<Form> forms;
     private Form currentForm;
     private RoleManager roleManager;
-    private HeaderConfiguration configuration;
+    private HeaderConfig configuration;
 
     public DojoFormBuilder() {
         forms = new ArrayList<Form>();
@@ -134,7 +134,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
     }
 
     @Override
-    public void addFieldsFromModel(Class modelClass) {
+    public void addFieldsFromClass(Class modelClass) {
         EntityFieldsProperties entityProperties =
                 (EntityFieldsProperties) modelClass.getAnnotation(EntityFieldsProperties.class);
 
@@ -149,7 +149,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
                 || !entityProperties.appendSuperClassFields()) {
 
             if (modelClass.getSuperclass() != null) {
-                addFieldsFromModel(modelClass.getSuperclass());
+                addFieldsFromClass(modelClass.getSuperclass());
             }
         }
 
@@ -171,7 +171,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
                 && entityProperties.appendSuperClassFields()) {
 
             if (modelClass.getSuperclass() != null) {
-                addFieldsFromModel(modelClass.getSuperclass());
+                addFieldsFromClass(modelClass.getSuperclass());
             }
         }
 
@@ -185,7 +185,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
     @Override
     public void addForm(
             String formId,
-            HeaderConfiguration configuration,
+            HeaderConfig configuration,
             ModelAndView modelAndView) {
         Form newForm = new Form();
         newForm.setId(formId);

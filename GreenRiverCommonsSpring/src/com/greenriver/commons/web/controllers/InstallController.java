@@ -1,4 +1,4 @@
-package com.greenriver.commons.mvc.controllers;
+package com.greenriver.commons.web.controllers;
 
 import com.greenriver.commons.data.dao.UserDao;
 import com.greenriver.commons.mvc.helpers.form.FormBuilderClient;
@@ -62,7 +62,7 @@ public class InstallController extends ConfigurablePageController
         modelAndView.addObject("key", key);
 
         getFormBuilder().addForm("adminForm", this.getPageConfiguration(), modelAndView);
-        getFormBuilder().addFieldsFromModel(Class.forName(userClass));
+        getFormBuilder().addFieldsFromClass(Class.forName(userClass));
         getFormBuilder().removeField("roles");
         getFormBuilder().removeField("enabled");
 

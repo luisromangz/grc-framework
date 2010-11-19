@@ -1,12 +1,12 @@
-package com.greenriver.commons.mvc.controllers;
+package com.greenriver.commons.web.controllers;
 
-import com.greenriver.commons.mvc.configuration.PageConfiguration;
-import com.greenriver.commons.mvc.configuration.FormsConfiguration;
-import com.greenriver.commons.mvc.configuration.PageToolsConfiguration;
-import com.greenriver.commons.mvc.configuration.PropertiesViewConfiguration;
-import com.greenriver.commons.mvc.controllers.plugins.ControllerPlugin;
+import com.greenriver.commons.web.configuration.PageConfig;
+import com.greenriver.commons.web.configuration.FormsConfig;
+import com.greenriver.commons.web.configuration.PageToolsConfiguration;
+import com.greenriver.commons.web.configuration.PropertiesViewConfig;
+import com.greenriver.commons.web.controllers.plugins.ControllerPlugin;
 import com.greenriver.commons.mvc.helpers.form.FormBuilder;
-import com.greenriver.commons.mvc.helpers.header.HeaderConfiguration;
+import com.greenriver.commons.mvc.helpers.header.HeaderConfig;
 import com.greenriver.commons.mvc.helpers.header.HeaderConfigurer;
 import com.greenriver.commons.mvc.helpers.properties.PropertiesViewBuilder;
 import com.greenriver.commons.mvc.pageTools.PageTool;
@@ -31,18 +31,19 @@ import org.springframework.web.servlet.mvc.AbstractController;
  * configured) and add to it whatever extra objects are needed by the view.
  * @author luis
  */
-public class ConfigurablePageController extends AbstractController
-        implements PropertiesViewConfiguration,
-        FormsConfiguration,
-        HeaderConfiguration,
+public class ConfigurablePageController
+        extends AbstractController
+        implements PropertiesViewConfig,
+        FormsConfig,
+        HeaderConfig,
         PageToolsConfiguration,
         CustomizableHandleRequest {
 
-    // <editor-fold defaultstate="collapsed" desc="Attributes">
+    // <editor-fold defaultstate="collapsed" desc="Fields">
     private HeaderConfigurer headerConfigurer;
     private FormBuilder formBuilder;
     private PropertiesViewBuilder propertiesViewBuilder;
-    private PageConfiguration pageConfiguration;
+    private PageConfig pageConfiguration;
     private String viewName;
     private UserSessionInfo userSessionInfo;
     private PageToolManager pageToolManager;
@@ -52,7 +53,7 @@ public class ConfigurablePageController extends AbstractController
 
     public ConfigurablePageController() {
         // We intialize the pageConfiguration object;
-        pageConfiguration = new PageConfiguration();
+        pageConfiguration = new PageConfig();
         plugins = new ArrayList<ControllerPlugin>();
     }
 
@@ -63,7 +64,7 @@ public class ConfigurablePageController extends AbstractController
 
         ModelAndView mav = new ModelAndView(viewName);
 
-        configureFormEntities(this.getFormEntities(), mav, null);
+        configureForms(this.getForms(), mav, null);
         configurePropertiesView(this.getPropertiesView(), mav, null);
         configurePageTools(mav);
 
@@ -73,7 +74,7 @@ public class ConfigurablePageController extends AbstractController
 
         customHandleRequest(request, response, mav);
 
-        PageConfiguration configuration = (PageConfiguration) this.pageConfiguration.clone();
+        PageConfig configuration = (PageConfig) this.pageConfiguration.clone();
        
         for (ControllerPlugin plugin : this.getPlugins()) {
             plugin.doWork(request, configuration);
@@ -92,18 +93,18 @@ public class ConfigurablePageController extends AbstractController
     // <editor-fold defaultstate="collapsed" desc="Page properties configuration methods">
     /**
      * Configures forms to edit entities from a map     
-     * @param configuration
+     * @param forms
      * @param mav
      * @param prefix Prefix to append to the name of the form
      * @throws ClassNotFoundException
      */
-    protected void configureFormEntities(
-            Map<String, String> configuration,
+    protected void configureForms(
+            Map<String, String> forms,
             ModelAndView mav,
             String prefix)
             throws ClassNotFoundException {
 
-        if (formBuilder == null && configuration.size() > 0) {
+        if (formBuilder == null && forms.size() > 0) {
             throw new IllegalStateException(
                     "Must configure formBuilder for this controller.");
         }
@@ -112,30 +113,25 @@ public class ConfigurablePageController extends AbstractController
             prefix = "";
         }
 
-        for (String formId : configuration.keySet()) {
-            String className = configuration.get(formId);
+        for (String formId : forms.keySet()) {
+            String className = forms.get(formId);
             Class entityClass = Class.forName(className);
-            formBuilder.addForm(
-                    prefix + formId,
-                    this.getPageConfiguration(),
-                    mav);
-
-            formBuilder.addFieldsFromModel(entityClass);
+            formBuilder.addForm(prefix + formId,this.getPageConfiguration(),mav);
+            formBuilder.addFieldsFromClass(entityClass);
         }
     }
 
     /**
      * Configures properties view from a map     
-     * @param configuration 
+     * @param propertiesViews
      * @param mav
      * @param prefix Name prefix for the generated elements
      */
-    protected void configurePropertiesView(Map<String, Object> configuration,
+    protected void configurePropertiesView(
+            Map<String, String> propertiesViews,
             ModelAndView mav,
             String prefix) {
-        Object value = null;
-
-        if (propertiesViewBuilder == null && configuration.size() > 0) {
+        if (propertiesViewBuilder == null && propertiesViews.size() > 0) {
             throw new IllegalStateException(
                     "Must configure propertiesViewBuilder for this controller.");
         }
@@ -144,20 +140,9 @@ public class ConfigurablePageController extends AbstractController
             prefix = "";
         }
 
-        for (String propsViewId : configuration.keySet()) {
-            propertiesViewBuilder.addPropertiesView(prefix + propsViewId, mav);
-            value = configuration.get(propsViewId);
-
-            if (value instanceof String) {
-                propertiesViewBuilder.addPropertyViewsFromModel((String) value);
-            } else if (value instanceof Map) {
-                propertiesViewBuilder.addPropertyViewFromConfiguration(
-                        (Map<String, Object>) value);
-            } else {
-                throw new IllegalArgumentException(
-                        "Invalid type for map value of key '" + propsViewId
-                        + "'");
-            }
+        for (String propsViewId : propertiesViews.keySet()) {
+            propertiesViewBuilder.addPropertiesView(prefix + propsViewId, mav);            
+            propertiesViewBuilder.addPropertyViewsFromClass(propertiesViews.get(propsViewId));
         }
     }
 
@@ -199,7 +184,7 @@ public class ConfigurablePageController extends AbstractController
                 // actually needed.
 
                 //Forms ids are prefixed with the task name
-                configureFormEntities(pageTool.getFormEntities(), mav,
+                configureForms(pageTool.getForms(), mav,
                         pageTool.getName() + "_");
 
 
@@ -288,7 +273,7 @@ public class ConfigurablePageController extends AbstractController
      * the page regarding JavaScript files, CSS files, etc.
      * @param pageConfiguration the pageConfiguration to set
      */
-    public void setPageConfiguration(PageConfiguration pageConfiguration) {
+    public void setPageConfiguration(PageConfig pageConfiguration) {
         this.pageConfiguration = pageConfiguration;
     }
 
@@ -298,8 +283,8 @@ public class ConfigurablePageController extends AbstractController
      * @param entityName The name of the entity the form will be created for.
      */
     @Override
-    public void addFormEntity(String id, String entityName) {
-        getPageConfiguration().addFormEntity(id, entityName);
+    public void addForm(String id, String entityName) {
+        getPageConfiguration().addForm(id, entityName);
     }
 
     /**
@@ -307,8 +292,8 @@ public class ConfigurablePageController extends AbstractController
      * @return A list containing the entity names.
      */
     @Override
-    public Map<String, String> getFormEntities() {
-        return getPageConfiguration().getFormEntities();
+    public Map<String, String> getForms() {
+        return getPageConfiguration().getForms();
     }
 
     /**
@@ -316,8 +301,8 @@ public class ConfigurablePageController extends AbstractController
      * @param formEntities A list of entity names.
      */
     @Override
-    public void setFormEntities(Map<String, String> formEntities) {
-        getPageConfiguration().setFormEntities(formEntities);
+    public void setForms(Map<String, String> formEntities) {
+        getPageConfiguration().setForms(formEntities);
     }
 
     /**
@@ -551,17 +536,17 @@ public class ConfigurablePageController extends AbstractController
     }
 
     @Override
-    public void addPropertiesView(String id, Object configuration) {
+    public void addPropertiesView(String id, String configuration) {
         this.getPageConfiguration().addPropertiesView(id, configuration);
     }
 
     @Override
-    public void setPropertiesView(Map<String, Object> configuration) {
+    public void setPropertiesView(Map<String, String> configuration) {
         this.getPageConfiguration().setPropertiesView(configuration);
     }
 
     @Override
-    public Map<String, Object> getPropertiesView() {
+    public Map<String, String> getPropertiesView() {
         return getPageConfiguration().getPropertiesView();
     }
 
@@ -623,7 +608,7 @@ public class ConfigurablePageController extends AbstractController
     /**
      * @return the pageConfiguration
      */
-    protected PageConfiguration getPageConfiguration() {
+    protected PageConfig getPageConfiguration() {
         return pageConfiguration;
     }
 

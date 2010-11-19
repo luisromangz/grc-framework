@@ -1,4 +1,4 @@
-package com.greenriver.commons.mvc.controllers;
+package com.greenriver.commons.web.controllers;
 
 import com.greenriver.commons.mvc.pageTools.PageTool;
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ public class PageToolsController extends ConfigurablePageController {
                     pageTool.getSetupPaneJspFiles()));
 
             //Forms ids are prefixed with the task name
-            configureFormEntities(pageTool.getFormEntities(), mav,
+            configureForms(pageTool.getForms(), mav,
                     pageTool.getName() + "_");
 
             configurePropertiesView(pageTool.getPropertiesView(), mav,

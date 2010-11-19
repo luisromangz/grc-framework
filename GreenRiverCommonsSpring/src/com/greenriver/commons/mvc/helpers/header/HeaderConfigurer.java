@@ -17,7 +17,7 @@ public interface HeaderConfigurer {
      * Makes the actual configuration of the header.
       * @param mav The ModelAndView object that will carry the configuration.
       */
-    public void configure(ModelAndView mav, HeaderConfiguration configuration);
+    public void configure(ModelAndView mav, HeaderConfig configuration);
 
     
 }

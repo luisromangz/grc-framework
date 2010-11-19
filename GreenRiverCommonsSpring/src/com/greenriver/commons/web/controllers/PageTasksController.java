@@ -1,6 +1,6 @@
-package com.greenriver.commons.mvc.controllers;
+package com.greenriver.commons.web.controllers;
 
-import com.greenriver.commons.mvc.configuration.PageTasksConfiguration;
+import com.greenriver.commons.web.configuration.PageTasksConfiguration;
 import com.greenriver.commons.data.model.User;
 import com.greenriver.commons.mvc.helpers.header.HeaderConfigurer;
 import com.greenriver.commons.mvc.pageTasks.PageTask;
@@ -114,7 +114,7 @@ public class PageTasksController extends ConfigurablePageController implements P
         if (pageTask.isLoadedOnPageLoad()) {
             getPageConfiguration().getOnLoadScripts().addAll(pageTask.getOnLoadScripts());
             //Forms ids are prefixed with the task name
-            configureFormEntities(pageTask.getFormEntities(), mav,
+            configureForms(pageTask.getForms(), mav,
                     pageTask.getTaskName() + "_");
         } else {
             // If the load of the task is on demand, we add global functions intended for loading this.
@@ -123,7 +123,7 @@ public class PageTasksController extends ConfigurablePageController implements P
                     pageTask.getTaskName()));
             getPageConfiguration().getOnLoadScripts().addAll(pageTask.getOnLoadScripts());
             //Forms ids are prefixed with the task name
-            configureFormEntities(pageTask.getFormEntities(), mav,
+            configureForms(pageTask.getForms(), mav,
                     pageTask.getTaskName() + "_");
             getPageConfiguration().addOnLoadScript(String.format(
                     "} // End of %s.onLoad function",

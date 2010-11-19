@@ -3,9 +3,9 @@
  * and open the template in the editor.
  */
 
-package com.greenriver.commons.mvc.controllers.plugins;
+package com.greenriver.commons.web.controllers.plugins;
 
-import com.greenriver.commons.mvc.configuration.PageConfiguration;
+import com.greenriver.commons.web.configuration.PageConfig;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -13,5 +13,5 @@ import javax.servlet.http.HttpServletRequest;
  * @author luis
  */
 public interface ControllerPlugin {
-    public void doWork(HttpServletRequest request, PageConfiguration configuration);
+    public void doWork(HttpServletRequest request, PageConfig configuration);
 }

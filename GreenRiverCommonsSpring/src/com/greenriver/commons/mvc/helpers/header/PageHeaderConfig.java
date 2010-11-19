@@ -7,7 +7,7 @@ import java.util.List;
  * Instances of this class hold the configuration of a page's header.
  * @author luis
  */
-public class PageHeaderConfiguration implements HeaderConfiguration {
+public class PageHeaderConfig implements HeaderConfig {
 
     private List<String> cssFiles;
     private List<String> dwrServices;
@@ -18,7 +18,7 @@ public class PageHeaderConfiguration implements HeaderConfiguration {
     private List<String> scripts;
     private String title;
 
-    public PageHeaderConfiguration() {
+    public PageHeaderConfig() {
         cssFiles = new ArrayList<String>();
         dwrServices = new ArrayList<String>();
         dojoBundles = new ArrayList<String>();

@@ -1,8 +1,8 @@
-package com.greenriver.commons.mvc.controllers.plugins;
+package com.greenriver.commons.web.controllers.plugins;
 
 // <editor-fold defaultstate="collapsed" desc="Imports">
 import com.greenriver.commons.Strings;
-import com.greenriver.commons.mvc.configuration.PageConfiguration;
+import com.greenriver.commons.web.configuration.PageConfig;
 import com.yahoo.platform.yui.compressor.JavaScriptCompressor;
 import java.io.File;
 import java.io.FileReader;
@@ -43,7 +43,7 @@ public abstract class BaseBundlerPlugin implements ControllerPlugin {
     }
 
     @Override
-    public void doWork(HttpServletRequest request, PageConfiguration configuration) {
+    public void doWork(HttpServletRequest request, PageConfig configuration) {
 
         if (javascriptBasePath == null) {
             javascriptBasePath = String.format(
@@ -108,11 +108,11 @@ public abstract class BaseBundlerPlugin implements ControllerPlugin {
     }
 
     // <editor-fold defaultstate="collapsed" desc="Abstract methods">
-    protected abstract List<String> getFileNames(PageConfiguration configuration);
+    protected abstract List<String> getFileNames(PageConfig configuration);
 
-    protected abstract void addBundle(String bundleName, PageConfiguration configuration);
+    protected abstract void addBundle(String bundleName, PageConfig configuration);
 
-    protected abstract void bundleFiles(PageConfiguration configuration, File bundleFile);
+    protected abstract void bundleFiles(PageConfig configuration, File bundleFile);
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Getters and setters">

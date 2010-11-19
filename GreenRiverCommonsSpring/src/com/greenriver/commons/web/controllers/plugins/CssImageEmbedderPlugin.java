@@ -1,7 +1,7 @@
-package com.greenriver.commons.mvc.controllers.plugins;
+package com.greenriver.commons.web.controllers.plugins;
 
 import com.greenriver.commons.Base64;
-import com.greenriver.commons.mvc.configuration.PageConfiguration;
+import com.greenriver.commons.web.configuration.PageConfig;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -32,7 +32,7 @@ public class CssImageEmbedderPlugin implements ControllerPlugin {
     }
 
     @Override
-    public void doWork(HttpServletRequest request, PageConfiguration configuration) {
+    public void doWork(HttpServletRequest request, PageConfig configuration) {
         if (basePath == null) {
             basePath = String.format(
                     "%s/%s",

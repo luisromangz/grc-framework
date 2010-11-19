@@ -190,7 +190,7 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
     }
 
     @Override
-    public void addPropertyViewsFromModel(String entityFullName) {
+    public void addPropertyViewsFromClass(String entityFullName) {
         addPropertyViewsFromModel(entityFullName, null);
     }
 

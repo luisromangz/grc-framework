@@ -13,7 +13,7 @@ import java.util.List;
  * header section.
  * @author luis
  */
-public interface HeaderConfiguration {
+public interface HeaderConfig {
 
     /**
      * Adds a CSS stylesheet.
