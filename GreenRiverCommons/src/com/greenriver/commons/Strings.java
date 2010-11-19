@@ -1,5 +1,5 @@
 /*#################################################################
-(c)2008/2009 Greenriver Consulting SL. All rights reserved.
+(c)2008/2010 Greenriver Consulting SL. All rights reserved.
 
 This project and all subsequent files are licensed under the terms
 and conditions of the GreenRiverLicense.
