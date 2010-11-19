@@ -1,4 +1,4 @@
-package com.greenriver.commons.mvc.controllers;
+package com.greenriver.commons.web.controllers;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

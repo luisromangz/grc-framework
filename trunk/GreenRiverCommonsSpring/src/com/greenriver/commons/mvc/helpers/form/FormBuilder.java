@@ -1,6 +1,6 @@
 package com.greenriver.commons.mvc.helpers.form;
 import com.greenriver.commons.data.fieldProperties.FieldProperties;
-import com.greenriver.commons.mvc.helpers.header.HeaderConfiguration;
+import com.greenriver.commons.mvc.helpers.header.HeaderConfig;
 import java.util.List;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -19,7 +19,7 @@ public interface FormBuilder {
      */
     public void addForm(
             String formId,
-            HeaderConfiguration configuration,
+            HeaderConfig configuration,
             ModelAndView modelAndView);
 
     /**
@@ -55,7 +55,7 @@ public interface FormBuilder {
      * @param modelClass The class holding the properties that will be scanned
      * for info about fields.
      */
-    public void addFieldsFromModel(Class modelClass);
+    public void addFieldsFromClass(Class modelClass);
 
     public void removeField(String fieldId);
 }

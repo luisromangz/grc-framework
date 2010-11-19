@@ -1,9 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-package com.greenriver.commons.mvc.configuration;
+package com.greenriver.commons.web.configuration;
 
 import java.util.Map;
 
@@ -13,7 +8,7 @@ import java.util.Map;
  * automagically from an entity model in the page.
  * @author luis
  */
-public interface FormsConfiguration {
+public interface FormsConfig {
 
     /**
      * Adds an entity name to the list of entity names for which forms have
@@ -21,19 +16,19 @@ public interface FormsConfiguration {
      * @param id The form's id.
      * @param entityName The name of the entity a form will be created for.
      */
-    void addFormEntity(String id, String entityName);
+    void addForm(String id, String entityName);
 
     /**
      * Gets the names of the entities that will have a form created for edition
      * of their instances.
      * @return the formEntities
      */
-    Map<String,String> getFormEntities();
+    Map<String,String> getForms();
 
     /**
      * Sets the names of the entities a form will be created for.
      * @param formEntities the formEntities to set
      */
-    void setFormEntities(Map<String,String> formEntities);
+    void setForms(Map<String,String> formEntities);
 
 }

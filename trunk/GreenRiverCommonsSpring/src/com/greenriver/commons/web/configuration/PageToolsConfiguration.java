@@ -1,4 +1,4 @@
-package com.greenriver.commons.mvc.configuration;
+package com.greenriver.commons.web.configuration;
 
 import com.greenriver.commons.mvc.pageTools.PageToolManager;
 

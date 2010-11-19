@@ -1,7 +1,7 @@
-package com.greenriver.commons.mvc.controllers.plugins;
+package com.greenriver.commons.web.controllers.plugins;
 
 import com.greenriver.commons.Strings;
-import com.greenriver.commons.mvc.configuration.PageConfiguration;
+import com.greenriver.commons.web.configuration.PageConfig;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class DojoProfileCreatorPlugin implements ControllerPlugin {
 
-    public void doWork(HttpServletRequest request, PageConfiguration configuration) {
+    public void doWork(HttpServletRequest request, PageConfig configuration) {
         OutputStreamWriter out = null;
         String path = request.getSession().getServletContext().getRealPath("");
         path += "/" + request.getServletPath() + "-dojo-bundle.profile.js";

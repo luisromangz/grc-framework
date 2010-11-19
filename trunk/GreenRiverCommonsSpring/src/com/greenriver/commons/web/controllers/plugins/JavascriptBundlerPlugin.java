@@ -1,6 +1,6 @@
-package com.greenriver.commons.mvc.controllers.plugins;
+package com.greenriver.commons.web.controllers.plugins;
 
-import com.greenriver.commons.mvc.configuration.PageConfiguration;
+import com.greenriver.commons.web.configuration.PageConfig;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -20,18 +20,18 @@ public class JavascriptBundlerPlugin extends BaseBundlerPlugin {
     }
 
     @Override
-    protected List<String> getFileNames(PageConfiguration configuration) {
+    protected List<String> getFileNames(PageConfig configuration) {
         return configuration.getJavaScriptFiles();
     }
 
     @Override
-    protected void addBundle(String bundleName, PageConfiguration configuration) {
+    protected void addBundle(String bundleName, PageConfig configuration) {
         configuration.getJavaScriptFiles().clear();
         configuration.addJavaScriptFile(bundleName);
     }
 
     @Override
-    protected void bundleFiles(PageConfiguration configuration, File bundleFile) {
+    protected void bundleFiles(PageConfig configuration, File bundleFile) {
         BufferedWriter writer = null;
         try {
             writer = new BufferedWriter(new FileWriter(bundleFile));

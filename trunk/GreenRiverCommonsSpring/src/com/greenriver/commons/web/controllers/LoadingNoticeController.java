@@ -1,4 +1,4 @@
-package com.greenriver.commons.mvc.controllers;
+package com.greenriver.commons.web.controllers;
 
 import com.greenriver.commons.mvc.helpers.header.HeaderConfigurerClient;
 import com.greenriver.commons.mvc.helpers.header.HeaderConfigurer;

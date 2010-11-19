@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package com.greenriver.commons.mvc.configuration;
+package com.greenriver.commons.web.configuration;
 
 import com.greenriver.commons.mvc.pageTasks.PageTaskManager;
 

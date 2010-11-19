@@ -1,10 +1,10 @@
 package com.greenriver.commons.mvc.pageTasks;
 
 import com.greenriver.commons.data.model.User;
-import com.greenriver.commons.mvc.configuration.FormsConfiguration;
-import com.greenriver.commons.mvc.configuration.PageConfiguration;
-import com.greenriver.commons.mvc.configuration.PropertiesViewConfiguration;
-import com.greenriver.commons.mvc.helpers.header.HeaderConfiguration;
+import com.greenriver.commons.web.configuration.FormsConfig;
+import com.greenriver.commons.web.configuration.PageConfig;
+import com.greenriver.commons.web.configuration.PropertiesViewConfig;
+import com.greenriver.commons.mvc.helpers.header.HeaderConfig;
 import java.util.List;
 import java.util.Map;
 
@@ -15,30 +15,26 @@ import java.util.Map;
  * DWR services that uses, etc.
  * @author luis
  */
-public class PageTask extends PageConfiguration
-        implements FormsConfiguration, HeaderConfiguration,
-        Comparable<PageTask>, PropertiesViewConfiguration {
+public class PageTask extends PageConfig
+       implements Comparable<PageTask> {
 
     // <editor-fold defaultstate="collapsed" desc="Fields">
     // The roles that are required to show the task.
     private String[] allowedRoles = {"ROLE_USER"};
     // The name of the main JSP file.
-    private String mainJspFileName;
+    private String mainJspFileName="task.jsp";
     // The name's task;
     private String taskName;
     // The JSP file used to render the contents of the tasks contextual toolbar.
-    private String toolbarJspFileName;
+    private String toolbarJspFileName="toolbar.jsp";
     // The image that is shown as icon for the task in the taskSelector.
     private String imageFileName;
-    // A function name that must be called when showing a task to re initialize
-    // it.
-    private String taskResetCallback;
-
+   
     private boolean loadedOnPageLoad = false;
     // </editor-fold>
 
     public PageTask() {
-        taskResetCallback = "false";
+      
     }
 
     @Override
@@ -141,21 +137,7 @@ public class PageTask extends PageConfiguration
      */
     public void setImageFileName(String imageFileName) {
         this.imageFileName = imageFileName;
-    }
-
-    /**
-     * @return the taskResetCallback
-     */
-    public String getTaskResetCallback() {
-        return taskResetCallback;
-    }
-
-    /**
-     * @param taskResetCallback the taskResetCallback to set
-     */
-    public void setTaskResetCallback(String taskResetCallback) {
-        this.taskResetCallback = taskResetCallback;
-    }
+    }    
 
     /**
      * @return the loadedOnPageLoad

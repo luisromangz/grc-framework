@@ -1,9 +1,9 @@
 package com.greenriver.commons.mvc.pageTools;
 
-import com.greenriver.commons.mvc.configuration.FormsConfiguration;
-import com.greenriver.commons.mvc.configuration.PageConfiguration;
-import com.greenriver.commons.mvc.configuration.PropertiesViewConfiguration;
-import com.greenriver.commons.mvc.helpers.header.HeaderConfiguration;
+import com.greenriver.commons.web.configuration.FormsConfig;
+import com.greenriver.commons.web.configuration.PageConfig;
+import com.greenriver.commons.web.configuration.PropertiesViewConfig;
+import com.greenriver.commons.mvc.helpers.header.HeaderConfig;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -13,8 +13,8 @@ import java.util.Map;
  * system wide.
  * @author luis
  */
-public class PageTool implements FormsConfiguration,
-        PropertiesViewConfiguration, HeaderConfiguration {
+public class PageTool
+        implements FormsConfig, PropertiesViewConfig, HeaderConfig {
 
     // <editor-fold defaultstate="collapsed" desc="Attributes">
     /**
@@ -29,7 +29,7 @@ public class PageTool implements FormsConfiguration,
      * The JSP files used as panes in the config area of the app.
      */
     private List<String> setupPaneJspFiles;
-    private PageConfiguration pageConfiguration;
+    private PageConfig pageConfiguration;
 
 
     // </editor-fold>
@@ -38,7 +38,7 @@ public class PageTool implements FormsConfiguration,
         name = "Unnamed tool";
         dialogJspFiles = new ArrayList<String>();
         setupPaneJspFiles = new ArrayList<String>();
-        pageConfiguration = new PageConfiguration();
+        pageConfiguration = new PageConfig();
     }
 
     @Override
@@ -108,32 +108,32 @@ public class PageTool implements FormsConfiguration,
     }
 
     @Override
-    public void addFormEntity(String id, String entityName) {
-        this.pageConfiguration.addFormEntity(id, entityName);
+    public void addForm(String id, String className) {
+        this.pageConfiguration.addForm(id, className);
     }
 
     @Override
-    public Map<String, String> getFormEntities() {
-        return pageConfiguration.getFormEntities();
+    public Map<String, String> getForms() {
+        return pageConfiguration.getForms();
     }
 
     @Override
-    public void setFormEntities(Map<String, String> formEntities) {
-        pageConfiguration.setFormEntities(formEntities);
+    public void setForms(Map<String, String> forms) {
+        pageConfiguration.setForms(forms);
     }
 
     @Override
-    public void addPropertiesView(String id, Object configuration) {
-        pageConfiguration.addPropertiesView(id, configuration);
+    public void addPropertiesView(String id, String className) {
+        pageConfiguration.addPropertiesView(id, className);
     }
 
     @Override
-    public void setPropertiesView(Map<String, Object> configuration) {
-        pageConfiguration.setPropertiesView(configuration);
+    public void setPropertiesView(Map<String, String> className) {
+        pageConfiguration.setPropertiesView(className);
     }
 
     @Override
-    public Map<String, Object> getPropertiesView() {
+    public Map<String, String> getPropertiesView() {
         return pageConfiguration.getPropertiesView();
     }
 

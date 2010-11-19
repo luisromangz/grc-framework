@@ -11,7 +11,7 @@ import org.springframework.web.servlet.ModelAndView;
  * @author luis
  */
 public class TemplateHeaderConfigurer
-        extends PageHeaderConfiguration
+        extends PageHeaderConfig
         implements HeaderConfigurer {
 
     public TemplateHeaderConfigurer() {
@@ -44,7 +44,7 @@ public class TemplateHeaderConfigurer
      * @param configuration
      */
     @Override
-    public void configure(ModelAndView mav, HeaderConfiguration configuration) {
+    public void configure(ModelAndView mav, HeaderConfig configuration) {
        mav.addObject("jsFiles", configuration.getJavaScriptFiles());
        mav.addObject("jsScripts", configuration.getScripts());
        mav.addObject("onLoadScripts", configuration.getOnLoadScripts());

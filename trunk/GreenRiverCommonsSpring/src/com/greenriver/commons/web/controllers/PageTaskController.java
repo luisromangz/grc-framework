@@ -1,6 +1,6 @@
 
 
-package com.greenriver.commons.mvc.controllers;
+package com.greenriver.commons.web.controllers;
 
 import com.greenriver.commons.Strings;
 import com.greenriver.commons.mvc.pageTasks.PageTask;
@@ -33,7 +33,7 @@ public class PageTaskController extends ConfigurablePageController{
             return;
         }
 
-        this.configureFormEntities(pageTask.getFormEntities(), mav, taskName+"_");
+        this.configureForms(pageTask.getForms(), mav, taskName+"_");
         this.configurePropertiesView(pageTask.getPropertiesView(), mav, taskName+"_");
 
         mav.addObject("usedByTaskController",true);

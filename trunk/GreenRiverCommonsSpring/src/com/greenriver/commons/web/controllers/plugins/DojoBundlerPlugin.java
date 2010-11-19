@@ -1,6 +1,6 @@
-package com.greenriver.commons.mvc.controllers.plugins;
+package com.greenriver.commons.web.controllers.plugins;
 
-import com.greenriver.commons.mvc.configuration.PageConfiguration;
+import com.greenriver.commons.web.configuration.PageConfig;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -36,12 +36,12 @@ public class DojoBundlerPlugin extends BaseBundlerPlugin {
     }
 
     @Override
-    protected List<String> getFileNames(PageConfiguration configuration) {
+    protected List<String> getFileNames(PageConfig configuration) {
         return configuration.getDojoModules();
     }
 
     @Override
-    protected void addBundle(String bundleName, PageConfiguration configuration) {
+    protected void addBundle(String bundleName, PageConfig configuration) {
         // When using the auto bundler, we discard other bundles.
         configuration.getDojoModules().clear();
         configuration.getDojoBundles().clear();
@@ -49,7 +49,7 @@ public class DojoBundlerPlugin extends BaseBundlerPlugin {
     }
 
     @Override
-    protected void bundleFiles(PageConfiguration configuration, File bundleFile) {
+    protected void bundleFiles(PageConfig configuration, File bundleFile) {
 
         if (configuration.getDojoModules().isEmpty()) {
             throw new RuntimeException("We should have dojo modules.");
