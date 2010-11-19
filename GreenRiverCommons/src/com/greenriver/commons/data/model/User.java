@@ -1,6 +1,7 @@
 package com.greenriver.commons.data.model;
 
 import com.greenriver.commons.Strings;
+import com.greenriver.commons.data.Labelled;
 import com.greenriver.commons.data.fieldProperties.FieldProperties;
 import com.greenriver.commons.data.fieldProperties.FieldType;
 import java.io.Serializable;
@@ -23,37 +24,30 @@ import javax.persistence.InheritanceType;
  */
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public class User implements Serializable, Comparable<User> {
+public class User implements Serializable, Comparable<User>, Labelled {
+    // <editor-fold defaultstate="collapsed" desc="Fields">
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
-
     @FieldProperties(label = "Nombre y apellidos")
     private String name;
-
-    @FieldProperties(
-        label = "Nombre de usuario",
-        customRegExp = "[\\w]{6,}",
-        invalidMessage="El nombre de usuario debe tener al menos 6 carácteres y " +
-                "sólo carácteres alfabéticos.")
-    @Column(unique=true)
+    @FieldProperties(label = "Nombre de usuario",
+    customRegExp = "[\\w]{6,}",
+    invalidMessage = "El nombre de usuario debe tener al menos 6 carácteres y "
+    + "sólo carácteres alfabéticos.")
+    @Column(unique = true)
     private String username;
-
-    @FieldProperties(label="Correo electrónico", type=FieldType.EMAIL, required=false)
+    @FieldProperties(label = "Correo electrónico", type = FieldType.EMAIL, required = false)
     private String emailAddress;
-
-    @FieldProperties(label="Contraseña", type = FieldType.PASSWORDEDITOR)
+    @FieldProperties(label = "Contraseña", type = FieldType.PASSWORDEDITOR)
     private String password;
-
-
-    @FieldProperties(label = "Permisos", type = FieldType.ROLESELECTOR, required=false)
+    @FieldProperties(label = "Permisos", type = FieldType.ROLESELECTOR, required = false)
     private String[] roles;
-
     // This flag tells if the user have been deleted or not. A deleted user
     // is kept for history purposses in the system but is not shown nor allowed
     // to log in.
     private Boolean deleted = false;
+    // </editor-fold>
 
     public User() {
         roles = new String[]{};
@@ -99,11 +93,17 @@ public class User implements Serializable, Comparable<User> {
     }
 
     @Override
+    public String getLabel() {
+        return this.getName();
+    }
+
+    @Override
     public int compareTo(User o) {
         // We compare by the username so we can compare non-persited objects.
         return this.getUsername().compareTo(o.getUsername());
     }
 
+    // <editor-fold defaultstate="collapsed" desc="Getters and setters">
     public Long getId() {
         return id;
     }
@@ -191,4 +191,5 @@ public class User implements Serializable, Comparable<User> {
     public void setEmailAddress(String emailAddress) {
         this.emailAddress = emailAddress;
     }
+    // </editor-fold>
 }
