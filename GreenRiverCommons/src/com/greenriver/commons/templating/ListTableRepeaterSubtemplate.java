@@ -472,8 +472,8 @@ class TableRowComparator implements Comparator<TableRow> {
     @Override
     public int compare(TableRow o1, TableRow o2) {
         for (int columnIndex : columnIndexes) {
-            String content1 = o1.getCellContent(columnIndex);
-            String content2 = o2.getCellContent(columnIndex);
+            String content1 = Strings.stripTags(o1.getCellContent(columnIndex));
+            String content2 = Strings.stripTags(o2.getCellContent(columnIndex));
 
             // By default, we would compare the contents as strings.
             Comparable c1 = content1;
