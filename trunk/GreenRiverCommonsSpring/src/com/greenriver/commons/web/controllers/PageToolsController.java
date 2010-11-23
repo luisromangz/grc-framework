@@ -1,6 +1,6 @@
 package com.greenriver.commons.web.controllers;
 
-import com.greenriver.commons.mvc.pageTools.PageTool;
+import com.greenriver.commons.web.pageTools.PageTool;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;

@@ -1,6 +1,6 @@
 package com.greenriver.commons.web.configuration;
 
-import com.greenriver.commons.mvc.pageTools.PageToolManager;
+import com.greenriver.commons.web.pageTools.PageToolManager;
 
 /**
  * This interface defines the contract that must be implemented by

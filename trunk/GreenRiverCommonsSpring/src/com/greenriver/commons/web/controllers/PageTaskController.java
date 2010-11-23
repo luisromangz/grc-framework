@@ -3,8 +3,8 @@
 package com.greenriver.commons.web.controllers;
 
 import com.greenriver.commons.Strings;
-import com.greenriver.commons.mvc.pageTasks.PageTask;
-import com.greenriver.commons.mvc.pageTasks.PageTaskManager;
+import com.greenriver.commons.web.pageTasks.PageTask;
+import com.greenriver.commons.web.pageTasks.PageTaskManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.ModelAndView;
