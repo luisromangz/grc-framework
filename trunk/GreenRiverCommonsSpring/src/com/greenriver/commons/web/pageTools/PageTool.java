@@ -3,7 +3,7 @@ package com.greenriver.commons.web.pageTools;
 import com.greenriver.commons.web.configuration.FormsConfig;
 import com.greenriver.commons.web.configuration.PageConfig;
 import com.greenriver.commons.web.configuration.PropertiesViewConfig;
-import com.greenriver.commons.mvc.helpers.header.HeaderConfig;
+import com.greenriver.commons.web.helpers.header.HeaderConfig;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

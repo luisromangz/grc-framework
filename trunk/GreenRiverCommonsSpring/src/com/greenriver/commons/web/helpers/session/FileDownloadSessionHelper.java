@@ -1,4 +1,4 @@
-package com.greenriver.commons.web.controllers.fileDownload;
+package com.greenriver.commons.web.helpers.session;
 
 import java.io.Serializable;
 
