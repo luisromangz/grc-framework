@@ -1,6 +1,7 @@
 package com.greenriver.commons.web.helpers.form;
+
 import com.greenriver.commons.data.fieldProperties.FieldProperties;
-import com.greenriver.commons.mvc.helpers.header.HeaderConfig;
+import com.greenriver.commons.web.helpers.header.HeaderConfig;
 import java.util.List;
 import org.springframework.web.servlet.ModelAndView;
 

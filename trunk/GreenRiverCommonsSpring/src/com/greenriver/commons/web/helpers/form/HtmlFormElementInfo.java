@@ -1,8 +1,6 @@
 
 package com.greenriver.commons.web.helpers.form;
 
-import com.greenriver.commons.mvc.helpers.HtmlElementInfo;
-
 /**
  *
  * @author luis

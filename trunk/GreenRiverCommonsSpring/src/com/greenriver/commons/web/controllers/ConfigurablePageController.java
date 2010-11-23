@@ -2,16 +2,16 @@ package com.greenriver.commons.web.controllers;
 
 import com.greenriver.commons.web.configuration.PageConfig;
 import com.greenriver.commons.web.configuration.FormsConfig;
-import com.greenriver.commons.web.configuration.PageToolsConfiguration;
+import com.greenriver.commons.web.configuration.PageToolsConfig;
 import com.greenriver.commons.web.configuration.PropertiesViewConfig;
 import com.greenriver.commons.web.controllers.plugins.ControllerPlugin;
-import com.greenriver.commons.mvc.helpers.form.FormBuilder;
-import com.greenriver.commons.mvc.helpers.header.HeaderConfig;
-import com.greenriver.commons.mvc.helpers.header.HeaderConfigurer;
-import com.greenriver.commons.mvc.helpers.properties.PropertiesViewBuilder;
+import com.greenriver.commons.web.helpers.header.HeaderConfig;
 import com.greenriver.commons.web.pageTools.PageTool;
 import com.greenriver.commons.web.pageTools.PageToolManager;
-import com.greenriver.commons.session.UserSessionInfo;
+import com.greenriver.commons.web.session.UserSessionInfo;
+import com.greenriver.commons.web.helpers.form.FormBuilder;
+import com.greenriver.commons.web.helpers.header.HeaderConfigurer;
+import com.greenriver.commons.web.helpers.properties.PropertiesViewBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -20,14 +20,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
-
 /**
  * This controller is intended to be used by configuring it through the Spring
  * configuration file. This allow to define the CSS files, JavaScript files,
  * etc., that are needed by the page whitout code.
  *
- * Classes specializing this one can override the <c>handleRequestInternal<c>
- * method, grabbing the <c>ModelAndView<c> object it returns (which is fully
+ * Classes specializing this one can override the <c>handleRequestInternal</c>
+ * method, grabbing the <c>ModelAndView</c> object it returns (which is fully
  * configured) and add to it whatever extra objects are needed by the view.
  * @author luis
  */
@@ -36,24 +35,24 @@ public class ConfigurablePageController
         implements PropertiesViewConfig,
         FormsConfig,
         HeaderConfig,
-        PageToolsConfiguration,
+        PageToolsConfig,
         CustomizableHandleRequest {
 
     // <editor-fold defaultstate="collapsed" desc="Fields">
     private HeaderConfigurer headerConfigurer;
     private FormBuilder formBuilder;
     private PropertiesViewBuilder propertiesViewBuilder;
-    private PageConfig pageConfiguration;
+    private PageConfig pageConfig;
     private String viewName;
     private UserSessionInfo userSessionInfo;
     private PageToolManager pageToolManager;
     private List<ControllerPlugin> plugins;
-    private boolean toolsLoadDelayed=true;
+    private boolean toolsLoadDelayed = true;
     // </editor-fold>
 
     public ConfigurablePageController() {
         // We intialize the pageConfiguration object;
-        pageConfiguration = new PageConfig();
+        pageConfig = new PageConfig();
         plugins = new ArrayList<ControllerPlugin>();
     }
 
@@ -74,8 +73,10 @@ public class ConfigurablePageController
 
         customHandleRequest(request, response, mav);
 
-        PageConfig configuration = (PageConfig) this.pageConfiguration.clone();
-       
+        // We clone it so changes made by configuration process doesnt
+        // get stuck into the bean definition.
+        PageConfig configuration = (PageConfig) this.pageConfig.clone();
+
         for (ControllerPlugin plugin : this.getPlugins()) {
             plugin.doWork(request, configuration);
         }
@@ -116,7 +117,7 @@ public class ConfigurablePageController
         for (String formId : forms.keySet()) {
             String className = forms.get(formId);
             Class entityClass = Class.forName(className);
-            formBuilder.addForm(prefix + formId,this.getPageConfiguration(),mav);
+            formBuilder.addForm(prefix + formId, this.getPageConfig(), mav);
             formBuilder.addFieldsFromClass(entityClass);
         }
     }
@@ -141,7 +142,7 @@ public class ConfigurablePageController
         }
 
         for (String propsViewId : propertiesViews.keySet()) {
-            propertiesViewBuilder.addPropertiesView(prefix + propsViewId, mav);            
+            propertiesViewBuilder.addPropertiesView(prefix + propsViewId, mav);
             propertiesViewBuilder.addPropertyViewsFromClass(propertiesViews.get(propsViewId));
         }
     }
@@ -153,7 +154,7 @@ public class ConfigurablePageController
         List<String> setupJspFiles = new ArrayList<String>();
 
         // This makes the initilization code needed by forms to be inside this function.
-        pageConfiguration.addOnLoadScript("window['onToolsLoaded']=function(){");
+        pageConfig.addOnLoadScript("window['onToolsLoaded']=function(){");
 
         if (pageToolManager != null) {
 
@@ -175,7 +176,7 @@ public class ConfigurablePageController
                     configurePropertiesView(pageTool.getPropertiesView(), mav,
                             pageTool.getName() + "_");
 
-                    pageConfiguration.getOnLoadScripts().addAll(
+                    pageConfig.getOnLoadScripts().addAll(
                             pageTool.getOnLoadScripts());
                 }
 
@@ -192,33 +193,33 @@ public class ConfigurablePageController
                 // we bundle (if bundling is activated) all the required modules
                 // and js files.
 
-                pageConfiguration.getJavaScriptFiles().addAll(addPathPrefixToFileNames(
+                pageConfig.getJavaScriptFiles().addAll(addPathPrefixToFileNames(
                         "tools/" + pageTool.getName(),
                         pageTool.getJavaScriptFiles()));
 
-                pageConfiguration.getCssFiles().addAll(addPathPrefixToFileNames(
+                pageConfig.getCssFiles().addAll(addPathPrefixToFileNames(
                         pageTool.getName(),
                         pageTool.getCssFiles()));
 
-                pageConfiguration.getDojoBundles().addAll(
+                pageConfig.getDojoBundles().addAll(
                         pageTool.getDojoBundles());
 
-                pageConfiguration.getDojoModules().addAll(
+                pageConfig.getDojoModules().addAll(
                         pageTool.getDojoModules());
-                pageConfiguration.getDwrServices().addAll(
+                pageConfig.getDwrServices().addAll(
                         pageTool.getDwrServices());
 
-                pageConfiguration.getScripts().addAll(pageTool.getScripts());
+                pageConfig.getScripts().addAll(pageTool.getScripts());
 
             }
 
         }
 
         // Close of the init function.
-        pageConfiguration.addOnLoadScript("}");
+        pageConfig.addOnLoadScript("}");
 
-        if(!this.isToolsLoadDelayed()) {
-            pageConfiguration.addOnLoadScript("window.onToolsLoaded()");
+        if (!this.isToolsLoadDelayed()) {
+            pageConfig.addOnLoadScript("window.onToolsLoaded()");
         }
 
         mav.addObject("toolsDialogJspFiles", dialogJspFiles);
@@ -274,7 +275,7 @@ public class ConfigurablePageController
      * @param pageConfiguration the pageConfiguration to set
      */
     public void setPageConfiguration(PageConfig pageConfiguration) {
-        this.pageConfiguration = pageConfiguration;
+        this.pageConfig = pageConfiguration;
     }
 
     /**
@@ -284,7 +285,7 @@ public class ConfigurablePageController
      */
     @Override
     public void addForm(String id, String entityName) {
-        getPageConfiguration().addForm(id, entityName);
+        getPageConfig().addForm(id, entityName);
     }
 
     /**
@@ -293,7 +294,7 @@ public class ConfigurablePageController
      */
     @Override
     public Map<String, String> getForms() {
-        return getPageConfiguration().getForms();
+        return getPageConfig().getForms();
     }
 
     /**
@@ -302,7 +303,7 @@ public class ConfigurablePageController
      */
     @Override
     public void setForms(Map<String, String> formEntities) {
-        getPageConfiguration().setForms(formEntities);
+        getPageConfig().setForms(formEntities);
     }
 
     /**
@@ -311,7 +312,7 @@ public class ConfigurablePageController
      */
     @Override
     public void addCssFile(String cssFilename) {
-        getPageConfiguration().addCssFile(cssFilename);
+        getPageConfig().addCssFile(cssFilename);
     }
 
     /**
@@ -321,7 +322,7 @@ public class ConfigurablePageController
      */
     @Override
     public void addDwrService(String name) {
-        getPageConfiguration().addDwrService(name);
+        getPageConfig().addDwrService(name);
     }
 
     /**
@@ -330,7 +331,7 @@ public class ConfigurablePageController
      */
     @Override
     public void addDojoBundle(String bundleName) {
-        getPageConfiguration().addDojoBundle(bundleName);
+        getPageConfig().addDojoBundle(bundleName);
     }
 
     /**
@@ -341,7 +342,7 @@ public class ConfigurablePageController
      */
     @Override
     public void addDojoModule(String dojoModule) {
-        getPageConfiguration().addDojoModule(dojoModule);
+        getPageConfig().addDojoModule(dojoModule);
     }
 
     /**
@@ -350,7 +351,7 @@ public class ConfigurablePageController
      */
     @Override
     public void addJavaScriptFile(String jsFilename) {
-        getPageConfiguration().addJavaScriptFile(jsFilename);
+        getPageConfig().addJavaScriptFile(jsFilename);
     }
 
     /**
@@ -359,7 +360,7 @@ public class ConfigurablePageController
      */
     @Override
     public void addOnLoadScript(String code) {
-        getPageConfiguration().addOnLoadScript(code);
+        getPageConfig().addOnLoadScript(code);
     }
 
     /**
@@ -368,7 +369,7 @@ public class ConfigurablePageController
      */
     @Override
     public void addScript(String script) {
-        getPageConfiguration().addScript(script);
+        getPageConfig().addScript(script);
     }
 
     /**
@@ -377,7 +378,7 @@ public class ConfigurablePageController
      */
     @Override
     public List<String> getCssFiles() {
-        return getPageConfiguration().getCssFiles();
+        return getPageConfig().getCssFiles();
     }
 
     /**
@@ -386,7 +387,7 @@ public class ConfigurablePageController
      */
     @Override
     public List<String> getDojoModules() {
-        return getPageConfiguration().getDojoModules();
+        return getPageConfig().getDojoModules();
     }
 
     /**
@@ -395,7 +396,7 @@ public class ConfigurablePageController
      */
     @Override
     public List<String> getDojoBundles() {
-        return getPageConfiguration().getDojoBundles();
+        return getPageConfig().getDojoBundles();
     }
 
     /**
@@ -404,7 +405,7 @@ public class ConfigurablePageController
      */
     @Override
     public List<String> getDwrServices() {
-        return getPageConfiguration().getDwrServices();
+        return getPageConfig().getDwrServices();
     }
 
     /**
@@ -413,7 +414,7 @@ public class ConfigurablePageController
      */
     @Override
     public List<String> getJavaScriptFiles() {
-        return getPageConfiguration().getJavaScriptFiles();
+        return getPageConfig().getJavaScriptFiles();
     }
 
     /**
@@ -423,7 +424,7 @@ public class ConfigurablePageController
      */
     @Override
     public List<String> getOnLoadScripts() {
-        return getPageConfiguration().getOnLoadScripts();
+        return getPageConfig().getOnLoadScripts();
     }
 
     /**
@@ -432,7 +433,7 @@ public class ConfigurablePageController
      */
     @Override
     public List<String> getScripts() {
-        return getPageConfiguration().getScripts();
+        return getPageConfig().getScripts();
     }
 
     /**
@@ -441,7 +442,7 @@ public class ConfigurablePageController
      */
     @Override
     public String getTitle() {
-        return getPageConfiguration().getTitle();
+        return getPageConfig().getTitle();
     }
 
     /**
@@ -450,7 +451,7 @@ public class ConfigurablePageController
      */
     @Override
     public void setTitle(String title) {
-        getPageConfiguration().setTitle(title);
+        getPageConfig().setTitle(title);
     }
 
     /**
@@ -459,7 +460,7 @@ public class ConfigurablePageController
      */
     @Override
     public void setCssFiles(List<String> cssFiles) {
-        getPageConfiguration().setCssFiles(cssFiles);
+        getPageConfig().setCssFiles(cssFiles);
     }
 
     /**
@@ -468,7 +469,7 @@ public class ConfigurablePageController
      */
     @Override
     public void setDwrServices(List<String> dwrServices) {
-        getPageConfiguration().setDwrServices(dwrServices);
+        getPageConfig().setDwrServices(dwrServices);
     }
 
     /**
@@ -479,7 +480,7 @@ public class ConfigurablePageController
      */
     @Override
     public void setDojoBundles(List<String> dojoBundles) {
-        getPageConfiguration().setDojoBundles(dojoBundles);
+        getPageConfig().setDojoBundles(dojoBundles);
     }
 
     /**
@@ -489,7 +490,7 @@ public class ConfigurablePageController
      */
     @Override
     public void setDojoModules(List<String> dojoModules) {
-        getPageConfiguration().setDojoModules(dojoModules);
+        getPageConfig().setDojoModules(dojoModules);
     }
 
     /**
@@ -498,7 +499,7 @@ public class ConfigurablePageController
      */
     @Override
     public void setJavaScriptFiles(List<String> javascriptFiles) {
-        getPageConfiguration().setJavaScriptFiles(javascriptFiles);
+        getPageConfig().setJavaScriptFiles(javascriptFiles);
     }
 
     /**
@@ -509,7 +510,7 @@ public class ConfigurablePageController
      */
     @Override
     public void setOnLoadScripts(List<String> onLoadScripts) {
-        getPageConfiguration().setOnLoadScripts(onLoadScripts);
+        getPageConfig().setOnLoadScripts(onLoadScripts);
     }
 
     /**
@@ -518,7 +519,7 @@ public class ConfigurablePageController
      */
     @Override
     public void setScripts(List<String> scripts) {
-        getPageConfiguration().setScripts(scripts);
+        getPageConfig().setScripts(scripts);
     }
 
     /**
@@ -537,17 +538,17 @@ public class ConfigurablePageController
 
     @Override
     public void addPropertiesView(String id, String configuration) {
-        this.getPageConfiguration().addPropertiesView(id, configuration);
+        this.getPageConfig().addPropertiesView(id, configuration);
     }
 
     @Override
     public void setPropertiesView(Map<String, String> configuration) {
-        this.getPageConfiguration().setPropertiesView(configuration);
+        this.getPageConfig().setPropertiesView(configuration);
     }
 
     @Override
     public Map<String, String> getPropertiesView() {
-        return getPageConfiguration().getPropertiesView();
+        return getPageConfig().getPropertiesView();
     }
 
     /**
@@ -568,12 +569,12 @@ public class ConfigurablePageController
 
     @Override
     public void addDojoBundles(List<String> dojoBundles) {
-        getPageConfiguration().addDojoBundles(dojoBundles);
+        getPageConfig().addDojoBundles(dojoBundles);
     }
 
     @Override
     public void addDojoModules(List<String> dojoModules) {
-        getPageConfiguration().addDojoModules(dojoModules);
+        getPageConfig().addDojoModules(dojoModules);
     }
 
     /**
@@ -590,6 +591,13 @@ public class ConfigurablePageController
         this.plugins = plugin;
     }
 
+    /**
+     * @return the pageConfiguration
+     */
+    protected PageConfig getPageConfig() {
+        return pageConfig;
+    }
+
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Auxiliary methods">
     protected List<String> addPathPrefixToFileNames(
@@ -603,13 +611,6 @@ public class ConfigurablePageController
         }
 
         return prefixedFileNames;
-    }
-
-    /**
-     * @return the pageConfiguration
-     */
-    protected PageConfig getPageConfiguration() {
-        return pageConfiguration;
     }
 
     /**

@@ -1,4 +1,4 @@
-package com.greenriver.commons.services;
+package com.greenriver.commons.web.services;
 
 import java.util.ArrayList;
 import java.util.List;

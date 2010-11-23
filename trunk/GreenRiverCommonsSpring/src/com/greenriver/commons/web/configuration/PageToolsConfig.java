@@ -9,7 +9,7 @@ import com.greenriver.commons.web.pageTools.PageToolManager;
  * 
  * @author luis
  */
-public interface PageToolsConfiguration {
+public interface PageToolsConfig {
     PageToolManager getPageToolManager();
     void setPageToolManager(PageToolManager pageToolManager);
 }

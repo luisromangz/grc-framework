@@ -6,7 +6,7 @@ import com.greenriver.commons.data.fieldProperties.FieldDeactivationCondition;
 import com.greenriver.commons.data.fieldProperties.FieldProperties;
 import com.greenriver.commons.data.fieldProperties.FieldType;
 import com.greenriver.commons.data.validation.ValidationRegex;
-import com.greenriver.commons.mvc.helpers.header.HeaderConfig;
+import com.greenriver.commons.web.helpers.header.HeaderConfig;
 import com.greenriver.commons.roleManagement.RoleManager;
 import com.greenriver.commons.roleManagement.RoleManagerClient;
 import java.lang.reflect.Field;

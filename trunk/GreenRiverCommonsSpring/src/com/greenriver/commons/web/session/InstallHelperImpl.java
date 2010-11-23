@@ -1,4 +1,4 @@
-package com.greenriver.commons.session;
+package com.greenriver.commons.web.session;
 
 /**
  * Default implementation of InstallHelper

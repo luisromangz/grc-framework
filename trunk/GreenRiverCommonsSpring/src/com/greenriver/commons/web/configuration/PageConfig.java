@@ -1,6 +1,6 @@
 package com.greenriver.commons.web.configuration;
 
-import com.greenriver.commons.mvc.helpers.header.PageHeaderConfig;
+import com.greenriver.commons.web.helpers.header.PageHeaderConfig;
 import com.greenriver.commons.web.pageTools.PageTool;
 import java.util.ArrayList;
 import java.util.HashMap;

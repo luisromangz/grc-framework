@@ -1,4 +1,4 @@
-package com.greenriver.commons.session;
+package com.greenriver.commons.web.session;
 
 import java.io.Serializable;
 

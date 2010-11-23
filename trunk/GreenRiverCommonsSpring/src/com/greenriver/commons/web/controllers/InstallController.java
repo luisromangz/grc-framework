@@ -1,9 +1,9 @@
 package com.greenriver.commons.web.controllers;
 
 import com.greenriver.commons.data.dao.UserDao;
-import com.greenriver.commons.mvc.helpers.form.FormBuilderClient;
-import com.greenriver.commons.mvc.helpers.header.HeaderConfigurerClient;
-import com.greenriver.commons.session.InstallHelper;
+import com.greenriver.commons.web.session.InstallHelper;
+import com.greenriver.commons.web.helpers.form.FormBuilderClient;
+import com.greenriver.commons.web.helpers.header.HeaderConfigurerClient;
 import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,7 +15,8 @@ import org.springframework.web.servlet.ModelAndView;
  * 
  * @author luis
  */
-public class InstallController extends ConfigurablePageController
+public class InstallController
+        extends ConfigurablePageController
         implements HeaderConfigurerClient, FormBuilderClient {
 
     // Its used to generate the key not a password xD
@@ -61,12 +62,12 @@ public class InstallController extends ConfigurablePageController
         modelAndView.addObject("keyPath", path);
         modelAndView.addObject("key", key);
 
-        getFormBuilder().addForm("adminForm", this.getPageConfiguration(), modelAndView);
+        getFormBuilder().addForm("adminForm", this.getPageConfig(), modelAndView);
         getFormBuilder().addFieldsFromClass(Class.forName(userClass));
         getFormBuilder().removeField("roles");
         getFormBuilder().removeField("enabled");
 
-        getHeaderConfigurer().configure(modelAndView, this.getPageConfiguration());
+        getHeaderConfigurer().configure(modelAndView, this.getPageConfig());
     }
 
     // <editor-fold defaultstate="collapsed" desc="Getters and setters">

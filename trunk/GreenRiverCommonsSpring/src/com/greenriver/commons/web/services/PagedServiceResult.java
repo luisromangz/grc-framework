@@ -1,5 +1,5 @@
 
-package com.greenriver.commons.services;
+package com.greenriver.commons.web.services;
 
 /**
  * ServiceResult extension that adds an extra field to store the number of
