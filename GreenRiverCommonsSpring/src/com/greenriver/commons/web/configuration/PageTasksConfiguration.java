@@ -5,7 +5,7 @@
 
 package com.greenriver.commons.web.configuration;
 
-import com.greenriver.commons.mvc.pageTasks.PageTaskManager;
+import com.greenriver.commons.web.pageTasks.PageTaskManager;
 
 /**
  *
