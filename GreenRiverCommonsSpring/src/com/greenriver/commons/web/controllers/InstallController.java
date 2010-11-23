@@ -1,7 +1,7 @@
 package com.greenriver.commons.web.controllers;
 
 import com.greenriver.commons.data.dao.UserDao;
-import com.greenriver.commons.web.session.InstallHelper;
+import com.greenriver.commons.web.helpers.session.InstallHelper;
 import com.greenriver.commons.web.helpers.form.FormBuilderClient;
 import com.greenriver.commons.web.helpers.header.HeaderConfigurerClient;
 import java.util.Date;
