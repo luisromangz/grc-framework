@@ -2,7 +2,7 @@ package com.greenriver.commons.web.controllers;
 
 import com.greenriver.commons.web.configuration.PageTasksConfiguration;
 import com.greenriver.commons.data.model.User;
-import com.greenriver.commons.mvc.helpers.header.HeaderConfigurer;
+import com.greenriver.commons.web.helpers.header.HeaderConfigurer;
 import com.greenriver.commons.web.pageTasks.PageTask;
 import com.greenriver.commons.web.pageTasks.PageTaskManager;
 import java.util.ArrayList;
@@ -98,39 +98,39 @@ public class PageTasksController extends ConfigurablePageController implements P
 
         // The properties that are files need to have their path relative
         // to the task's name, and inside a "js" folder.
-        getPageConfiguration().getJavaScriptFiles().addAll(addPathPrefixToFileNames(
+        getPageConfig().getJavaScriptFiles().addAll(addPathPrefixToFileNames(
                 "tasks/" + taskName,
                 pageTask.getJavaScriptFiles()));
 
-        getPageConfiguration().getCssFiles().addAll(
+        getPageConfig().getCssFiles().addAll(
                 addPathPrefixToFileNames(taskName, pageTask.getCssFiles()));
 
-        getPageConfiguration().getDojoBundles().addAll(pageTask.getDojoBundles());
-        getPageConfiguration().getDojoModules().addAll(pageTask.getDojoModules());
+        getPageConfig().getDojoBundles().addAll(pageTask.getDojoBundles());
+        getPageConfig().getDojoModules().addAll(pageTask.getDojoModules());
 
-        getPageConfiguration().getDwrServices().addAll(pageTask.getDwrServices());
+        getPageConfig().getDwrServices().addAll(pageTask.getDwrServices());
 
 
         if (pageTask.isLoadedOnPageLoad()) {
-            getPageConfiguration().getOnLoadScripts().addAll(pageTask.getOnLoadScripts());
+            getPageConfig().getOnLoadScripts().addAll(pageTask.getOnLoadScripts());
             //Forms ids are prefixed with the task name
             configureForms(pageTask.getForms(), mav,
                     pageTask.getTaskName() + "_");
         } else {
             // If the load of the task is on demand, we add global functions intended for loading this.
-            getPageConfiguration().addOnLoadScript(String.format(
+            getPageConfig().addOnLoadScript(String.format(
                     "window['%s_onLoad']=function(){",
                     pageTask.getTaskName()));
-            getPageConfiguration().getOnLoadScripts().addAll(pageTask.getOnLoadScripts());
+            getPageConfig().getOnLoadScripts().addAll(pageTask.getOnLoadScripts());
             //Forms ids are prefixed with the task name
             configureForms(pageTask.getForms(), mav,
                     pageTask.getTaskName() + "_");
-            getPageConfiguration().addOnLoadScript(String.format(
+            getPageConfig().addOnLoadScript(String.format(
                     "} // End of %s.onLoad function",
                     pageTask.getTaskName()));
         }
 
-        getPageConfiguration().getScripts().addAll(pageTask.getScripts());
+        getPageConfig().getScripts().addAll(pageTask.getScripts());
 
 
         configurePropertiesView(pageTask.getPropertiesView(), mav,

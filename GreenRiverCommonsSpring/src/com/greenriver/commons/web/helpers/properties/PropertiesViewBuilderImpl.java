@@ -1,14 +1,12 @@
 package com.greenriver.commons.web.helpers.properties;
 
 import com.greenriver.commons.ClassFields;
-import com.greenriver.commons.mvc.helpers.PropertyOptions;
 import com.greenriver.commons.Strings;
 import com.greenriver.commons.collections.Lists;
 import com.greenriver.commons.data.fieldProperties.EntityFieldsProperties;
 import com.greenriver.commons.data.fieldProperties.FieldProperties;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -109,7 +107,8 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
     }
 
     @Override
-    public SinglePropertyView addPropertyView(String id,
+    public SinglePropertyView addPropertyView(
+            String id,
             FieldProperties properties,
             Class modelClass) {
 
@@ -127,21 +126,18 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
             id = properties.accesorFieldName();
         }
 
-        PropertyOptions options = PropertyOptions.parseString(id);
-
-        if (currentPropertiesView.containsPropertyViewForName(
-                options.getPropName())) {
+        if (currentPropertiesView.containsPropertyViewForName(id)) {
             return null;
         }
 
         SinglePropertyView propView =
                 new SinglePropertyView(
-                currentPropertiesView.getPropertyViewName(options.getPropName()));
+                currentPropertiesView.getPropertyViewName(id));
 
         propView.setLabel(properties.label());
 
         if (setupPropertyView(propView, properties, modelClass)) {
-            this.currentPropertiesView.addPropertyView(propView, options);
+            this.currentPropertiesView.addPropertyView(propView);
         }
 
         return propView;
@@ -167,68 +163,47 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
 
         assertCurrent();
 
-        PropertyOptions options = PropertyOptions.parseString(id);
-
-        if (currentPropertiesView.containsPropertyViewForName(
-                options.getPropName())) {
+        if (currentPropertiesView.containsPropertyViewForName(id)) {
             return null;
         }
 
         SinglePropertyView propView =
                 new SinglePropertyView(
-                currentPropertiesView.getPropertyViewName(options.getPropName()));
+                currentPropertiesView.getPropertyViewName(id));
 
         propView.setLabel(label);
         propView.setLabelElement(
                 String.format(labelFormat, propView.getId(), label));
 
         if (setupFieldGenericView(propView, null, null)) {
-            this.currentPropertiesView.addPropertyView(propView, options);
+            this.currentPropertiesView.addPropertyView(propView);
         }
 
         return propView;
     }
 
     @Override
-    public void addPropertyViewsFromClass(String entityFullName) {
-        addPropertyViewsFromModel(entityFullName, null);
+    public void addPropertyViewsFromClass(String classFullName) {
+        addPropertyViewsFromModel(getClassFromName(classFullName));
     }
+  
 
     @Override
-    public void addPropertyViewsFromModel(String entityFullName,
-            List<String> propertiesToShow) {
-
-        addPropertyViewsFromModel(
-                getClassFromName(entityFullName),
-                propertiesToShow);
-    }
-
-    @Override
-    public void addPropertyViewsFromModel(Class modelClass) {
-
-        addPropertyViewsFromModel(modelClass, null);
-    }
-
-    @Override
-    public void addPropertyViewsFromModel(
-            Class modelClass,
-            List<String> propertiesToShow) {
+    public void addPropertyViewsFromModel(Class viewClass) {
 
         Field classField = null;
         FieldProperties fieldProperties = null;
 
         assertCurrent();
 
-        if (Lists.isNullOrEmpty(propertiesToShow)) {
-            // If the list of properties is empty we include all of them.
-            propertiesToShow = generatePropertyList(modelClass);
-        }
+        // If the list of properties is empty we include all of them.
+        List<String>  propertiesToShow = generatePropertyList(viewClass);
 
         for (String propName : propertiesToShow) {
             // Let this throw an exception if the field is not defined. This
             // looks also in the super class so if the field is not defined it
             // will throw an exception.
-            classField = ClassFields.get(propName, modelClass, true, true);
+            classField = ClassFields.get(propName, viewClass, true, true);
 
             fieldProperties =
                     classField.getAnnotation(FieldProperties.class);
@@ -238,92 +213,7 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
                 addPropertyView(propName, fieldProperties, classField.getType());
             }
         }
-    }
-
-    /**
-     * Configures the views from a map.
-     * @param config Map with configuration key values.
-     */
-    @Override
-    public void addPropertyViewFromConfiguration(Map<String, Object> config) {
-        if (!config.containsKey(KEY_MODEL)) {
-            throw new IllegalArgumentException(
-                    "The configuration must include '" + KEY_MODEL
-                    + "' key with the entity full name as value");
-        }
-
-        //Temporal object to put values got from the map.
-        Object obj = config.get(KEY_MODEL);
-
-        if (obj == null || !(obj instanceof String)) {
-            throw new IllegalArgumentException(
-                    "The configuration must include a '" + KEY_MODEL
-                    + "' key with the entity's full name as the value");
-        }
-
-        //Name of the entity's class
-        String entityName = (String) obj;
-        Class entityClass = getClassFromName(entityName);
-        //List of properties to be added to the view.
-        List<String> properties = new ArrayList<String>();
-        List<String> virtualProperties = new ArrayList<String>();
-
-        //We process the properties key if set
-        if (config.containsKey(KEY_PROPERTIES)) {
-            processPropertiesListObject(
-                    config.get(KEY_PROPERTIES),
-                    false,
-                    properties);
-        } else {
-            properties.addAll(generatePropertyList(entityClass));
-        }
-
-        if (config.containsKey(KEY_IGNORE_PROPERTIES)) {
-            processPropertiesListObject(
-                    config.get(KEY_IGNORE_PROPERTIES),
-                    true,
-                    properties);
-        }
-
-        try {
-            addPropertyViewsFromModel(entityClass, properties);
-        } catch (RuntimeException rex) {
-            String msg =
-                    "Failed to create the properties view from configuration."
-                    + " Review the properties view configuration for class "
-                    + ((String)config.get(KEY_MODEL)) + " and ";
-            
-            if (config.containsKey(KEY_PROPERTIES)) {
-                msg += "fields [" + Strings.join(properties, ", ") + "].";
-            } else {
-                msg += "all fields declared.";
-            }
-
-            throw new RuntimeException(msg, rex);
-        }
-
-        if (config.containsKey(KEY_VIRTUAL_PROPERTIES)) {
-            processPropertiesListObject(
-                    config.get(KEY_VIRTUAL_PROPERTIES),
-                    false,
-                    virtualProperties);
-        }
-
-        addVirtualPropertyViews(virtualProperties);
-    }
-
-    /**
-     * Adds properties from a map where the keys are property names and the
-     * values are the labels for the properties. The generated views will be
-     * the most simple and generic ones.
-     * @param virtualProperties Map with pairs propertyName-propertyLabel.
-     */
-    @Override
-    public void addVirtualPropertyViews(List<String> virtualProperties) {
-        for (String propName : virtualProperties) {
-            addPropertyView(propName, "");
-        }
-    }
+    }   
 
     @Override
     public void removePropertyView(String id) {
@@ -384,47 +274,7 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
                 new Class[]{FieldProperties.class});
     }
 
-    /**
-     * Adds/removes all the properties specified to/from the list of properties
-     * to be included in the view. The last parameter controls if the property
-     * names will be added or removed from the view.
-     * @param obj
-     * @param ignore If true the properties are removed from the current list
-     * of properties instead of being added.
-     * @param result
-     */
-    private void processPropertiesListObject(Object obj, boolean ignore,
-            List<String> result) {
-
-        if (obj == null) {
-            return;
-        }
-
-        List<String> propsList = null;
-
-        if (obj instanceof String) {
-            String[] propsArr = ((String) obj).split(";");
-
-            if (propsArr.length > 1) {
-                propsList = Arrays.asList(propsArr);
-            } else if (propsArr.length == 1) {
-                propsList = new ArrayList<String>();
-                propsList.add(propsArr[0]);
-            } else {
-                throw new IllegalArgumentException("Invalid value: " + obj);
-            }
-
-        } else if (obj instanceof List) {
-            propsList = (List<String>) obj;
-        }
-
-        if (ignore) {
-            result.removeAll(propsList);
-        } else {
-            result.addAll(propsList);
-        }
-    }
-
+   
     /**
      * Setups a property view with extra attributes. If the setup is succesful
      * this method must return true, if not this method must return false and

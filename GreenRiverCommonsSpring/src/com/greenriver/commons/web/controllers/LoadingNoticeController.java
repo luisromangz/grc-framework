@@ -1,7 +1,7 @@
 package com.greenriver.commons.web.controllers;
 
-import com.greenriver.commons.mvc.helpers.header.HeaderConfigurerClient;
-import com.greenriver.commons.mvc.helpers.header.HeaderConfigurer;
+import com.greenriver.commons.web.helpers.header.HeaderConfigurer;
+import com.greenriver.commons.web.helpers.header.HeaderConfigurerClient;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.ModelAndView;

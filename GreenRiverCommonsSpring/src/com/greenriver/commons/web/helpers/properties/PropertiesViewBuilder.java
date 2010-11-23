@@ -54,51 +54,21 @@ public interface PropertiesViewBuilder {
 
     /**
      * Add a view for a property to the current properties view
-     * @param entityFullName Full name of the entity
+     * @param classFullName Full name of the entity
      */
-    void addPropertyViewsFromClass(String entityFullName);
-
-    /**
-     * Add a view for a property to the current properties view
-     * @param entityFullName Full name of the entity
-     * @param propertiesToShow
-     */
-    void addPropertyViewsFromModel(String entityFullName, List<String> propertiesToShow);
-
-    /**
-     * Add a view for a property to the current properties view
-     * @param modelClass
-     * @param propertiesToShow 
-     */
-    void addPropertyViewsFromModel(Class modelClass, List<String> propertiesToShow);
+    void addPropertyViewsFromClass(String classFullName);
 
     /**
      * Add a view for a property to the current properties view
      * @param modelClass
      */
-    void addPropertyViewsFromModel(Class modelClass);
-
-    /**
-     * Adds a view for the properties of an entity configured in a map. The
-     * map should contain the keys as described in javadoc of
-     * <b>com.greenriver.commons.mvc.configuration.PropertiesViewConfiguration.addPropertiesViewConfiguration</b>.
-     * @param config
-     */
-    void addPropertyViewFromConfiguration(Map<String, Object> config);
+    void addPropertyViewsFromModel(Class modelClass);   
 
     /**
      * Removes a property from the current properties view
      * @param id
      */
     void removePropertyView(String id);
-
-    /**
-     * Adds properties from a map where the keys are property names and the
-     * values are the labels for the properties. The generated views will be
-     * the most simple and generic ones.
-     * @param virtualProperties List of properties to be added.
-     */
-    void addVirtualPropertyViews(List<String> virtualProperties);
 
     /**
      * Adds a generic property view with only the property name and the

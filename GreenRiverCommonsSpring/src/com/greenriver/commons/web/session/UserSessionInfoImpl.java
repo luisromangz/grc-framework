@@ -1,4 +1,4 @@
-package com.greenriver.commons.session;
+package com.greenriver.commons.web.session;
 
 import com.greenriver.commons.data.dao.UserDao;
 import com.greenriver.commons.data.model.User;

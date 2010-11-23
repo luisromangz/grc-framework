@@ -1,5 +1,5 @@
 
-package com.greenriver.commons.services;
+package com.greenriver.commons.web.services;
 
 import com.greenriver.commons.data.model.User;
 

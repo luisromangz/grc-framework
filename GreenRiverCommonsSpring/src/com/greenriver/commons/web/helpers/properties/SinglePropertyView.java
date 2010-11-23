@@ -65,6 +65,7 @@ public class SinglePropertyView implements Comparable<SinglePropertyView> {
 	this.id = id;
     }
 
+    @Override
     public int compareTo(SinglePropertyView o) {
 	if (o == null) {
 	    throw new NullPointerException("Can't compare against a null pointer");
