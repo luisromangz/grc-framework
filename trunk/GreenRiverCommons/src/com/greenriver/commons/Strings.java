@@ -1,5 +1,5 @@
 /*#################################################################
-(c)2008/2010 Greenriver Consulting SL. All rights reserved.
+(c)2008/2009 Greenriver Consulting SL. All rights reserved.
 
 This project and all subsequent files are licensed under the terms
 and conditions of the GreenRiverLicense.
@@ -455,11 +455,21 @@ public class Strings {
     public static String cleanHTML(String input) {
         Tidy tidier = new Tidy();
 
-        ByteArrayOutputStream output = new ByteArrayOutputStream();        
-        tidier.parse(new ByteArrayInputStream(input.getBytes()),output);
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        tidier.parse(new ByteArrayInputStream(input.getBytes()), output);
 
         return output.toString();
 
 
+    }
+
+    /**
+     * Strips html tags in a rather rude and imprecise way.
+     * @param cellContent
+     * @return
+     */
+    public static String stripTags(String cellContent) {
+        
+        return cellContent.replaceAll("<.+?>", "");
     }
 }
