@@ -1,5 +1,6 @@
 package com.greenriver.commons.web.controllers;
 
+import com.greenriver.commons.web.configuration.DojoHandled;
 import com.greenriver.commons.web.configuration.PageConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -10,7 +11,8 @@ import org.springframework.web.servlet.ModelAndView;
  * @author luisro
  */
 public class DojoHandledPageController 
-        extends ConfigurablePageController {
+    extends ConfigurablePageController
+    implements DojoHandled {
     
     private String dojoControllerModule = "grc.controller.PageController";
 
@@ -33,6 +35,7 @@ public class DojoHandledPageController
         return "new "+getDojoControllerModule()+"();";
     }
 
+    // <editor-fold defaultstate="collapsed" desc="Getter and setters">
     /**
      * @return the dojoControllerModule
      */
@@ -45,5 +48,6 @@ public class DojoHandledPageController
      */
     public void setDojoControllerModule(String dojoControllerModule) {
         this.dojoControllerModule = dojoControllerModule;
-    }    
+    }
+    // </editor-fold>
 }

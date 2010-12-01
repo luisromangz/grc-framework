@@ -7,7 +7,6 @@ import com.greenriver.commons.web.configuration.PropertiesViewConfig;
 import com.greenriver.commons.web.controllers.plugins.ControllerPlugin;
 import com.greenriver.commons.web.helpers.header.HeaderConfig;
 import com.greenriver.commons.web.pageTools.PageTool;
-import com.greenriver.commons.web.pageTools.PageToolManager;
 import com.greenriver.commons.web.helpers.session.UserSessionInfo;
 import com.greenriver.commons.web.helpers.form.FormBuilder;
 import com.greenriver.commons.web.helpers.header.HeaderConfigurer;
