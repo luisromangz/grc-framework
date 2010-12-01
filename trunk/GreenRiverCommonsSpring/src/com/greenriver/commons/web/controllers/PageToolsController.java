@@ -1,5 +1,6 @@
 package com.greenriver.commons.web.controllers;
 
+import com.greenriver.commons.web.configuration.PageConfig;
 import com.greenriver.commons.web.pageTools.PageTool;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,8 +16,10 @@ public class PageToolsController extends ConfigurablePageController {
 
     @Override
     public void customHandleRequest(
-            HttpServletRequest request, HttpServletResponse response, ModelAndView mav)
-            throws Exception {
+            HttpServletRequest request,
+            HttpServletResponse response,
+            PageConfig configuration,
+            ModelAndView mav) throws Exception {
 
         List<String> dialogJspFiles = new ArrayList<String>();
         List<String> setupJspFiles = new ArrayList<String>();

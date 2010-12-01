@@ -61,6 +61,10 @@ public class ConfigurablePageController
             HttpServletResponse response)
             throws Exception {
 
+        // We clone it so changes made by configuration process doesnt
+        // get stuck into the bean definition.
+        PageConfig configuration = (PageConfig) this.pageConfig.clone();
+
         ModelAndView mav = new ModelAndView(viewName);
 
         configureForms(this.getForms(), mav, null);
@@ -71,11 +75,7 @@ public class ConfigurablePageController
             mav.addObject("userSessionInfo", this.userSessionInfo);
         }
 
-        customHandleRequest(request, response, mav);
-
-        // We clone it so changes made by configuration process doesnt
-        // get stuck into the bean definition.
-        PageConfig configuration = (PageConfig) this.pageConfig.clone();
+        customHandleRequest(request, response, configuration, mav);
 
         for (ControllerPlugin plugin : this.getPlugins()) {
             plugin.doWork(request, configuration);
@@ -87,8 +87,11 @@ public class ConfigurablePageController
     }
 
     @Override
-    public void customHandleRequest(HttpServletRequest request,
-            HttpServletResponse response, ModelAndView mav) throws Exception {
+    public void customHandleRequest(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            PageConfig configuration,
+            ModelAndView mav) throws Exception {
     }
 
     // <editor-fold defaultstate="collapsed" desc="Page properties configuration methods">
@@ -626,5 +629,5 @@ public class ConfigurablePageController
     public void setToolsLoadDelayed(boolean toolsLoadDelayed) {
         this.toolsLoadDelayed = toolsLoadDelayed;
     }
-    // </editor-fold>
+   // </editor-fold>
 }
