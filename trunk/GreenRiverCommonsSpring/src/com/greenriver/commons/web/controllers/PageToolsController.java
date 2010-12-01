@@ -23,7 +23,7 @@ public class PageToolsController extends ConfigurablePageController {
 
         List<String> dialogJspFiles = new ArrayList<String>();
         List<String> setupJspFiles = new ArrayList<String>();
-        for (PageTool pageTool : this.getPageToolManager().getTools()) {
+        for (PageTool pageTool : this.getPageTools()) {
 
 
             // We only load the jsp files if we are loading the
