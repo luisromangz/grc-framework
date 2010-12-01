@@ -45,7 +45,6 @@ public class ConfigurablePageController
     private PageConfig pageConfig;
     private String viewName;
     private UserSessionInfo userSessionInfo;
-    private PageToolManager pageToolManager;
     private List<ControllerPlugin> plugins;
     private boolean toolsLoadDelayed = true;
     // </editor-fold>
@@ -54,7 +53,6 @@ public class ConfigurablePageController
         // We intialize the pageConfiguration object;
         pageConfig = new PageConfig();
         plugins = new ArrayList<ControllerPlugin>();
-        pageToolManager = new PageToolManager();
     }
 
     @Override
@@ -160,62 +158,60 @@ public class ConfigurablePageController
         // This makes the initilization code needed by forms to be inside this function.
         pageConfig.addOnLoadScript("window['onToolsLoaded']=function(){");
 
-        if (pageToolManager != null) {
-
-            for (PageTool pageTool : this.pageToolManager.getTools()) {
-
-                if (!this.toolsLoadDelayed) {
-                    // We only load the jsp files if we are loading the
-                    // tool with the page.
-                    dialogJspFiles.addAll(addPathPrefixToFileNames(
-                            "tools/" + pageTool.getName(),
-                            pageTool.getDialogJspFiles()));
-
-                    dialogJspFiles.addAll(addPathPrefixToFileNames(
-                            "tools/" + pageTool.getName(),
-                            pageTool.getSetupPaneJspFiles()));
 
 
+        for (PageTool pageTool : this.getPageTools()) {
 
-                    configurePropertiesView(pageTool.getPropertiesView(), mav,
-                            pageTool.getName() + "_");
+            if (!this.toolsLoadDelayed) {
+                // We only load the jsp files if we are loading the
+                // tool with the page.
+                dialogJspFiles.addAll(addPathPrefixToFileNames(
+                        "tools/" + pageTool.getName(),
+                        pageTool.getDialogJspFiles()));
 
-                    pageConfig.getOnLoadScripts().addAll(
-                            pageTool.getOnLoadScripts());
-                }
+                dialogJspFiles.addAll(addPathPrefixToFileNames(
+                        "tools/" + pageTool.getName(),
+                        pageTool.getSetupPaneJspFiles()));
 
-                // We always process forms, even if loading on demand, so
-                // we can ensure that we are getting all the dojo.requires
-                // actually needed.
 
-                //Forms ids are prefixed with the task name
-                configureForms(pageTool.getForms(), mav,
+
+                configurePropertiesView(pageTool.getPropertiesView(), mav,
                         pageTool.getName() + "_");
 
-
-                // We always include the rest of things, so we are sure
-                // we bundle (if bundling is activated) all the required modules
-                // and js files.
-
-                pageConfig.getJavaScriptFiles().addAll(addPathPrefixToFileNames(
-                        "tools/" + pageTool.getName(),
-                        pageTool.getJavaScriptFiles()));
-
-                pageConfig.getCssFiles().addAll(addPathPrefixToFileNames(
-                        pageTool.getName(),
-                        pageTool.getCssFiles()));
-
-                pageConfig.getDojoBundles().addAll(
-                        pageTool.getDojoBundles());
-
-                pageConfig.getDojoModules().addAll(
-                        pageTool.getDojoModules());
-                pageConfig.getDwrServices().addAll(
-                        pageTool.getDwrServices());
-
-                pageConfig.getScripts().addAll(pageTool.getScripts());
-
+                pageConfig.getOnLoadScripts().addAll(
+                        pageTool.getOnLoadScripts());
             }
+
+            // We always process forms, even if loading on demand, so
+            // we can ensure that we are getting all the dojo.requires
+            // actually needed.
+
+            //Forms ids are prefixed with the task name
+            configureForms(pageTool.getForms(), mav,
+                    pageTool.getName() + "_");
+
+
+            // We always include the rest of things, so we are sure
+            // we bundle (if bundling is activated) all the required modules
+            // and js files.
+
+            pageConfig.getJavaScriptFiles().addAll(addPathPrefixToFileNames(
+                    "tools/" + pageTool.getName(),
+                    pageTool.getJavaScriptFiles()));
+
+            pageConfig.getCssFiles().addAll(addPathPrefixToFileNames(
+                    pageTool.getName(),
+                    pageTool.getCssFiles()));
+
+            pageConfig.getDojoBundles().addAll(
+                    pageTool.getDojoBundles());
+
+            pageConfig.getDojoModules().addAll(
+                    pageTool.getDojoModules());
+            pageConfig.getDwrServices().addAll(
+                    pageTool.getDwrServices());
+
+            pageConfig.getScripts().addAll(pageTool.getScripts());
 
         }
 
@@ -554,7 +550,6 @@ public class ConfigurablePageController
     public Map<String, String> getPropertiesView() {
         return getPageConfig().getPropertiesView();
     }
-   
 
     @Override
     public void addDojoBundles(List<String> dojoBundles) {
@@ -587,6 +582,17 @@ public class ConfigurablePageController
         return pageConfig;
     }
 
+      @Override
+    public List<PageTool> getPageTools() {
+        return this.getPageConfig().getPageTools();
+    }
+
+    @Override
+    public void setPageTools(List<PageTool> pageTools) {
+        this.getPageConfig().setPageTools(pageTools);
+    }
+    
+
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Auxiliary methods">
     protected List<String> addPathPrefixToFileNames(
@@ -616,14 +622,5 @@ public class ConfigurablePageController
         this.toolsLoadDelayed = toolsLoadDelayed;
     }
 
-    @Override
-    public List<PageTool> getPageTools() {
-        return pageToolManager.getTools();
-    }
-
-    @Override
-    public void setPageTools(List<PageTool> pageTools) {
-        pageToolManager.setTools(pageTools);
-    }
-   // </editor-fold>
+  // </editor-fold>
 }
