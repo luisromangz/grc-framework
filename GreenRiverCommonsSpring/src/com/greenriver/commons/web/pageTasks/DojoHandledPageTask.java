@@ -10,4 +10,16 @@ public class DojoHandledPageTask
     extends PageTask
     implements DojoHandled {
 
+    private String dojoControllerModule="grc.controller.PageTaskController";
+
+    @Override
+    public String getDojoControllerModule() {
+        return dojoControllerModule;
+    }
+
+    @Override
+    public void setDojoControllerModule(String dojoModuleName) {
+        this.dojoControllerModule = dojoModuleName;
+    }
+
 }

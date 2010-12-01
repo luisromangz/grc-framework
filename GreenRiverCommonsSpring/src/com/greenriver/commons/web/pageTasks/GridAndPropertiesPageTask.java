@@ -8,8 +8,10 @@ public class GridAndPropertiesPageTask
     extends DojoHandledPageTask {
 
     @Override
-    public String getMainJspFileName() {
-        return "../gridAndPropertiesPageTask.jsp";
+    public String getContainerFile() {
+        return "gridAndPropertiesPageTask.jsp";
     }
+
+    
 
 }
