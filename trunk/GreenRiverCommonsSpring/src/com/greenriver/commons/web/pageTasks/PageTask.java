@@ -28,10 +28,15 @@ public class PageTask
     private String imageFileName;
    
     private boolean loadedOnPageLoad = false;
+
     // </editor-fold>
 
     public PageTask() {
       
+    }
+
+    public String getContainerFile() {
+        return "pageTask.jsp";
     }
 
     @Override
