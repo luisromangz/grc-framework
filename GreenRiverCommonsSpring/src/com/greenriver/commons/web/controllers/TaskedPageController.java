@@ -1,6 +1,6 @@
 package com.greenriver.commons.web.controllers;
 
-import com.greenriver.commons.web.configuration.PageTasksConfiguration;
+import com.greenriver.commons.web.configuration.PageTasksConfig;
 import com.greenriver.commons.data.model.User;
 import com.greenriver.commons.web.configuration.PageConfig;
 import com.greenriver.commons.web.pageTasks.PageTask;
@@ -18,38 +18,21 @@ import org.springframework.web.servlet.ModelAndView;
  * 
  * @author luis
  */
-public class PageTasksController
+public class TaskedPageController
         extends DojoHandledPageController
-        implements PageTasksConfiguration {
+        implements PageTasksConfig {
 
     // The TaskManager object holding the tasks.
     private PageTaskManager pageTaskManager;
 
-    public PageTasksController() {
+    public TaskedPageController() {
         super();
-    }
 
-    // <editor-fold defaultstate="collapsed" desc="Getters & setters">
-    /**
-     * Gets the <c>PageTaskManager</c> instance used by the the controller.
-     *
-     * @return the used pageTaskManager.
-     */
-    @Override
-    public PageTaskManager getPageTaskManager() {
-        return pageTaskManager;
-    }
+        this.setDojoControllerModule("grc.controllers.TaskedPageController");
 
-    /**
-     * Sets the
-     * @param pageTaskManager the pageTaskManager to set
-     */
-    @Override
-    public void setPageTaskManager(PageTaskManager pageTaskManager) {
-        this.pageTaskManager = pageTaskManager;
+        pageTaskManager = new PageTaskManager();
     }
-    // </editor-fold>
-
+    
     @Override
     public void customHandleRequest(
             HttpServletRequest request,
@@ -63,16 +46,11 @@ public class PageTasksController
         // Configuration at the header level and the form level is done here,
         // but inclussion of the required jsp templates and other things must
         // be done in a page-task-oriented jsp file defined in the app.
-
-        if (getPageTaskManager().getStartTask() == null) {
-            throw new IllegalArgumentException("A start task definition is required.");
-        }
-        configurePageProperties(getPageTaskManager().getStartTask(), modelAndView);
-        modelAndView.addObject("startTaskInfo", getPageTaskManager().getStartTask());
+        
 
         // We add all the included elements in the header configurer.
         User user = getUserSessionInfo().getCurrentUser();
-        for (PageTask pageTask : getPageTaskManager().getTasks()) {
+        for (PageTask pageTask : this.getPageTasks()) {
             // We need to check if the current user has permissions to see the
             // task, if not we will not configure it. If allowed is added to
             // the list of tasks
@@ -85,7 +63,7 @@ public class PageTasksController
             // We have to add to the previously configured properties,
             // that had been configured in the page level, not the task level
             // as we are doing it now.
-            configurePageProperties(pageTask, modelAndView);
+            configurePageTask(pageTask, modelAndView);
         }
 
         // We add the tasks info to the ModelAndView object so we can access
@@ -95,7 +73,7 @@ public class PageTasksController
 
     }
 
-    private void configurePageProperties(
+    private void configurePageTask(
             PageTask pageTask,
             ModelAndView mav) throws ClassNotFoundException {
 
@@ -140,5 +118,15 @@ public class PageTasksController
 
         configurePropertiesView(pageTask.getPropertiesView(), mav,
                 pageTask.getTaskName() + "_");
+    }
+
+    @Override
+    public List<PageTask> getPageTasks() {
+        return pageTaskManager.getTasks();
+    }
+
+    @Override
+    public void setPageTasks(List<PageTask> pageTasks) {
+        pageTaskManager.setTasks(pageTasks);
     }
 }

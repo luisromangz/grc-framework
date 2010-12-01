@@ -54,6 +54,7 @@ public class ConfigurablePageController
         // We intialize the pageConfiguration object;
         pageConfig = new PageConfig();
         plugins = new ArrayList<ControllerPlugin>();
+        pageToolManager = new PageToolManager();
     }
 
     @Override
@@ -553,22 +554,7 @@ public class ConfigurablePageController
     public Map<String, String> getPropertiesView() {
         return getPageConfig().getPropertiesView();
     }
-
-    /**
-     * @return the pageToolManager
-     */
-    @Override
-    public PageToolManager getPageToolManager() {
-        return pageToolManager;
-    }
-
-    /**
-     * @param pageToolManager the pageToolManager to set
-     */
-    @Override
-    public void setPageToolManager(PageToolManager pageToolManager) {
-        this.pageToolManager = pageToolManager;
-    }
+   
 
     @Override
     public void addDojoBundles(List<String> dojoBundles) {
@@ -628,6 +614,16 @@ public class ConfigurablePageController
      */
     public void setToolsLoadDelayed(boolean toolsLoadDelayed) {
         this.toolsLoadDelayed = toolsLoadDelayed;
+    }
+
+    @Override
+    public List<PageTool> getPageTools() {
+        return pageToolManager.getTools();
+    }
+
+    @Override
+    public void setPageTools(List<PageTool> pageTools) {
+        pageToolManager.setTools(pageTools);
     }
    // </editor-fold>
 }

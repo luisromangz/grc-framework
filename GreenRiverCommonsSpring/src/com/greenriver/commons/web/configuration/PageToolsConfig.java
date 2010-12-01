@@ -1,6 +1,7 @@
 package com.greenriver.commons.web.configuration;
 
-import com.greenriver.commons.web.pageTools.PageToolManager;
+import com.greenriver.commons.web.pageTools.PageTool;
+import java.util.List;
 
 /**
  * This interface defines the contract that must be implemented by
@@ -10,6 +11,6 @@ import com.greenriver.commons.web.pageTools.PageToolManager;
  * @author luis
  */
 public interface PageToolsConfig {
-    PageToolManager getPageToolManager();
-    void setPageToolManager(PageToolManager pageToolManager);
+    List<PageTool> getPageTools();
+    void setPageTools(List<PageTool> pageTools);
 }
