@@ -15,7 +15,7 @@ import java.util.Map;
  */
 public class PageConfig
         extends PageHeaderConfig
-        implements FormsConfig, PropertiesViewConfig, GridsConfig, Cloneable {
+        implements FormsConfig, PropertiesViewConfig, GridsConfig, PageToolsConfig, Cloneable {
 
     private Map<String, String> forms;
     private Map<String, String> propertiesViews;
@@ -102,10 +102,12 @@ public class PageConfig
     }// </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Page tools">
+    @Override
     public void setPageTools(List<PageTool> pageTools) {
         this.pageTools = new ArrayList<PageTool>(pageTools);
     }
 
+    @Override
     public List<PageTool> getPageTools() {
         return this.pageTools;
     }

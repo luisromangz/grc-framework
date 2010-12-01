@@ -2,6 +2,7 @@ package com.greenriver.commons.web.pageTasks;
 
 import com.greenriver.commons.data.model.User;
 import com.greenriver.commons.web.configuration.PageConfig;
+import com.greenriver.commons.web.configuration.PageToolsConfig;
 
 /**
  * Instances of this class hold the information about a task that will be
@@ -10,8 +11,9 @@ import com.greenriver.commons.web.configuration.PageConfig;
  * DWR services that uses, etc.
  * @author luis
  */
-public class PageTask extends PageConfig
-       implements Comparable<PageTask> {
+public class PageTask
+       extends PageConfig
+       implements PageToolsConfig, Comparable<PageTask> {
 
     // <editor-fold defaultstate="collapsed" desc="Fields">
     // The roles that are required to show the task.
