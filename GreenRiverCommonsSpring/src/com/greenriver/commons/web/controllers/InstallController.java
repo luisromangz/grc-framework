@@ -1,6 +1,7 @@
 package com.greenriver.commons.web.controllers;
 
 import com.greenriver.commons.data.dao.UserDao;
+import com.greenriver.commons.web.configuration.PageConfig;
 import com.greenriver.commons.web.helpers.session.InstallHelper;
 import com.greenriver.commons.web.helpers.form.FormBuilderClient;
 import com.greenriver.commons.web.helpers.header.HeaderConfigurerClient;
@@ -32,19 +33,20 @@ public class InstallController
         pageToRedirectIfInstalled = "login.htm";
     }
 
-
     /**
      *
      * @param request
      * @param response
-     * @param modelAndView
+     * @param mav
      * @throws Exception
      */
     @Override
     public void customHandleRequest(
             HttpServletRequest request,
             HttpServletResponse response,
-            ModelAndView modelAndView) throws Exception {
+            PageConfig configuration,
+            ModelAndView mav) throws Exception {
+        super.customHandleRequest(request, response, configuration, mav);
 
         if (userDao.getUserCount() > 0) {
             response.sendRedirect(this.pageToRedirectIfInstalled);
@@ -59,15 +61,15 @@ public class InstallController
         String path = request.getSession().getServletContext().getRealPath("");
         installHelper.setKeyFilePath(path + "/" + keyFileName);
 
-        modelAndView.addObject("keyPath", path);
-        modelAndView.addObject("key", key);
+        mav.addObject("keyPath", path);
+        mav.addObject("key", key);
 
-        getFormBuilder().addForm("adminForm", this.getPageConfig(), modelAndView);
+        getFormBuilder().addForm("adminForm", this.getPageConfig(), mav);
         getFormBuilder().addFieldsFromClass(Class.forName(userClass));
         getFormBuilder().removeField("roles");
         getFormBuilder().removeField("enabled");
 
-        getHeaderConfigurer().configure(modelAndView, this.getPageConfig());
+        getHeaderConfigurer().configure(mav, this.getPageConfig());
     }
 
     // <editor-fold defaultstate="collapsed" desc="Getters and setters">

@@ -3,6 +3,7 @@
 package com.greenriver.commons.web.controllers;
 
 import com.greenriver.commons.Strings;
+import com.greenriver.commons.web.configuration.PageConfig;
 import com.greenriver.commons.web.pageTasks.PageTask;
 import com.greenriver.commons.web.pageTasks.PageTaskManager;
 import javax.servlet.http.HttpServletRequest;
@@ -18,8 +19,12 @@ public class PageTaskController extends ConfigurablePageController{
     private PageTaskManager taskManager;
 
     @Override
-    public void customHandleRequest(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) throws Exception {       
-        
+    public void customHandleRequest(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            PageConfig configuration,
+            ModelAndView mav) throws Exception {
+        super.customHandleRequest(request, response, configuration, mav);
 
         String taskName = request.getParameter("taskName");
         if(Strings.isNullOrEmpty(taskName)) {

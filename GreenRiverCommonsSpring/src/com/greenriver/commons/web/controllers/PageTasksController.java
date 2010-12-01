@@ -2,7 +2,7 @@ package com.greenriver.commons.web.controllers;
 
 import com.greenriver.commons.web.configuration.PageTasksConfiguration;
 import com.greenriver.commons.data.model.User;
-import com.greenriver.commons.web.helpers.header.HeaderConfigurer;
+import com.greenriver.commons.web.configuration.PageConfig;
 import com.greenriver.commons.web.pageTasks.PageTask;
 import com.greenriver.commons.web.pageTasks.PageTaskManager;
 import java.util.ArrayList;
@@ -18,7 +18,9 @@ import org.springframework.web.servlet.ModelAndView;
  * 
  * @author luis
  */
-public class PageTasksController extends ConfigurablePageController implements PageTasksConfiguration {
+public class PageTasksController
+        extends DojoHandledPageController
+        implements PageTasksConfiguration {
 
     // The TaskManager object holding the tasks.
     private PageTaskManager pageTaskManager;
@@ -46,13 +48,16 @@ public class PageTasksController extends ConfigurablePageController implements P
     public void setPageTaskManager(PageTaskManager pageTaskManager) {
         this.pageTaskManager = pageTaskManager;
     }
-// </editor-fold>
+    // </editor-fold>
 
     @Override
-    public void customHandleRequest(HttpServletRequest request,
-            HttpServletResponse response, ModelAndView modelAndView) throws Exception {
+    public void customHandleRequest(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            PageConfig configuration,
+            ModelAndView modelAndView) throws Exception {
+        super.customHandleRequest(request, response, configuration, modelAndView);
 
-        HeaderConfigurer headerConfigurer = this.getHeaderConfigurer();
         List<PageTask> allowedTasks = new ArrayList<PageTask>();
 
         // Configuration at the header level and the form level is done here,
