@@ -26,19 +26,14 @@ public class DojoHandledPageController
 
         configuration.addDojoModule(dojoControllerModule);
 
-        mav.addObject("dojoControllerSetup", this.getDojoControllerSetup());
+        mav.addObject("dojoControllerModule", this.getDojoControllerModule());
     }
 
-
-
-    public String getDojoControllerSetup() {
-        return "new "+getDojoControllerModule()+"();";
-    }
-
-    // <editor-fold defaultstate="collapsed" desc="Getter and setters">
+   // <editor-fold defaultstate="collapsed" desc="Getter and setters">
     /**
      * @return the dojoControllerModule
      */
+    @Override
     public String getDojoControllerModule() {
         return dojoControllerModule;
     }
@@ -46,6 +41,7 @@ public class DojoHandledPageController
     /**
      * @param dojoControllerModule the dojoControllerModule to set
      */
+    @Override
     public void setDojoControllerModule(String dojoControllerModule) {
         this.dojoControllerModule = dojoControllerModule;
     }
