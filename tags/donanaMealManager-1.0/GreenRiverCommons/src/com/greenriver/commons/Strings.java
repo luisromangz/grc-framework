@@ -27,6 +27,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.regex.Pattern;
+import org.w3c.tidy.Node;
+import org.w3c.tidy.TagTable;
 import org.w3c.tidy.Tidy;
 
 /**
@@ -46,6 +48,8 @@ public class Strings {
     private static Random random = new Random();
     private static Charset asciiCharset = Charset.forName("US-ASCII");
     private static Pattern digitsRegex = Pattern.compile("^\\d+$");
+
+    private static Boolean cleanHTMLNeedsUTF8=null;
 
     /**
      * Formats an integer as hex
@@ -453,15 +457,33 @@ public class Strings {
      * @return
      */
     public static String cleanHTML(String input) {
+        if(cleanHTMLNeedsUTF8==null) {
+            // We test to see if we need this.
+            String testSubject="jamón";
+            cleanHTMLNeedsUTF8 = false;
+            String testResult = cleanHTMLInternal(testSubject);
+
+            cleanHTMLNeedsUTF8 = !testResult.equals(testSubject);
+        }
+
+        return cleanHTMLInternal(input);
+    }
+
+    private static String cleanHTMLInternal(String input) {
         Tidy tidier = new Tidy();
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        tidier.setInputEncoding("utf-8");
+        if(cleanHTMLNeedsUTF8){
+            tidier.setInputEncoding("utf-8");
+        }
+        tidier.setEncloseText(false);
         tidier.parse(new ByteArrayInputStream(input.getBytes()), output);
 
-        return output.toString();
+        String result = output.toString();
 
+        result = result.substring(result.indexOf("<body>"), result.lastIndexOf("</body>"));
 
+        return result;
     }
 
     /**
@@ -470,7 +492,7 @@ public class Strings {
      * @return
      */
     public static String stripTags(String cellContent) {
-        
-        return cellContent.replaceAll("<.+?>", "");
+        String result = cellContent.replaceAll("\n","");
+        return result.replaceAll("<.*?>", "").trim();
     }
 }
