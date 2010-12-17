@@ -570,6 +570,10 @@ public class Dates {
         return cal;
     }
 
+    /**
+     * Get today's date, without any time information.
+     * @return
+     */
     public static Date getToday() {
         return Dates.getDatePart(new Date());
     }
