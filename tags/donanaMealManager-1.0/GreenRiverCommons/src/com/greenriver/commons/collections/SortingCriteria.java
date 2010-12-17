@@ -1,9 +1,6 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.greenriver.commons.collections;
+
+import java.util.Comparator;
 
 /**
  *
@@ -12,4 +9,19 @@ package com.greenriver.commons.collections;
  */
 public interface SortingCriteria<T> {
     float criteriaValue(T object);
+
+    public static class Comparer<T> implements Comparator<T>{
+
+        private SortingCriteria criteria ;
+
+        public Comparer(SortingCriteria criteria) {
+            this.criteria = criteria;
+        }               
+
+        @Override
+        public int compare(T t, T t1) {
+            return Float.compare(criteria.criteriaValue(t), criteria.criteriaValue(t1));
+        }
+
+    }
 }
