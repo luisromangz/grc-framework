@@ -44,8 +44,8 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         String fieldId = currentForm.getId() + "_" + id;
 
         HtmlFormElementInfo formFieldElement = new HtmlFormElementInfo(fieldId);
-        
-        
+
+
 
         setupFieldElement(formFieldElement, fieldType, properties);
 
@@ -277,7 +277,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         }
 
         if (!properties.externalValues()
-                && (labels.size() == 0 || values.size() == 0)) {
+                && (labels.isEmpty() || values.isEmpty())) {
 
             throw new FormBuildingException(
                     "Error procesing element " + elementId + ": "
@@ -535,6 +535,8 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
                 properties.possibleValues(),
                 properties.possibleValueLabels(),
                 element.getId()));
+
+
     }
 
     private void setupMultiSelectionField(HtmlFormElementInfo element,
@@ -716,8 +718,8 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
      */
     private void setFieldProperties(FieldProperties properties,
             HtmlFormElementInfo element) {
-       
-        element.getAttributes().setProperty("required", properties.required()?"true":"false");
+
+        element.getAttributes().setProperty("required", properties.required() ? "true" : "false");
 
 
         element.getAttributes().setProperty("unit", properties.unit());
@@ -749,8 +751,11 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
 
         // This ugly hack is required because just writing
         // intermediateChanges="false" in the element doesnt work.
-        if(!properties.intermediateChanges()) {
-            configuration.addOnLoadScript("dijit.byId('"+element.getId()+"').intermediateChanges=false");
+        if (!properties.intermediateChanges()
+                || properties.type() == FieldType.SELECTION) {
+            configuration.addOnLoadScript(String.format(
+                    "dojo.connect(dijit.byId('%s'),'onFocus',function(){dijit.byId('%s').attr('intermediateChanges',false);});",
+                    element.getId(), element.getId()));
         }
 
     }
@@ -766,7 +771,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         String validationFunction =
                 String.format(
                 "var %s_validate = function (value) {\n"
-                + "return dijit.byId(\"%s\").getValue() == value;\n" + "}",
+                + "return dijit.byId(\"%s\").getValue() == value;\n" + "};",
                 confirmId, formFieldElement.getId());
 
         String validationFunctionConnector =
