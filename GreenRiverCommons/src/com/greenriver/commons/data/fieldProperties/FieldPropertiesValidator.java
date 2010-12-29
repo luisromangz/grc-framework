@@ -103,7 +103,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
             value = object.getClass().getMethod(methodName).invoke(object);
         } catch (Exception ex) {
             validationMessages.add(String.format(
-                    "Hubo un problema al recuperar el valor de un campo: %s.",
+                    "Hubo un problema al recuperar el valor del campo «%s».",
                     properties.label()));
             return validationMessages;
         }
