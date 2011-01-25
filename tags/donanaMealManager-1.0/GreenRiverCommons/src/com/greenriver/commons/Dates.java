@@ -220,7 +220,7 @@ public class Dates {
         cal.set(GregorianCalendar.YEAR, year);
         cal.set(GregorianCalendar.MONTH, month);
         cal.set(GregorianCalendar.DAY_OF_MONTH, day);
-        cal.set(GregorianCalendar.HOUR, hour);
+        cal.set(GregorianCalendar.HOUR_OF_DAY, hour);
         cal.set(GregorianCalendar.MINUTE, minutes);
         cal.set(GregorianCalendar.SECOND, seconds);
 
