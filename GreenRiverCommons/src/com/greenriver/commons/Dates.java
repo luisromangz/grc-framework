@@ -204,7 +204,7 @@ public class Dates {
     /**
      * Gets an object with date and time from the components of it
      * @param year Full year
-     * @param month 0-11 Month order (0-based)
+     * @param monthOrder 0-11 Month order (0-based)
      * @param day Day of month
      * @param hour 0-23 hour
      * @param minutes 0-59 minutes
@@ -212,15 +212,15 @@ public class Dates {
      * @return
      */
     public static Date getDateTime(
-            int year, int month, int day,
+            int year, int monthOrder, int day,
             int hour, int minutes, int seconds) {
         GregorianCalendar cal =
                 (GregorianCalendar) GregorianCalendar.getInstance();
 
         cal.set(GregorianCalendar.YEAR, year);
-        cal.set(GregorianCalendar.MONTH, month);
+        cal.set(GregorianCalendar.MONTH, monthOrder);
         cal.set(GregorianCalendar.DAY_OF_MONTH, day);
-        cal.set(GregorianCalendar.HOUR, hour);
+        cal.set(GregorianCalendar.HOUR_OF_DAY, hour);
         cal.set(GregorianCalendar.MINUTE, minutes);
         cal.set(GregorianCalendar.SECOND, seconds);
 
