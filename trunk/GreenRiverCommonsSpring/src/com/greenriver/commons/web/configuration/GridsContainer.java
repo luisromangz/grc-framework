@@ -11,7 +11,7 @@ import java.util.Map;
  *
  * @author luisro
  */
-public interface GridsConfig {
+public interface GridsContainer {
     public Map<String,String> getGrids();
     public void setGrids(Map<String,String> grids);
     public void addGrid(String id, String className);

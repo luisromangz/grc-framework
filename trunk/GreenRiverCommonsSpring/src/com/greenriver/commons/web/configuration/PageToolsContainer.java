@@ -10,7 +10,7 @@ import java.util.List;
  * 
  * @author luis
  */
-public interface PageToolsConfig {
+public interface PageToolsContainer {
     List<PageTool> getPageTools();
     void setPageTools(List<PageTool> pageTools);
 }

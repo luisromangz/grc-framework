@@ -1,8 +1,10 @@
 package com.greenriver.commons.web.pageTasks;
 
+import com.greenriver.commons.Strings;
 import com.greenriver.commons.data.model.User;
 import com.greenriver.commons.web.configuration.PageConfig;
-import com.greenriver.commons.web.configuration.PageToolsConfig;
+import com.greenriver.commons.web.configuration.PageToolsContainer;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  * Instances of this class hold the information about a task that will be
@@ -13,7 +15,7 @@ import com.greenriver.commons.web.configuration.PageToolsConfig;
  */
 public class PageTask
        extends PageConfig
-       implements PageToolsConfig, Comparable<PageTask> {
+       implements PageToolsContainer, Comparable<PageTask> {
 
     // <editor-fold defaultstate="collapsed" desc="Fields">
     // The roles that are required to show the task.
@@ -26,8 +28,6 @@ public class PageTask
     private String toolbarJspFileName="toolbar.jsp";
     // The image that is shown as icon for the task in the taskSelector.
     private String imageFileName;
-   
-    private boolean loadedOnPageLoad = false;
 
     // </editor-fold>
 
@@ -68,6 +68,25 @@ public class PageTask
     @Override
     public int compareTo(PageTask o) {
         return this.getTaskName().compareTo(o.getTaskName());
+    }
+
+    public void configurePage(PageConfig configuration, ModelAndView mav) {
+         // The properties that are files need to have their path relative
+        // to the task's name, and inside a "js" folder.
+        configuration.getJavaScriptFiles().addAll(Strings.addPrefix(
+                "tasks/" + taskName+"/",
+                this.getJavaScriptFiles()));
+
+        configuration.getCssFiles().addAll(
+                Strings.addPrefix(taskName+"/", this.getCssFiles()));
+
+        configuration.getDojoBundles().addAll(this.getDojoBundles());
+        configuration.getDojoModules().addAll(this.getDojoModules());
+
+        configuration.getDwrServices().addAll(this.getDwrServices());
+        
+
+        configuration.getScripts().addAll(this.getScripts());
     }
 
     // <editor-fold defaultstate="collapsed" desc="Getters and setters">
@@ -139,21 +158,6 @@ public class PageTask
      */
     public void setImageFileName(String imageFileName) {
         this.imageFileName = imageFileName;
-    }    
-
-    /**
-     * @return the loadedOnPageLoad
-     */
-    public boolean isLoadedOnPageLoad() {
-        return loadedOnPageLoad;
-    }
-
-    /**
-     * @param loadedOnPageLoad the loadedOnPageLoad to set
-     */
-    public void setLoadedOnPageLoad(boolean loadedOnPageLoad) {
-        this.loadedOnPageLoad = loadedOnPageLoad;
-    }
-
+    }        
     // </editor-fold>
 }

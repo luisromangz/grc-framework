@@ -7,7 +7,7 @@ import java.util.Map;
  * the app model.
  * @author Miguel Angel
  */
-public interface PropertiesViewConfig {
+public interface PropertiesViewContainer {
 
     /**
      * Adds a new properties view configuration. The id must be unique. The

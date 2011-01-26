@@ -1,9 +1,10 @@
 package com.greenriver.commons.web.controllers;
 
+import com.greenriver.commons.Strings;
 import com.greenriver.commons.web.configuration.PageConfig;
-import com.greenriver.commons.web.configuration.FormsConfig;
-import com.greenriver.commons.web.configuration.PageToolsConfig;
-import com.greenriver.commons.web.configuration.PropertiesViewConfig;
+import com.greenriver.commons.web.configuration.FormsContainer;
+import com.greenriver.commons.web.configuration.PageToolsContainer;
+import com.greenriver.commons.web.configuration.PropertiesViewContainer;
 import com.greenriver.commons.web.controllers.plugins.ControllerPlugin;
 import com.greenriver.commons.web.helpers.header.HeaderConfig;
 import com.greenriver.commons.web.pageTools.PageTool;
@@ -31,10 +32,10 @@ import org.springframework.web.servlet.mvc.AbstractController;
  */
 public class ConfigurablePageController
         extends AbstractController
-        implements PropertiesViewConfig,
-        FormsConfig,
+        implements PropertiesViewContainer,
+        FormsContainer,
         HeaderConfig,
-        PageToolsConfig,
+        PageToolsContainer,
         CustomizableHandleRequest {
 
     // <editor-fold defaultstate="collapsed" desc="Fields">
@@ -164,12 +165,12 @@ public class ConfigurablePageController
             if (!this.toolsLoadDelayed) {
                 // We only load the jsp files if we are loading the
                 // tool with the page.
-                dialogJspFiles.addAll(addPathPrefixToFileNames(
-                        "tools/" + pageTool.getName(),
+                dialogJspFiles.addAll(Strings.addPrefix(
+                        "tools/" + pageTool.getName()+"/",
                         pageTool.getDialogJspFiles()));
 
-                dialogJspFiles.addAll(addPathPrefixToFileNames(
-                        "tools/" + pageTool.getName(),
+                dialogJspFiles.addAll(Strings.addPrefix(
+                        "tools/" + pageTool.getName()+"/",
                         pageTool.getSetupPaneJspFiles()));
 
 
@@ -194,12 +195,12 @@ public class ConfigurablePageController
             // we bundle (if bundling is activated) all the required modules
             // and js files.
 
-            pageConfig.getJavaScriptFiles().addAll(addPathPrefixToFileNames(
-                    "tools/" + pageTool.getName(),
+            pageConfig.getJavaScriptFiles().addAll(Strings.addPrefix(
+                    "tools/" + pageTool.getName()+"/",
                     pageTool.getJavaScriptFiles()));
 
-            pageConfig.getCssFiles().addAll(addPathPrefixToFileNames(
-                    pageTool.getName(),
+            pageConfig.getCssFiles().addAll(Strings.addPrefix(
+                    pageTool.getName()+"/",
                     pageTool.getCssFiles()));
 
             pageConfig.getDojoBundles().addAll(
@@ -594,18 +595,7 @@ public class ConfigurablePageController
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Auxiliary methods">
-    protected List<String> addPathPrefixToFileNames(
-            String path,
-            List<String> filenames) {
-
-        ArrayList<String> prefixedFileNames = new ArrayList<String>();
-
-        for (String fileName : filenames) {
-            prefixedFileNames.add(String.format("%s/%s", path, fileName));
-        }
-
-        return prefixedFileNames;
-    }
+    
 
     /**
      * @return the toolsLoadDelayed

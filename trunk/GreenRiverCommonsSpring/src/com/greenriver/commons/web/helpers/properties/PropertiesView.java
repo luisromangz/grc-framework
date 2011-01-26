@@ -48,7 +48,7 @@ public class PropertiesView {
      * @return
      */
     public boolean addPropertyView(SinglePropertyView propView) {
-	return addPropertyView(propView);
+	return properties.add(propView);
     }
 
     /**

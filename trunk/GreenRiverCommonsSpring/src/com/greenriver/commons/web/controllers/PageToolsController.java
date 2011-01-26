@@ -1,5 +1,6 @@
 package com.greenriver.commons.web.controllers;
 
+import com.greenriver.commons.Strings;
 import com.greenriver.commons.web.configuration.PageConfig;
 import com.greenriver.commons.web.pageTools.PageTool;
 import java.util.ArrayList;
@@ -28,12 +29,12 @@ public class PageToolsController extends ConfigurablePageController {
 
             // We only load the jsp files if we are loading the
             // tool defferredly, as otherwise the tool has already been loaded.
-            dialogJspFiles.addAll(addPathPrefixToFileNames(
-                    "tools/" + pageTool.getName(),
+            dialogJspFiles.addAll(Strings.addPrefix(
+                    "tools/" + pageTool.getName()+"/",
                     pageTool.getDialogJspFiles()));
 
-            dialogJspFiles.addAll(addPathPrefixToFileNames(
-                    "tools/" + pageTool.getName(),
+            dialogJspFiles.addAll(Strings.addPrefix(
+                    "tools/" + pageTool.getName()+"/",
                     pageTool.getSetupPaneJspFiles()));
 
             //Forms ids are prefixed with the task name

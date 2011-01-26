@@ -15,7 +15,7 @@ import java.util.Map;
  */
 public class PageConfig
         extends PageHeaderConfig
-        implements FormsConfig, PropertiesViewConfig, GridsConfig, PageToolsConfig, Cloneable {
+        implements FormsContainer, PropertiesViewContainer, GridsContainer, PageToolsContainer, Cloneable {
 
     private Map<String, String> forms;
     private Map<String, String> propertiesViews;
