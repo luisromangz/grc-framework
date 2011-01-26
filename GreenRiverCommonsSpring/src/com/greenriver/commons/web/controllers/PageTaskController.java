@@ -4,6 +4,7 @@ package com.greenriver.commons.web.controllers;
 
 import com.greenriver.commons.Strings;
 import com.greenriver.commons.web.configuration.PageConfig;
+import com.greenriver.commons.web.configuration.PageTasksContainer;
 import com.greenriver.commons.web.pageTasks.PageTask;
 import com.greenriver.commons.web.pageTasks.PageTaskManager;
 import javax.servlet.http.HttpServletRequest;
@@ -16,7 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
  */
 public class PageTaskController extends ConfigurablePageController{
 
-    private PageTaskManager taskManager;
+    private PageTasksContainer tasksContainer;
 
     @Override
     public void customHandleRequest(
@@ -32,7 +33,7 @@ public class PageTaskController extends ConfigurablePageController{
             return;
         }
 
-        PageTask pageTask = taskManager.getTask(taskName);
+        PageTask pageTask = tasksContainer.getTask(taskName);
         if(pageTask==null){
             mav.addObject("errorMessage","La tarea indicada no esta registrada en el gestor.");
             return;
@@ -46,18 +47,19 @@ public class PageTaskController extends ConfigurablePageController{
         mav.addObject("pageTaskInfo", pageTask);
     }
 
+    
     /**
-     * @return the taskManager
+     * @return the tasksContainer
      */
-    public PageTaskManager getTaskManager() {
-        return taskManager;
+    public PageTasksContainer getTasksContainer() {
+        return tasksContainer;
     }
 
     /**
-     * @param taskManager the taskManager to set
+     * @param tasksContainer the tasksContainer to set
      */
-    public void setTaskManager(PageTaskManager taskManager) {
-        this.taskManager = taskManager;
+    public void setTasksContainer(PageTasksContainer tasksContainer) {
+        this.tasksContainer = tasksContainer;
     }
 
 

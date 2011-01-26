@@ -8,7 +8,7 @@ import java.util.Map;
  * automagically from an entity model in the page.
  * @author luis
  */
-public interface FormsConfig {
+public interface FormsContainer {
 
     /**
      * Adds an entity name to the list of entity names for which forms have

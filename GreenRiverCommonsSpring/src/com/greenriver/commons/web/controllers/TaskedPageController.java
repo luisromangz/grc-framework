@@ -1,6 +1,6 @@
 package com.greenriver.commons.web.controllers;
 
-import com.greenriver.commons.web.configuration.PageTasksConfig;
+import com.greenriver.commons.web.configuration.PageTasksContainer;
 import com.greenriver.commons.data.model.User;
 import com.greenriver.commons.web.configuration.PageConfig;
 import com.greenriver.commons.web.pageTasks.PageTask;
@@ -20,7 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
  */
 public class TaskedPageController
         extends DojoHandledPageController
-        implements PageTasksConfig {
+        implements PageTasksContainer {
 
     // The TaskManager object holding the tasks.
     private PageTaskManager pageTaskManager;
@@ -32,7 +32,7 @@ public class TaskedPageController
 
         pageTaskManager = new PageTaskManager();
     }
-    
+
     @Override
     public void customHandleRequest(
             HttpServletRequest request,
@@ -46,7 +46,7 @@ public class TaskedPageController
         // Configuration at the header level and the form level is done here,
         // but inclussion of the required jsp templates and other things must
         // be done in a page-task-oriented jsp file defined in the app.
-        
+
 
         // We add all the included elements in the header configurer.
         User user = getUserSessionInfo().getCurrentUser();
@@ -63,7 +63,7 @@ public class TaskedPageController
             // We have to add to the previously configured properties,
             // that had been configured in the page level, not the task level
             // as we are doing it now.
-            configurePageTask(pageTask, modelAndView);
+            configurePageTask(pageTask, configuration, modelAndView);
         }
 
         // We add the tasks info to the ModelAndView object so we can access
@@ -75,49 +75,28 @@ public class TaskedPageController
 
     private void configurePageTask(
             PageTask pageTask,
+            PageConfig configuration,
             ModelAndView mav) throws ClassNotFoundException {
 
-        String taskName = pageTask.getTaskName();
+        pageTask.configurePage(configuration, mav);
 
-        // The properties that are files need to have their path relative
-        // to the task's name, and inside a "js" folder.
-        getPageConfig().getJavaScriptFiles().addAll(addPathPrefixToFileNames(
-                "tasks/" + taskName,
-                pageTask.getJavaScriptFiles()));
+        // If the load of the task is on demand, we add global functions intended for loading this.
+        configuration.addOnLoadScript(String.format(
+                "window['%s_onLoad']=function(){",
+                pageTask.getTaskName()));
+        configuration.getOnLoadScripts().addAll(pageTask.getOnLoadScripts());
 
-        getPageConfig().getCssFiles().addAll(
-                addPathPrefixToFileNames(taskName, pageTask.getCssFiles()));
+        //Forms ids are prefixed with the task name
+        configureForms(pageTask.getForms(), mav,pageTask.getTaskName() + "_");
 
-        getPageConfig().getDojoBundles().addAll(pageTask.getDojoBundles());
-        getPageConfig().getDojoModules().addAll(pageTask.getDojoModules());
-
-        getPageConfig().getDwrServices().addAll(pageTask.getDwrServices());
-
-
-        if (pageTask.isLoadedOnPageLoad()) {
-            getPageConfig().getOnLoadScripts().addAll(pageTask.getOnLoadScripts());
-            //Forms ids are prefixed with the task name
-            configureForms(pageTask.getForms(), mav,
-                    pageTask.getTaskName() + "_");
-        } else {
-            // If the load of the task is on demand, we add global functions intended for loading this.
-            getPageConfig().addOnLoadScript(String.format(
-                    "window['%s_onLoad']=function(){",
-                    pageTask.getTaskName()));
-            getPageConfig().getOnLoadScripts().addAll(pageTask.getOnLoadScripts());
-            //Forms ids are prefixed with the task name
-            configureForms(pageTask.getForms(), mav,
-                    pageTask.getTaskName() + "_");
-            getPageConfig().addOnLoadScript(String.format(
-                    "} // End of %s.onLoad function",
-                    pageTask.getTaskName()));
-        }
-
-        getPageConfig().getScripts().addAll(pageTask.getScripts());
+        configuration.addOnLoadScript(String.format(
+                "} // End of %s.onLoad function",
+                pageTask.getTaskName()));
 
 
         configurePropertiesView(pageTask.getPropertiesView(), mav,
                 pageTask.getTaskName() + "_");
+
     }
 
     @Override
@@ -128,5 +107,10 @@ public class TaskedPageController
     @Override
     public void setPageTasks(List<PageTask> pageTasks) {
         pageTaskManager.setTasks(pageTasks);
+    }
+
+    @Override
+    public PageTask getTask(String taskName) {
+        return pageTaskManager.getTask(taskName);
     }
 }

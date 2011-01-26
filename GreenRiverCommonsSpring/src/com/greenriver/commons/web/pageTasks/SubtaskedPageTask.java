@@ -1,6 +1,6 @@
 package com.greenriver.commons.web.pageTasks;
 
-import com.greenriver.commons.web.configuration.PageTasksConfig;
+import com.greenriver.commons.web.configuration.PageTasksContainer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,14 +10,14 @@ import java.util.List;
  */
 public class SubtaskedPageTask 
     extends DojoHandledPageTask
-    implements PageTasksConfig {
+    implements PageTasksContainer {
 
-    List<PageTask> pageTasks;
+    PageTaskManager taskManager;
 
     public SubtaskedPageTask() {
         super();
 
-        pageTasks = new ArrayList<PageTask>();
+        taskManager = new PageTaskManager();
     }
 
     @Override
@@ -29,12 +29,17 @@ public class SubtaskedPageTask
     // <editor-fold defaultstate="collapsed" desc="Getters and setters">
     @Override
     public List<PageTask> getPageTasks() {
-        return pageTasks;
+        return taskManager.getTasks();
     }
 
     @Override
     public void setPageTasks(List<PageTask> pageTasks) {
-        this.pageTasks = pageTasks;
+       taskManager.setTasks(pageTasks);
+    }
+
+    @Override
+    public PageTask getTask(String taskName) {
+       return taskManager.getTask(taskName);
     }
     // </editor-fold>
 
