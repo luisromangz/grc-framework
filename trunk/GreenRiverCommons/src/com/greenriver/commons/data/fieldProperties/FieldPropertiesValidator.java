@@ -672,17 +672,13 @@ public class FieldPropertiesValidator implements FieldsValidator {
     private void validateCIFOrNIF(Object value, FieldProperties properties,
             List<String> validationMessages) {
 
-                if (properties.required() && value == null) {
-            validationMessages.add(String.format(
-                    "El valor del campo «%s» es requerido.",
-                    properties.label()));
-            return;
-        } else if (!properties.required() && value == null) {
+	 String cifOrNif = (String) value;
+        if (!properties.required() && Strings.isNullOrEmpty(cifOrNif)) {
             return;
         }
 
         CIFOrNIFValidator validator = new CIFOrNIFValidator();
-        String cifOrNif = (String) value;
+       
         // remove unwanted characters to left only numbers and letters
         cifOrNif = cifOrNif.replaceAll("[/b-]+", "");
 

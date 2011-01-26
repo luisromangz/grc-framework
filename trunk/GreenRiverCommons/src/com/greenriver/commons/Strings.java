@@ -352,7 +352,7 @@ public class Strings {
      * @param count The number of times the string must be repeated.
      * @return
      */
-    public final static String repeat(String string, int count) {
+    public static String repeat(String string, int count) {
         String result = "";
         // Yeah, it's probably the most innefficient way to do this. So what?
         for (int i = 0; i < count; i++) {
