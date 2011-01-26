@@ -22,6 +22,7 @@ import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
@@ -471,5 +472,18 @@ public class Strings {
     public static String stripTags(String cellContent) {
         
         return cellContent.replaceAll("<.+?>", "");
+    }
+
+    public static List<String> addPrefix(
+            String prefix,
+            List<String> strings) {
+
+        ArrayList<String> prefixedFileNames = new ArrayList<String>();
+
+        for (String fileName : strings) {
+            prefixedFileNames.add(String.format("%s%s", prefix, fileName));
+        }
+
+        return prefixedFileNames;
     }
 }
