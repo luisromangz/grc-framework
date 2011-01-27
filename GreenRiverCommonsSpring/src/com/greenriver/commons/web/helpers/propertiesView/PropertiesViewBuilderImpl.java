@@ -1,10 +1,10 @@
-package com.greenriver.commons.web.helpers.properties;
+package com.greenriver.commons.web.helpers.propertiesView;
 
 import com.greenriver.commons.ClassFields;
 import com.greenriver.commons.Strings;
-import com.greenriver.commons.collections.Lists;
-import com.greenriver.commons.data.fieldProperties.EntityFieldsProperties;
+import com.greenriver.commons.data.fieldProperties.FieldsProperties;
 import com.greenriver.commons.data.fieldProperties.FieldProperties;
+import com.greenriver.commons.data.fieldProperties.FieldsInsertionMode;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -260,17 +260,14 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
             return new ArrayList<String>(0);
         }
 
-        EntityFieldsProperties entityProperties =
-                (EntityFieldsProperties) entityClass.getAnnotation(
-                EntityFieldsProperties.class);
-
-        boolean appendSupperClassfields = entityProperties != null &&
-                entityProperties.appendSuperClassFields();
+        FieldsProperties entityProperties =
+                (FieldsProperties) entityClass.getAnnotation(
+                FieldsProperties.class);
 
         return ClassFields.getNames(
                 entityClass,
                 true,
-                appendSupperClassfields,
+                entityProperties==null?FieldsInsertionMode.NONE: entityProperties.parentInsertionMode(),
                 new Class[]{FieldProperties.class});
     }
 

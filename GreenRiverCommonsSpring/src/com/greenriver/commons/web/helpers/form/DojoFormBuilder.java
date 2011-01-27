@@ -1,10 +1,11 @@
 package com.greenriver.commons.web.helpers.form;
 
 import com.greenriver.commons.Strings;
-import com.greenriver.commons.data.fieldProperties.EntityFieldsProperties;
+import com.greenriver.commons.data.fieldProperties.FieldsProperties;
 import com.greenriver.commons.data.fieldProperties.FieldDeactivationCondition;
 import com.greenriver.commons.data.fieldProperties.FieldProperties;
 import com.greenriver.commons.data.fieldProperties.FieldType;
+import com.greenriver.commons.data.fieldProperties.FieldsInsertionMode;
 import com.greenriver.commons.data.validation.ValidationRegex;
 import com.greenriver.commons.web.helpers.header.HeaderConfig;
 import com.greenriver.commons.roleManagement.RoleManager;
@@ -135,8 +136,8 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
 
     @Override
     public void addFieldsFromClass(Class modelClass) {
-        EntityFieldsProperties entityProperties =
-                (EntityFieldsProperties) modelClass.getAnnotation(EntityFieldsProperties.class);
+        FieldsProperties entityProperties =
+                (FieldsProperties) modelClass.getAnnotation(FieldsProperties.class);
 
         if (entityProperties != null) {
             for (FieldDeactivationCondition deactivationCondition :
@@ -145,8 +146,8 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
             }
         }
 
-        if (entityProperties == null
-                || !entityProperties.appendSuperClassFields()) {
+        if (entityProperties != null
+                && entityProperties.parentInsertionMode()== FieldsInsertionMode.PREPEND) {
 
             if (modelClass.getSuperclass() != null) {
                 addFieldsFromClass(modelClass.getSuperclass());
@@ -167,8 +168,8 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
             }
         }
 
-        if (entityProperties != null
-                && entityProperties.appendSuperClassFields()) {
+        if (entityProperties == null
+                || entityProperties.parentInsertionMode()==FieldsInsertionMode.APPEND) {
 
             if (modelClass.getSuperclass() != null) {
                 addFieldsFromClass(modelClass.getSuperclass());
@@ -276,8 +277,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
             }
         }
 
-        if (!properties.externalValues()
-                && (labels.size() == 0 || values.size() == 0)) {
+        if (!properties.externalValues() && (labels.isEmpty() || values.isEmpty())) {
 
             throw new FormBuildingException(
                     "Error procesing element " + elementId + ": "
