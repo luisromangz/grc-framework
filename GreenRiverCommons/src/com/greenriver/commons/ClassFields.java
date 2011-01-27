@@ -1,5 +1,6 @@
 package com.greenriver.commons;
 
+import com.greenriver.commons.data.fieldProperties.FieldsInsertionMode;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +73,11 @@ public class ClassFields {
      * @param annotatedWith
      * @return
      */
-    public static List<String> getNames(Class targetClass, boolean iterateSuperClass, boolean appendSuperClassNames, Class[] annotatedWith) {
+    public static List<String> getNames(
+            Class targetClass,
+            boolean iterateSuperClass, FieldsInsertionMode mode,
+            Class[] annotatedWith) {
+        
         if (targetClass == null) {
             throw new NullPointerException("Parameter 'targetClass' is null.");
         }
@@ -84,10 +89,10 @@ public class ClassFields {
         List<String> result = null;
         Field[] classFields = targetClass.getDeclaredFields();
 
-        if (iterateSuperClass && !appendSuperClassNames) {
+        if (iterateSuperClass && mode==FieldsInsertionMode.PREPEND) {
             result = new ArrayList<String>(getNames(
                     targetClass.getSuperclass(),
-                    true, true,
+                    true, mode,
                     annotatedWith));
         } else {
             result = new ArrayList<String>(classFields.length);
@@ -105,10 +110,10 @@ public class ClassFields {
             }
         }
 
-        if (iterateSuperClass && appendSuperClassNames) {
+        if (iterateSuperClass && mode == FieldsInsertionMode.APPEND) {
             result.addAll(getNames(
                     targetClass.getSuperclass(),
-                    true, true,
+                    true, mode,
                     annotatedWith));
         }
 

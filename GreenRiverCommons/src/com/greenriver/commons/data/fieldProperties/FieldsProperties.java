@@ -13,12 +13,9 @@ import java.lang.annotation.Target;
 @Documented
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface EntityFieldsProperties {
-    /**
-     * If true, the fields of the base class are added at the end, not the beggining.
-     * @return
-     */
-    boolean appendSuperClassFields() default false;
+public @interface FieldsProperties {
+    
+    FieldsInsertionMode parentInsertionMode() default FieldsInsertionMode.APPEND;
 
     /**
      * A list of deactivation conditions for the fields.
