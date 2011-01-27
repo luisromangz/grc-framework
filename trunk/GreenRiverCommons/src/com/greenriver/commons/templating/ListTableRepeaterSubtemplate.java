@@ -2,7 +2,6 @@ package com.greenriver.commons.templating;
 
 import com.greenriver.commons.Strings;
 import com.greenriver.commons.collections.SortedArrayList;
-import com.greenriver.commons.data.fieldProperties.EntityFieldsProperties;
 import com.greenriver.commons.data.fieldProperties.FieldDeactivationCondition;
 import com.greenriver.commons.data.fieldProperties.FieldProperties;
 import com.greenriver.commons.data.fieldProperties.FieldType;
@@ -38,7 +37,6 @@ import javax.persistence.InheritanceType;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(length = 255)
-@EntityFieldsProperties(appendSuperClassFields = true)
 public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement, K extends Collection<?>>
            extends RepeaterSubtemplate<T, K>
         implements Subtemplateable {
@@ -236,6 +234,7 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
     }
 
     private String fillTemplateAux(String formatString, Map<T, String> replacements) {
+        // We copy the format string so replacements doesn't modify it.
         String result = new String(formatString);
         for (T replacement : replacements.keySet()) {
             String replacementValue = TemplatingUtils.formatTemplateReplacement(

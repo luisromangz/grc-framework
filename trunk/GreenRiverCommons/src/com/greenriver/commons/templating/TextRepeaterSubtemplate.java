@@ -1,7 +1,7 @@
 package com.greenriver.commons.templating;
 
 import com.greenriver.commons.Strings;
-import com.greenriver.commons.data.fieldProperties.EntityFieldsProperties;
+import com.greenriver.commons.data.fieldProperties.FieldsProperties;
 import com.greenriver.commons.data.fieldProperties.FieldDeactivationCondition;
 import com.greenriver.commons.data.fieldProperties.FieldProperties;
 import com.greenriver.commons.data.fieldProperties.FieldType;
@@ -28,7 +28,6 @@ import javax.persistence.InheritanceType;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(length = 255)
-@EntityFieldsProperties(appendSuperClassFields = true)
 public abstract class TextRepeaterSubtemplate<T extends TemplateReplacement, K extends Collection<?>>
             extends RepeaterSubtemplate<T, K>
         implements Serializable, Subtemplateable {

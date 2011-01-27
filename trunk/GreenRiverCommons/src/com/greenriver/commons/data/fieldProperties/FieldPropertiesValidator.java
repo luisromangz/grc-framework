@@ -478,7 +478,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
             }
         } else if (value instanceof List) {
             List list = (List) value;
-            if (list.size() == 0 && properties.required()) {
+            if (list.isEmpty() && properties.required()) {
                 validationMessages.add(String.format(
                         "Es necesario seleccionar una opción el campo «%s».",
                         properties.label()));
