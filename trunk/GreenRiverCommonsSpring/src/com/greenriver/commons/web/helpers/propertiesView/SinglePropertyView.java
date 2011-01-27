@@ -1,5 +1,5 @@
 
-package com.greenriver.commons.web.helpers.properties;
+package com.greenriver.commons.web.helpers.propertiesView;
 
 import com.greenriver.commons.Strings;
 
