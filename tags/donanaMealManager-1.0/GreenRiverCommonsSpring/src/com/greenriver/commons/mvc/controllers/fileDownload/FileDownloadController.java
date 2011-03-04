@@ -40,7 +40,7 @@ public class FileDownloadController extends AbstractController {
         response.getOutputStream().close();
 
 
-       // fileDownloadSessionHelper.clearFileInfo();
+        fileDownloadSessionHelper.clearFileInfo();
 
         return null;
     }
