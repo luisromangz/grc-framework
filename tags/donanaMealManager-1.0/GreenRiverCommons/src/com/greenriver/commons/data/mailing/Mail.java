@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.greenriver.commons.data.mailing;
 
 import com.greenriver.commons.data.fieldProperties.FieldProperties;
@@ -17,10 +12,14 @@ public class Mail {
     private String from;
     @FieldProperties(label="Para", type=FieldType.EMAIL)
     private String to;
+    @FieldProperties(label="Enviarme copia", type=FieldType.BOOLEAN, getterPrefix="get")
+    private boolean sendCopyToSender;
     @FieldProperties(label="Asunto", widgetStyle="width:30em")
     private String subject;
     @FieldProperties(label="Cuerpo del correo", type=FieldType.RICHTEXT)
     private String body;
+
+   
 
     // <editor-fold defaultstate="collapsed" desc="Getters & setters">
     /**
@@ -77,6 +76,20 @@ public class Mail {
      */
     public void setBody(String body) {
         this.body = body;
+    }
+
+    /**
+     * @return the sendCopyToSender
+     */
+    public boolean getSendCopyToSender() {
+        return sendCopyToSender;
+    }
+
+    /**
+     * @param sendCopyToSender the sendCopyToSender to set
+     */
+    public void setSendCopyToSender(boolean sendCopyToSender) {
+        this.sendCopyToSender = sendCopyToSender;
     }
     // </editor-fold>
 }

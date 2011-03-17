@@ -5,7 +5,6 @@ import com.greenriver.commons.data.mailing.Mail;
 import com.greenriver.commons.data.fieldProperties.FieldProperties;
 import com.greenriver.commons.data.fieldProperties.FieldType;
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.Map;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
