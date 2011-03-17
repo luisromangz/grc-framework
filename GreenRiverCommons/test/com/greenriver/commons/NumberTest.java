@@ -60,9 +60,9 @@ public class NumberTest {
 
     @Test
     public void testCeilToSteps() {
-         assertEquals("1",0.8f, Numbers.ceilingToSteps(0.8f,5,4), 0);
-         assertEquals("2", 0.2f, Numbers.ceilingToSteps(0.15f, 5,4),0);
-         assertEquals("3", 0.8, Numbers.ceilingToSteps(0.73f,10,4),0);
+         assertEquals("1",0.8, Numbers.ceilingToSteps(0.8,5,4), 0);
+         assertEquals("2", 0.2, Numbers.ceilingToSteps(0.15, 5,4),0);
+         assertEquals("3", 0.8, Numbers.ceilingToSteps(0.73,10,4),0);
     }
 
     @Test
@@ -72,6 +72,12 @@ public class NumberTest {
         assertEquals(1.4600F, Numbers.round(1.455545F, 2), 0.00001);
         assertEquals(1.4600F, Numbers.round(1.456545F, 2), 0.00001);
         assertEquals(2F, Numbers.round(1.99765434F, 2), 0.00001);
+    }
+
+    @Test
+    public void testRound() {
+        assertEquals("1",0.2, Numbers.round(0.195, 2),0);
+        assertEquals("2",0.53, Numbers.round(0.5*1.05, 2),0);
     }
 
     @Test
