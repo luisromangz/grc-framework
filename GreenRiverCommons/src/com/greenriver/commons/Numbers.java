@@ -89,9 +89,11 @@ public class Numbers {
      * @return
      */
     public static double round(double number, int places) {
+        long integerPart = (long) number;
+        double decimalPart = number-integerPart;
         double decimalsDivider = Math.pow(10, places);
-        double result = Math.round(number * decimalsDivider) / decimalsDivider;
-        return result;
+        double result = Math.round(decimalPart * decimalsDivider) / decimalsDivider;
+        return result+integerPart;
     }
 
     /**
