@@ -13,7 +13,7 @@ public class Mail {
     @FieldProperties(label="Para", type=FieldType.EMAIL)
     private String to;
     @FieldProperties(label="Enviarme copia", type=FieldType.BOOLEAN, getterPrefix="get")
-    private boolean sendCopyToSender;
+    private boolean sendCopyToSender=true;
     @FieldProperties(label="Asunto", widgetStyle="width:30em")
     private String subject;
     @FieldProperties(label="Cuerpo del correo", type=FieldType.RICHTEXT)
