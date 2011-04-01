@@ -140,24 +140,30 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
                 this.getColumnSizes().trim().split(
                 ListTableRepeaterSubtemplate.TABLE_CELL_SEPARATOR_REGEX)));
 
-        String result = "<table cellspacing=\"0\">";
+        String result = "";
 
         String elementStyle = elementStyle();
         if (this.showTableHeaders) {
+            result="<table cellspacing=\"0\"><tbody>";
             // We use the first row to get the header's replacements.
             String header = fillTemplateAux(this.getTableHeader(), replacements.get(0));
 
             String[] splitHeader = header.split(
                     ListTableRepeaterSubtemplate.TABLE_CELL_SEPARATOR_REGEX);
 
-            result += "<thead><tr>";
-
-            for (int i = 0; i < splitHeader.length; i++) {
-                result += String.format("<th style=\"%s\">%s</th>",
-                        elementStyle, splitHeader[i]);
+            while (sizes.size() < splitHeader.length) {
+                sizes.add("auto");
             }
 
-            result += "</tr></thead>";
+            TableRow headerRow = new TableRow();
+            for (int i = 0; i < splitHeader.length; i++) {
+                String size = sizes.get(i);
+                headerRow.addCell(splitHeader[i], size, elementStyle);
+            }
+
+            result+=headerRow.getRow(true);
+
+            result += "</tbody></table>";
         }
 
         List<TableRow> tableRows = null;
@@ -205,13 +211,15 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
         }
 
 
-        result += "<tbody>";
+        //result += "<tbody>";
 
         for (TableRow row : tableRows) {
+            result+="<table cellspacing=\"0\"><tbody>";
             result += row.getRow();
+            result += "</tbody></table></br>";
         }
 
-        result += "</tbody></table>";
+        
 
         return result;
 
@@ -538,6 +546,8 @@ class TableRow {
         cellStyles = new ArrayList<String>();
     }
 
+
+
     public void addCell(String content, String width, String style) {
         cellContents.add(content);
         cellStyles.add(String.format("width:%s;%s", width, style));
@@ -551,15 +561,26 @@ class TableRow {
         return cellStyles.get(cellIndex);
     }
 
-    public String getRow() {
+    public String getRow(boolean header) {
         String row = "<tr>";
 
+        String element = "td";
+        if(header) {
+            element="th";
+        }
+
         for (int i = 0; i < cellContents.size(); i++) {
-            row += String.format("<td style=\"%s\">%s</td>",
+            row += String.format("<%s style=\"%s\">%s</%s>",
+                    element,
                     cellStyles.get(i),
-                    cellContents.get(i));
+                    cellContents.get(i),
+                    element);
         }
 
         return row + "</tr>";
+    }
+
+    public String getRow() {
+        return getRow(false);
     }
 }
