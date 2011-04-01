@@ -26,7 +26,9 @@ public class TemplatingUtils {
         }
 
         if (isSubtemplatedReplacement(replacement)
-                && ((SubtemplatedReplacement) replacement).getSubtemplateField() != null) {
+                && ((SubtemplatedReplacement) replacement).getSubtemplateField() != null
+                && !((SubtemplatedReplacement) replacement).getSubtemplateBaseClassName().equals(ListTableRepeaterSubtemplate.class.getSimpleName())
+                && !((SubtemplatedReplacement) replacement).getSubtemplateBaseClassName().equals(ListTableInnerRepeaterSubtemplate.class.getSimpleName())) {
             String element = "div";
 
             return String.format("<%s class=\"%s\">%s</%s>",
