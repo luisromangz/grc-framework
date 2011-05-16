@@ -31,8 +31,8 @@ public class User implements Serializable, Comparable<User> {
     @FieldProperties(
         label = "Nombre de usuario",
         customRegExp = "[\\w]{6,}",
-        invalidMessage="El nombre de usuario debe tener al menos 6 carácteres y " +
-                "sólo carácteres alfabéticos.")
+        invalidMessage="El nombre de usuario debe tener al menos 6 caracteres y " +
+                "sólo caracteres alfabéticos.")
     @Column(unique=true)
     private String username;
 
