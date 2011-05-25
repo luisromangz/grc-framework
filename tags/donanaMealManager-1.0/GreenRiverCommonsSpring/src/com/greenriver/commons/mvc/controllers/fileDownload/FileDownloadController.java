@@ -21,7 +21,7 @@ public class FileDownloadController extends AbstractController {
     protected ModelAndView handleRequestInternal(
             HttpServletRequest request,
             HttpServletResponse response) throws Exception {
-
+        
         if (fileDownloadSessionHelper.getFileContent() == null) {
             // Nothing to print.
             Logger.getRootLogger().error("No download content available!");
@@ -31,7 +31,7 @@ public class FileDownloadController extends AbstractController {
         response.reset();
         response.setContentType(fileDownloadSessionHelper.getFileMIMEType());
         response.setHeader("Pragma", "public");
-        response.setHeader("Cache-Control", "max-age=0");
+        response.setHeader("Cache-Control", "no-store");
         response.setHeader("Content-Disposition",
                 String.format("attachment; filename=\"%s\"",fileDownloadSessionHelper.getFilename()));
 
