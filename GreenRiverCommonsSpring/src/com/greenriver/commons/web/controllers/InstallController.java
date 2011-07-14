@@ -17,7 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
  * @author luis
  */
 public class InstallController
-        extends ConfigurablePageController
+        extends DojoHandledPageController
         implements HeaderConfigurerClient, FormBuilderClient {
 
     // Its used to generate the key not a password xD
@@ -31,6 +31,7 @@ public class InstallController
     public InstallController() {
         keyFileName = "key.txt";
         pageToRedirectIfInstalled = "login.htm";
+        this.setDojoControllerModule("grc.controller.InstallPageController");
     }
 
     /**
