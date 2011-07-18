@@ -31,7 +31,7 @@ public class InstallController
     public InstallController() {
         keyFileName = "key.txt";
         pageToRedirectIfInstalled = "login.htm";
-        this.setDojoControllerModule("grc.controller.InstallPageController");
+        this.setDojoControllerModule("grc.web.InstallPageController");
     }
 
     /**
