@@ -28,7 +28,7 @@ public class TaskedPageController
     public TaskedPageController() {
         super();
 
-        this.setDojoControllerModule("grc.controllers.TaskedPageController");
+        this.setDojoControllerModule("grc.webs.TaskedPageController");
 
         pageTaskManager = new PageTaskManager();
     }

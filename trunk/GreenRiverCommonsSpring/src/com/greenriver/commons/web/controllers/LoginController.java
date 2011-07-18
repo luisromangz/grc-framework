@@ -14,7 +14,7 @@ public class LoginController
         implements CustomizableHandleRequest {
 
     public LoginController() {
-        this.setDojoControllerModule("grc.controller.LoginPageController");
+        this.setDojoControllerModule("grc.web.LoginPageController");
     }
 
     @Override

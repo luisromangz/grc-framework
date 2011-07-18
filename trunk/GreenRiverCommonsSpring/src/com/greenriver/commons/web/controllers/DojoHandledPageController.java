@@ -14,7 +14,7 @@ public class DojoHandledPageController
     extends ConfigurablePageController
     implements DojoHandled {
     
-    private String dojoControllerModule = "grc.controller.PageController";
+    private String dojoControllerModule = "grc.web.PageController";
 
     @Override
     public void customHandleRequest(
