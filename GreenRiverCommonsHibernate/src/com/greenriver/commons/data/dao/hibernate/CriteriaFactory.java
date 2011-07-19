@@ -1,7 +1,7 @@
 
 package com.greenriver.commons.data.dao.hibernate;
 
-import com.greenriver.commons.data.dao.queryArguments.EntityQueryArguments;
+import com.greenriver.commons.data.dao.queryArguments.QueryArgs;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 
@@ -17,7 +17,7 @@ public interface CriteriaFactory {
      * @param entityQueryArguments
      * @return
      */
-    Criteria createCriteriaFromQueryArguments(EntityQueryArguments entityQueryArguments);
+    Criteria createCriteria(QueryArgs entityQueryArguments);
     /**
      * Creates a criteria that returns a page of data from the total set of
      * results that could be returned using the arguments as query conditions
@@ -26,7 +26,7 @@ public interface CriteriaFactory {
      * @param entityQueryArguments
      * @return
      */
-    Criteria createPaginatedCriteriaFromQueryArguments(int pageNum, int pageSize, EntityQueryArguments entityQueryArguments);
+    Criteria createPagedCriteria(QueryArgs entityQueryArguments);
     /**
      * Creates a criteria that returns the total count of results that matches
      * the arguments used as query conditions. The criteria will return a single
@@ -34,7 +34,7 @@ public interface CriteriaFactory {
      * @param entityQueryArguments
      * @return
      */
-    Criteria createCountingCriteriaFromQueryArguments(EntityQueryArguments entityQueryArguments);
+    Criteria createCountingCriteria(QueryArgs entityQueryArguments);
     /**
      * Gets the current session that this criteria factory is using to build
      * Criteria objects.

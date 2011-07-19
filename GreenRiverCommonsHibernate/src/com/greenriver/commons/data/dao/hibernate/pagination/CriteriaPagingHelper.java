@@ -3,7 +3,7 @@ package com.greenriver.commons.data.dao.hibernate.pagination;
 
 import com.greenriver.commons.data.PagedResult;
 import com.greenriver.commons.data.dao.hibernate.CriteriaFactory;
-import com.greenriver.commons.data.dao.queryArguments.EntityQueryArguments;
+import com.greenriver.commons.data.dao.queryArguments.QueryArgs;
 
 /**
  * Helper that does the paging stuff for you to simplify your code
@@ -24,14 +24,14 @@ public interface CriteriaPagingHelper {
      */
     void setCriteriaFactory(CriteriaFactory criteriaFactory);
 
-    EntityQueryArguments getEntityQueryArguments();
+    QueryArgs getEntityQueryArguments();
 
     /**
      * Sets the query arguments to use when building the criteria with the
      * factory.
      * @param entityQueryArguments 
      */
-    void setEntityQueryArguments(EntityQueryArguments entityQueryArguments);
+    void setEntityQueryArguments(QueryArgs entityQueryArguments);
     
     /**
      * Returns all the results in the page
