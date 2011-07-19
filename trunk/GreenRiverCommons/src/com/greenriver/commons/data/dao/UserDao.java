@@ -55,4 +55,11 @@ public interface UserDao extends Serializable {
      * @return a list of users
      */
     public List<User> getAllUsers();
+
+    /**
+     * Gets a user by its id.
+     * @param userId
+     * @return 
+     */
+    public User getById(Long userId);
 }
