@@ -29,10 +29,10 @@ public interface UserManagementService {
     public Result<User> changePassword(String currentPassword, String newPassword);
     /**
      * Removes a user entity
-     * @param user Entity to be removed
+     * @param user The id of the user to be removed
      * @return the Result result of the operation
      */
-    public Result<User> remove(User user);
+    public Result<User> remove(long userId);
     /**
      * Gets a list with all the users
      * @return the Result result of the operation

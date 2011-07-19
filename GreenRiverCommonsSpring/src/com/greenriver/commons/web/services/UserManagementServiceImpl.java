@@ -114,17 +114,17 @@ public class UserManagementServiceImpl implements UserManagementService {
     }
 
     @Override
-    public Result<User> remove(User user) {
+    public Result<User> remove(Long userId) {
         Result<User> res = new Result<User>();
 
         //Don't let a user to be removed if it is the current user
-        if (user.getId() > 0 && user.equals(userSessionInfo.getCurrentUser())) {
+        if (userId.equals(userSessionInfo.getCurrentUser())) {
             res.setSuccess(false);
             res.formatErrorMessage("El usuario no puede borrarse a si mismo");
             return res;
         }
 
-        User persistedUser = userDao.get(user);
+        User persistedUser = userDao.getById(userId);
 
         if (persistedUser == null) {
             
@@ -135,7 +135,7 @@ public class UserManagementServiceImpl implements UserManagementService {
             // We are changing the flag for an existing user so we don't
             // need to provide the encoded password.
             userDao.save(persistedUser, null);
-            res.setResult(user);
+            res.setResult(persistedUser);
         }
 
         return res;
