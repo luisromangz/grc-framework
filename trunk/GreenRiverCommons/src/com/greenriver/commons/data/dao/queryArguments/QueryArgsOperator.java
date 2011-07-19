@@ -7,7 +7,7 @@ package com.greenriver.commons.data.dao.queryArguments;
  *
  * @author luis
  */
-public enum QueryArgumentType {
+public enum QueryArgsOperator {
 
     GREATER_THAN,
     GREATER_EQUALS,

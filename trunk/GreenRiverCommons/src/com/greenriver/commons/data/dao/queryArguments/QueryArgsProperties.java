@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
 @Documented
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface QueryArgumentsProperties {
+public @interface QueryArgsProperties {
     /**
      * The class the query arguments are applied to.
      * @return
@@ -35,9 +35,8 @@ public @interface QueryArgumentsProperties {
      */
     public String[] defaultSortFields() default {};
     /**
-     * Default fields sorting to apply if there are no fields in this type
-     * with the annotation <c>QueryArgumentsSorting</c>
+     * Default fields sorting to apply. Set to true if ascending, false if descending.
      * @return
      */
-    public QueryArgumentsSortType[] defaultSortTypes() default {};
+    public boolean[] defaultSortOrders() default {};
 }
