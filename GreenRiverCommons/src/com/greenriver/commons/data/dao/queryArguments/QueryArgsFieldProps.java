@@ -21,7 +21,7 @@ import java.lang.annotation.Target;
 @Documented
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface QueryArgumentsFieldProperties {
+public @interface QueryArgsFieldProps {
     /**
      * The name of the field which value should compared with the one the
      * annotation is decorating
@@ -32,7 +32,7 @@ public @interface QueryArgumentsFieldProperties {
      * The type of the argument's comparison.
      * @return
      */
-    public QueryArgumentType type();
+    public QueryArgsOperator operator();
     /**
      * If its a date comparison, we should consider just the date and
      * ignore time info.

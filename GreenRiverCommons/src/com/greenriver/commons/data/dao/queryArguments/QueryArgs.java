@@ -4,8 +4,10 @@ package com.greenriver.commons.data.dao.queryArguments;
  * Common query arguments stuff
  * @author Miguel Angel
  */
-public class EntityQueryArguments {
+public class QueryArgs {
 
+    private int firstIndex;
+    private int size;
     private String textFilter = "";
     private String sortFieldName;
     private boolean sortAscending;
@@ -50,5 +52,33 @@ public class EntityQueryArguments {
      */
     public void setTextFilter(String textFilter) {
         this.textFilter = textFilter.trim();
+    }
+
+    /**
+     * @return the firstIndex
+     */
+    public int getFirstIndex() {
+        return firstIndex;
+    }
+
+    /**
+     * @param firstIndex the firstIndex to set
+     */
+    public void setFirstIndex(int firstIndex) {
+        this.firstIndex = firstIndex;
+    }
+
+    /**
+     * @return the size
+     */
+    public int getSize() {
+        return size;
+    }
+
+    /**
+     * @param size the size to set
+     */
+    public void setSize(int size) {
+        this.size = size;
     }
 }
