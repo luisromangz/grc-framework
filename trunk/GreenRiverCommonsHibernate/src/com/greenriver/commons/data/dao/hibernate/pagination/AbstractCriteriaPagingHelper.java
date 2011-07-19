@@ -2,7 +2,7 @@ package com.greenriver.commons.data.dao.hibernate.pagination;
 
 import com.greenriver.commons.data.PagedResult;
 import com.greenriver.commons.data.dao.hibernate.CriteriaFactory;
-import com.greenriver.commons.data.dao.queryArguments.EntityQueryArguments;
+import com.greenriver.commons.data.dao.queryArguments.QueryArgs;
 import java.util.ArrayList;
 import org.hibernate.Criteria;
 
@@ -12,7 +12,7 @@ import org.hibernate.Criteria;
 public abstract class AbstractCriteriaPagingHelper implements CriteriaPagingHelper {
 
     private CriteriaFactory criteriaFactory;
-    private EntityQueryArguments entityQueryArguments;
+    private QueryArgs entityQueryArguments;
 
     @Override
     public CriteriaFactory getCriteriaFactory() {
@@ -25,12 +25,12 @@ public abstract class AbstractCriteriaPagingHelper implements CriteriaPagingHelp
     }
 
     @Override
-    public EntityQueryArguments getEntityQueryArguments() {
+    public QueryArgs getEntityQueryArguments() {
         return this.entityQueryArguments;
     }
 
     @Override
-    public void setEntityQueryArguments(EntityQueryArguments entityQueryArguments) {
+    public void setEntityQueryArguments(QueryArgs entityQueryArguments) {
         this.entityQueryArguments = entityQueryArguments;
     }
 
@@ -39,7 +39,7 @@ public abstract class AbstractCriteriaPagingHelper implements CriteriaPagingHelp
      * @param critFactory
      * @param args
      */
-    public AbstractCriteriaPagingHelper(CriteriaFactory critFactory, EntityQueryArguments args) {
+    public AbstractCriteriaPagingHelper(CriteriaFactory critFactory, QueryArgs args) {
         this.criteriaFactory = critFactory;
         this.entityQueryArguments = args;
     }
@@ -88,11 +88,8 @@ public abstract class AbstractCriteriaPagingHelper implements CriteriaPagingHelp
      */
      protected Criteria getListCriteria(int pageNumber, int pageSize) {
          CriteriaFactory critFactory = this.getCriteriaFactory();
-         EntityQueryArguments entQueryArgs = this.getEntityQueryArguments();
-         return critFactory.createPaginatedCriteriaFromQueryArguments(
-                 pageNumber,
-                 pageSize,
-                 entQueryArgs);
+         QueryArgs entQueryArgs = this.getEntityQueryArguments();
+         return critFactory.createPagedCriteria(entQueryArgs);
     }
 
     @Override

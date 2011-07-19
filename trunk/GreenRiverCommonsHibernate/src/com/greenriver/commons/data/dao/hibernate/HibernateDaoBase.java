@@ -1,7 +1,7 @@
 package com.greenriver.commons.data.dao.hibernate;
 
 import com.greenriver.commons.data.dao.hibernate.pagination.CriteriaPagingHelperImpl;
-import com.greenriver.commons.data.dao.queryArguments.EntityQueryArguments;
+import com.greenriver.commons.data.dao.queryArguments.QueryArgs;
 import com.greenriver.commons.data.dao.hibernate.pagination.CriteriaPagingHelper;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -69,17 +69,17 @@ public abstract class HibernateDaoBase<T> {
         return new CriteriaFactoryImpl(this.sessionFactory.getCurrentSession());
     }
 
-    protected Criteria createCriteriaFromQueryArguments(EntityQueryArguments entityQueryArguments) {
-        return getCriteriaFactory().createCriteriaFromQueryArguments(entityQueryArguments);
+    protected Criteria createCriteria(QueryArgs entityQueryArguments) {
+        return getCriteriaFactory().createCriteria(entityQueryArguments);
     }
 
-    protected Criteria createPaginatedCriteriaFromQueryArguments(int page, int pageSize, EntityQueryArguments entityQueryArguments) {
-        return getCriteriaFactory().createPaginatedCriteriaFromQueryArguments(page, pageSize, entityQueryArguments);
+    protected Criteria createPagedCriteria(QueryArgs queryArgs) {
+        return getCriteriaFactory().createPagedCriteria(queryArgs);
     }
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Pagination using a helper">
-    protected CriteriaPagingHelper getPagingHelper(EntityQueryArguments args) {
+    protected CriteriaPagingHelper getPagingHelper(QueryArgs args) {
         CriteriaFactory critFactory = this.getCriteriaFactory();
         // For now is easier to instance this here
         CriteriaPagingHelper helper = new CriteriaPagingHelperImpl(critFactory, args);

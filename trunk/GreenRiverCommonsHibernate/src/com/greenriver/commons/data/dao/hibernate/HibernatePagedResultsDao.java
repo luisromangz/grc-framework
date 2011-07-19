@@ -1,7 +1,7 @@
 package com.greenriver.commons.data.dao.hibernate;
 
 import com.greenriver.commons.data.PagedResult;
-import com.greenriver.commons.data.dao.queryArguments.EntityQueryArguments;
+import com.greenriver.commons.data.dao.queryArguments.QueryArgs;
 import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.Criteria;
@@ -13,7 +13,7 @@ import org.hibernate.criterion.Criterion;
  *
  * @author luis
  */
-public class HibernatePaginatedResultsDao<T, Q extends EntityQueryArguments>
+public class HibernatePagedResultsDao<T, Q extends QueryArgs>
         extends HibernateMultipleResultsDao<T> {
 
     public PagedResult<List<T>> getAllForPage(int page, int pageSize, Q args, Criterion... criterions) {
@@ -21,7 +21,7 @@ public class HibernatePaginatedResultsDao<T, Q extends EntityQueryArguments>
 
 
         List<T> result = new ArrayList<T>();
-        Criteria crit = createCriteriaFromQueryArguments(args);
+        Criteria crit = createCriteria(args);
 
         for(Criterion c : criterions) {
             crit.add(c);

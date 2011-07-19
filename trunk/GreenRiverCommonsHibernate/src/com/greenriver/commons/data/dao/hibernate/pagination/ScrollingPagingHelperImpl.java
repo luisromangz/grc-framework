@@ -3,7 +3,7 @@ package com.greenriver.commons.data.dao.hibernate.pagination;
 import com.greenriver.commons.Strings;
 import com.greenriver.commons.data.PagedResult;
 import com.greenriver.commons.data.dao.hibernate.CriteriaFactory;
-import com.greenriver.commons.data.dao.queryArguments.EntityQueryArguments;
+import com.greenriver.commons.data.dao.queryArguments.QueryArgs;
 import java.sql.SQLException;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
@@ -21,12 +21,12 @@ public class ScrollingPagingHelperImpl
         extends AbstractCriteriaPagingHelper
         implements CriteriaPagingHelper {
 
-    public ScrollingPagingHelperImpl(CriteriaFactory critFactory, EntityQueryArguments entityQueryArguments) {
+    public ScrollingPagingHelperImpl(CriteriaFactory critFactory, QueryArgs entityQueryArguments) {
         super(critFactory, entityQueryArguments);
     }
     
     protected ScrollableResults getForwardOnlyScroll() {
-        Criteria crit = this.getCriteriaFactory().createCriteriaFromQueryArguments(this.getEntityQueryArguments());
+        Criteria crit = this.getCriteriaFactory().createCriteria(this.getEntityQueryArguments());
         return crit.scroll(ScrollMode.FORWARD_ONLY);
     }
 
