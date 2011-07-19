@@ -1,7 +1,7 @@
 package com.greenriver.commons.web.controllers;
 
 
-import com.greenriver.commons.web.helpers.session.FileDownloadSessionHelper;
+import com.greenriver.commons.web.helpsers.session.FileDownloadSessionHelper;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
