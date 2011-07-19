@@ -14,7 +14,7 @@ public class DojoHandledPageTask
     extends PageTask
     implements DojoHandled {
     // <editor-fold defaultstate="collapsed" desc="Fields">
-    private String dojoControllerModule = "grc.web.PageTaskController";
+    private String dojoControllerModule = "grc.web.tasks.PageTaskController";
     // </editor-fold>
     
     @Override

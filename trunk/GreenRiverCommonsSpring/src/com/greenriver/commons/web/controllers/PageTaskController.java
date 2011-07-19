@@ -6,7 +6,6 @@ import com.greenriver.commons.Strings;
 import com.greenriver.commons.web.configuration.PageConfig;
 import com.greenriver.commons.web.configuration.PageTasksContainer;
 import com.greenriver.commons.web.pageTasks.PageTask;
-import com.greenriver.commons.web.pageTasks.PageTaskManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.ModelAndView;
@@ -15,7 +14,8 @@ import org.springframework.web.servlet.ModelAndView;
  *A controller used to load each task
  * @author luis
  */
-public class PageTaskController extends ConfigurablePageController{
+public class PageTaskController
+    extends ConfigurablePageController{
 
     private PageTasksContainer tasksContainer;
 
@@ -44,7 +44,8 @@ public class PageTaskController extends ConfigurablePageController{
 
         mav.addObject("usedByTaskController",true);
 
-        mav.addObject("pageTaskInfo", pageTask);
+        mav.addObject("taskInfo", pageTask);
+        mav.addObject("taskName", taskName);
     }
 
     
