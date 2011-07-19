@@ -6,7 +6,7 @@ import com.greenriver.commons.data.model.User;
 import com.greenriver.commons.data.validation.FieldsValidationResult;
 import com.greenriver.commons.data.validation.FieldsValidator;
 import com.greenriver.commons.roleManagement.RoleManager;
-import com.greenriver.commons.web.helpsers.session.UserSessionInfo;
+import com.greenriver.commons.web.helpers.session.UserSessionInfo;
 import java.util.List;
 import java.util.Map;
 import org.springframework.security.authentication.encoding.PasswordEncoder;

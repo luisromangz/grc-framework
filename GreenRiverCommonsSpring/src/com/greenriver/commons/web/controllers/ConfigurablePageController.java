@@ -11,7 +11,7 @@ import com.greenriver.commons.web.pageTools.PageTool;
 import com.greenriver.commons.web.helpers.form.FormBuilder;
 import com.greenriver.commons.web.helpers.header.HeaderConfigurer;
 import com.greenriver.commons.web.helpers.propertiesView.PropertiesViewBuilder;
-import com.greenriver.commons.web.helpsers.session.UserSessionInfo;
+import com.greenriver.commons.web.helpers.session.UserSessionInfo;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
