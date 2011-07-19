@@ -2,12 +2,12 @@
 package com.greenriver.commons.web.services;
 
 /**
- * ServiceResult extension that adds an extra field to store the number of
+ * Result extension that adds an extra field to store the number of
  * pages available.
  * @param <T> Type of the result
  * @author mangelp
  */
-public class PagedServiceResult<T> extends ServiceResult<T> {
+public class PagedResult<T> extends Result<T> {
 
     private int totalPages;
     private int pageNumber = -1;
@@ -39,7 +39,7 @@ public class PagedServiceResult<T> extends ServiceResult<T> {
         this.pageNumber = pageNumber;
     }
 
-    public PagedServiceResult() {
+    public PagedResult() {
 	super();
     }
 }
