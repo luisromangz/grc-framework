@@ -32,7 +32,7 @@ public interface UserManagementService {
      * @param user The id of the user to be removed
      * @return the Result result of the operation
      */
-    public Result<User> remove(long userId);
+    public Result<User> remove(Long userId);
     /**
      * Gets a list with all the users
      * @return the Result result of the operation
