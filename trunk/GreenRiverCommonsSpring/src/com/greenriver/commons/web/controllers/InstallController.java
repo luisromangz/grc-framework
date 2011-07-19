@@ -4,7 +4,7 @@ import com.greenriver.commons.data.dao.UserDao;
 import com.greenriver.commons.web.configuration.PageConfig;
 import com.greenriver.commons.web.helpers.form.FormBuilderClient;
 import com.greenriver.commons.web.helpers.header.HeaderConfigurerClient;
-import com.greenriver.commons.web.helpsers.session.InstallHelper;
+import com.greenriver.commons.web.helpers.session.InstallHelper;
 import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

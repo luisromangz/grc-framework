@@ -4,7 +4,7 @@ import com.greenriver.commons.data.dao.UserDao;
 import com.greenriver.commons.data.model.User;
 import com.greenriver.commons.data.validation.FieldsValidationResult;
 import com.greenriver.commons.data.validation.FieldsValidator;
-import com.greenriver.commons.web.helpsers.session.InstallHelper;
+import com.greenriver.commons.web.helpers.session.InstallHelper;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
