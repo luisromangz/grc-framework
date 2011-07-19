@@ -12,11 +12,11 @@ public interface InstallService {
      * Checks the contents of the key file
      * @return the result of the operation
      */
-    public ServiceResult checkKeyFile();
+    public Result checkKeyFile();
     /**
      * Adds a new user with a role to be administrator
      * @param adminUser User to add
      * @return the result of the operation
      */
-    public ServiceResult addAdminUser(User adminUser);
+    public Result addAdminUser(User adminUser);
 }

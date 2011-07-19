@@ -4,7 +4,7 @@ import com.greenriver.commons.data.dao.UserDao;
 import com.greenriver.commons.data.model.User;
 import com.greenriver.commons.data.validation.FieldsValidationResult;
 import com.greenriver.commons.data.validation.FieldsValidator;
-import com.greenriver.commons.web.helpers.session.InstallHelper;
+import com.greenriver.commons.web.helpsers.session.InstallHelper;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -24,8 +24,8 @@ public class InstallServiceImpl implements InstallService, Serializable {
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public ServiceResult checkKeyFile() {
-        ServiceResult serviceResult = new ServiceResult();
+    public Result checkKeyFile() {
+        Result serviceResult = new Result();
 
         String key = installHelper.getKey();
 
@@ -70,8 +70,8 @@ public class InstallServiceImpl implements InstallService, Serializable {
     }
 
     @Override
-    public ServiceResult addAdminUser(User adminUser) {
-        ServiceResult serviceResult = new ServiceResult();
+    public Result addAdminUser(User adminUser) {
+        Result serviceResult = new Result();
 
         if (!installHelper.isKeyFileCreated()) {
             serviceResult.setSuccess(false);
