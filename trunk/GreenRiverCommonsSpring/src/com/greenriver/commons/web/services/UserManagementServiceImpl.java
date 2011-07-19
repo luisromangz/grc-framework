@@ -118,7 +118,7 @@ public class UserManagementServiceImpl implements UserManagementService {
         Result<User> res = new Result<User>();
 
         //Don't let a user to be removed if it is the current user
-        if (userId.equals(userSessionInfo.getCurrentUser())) {
+        if (userId.equals(userSessionInfo.getCurrentUser().getId())) {
             res.setSuccess(false);
             res.formatErrorMessage("El usuario no puede borrarse a si mismo");
             return res;
