@@ -14,7 +14,7 @@ import org.hibernate.criterion.Restrictions;
  * User dao implementation for hibernate
  * @author luis
  */
-public class HibernateUserDao extends HibernateDaoBase implements UserDao {
+public class HibernateUserDao extends HibernateDaoBase<User> implements UserDao {
 
     @Override
     public void save(User user, String encodedPassword) {
@@ -118,5 +118,11 @@ public class HibernateUserDao extends HibernateDaoBase implements UserDao {
     public List<User> getAllUsers() {
         Criteria crit = getCurrentSession().createCriteria(User.class);
         return crit.list();
+    }
+
+    @Override
+    public User getById(Long userId) {
+        User user = (User) getCurrentSession().get(User.class, userId);
+        return user;
     }
 }
