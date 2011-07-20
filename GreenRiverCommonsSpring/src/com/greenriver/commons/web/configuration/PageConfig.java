@@ -4,7 +4,6 @@ import com.greenriver.commons.web.helpers.header.PageHeaderConfig;
 import com.greenriver.commons.web.pageTools.PageTool;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -15,7 +14,7 @@ import java.util.Map;
  */
 public class PageConfig
         extends PageHeaderConfig
-        implements FormsContainer, PropertiesViewContainer, GridsContainer, PageToolsContainer, Cloneable {
+        implements FormsContainer, PropertiesViewsContainer, GridsContainer, PageToolsContainer, Cloneable {
 
     private Map<String, String> forms;
     private Map<String, String> propertiesViews;
@@ -25,9 +24,9 @@ public class PageConfig
     public PageConfig() {
         super();
 
-        forms = new Hashtable<String, String>();
-        propertiesViews = new Hashtable<String, String>();
-        grids = new Hashtable<String, String>();
+        forms = new HashMap<String, String>();
+        propertiesViews = new HashMap<String, String>();
+        grids = new HashMap<String, String>();
         pageTools = new ArrayList<PageTool>();
     }
 
@@ -70,7 +69,7 @@ public class PageConfig
      */
     @Override
     public void setForms(Map<String, String> forms) {
-        this.forms = new Hashtable<String, String>(forms);
+        this.forms = new HashMap<String, String>(forms);
     }
 
     /**
@@ -93,7 +92,7 @@ public class PageConfig
 
     @Override
     public void setPropertiesView(Map<String, String> propertiesView) {
-        this.propertiesViews =new Hashtable<String, String>(propertiesView);
+        this.propertiesViews =new HashMap<String, String>(propertiesView);
     }
 
     @Override
