@@ -4,6 +4,7 @@ import com.greenriver.commons.ClassFields;
 import com.greenriver.commons.Strings;
 import com.greenriver.commons.data.fieldProperties.FieldsProperties;
 import com.greenriver.commons.data.fieldProperties.FieldProperties;
+import com.greenriver.commons.data.fieldProperties.FieldProps;
 import com.greenriver.commons.data.fieldProperties.FieldsInsertionMode;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -107,10 +108,8 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
     }
 
     @Override
-    public SinglePropertyView addPropertyView(
-            String id,
-            FieldProperties properties,
-            Class modelClass) {
+    public PropertyView addPropertyView(
+            String id, FieldProps properties, Class modelClass) {
 
         if (properties == null) {
             throw new IllegalArgumentException("Properties can't be null");
@@ -122,21 +121,17 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
 
         assertCurrent();
 
-        if (!Strings.isNullOrEmpty(properties.accesorFieldName())) {
-            id = properties.accesorFieldName();
-        }
-
         if (currentPropertiesView.containsPropertyViewForName(id)) {
             return null;
         }
 
-        SinglePropertyView propView =
-                new SinglePropertyView(
+        PropertyView propView =
+                new PropertyView(
                 currentPropertiesView.getPropertyViewName(id));
 
-        propView.setLabel(properties.label());
+        propView.setLabelElement(properties.label());
 
-        if (setupPropertyView(propView, properties, modelClass)) {
+        if (setupPropertyView(propView)) {
             this.currentPropertiesView.addPropertyView(propView);
         }
 
@@ -151,7 +146,7 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
      * @return The created property view or null if it was not added.
      */
     @Override
-    public SinglePropertyView addPropertyView(String id, String label) {
+    public PropertyView addPropertyView(String id, String label) {
         if (Strings.isNullOrEmpty(id)) {
             throw new IllegalArgumentException("Id can't be null nor empty.");
         }
@@ -167,15 +162,15 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
             return null;
         }
 
-        SinglePropertyView propView =
-                new SinglePropertyView(
+        PropertyView propView =
+                new PropertyView(
                 currentPropertiesView.getPropertyViewName(id));
 
-        propView.setLabel(label);
+        propView.setLabelElement(label);
         propView.setLabelElement(
                 String.format(labelFormat, propView.getId(), label));
 
-        if (setupFieldGenericView(propView, null, null)) {
+        if (setupPropertyView(propView)) {
             this.currentPropertiesView.addPropertyView(propView);
         }
 
@@ -183,16 +178,13 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
     }
 
     @Override
-    public void addPropertyViewsFromClass(String classFullName) {
-        addPropertyViewsFromModel(getClassFromName(classFullName));
+    public void addPropertiesViewFromClass(String classFullName) {
+        addPropertiesViewFromClass(getClassFromName(classFullName));
     }
   
 
     @Override
-    public void addPropertyViewsFromModel(Class viewClass) {
-
-        Field classField = null;
-        FieldProperties fieldProperties = null;
+    public void addPropertiesViewFromClass(Class viewClass) {
 
         assertCurrent();
 
@@ -203,14 +195,13 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
             // Let this throw an exception if the field is not defined. This
             // looks also in the super class so if the field is not defined it
             // will throw an exception.
-            classField = ClassFields.get(propName, viewClass, true, true);
+            Field classField = ClassFields.get(propName, viewClass, true, true);
 
-            fieldProperties =
-                    classField.getAnnotation(FieldProperties.class);
+            FieldProps fieldProps = classField.getAnnotation(FieldProps.class);
 
             //Only go ahead if there is a field property
-            if (fieldProperties != null) {
-                addPropertyView(propName, fieldProperties, classField.getType());
+            if (fieldProps != null) {
+                addPropertyView(propName, fieldProps, classField.getType());
             }
         }
     }   
@@ -219,7 +210,7 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
     public void removePropertyView(String id) {
         assertCurrent();
 
-        SinglePropertyView propView = new SinglePropertyView(
+        PropertyView propView = new PropertyView(
                 currentPropertiesView.getId() + "_" + id);
         currentPropertiesView.removePropertyView(propView);
     }
@@ -268,7 +259,7 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
                 entityClass,
                 true,
                 entityProperties==null?FieldsInsertionMode.NONE: entityProperties.parentInsertionMode(),
-                new Class[]{FieldProperties.class});
+                new Class[]{FieldProps.class});
     }
 
    
@@ -279,48 +270,16 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
      * rendered to the interface.<br/><br/>
      * This method doesn't need to set the label, that is already done by the
      * caller of this one, but if needed it can be done here too.
-     * @param propView
-     * @param properties
-     * @param modelClass
+     * @param propView   
      * @return true if the propertyView must be added or false if it must be
      * discarded.
      */
-    private boolean setupPropertyView(SinglePropertyView propView,
-            FieldProperties properties, Class modelClass) {
+    private boolean setupPropertyView(PropertyView propView) {
 
-        switch (properties.type()) {
-            //TODO: Concrete initiallization for anybody?
-            default:
-                return setupFieldGenericView(propView, properties, modelClass);
-        }
-    }
-
-    /**
-     * Setups a generic field. The properties and modelClass parameters should
-     * be allowed to be null.
-     * @param propView
-     * @param properties
-     * @param modelClass
-     * @return
-     */
-    private boolean setupFieldGenericView(
-            SinglePropertyView propView,
-            FieldProperties properties,
-            Class modelClass) {
-        //all the view are the same, an span for the value and another one
+         //all the view are the same, an span for the value and another one
         //for the unit
         String unit = "";
-        String label = "";
-
-        if (properties != null) {
-            if (properties.unit() != null) {
-                unit = properties.unit();
-            }
-
-            if (properties.label() != null) {
-                label = properties.label();
-            }
-        }
+        String label = propView.getLabelElement();
 
         //We only need to set the value here as the label should be already set
         propView.setValueElement(
@@ -331,7 +290,4 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
 
         return true;
     }
-    //TODO: To handle more or less complex setups for other properties
-    //add new methods here with the same parameters as the setupPropertiesView
-    //method.
 }

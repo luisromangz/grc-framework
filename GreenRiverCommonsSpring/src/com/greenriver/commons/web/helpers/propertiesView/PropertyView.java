@@ -6,18 +6,13 @@ import com.greenriver.commons.Strings;
 /**
  * @author mangelp
  */
-public class SinglePropertyView implements Comparable<SinglePropertyView> {
+public class PropertyView implements Comparable<PropertyView> {
 
     /**
      * Id of this property view. Usually this is set to the id of the property
      * that this view shows.
      */
     private String id;
-    /**
-     * Label for this property view
-     */
-    @Deprecated
-    private String label;
     /**
      * Html element with the code for viewing the value of the property as html.
      */
@@ -29,17 +24,7 @@ public class SinglePropertyView implements Comparable<SinglePropertyView> {
 
     public String getId() {
 	return id;
-    }
-
-    @Deprecated
-    public String getLabel() {
-	return label;
-    }
-
-    @Deprecated
-    public void setLabel(String label) {
-	this.label = label;
-    }
+    }  
 
     public String getLabelElement() {
         return labelElement;
@@ -61,12 +46,12 @@ public class SinglePropertyView implements Comparable<SinglePropertyView> {
 	this.valueElement = valueElement;
     }
 
-    public SinglePropertyView(String id) {
+    public PropertyView(String id) {
 	this.id = id;
     }
 
     @Override
-    public int compareTo(SinglePropertyView o) {
+    public int compareTo(PropertyView o) {
 	if (o == null) {
 	    throw new NullPointerException("Can't compare against a null pointer");
 	}
@@ -77,12 +62,12 @@ public class SinglePropertyView implements Comparable<SinglePropertyView> {
     @Override
     public boolean equals(Object obj) {
         if (obj == null ||
-                !(SinglePropertyView.class.isAssignableFrom(obj.getClass()))) {
+                !(PropertyView.class.isAssignableFrom(obj.getClass()))) {
             return false;
         }
 
         //Two views are the same if they have the same id.
-        return Strings.equals(id, ((SinglePropertyView)obj).id);
+        return Strings.equals(id, ((PropertyView)obj).id);
     }
 
     @Override
