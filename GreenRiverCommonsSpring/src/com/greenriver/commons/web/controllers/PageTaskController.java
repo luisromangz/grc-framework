@@ -45,6 +45,7 @@ public class PageTaskController
 
         this.configureForms(pageTask.getForms(), mav, taskName+"_");
         this.configurePropertiesView(pageTask.getPropertiesView(), mav, taskName+"_");
+        this.configureGrids(pageTask.getGrids(), mav, taskName+"_");
 
         mav.addObject("usedByTaskController",true);
 

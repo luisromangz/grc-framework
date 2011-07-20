@@ -3,12 +3,14 @@ package com.greenriver.commons.web.controllers;
 import com.greenriver.commons.Strings;
 import com.greenriver.commons.web.configuration.PageConfig;
 import com.greenriver.commons.web.configuration.FormsContainer;
+import com.greenriver.commons.web.configuration.GridsContainer;
 import com.greenriver.commons.web.configuration.PageToolsContainer;
-import com.greenriver.commons.web.configuration.PropertiesViewContainer;
+import com.greenriver.commons.web.configuration.PropertiesViewsContainer;
 import com.greenriver.commons.web.controllers.plugins.ControllerPlugin;
 import com.greenriver.commons.web.helpers.header.HeaderConfig;
 import com.greenriver.commons.web.pageTools.PageTool;
 import com.greenriver.commons.web.helpers.form.FormBuilder;
+import com.greenriver.commons.web.helpers.grid.GridBuilder;
 import com.greenriver.commons.web.helpers.header.HeaderConfigurer;
 import com.greenriver.commons.web.helpers.propertiesView.PropertiesViewBuilder;
 import com.greenriver.commons.web.helpers.session.UserSessionInfo;
@@ -32,15 +34,12 @@ import org.springframework.web.servlet.mvc.AbstractController;
  */
 public class ConfigurablePageController
         extends AbstractController
-        implements PropertiesViewContainer,
-        FormsContainer,
-        HeaderConfig,
-        PageToolsContainer,
-        CustomizableHandleRequest {
+        implements PropertiesViewsContainer, GridsContainer, FormsContainer,HeaderConfig,PageToolsContainer, CustomizableHandleRequest {
 
     // <editor-fold defaultstate="collapsed" desc="Fields">
     private HeaderConfigurer headerConfigurer;
     private FormBuilder formBuilder;
+    private GridBuilder gridBuilder;
     private PropertiesViewBuilder propertiesViewBuilder;
     private PageConfig pageConfig;
     private String viewName;
@@ -68,6 +67,7 @@ public class ConfigurablePageController
 
         configureForms(this.getForms(), mav, null);
         configurePropertiesView(this.getPropertiesView(), mav, null);
+        configureGrids(this.getGrids(), mav, null);
         configurePageTools(mav);
 
         if (this.userSessionInfo != null) {
@@ -146,6 +146,31 @@ public class ConfigurablePageController
         for (String propsViewId : propertiesViews.keySet()) {
             propertiesViewBuilder.addPropertiesView(prefix + propsViewId, mav);
             propertiesViewBuilder.addPropertiesViewFromClass(propertiesViews.get(propsViewId));
+        }
+    }
+    
+     /**
+     * Configures grids from a map     
+     * @param propertiesViews
+     * @param mav
+     * @param prefix Name prefix for the generated elements
+     */
+    protected void configureGrids(
+            Map<String, String> grids,
+            ModelAndView mav,
+            String prefix) {
+        if (getGridBuilder() == null && grids.size() > 0) {
+            throw new IllegalStateException(
+                    "Must configure gridsBuilder for this controller.");
+        }
+
+        if (prefix == null) {
+            prefix = "";
+        }
+
+        for (String gridId : grids.keySet()) {
+            getGridBuilder().addGridInfo(prefix + gridId, mav);
+            getGridBuilder().addGridInfoFromClass(grids.get(gridId));
         }
     }
 
@@ -304,6 +329,22 @@ public class ConfigurablePageController
     @Override
     public void setForms(Map<String, String> formEntities) {
         getPageConfig().setForms(formEntities);
+    }
+    
+    
+    @Override
+    public Map<String, String> getGrids() {
+        return getPageConfig().getGrids();
+    }
+
+    @Override
+    public void setGrids(Map<String, String> grids) {
+        getPageConfig().setGrids(grids);
+    }
+
+    @Override
+    public void addGrid(String id, String className) {
+        getPageConfig().addGrid(id, className);
     }
 
     /**
@@ -612,4 +653,19 @@ public class ConfigurablePageController
     }
 
   // </editor-fold>
+
+    /**
+     * @return the gridBuilder
+     */
+    public GridBuilder getGridBuilder() {
+        return gridBuilder;
+    }
+
+    /**
+     * @param gridBuilder the gridBuilder to set
+     */
+    public void setGridBuilder(GridBuilder gridBuilder) {
+        this.gridBuilder = gridBuilder;
+    }
+
 }
