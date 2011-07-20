@@ -145,7 +145,7 @@ public class ConfigurablePageController
 
         for (String propsViewId : propertiesViews.keySet()) {
             propertiesViewBuilder.addPropertiesView(prefix + propsViewId, mav);
-            propertiesViewBuilder.addPropertyViewsFromClass(propertiesViews.get(propsViewId));
+            propertiesViewBuilder.addPropertiesViewFromClass(propertiesViews.get(propsViewId));
         }
     }
 

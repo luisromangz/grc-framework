@@ -14,7 +14,7 @@ public class PropertiesView {
     //Id of the view. There is no setter as we are using the id to do the
     //equals and hashcode logic and we want it to have a valid value always.
     private String id;
-    private List<SinglePropertyView> properties;
+    private List<PropertyView> properties;
 
     public String getId() {
 	return id;
@@ -24,8 +24,8 @@ public class PropertiesView {
      * Gets an array with all the properties
      * @return
      */
-    public SinglePropertyView[] getProperties() {
-	SinglePropertyView[] result = new SinglePropertyView[properties.size()];
+    public PropertyView[] getProperties() {
+	PropertyView[] result = new PropertyView[properties.size()];
 	return properties.toArray(result);
     }
 
@@ -39,7 +39,7 @@ public class PropertiesView {
 	}
 	
 	this.id = id;
-	this.properties = new ArrayList<SinglePropertyView>();
+	this.properties = new ArrayList<PropertyView>();
     }
 
     /**
@@ -47,7 +47,7 @@ public class PropertiesView {
      * @param propView
      * @return
      */
-    public boolean addPropertyView(SinglePropertyView propView) {
+    public boolean addPropertyView(PropertyView propView) {
 	return properties.add(propView);
     }
 
@@ -56,7 +56,7 @@ public class PropertiesView {
      * @param propView
      * @return
      */
-    public boolean removePropertyView(SinglePropertyView propView) {
+    public boolean removePropertyView(PropertyView propView) {
 	return properties.remove(propView);
     }
 
@@ -65,7 +65,7 @@ public class PropertiesView {
      * @param propView
      * @return
      */
-    public boolean containsView(SinglePropertyView propView) {
+    public boolean containsView(PropertyView propView) {
         return properties.contains(propView);
     }
 
@@ -75,8 +75,8 @@ public class PropertiesView {
      * @return
      */
     public boolean containsPropertyViewForName(String propName) {
-        SinglePropertyView testView =
-                new SinglePropertyView(getPropertyViewName(propName));
+        PropertyView testView =
+                new PropertyView(getPropertyViewName(propName));
         return properties.contains(testView);
     }
 
@@ -90,12 +90,12 @@ public class PropertiesView {
     }
 
     public int indexOfPropertyViewForName(String propName) {
-        SinglePropertyView testView =
-                new SinglePropertyView(getPropertyViewName(propName));
+        PropertyView testView =
+                new PropertyView(getPropertyViewName(propName));
         return properties.indexOf(testView);
     }
 
-    public int indexOf(SinglePropertyView propView) {
+    public int indexOf(PropertyView propView) {
         return properties.indexOf(propView);
     }
 

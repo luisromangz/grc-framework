@@ -1,8 +1,7 @@
 package com.greenriver.commons.web.helpers.propertiesView;
 
-import com.greenriver.commons.data.fieldProperties.FieldProperties;
+import com.greenriver.commons.data.fieldProperties.FieldProps;
 import java.util.List;
-import java.util.Map;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
@@ -50,19 +49,19 @@ public interface PropertiesViewBuilder {
      * @param fieldType
      * @return the property view added
      */
-    SinglePropertyView addPropertyView(String id, FieldProperties properties, Class fieldType);
+    PropertyView addPropertyView(String id, FieldProps properties, Class fieldType);
 
     /**
      * Add a view for a property to the current properties view
      * @param classFullName Full name of the entity
      */
-    void addPropertyViewsFromClass(String classFullName);
+    void addPropertiesViewFromClass(String classFullName);
 
     /**
      * Add a view for a property to the current properties view
      * @param modelClass
      */
-    void addPropertyViewsFromModel(Class modelClass);   
+    void addPropertiesViewFromClass(Class modelClass);   
 
     /**
      * Removes a property from the current properties view
@@ -77,5 +76,5 @@ public interface PropertiesViewBuilder {
      * @param label
      * @return The created property view or null if it was not added.
      */
-    SinglePropertyView addPropertyView(String id, String label);
+    PropertyView addPropertyView(String id, String label);
 }
