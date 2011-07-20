@@ -2,7 +2,7 @@ package com.greenriver.commons.web.pageTools;
 
 import com.greenriver.commons.web.configuration.FormsContainer;
 import com.greenriver.commons.web.configuration.PageConfig;
-import com.greenriver.commons.web.configuration.PropertiesViewContainer;
+import com.greenriver.commons.web.configuration.PropertiesViewsContainer;
 import com.greenriver.commons.web.helpers.header.HeaderConfig;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.Map;
  * @author luis
  */
 public class PageTool
-        implements FormsContainer, PropertiesViewContainer, HeaderConfig {
+        implements FormsContainer, PropertiesViewsContainer, HeaderConfig {
 
     // <editor-fold defaultstate="collapsed" desc="Attributes">
     /**
