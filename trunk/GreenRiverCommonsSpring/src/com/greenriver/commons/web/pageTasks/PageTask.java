@@ -28,6 +28,8 @@ public class PageTask
     private String toolbarJspFileName="toolbar.jsp";
     // The image that is shown as icon for the task in the taskSelector.
     private String imageFileName;
+    
+    private boolean initialized;
 
     // </editor-fold>
 
@@ -160,4 +162,18 @@ public class PageTask
         this.imageFileName = imageFileName;
     }        
     // </editor-fold>
+
+    public boolean isInitialized() {
+       return initialized;
+    }
+    
+    public final void initialize() {
+        this.initialized = true;
+        
+        this.initializeInternal();
+    }
+    
+    protected void initializeInternal() {
+        
+    }
 }

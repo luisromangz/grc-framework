@@ -38,6 +38,10 @@ public class PageTaskController
             mav.addObject("errorMessage","La tarea indicada no esta registrada en el gestor.");
             return;
         }
+        
+        if(!pageTask.isInitialized()) {
+            pageTask.initialize();
+        }
 
         this.configureForms(pageTask.getForms(), mav, taskName+"_");
         this.configurePropertiesView(pageTask.getPropertiesView(), mav, taskName+"_");
