@@ -85,7 +85,7 @@ public class InstallServiceImpl implements InstallService, Serializable {
                     fieldsValidator.validate(adminUser);
 
             // The user is an admin, and we ensure it is active;
-            adminUser.setRoles(new String[]{"ROLE_ADMIN"});
+            adminUser.setRoles(new String[]{"ROLE_ADMIN","ROLE_USER"});
             
             if (validationResult.isValid()) {
                 try {
