@@ -15,7 +15,7 @@ import java.lang.annotation.Target;
 @Documented
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Field {
+public @interface FieldProps {
     String label();
     String description() default  "";
 }
