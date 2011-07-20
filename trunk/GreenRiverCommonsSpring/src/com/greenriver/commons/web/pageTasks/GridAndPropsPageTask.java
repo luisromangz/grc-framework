@@ -33,6 +33,8 @@ public class GridAndPropsPageTask
             throw new IllegalStateException(
                     "gridClass for task " + this.getTaskName() + " cannot be null!");
         }
+        
+        this.addGrid("grid", gridClass);
 
         if (Strings.isNullOrEmpty(propsViewClass)) {
             throw new IllegalStateException(
@@ -40,6 +42,8 @@ public class GridAndPropsPageTask
         }
 
         this.addPropertiesView("propsView", propsViewClass);
+        
+        
     }
 
     private void createElementLabels() {
