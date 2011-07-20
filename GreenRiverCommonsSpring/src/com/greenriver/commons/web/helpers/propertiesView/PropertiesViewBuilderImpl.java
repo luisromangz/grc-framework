@@ -3,7 +3,6 @@ package com.greenriver.commons.web.helpers.propertiesView;
 import com.greenriver.commons.ClassFields;
 import com.greenriver.commons.Strings;
 import com.greenriver.commons.data.fieldProperties.FieldsProperties;
-import com.greenriver.commons.data.fieldProperties.FieldProperties;
 import com.greenriver.commons.data.fieldProperties.FieldProps;
 import com.greenriver.commons.data.fieldProperties.FieldsInsertionMode;
 import java.lang.reflect.Field;
@@ -107,8 +106,7 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
         this.currentPropertiesView = propertiesView;
     }
 
-    @Override
-    public PropertyView addPropertyView(
+    private PropertyView addPropertyView(
             String id, FieldProps properties, Class modelClass) {
 
         if (properties == null) {
