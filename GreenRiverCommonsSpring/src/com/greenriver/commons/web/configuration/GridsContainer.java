@@ -1,14 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.greenriver.commons.web.configuration;
 
 import java.util.Map;
 
 /**
- *
+ * This interface defines the methods that a grids container must implement.
  * @author luisro
  */
 public interface GridsContainer {
