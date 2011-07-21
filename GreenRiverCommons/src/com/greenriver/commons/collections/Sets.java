@@ -13,7 +13,7 @@ public class Sets {
         return set == null || set.isEmpty();
     }
 
-    public static <T,R> Set<R> apply(Set<T> set, ApplicableCommand<T,R> command){
+    public static <T,R> Set<R> apply(Set<T> set, Applicable<T,R> command){
         return applyIf(set, command, new FilteringCondition<T>(){
 
             @Override
@@ -26,7 +26,7 @@ public class Sets {
 
     public static <T,R> Set<R> applyIf(
             Set<T> set,
-            ApplicableCommand<T, R> applicableCommand,
+            Applicable<T, R> applicableCommand,
             FilteringCondition<T> filteringCondition) {
         Set<R> resultSet = new HashSet<R>();
         int index=0;
@@ -42,7 +42,7 @@ public class Sets {
     }
 
     public static <T> Set<T> filter(Set<T> set, FilteringCondition<T> condition) {
-        return applyIf(set, new ApplicableCommand<T, T>(){
+        return applyIf(set, new Applicable<T, T>(){
 
             @Override
             public T apply(T element) {

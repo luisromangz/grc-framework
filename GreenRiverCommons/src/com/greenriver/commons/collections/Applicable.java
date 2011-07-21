@@ -5,7 +5,7 @@ package com.greenriver.commons.collections;
  * @param <R> Result of the application of the method
  * @author luis
  */
-public interface ApplicableCommand<T, R> {
+public interface Applicable<T, R> {
 
     /**
      * Method that is applied over an element of type T and returns the
