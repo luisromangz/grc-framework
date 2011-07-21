@@ -15,7 +15,7 @@ public interface UserManagementService {
      */
     public Result<UserDto> getNewUser();
     
-    public Result<UserDto> getForForm(Long userId);
+    public Result<UserFormDto> getForForm(Long userId);
     public Result<UserDto> get(Long userId);
     
     /**
@@ -23,7 +23,7 @@ public interface UserManagementService {
      * @param user Entity to save or update
      * @return the Result result oUserDto the operation
      */
-    public Result<UserDto> save(UserDto userDto);
+    public Result<UserDto> save(UserFormDto userDto);
     /**
      * Changes the password UserDtoor the user
      * @param currentPassword
