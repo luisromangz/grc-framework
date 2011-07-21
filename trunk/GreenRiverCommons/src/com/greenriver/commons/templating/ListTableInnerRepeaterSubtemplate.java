@@ -1,9 +1,8 @@
 package com.greenriver.commons.templating;
 
 import com.greenriver.commons.Strings;
-import com.greenriver.commons.collections.ApplicableCommand;
+import com.greenriver.commons.collections.Applicable;
 import com.greenriver.commons.collections.Lists;
-import com.greenriver.commons.data.fieldProperties.FieldsProperties;
 import com.greenriver.commons.data.fieldProperties.FieldProperties;
 import com.greenriver.commons.data.fieldProperties.FieldType;
 import java.io.Serializable;
@@ -111,7 +110,7 @@ public abstract class ListTableInnerRepeaterSubtemplate<T extends TemplateReplac
     }
 
     // </editor-fold>
-    private class ElementFormatter implements ApplicableCommand<Map<T, String>, String> {
+    private class ElementFormatter implements Applicable<Map<T, String>, String> {
 
         private String elementFormat;
 

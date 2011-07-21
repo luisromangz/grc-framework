@@ -187,7 +187,7 @@ public class Lists {
         return true;
     }
 
-    public static <T, R> List<R> apply(Collection collection, ApplicableCommand<T, R> command) {
+    public static <T, R> List<R> apply(Collection collection, Applicable<T, R> command) {
         return applyIf(collection, command, new FilteringCondition<T>() {
 
             @Override
@@ -199,7 +199,7 @@ public class Lists {
 
     public static <T, R> List<R> applyIf(
             Collection<T> list,
-            ApplicableCommand<T, R> applicableCommand,
+            Applicable<T, R> applicableCommand,
             FilteringCondition<T> filteringCondition) {
         List<R> resultList = new ArrayList<R>();
 
@@ -216,7 +216,7 @@ public class Lists {
     }
 
     public static <T> List<T> filter(Collection collection, FilteringCondition<T> condition) {
-        return applyIf(collection, new ApplicableCommand<T, T>() {
+        return applyIf(collection, new Applicable<T, T>() {
 
             @Override
             public T apply(T element) {
