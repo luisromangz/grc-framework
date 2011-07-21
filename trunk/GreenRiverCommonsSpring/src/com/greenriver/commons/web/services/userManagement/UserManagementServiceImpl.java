@@ -1,12 +1,15 @@
-package com.greenriver.commons.web.services;
+package com.greenriver.commons.web.services.userManagement;
 
 import com.greenriver.commons.Strings;
+import com.greenriver.commons.collections.Applicable;
+import com.greenriver.commons.collections.Lists;
 import com.greenriver.commons.data.dao.UserDao;
 import com.greenriver.commons.data.model.User;
 import com.greenriver.commons.data.validation.FieldsValidationResult;
 import com.greenriver.commons.data.validation.FieldsValidator;
 import com.greenriver.commons.roleManagement.RoleManager;
 import com.greenriver.commons.web.helpers.session.UserSessionInfo;
+import com.greenriver.commons.web.services.Result;
 import java.util.List;
 import java.util.Map;
 import org.springframework.security.authentication.encoding.PasswordEncoder;
@@ -15,7 +18,8 @@ import org.springframework.security.authentication.encoding.PasswordEncoder;
  * This class implements <c>UserManagementService</c> .
  * @author luis
  */
-public class UserManagementServiceImpl implements UserManagementService {
+public class UserManagementServiceImpl
+        implements UserManagementService {
 
     // <editor-fold defaultstate="collapsed" desc="Fields">
     private UserSessionInfo userSessionInfo;
@@ -23,6 +27,8 @@ public class UserManagementServiceImpl implements UserManagementService {
     private PasswordEncoder passwordEncoder;
     private FieldsValidator fieldsValidator;
     private RoleManager roleManager;
+    private UserDtoFactory formDtoFactory;
+    private UserDtoFactory dtoFactory;
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Getters & setters">
@@ -49,56 +55,63 @@ public class UserManagementServiceImpl implements UserManagementService {
 
     // <editor-fold defaultstate="collapsed" desc="Service methods">
     @Override
-    public User getNewUser() {
+    public Result getNewUser() {
+        Result<UserDto> r = new Result<UserDto>();
         User newUser = new User();
         newUser.setName("");
         newUser.setUsername("");
         newUser.setPassword("");
         newUser.setRoles(new String[]{"ROLE_USER"});
-        return newUser;
+        r.setResult(formDtoFactory.create(newUser));
+        return r;
     }
 
     @Override
-    public Result<User> save(User user) {
-
-        Result<User> result = new Result<User>();
-
-        if (!validateUserSaving(user, result)) {
-            return result;
-        }
+    public Result<UserDto> getForForm(Long userId) {
+        Result<UserDto> r = new Result<UserDto>();
 
         try {
-            userDao.save(user,
-                    passwordEncoder.encodePassword(user.getPassword(), null));
-
-            result.setResult(user);
-        } catch (RuntimeException re) {
-            result.addErrorMessage("Ocurrió un error de base de datos.");
+            r.setResult(formDtoFactory.create(userDao.getById(userId)));
+        } catch (RuntimeException e) {
+            r.addErrorMessage("Ocurrió un error en la base de datos.");
         }
 
-
-        return result;
+        return r;
     }
 
-    private boolean validateUserSaving(User user, Result result) {
+    @Override
+    public Result<UserDto> get(Long userId) {
+
+        Result<UserDto> r = new Result<UserDto>();
+
+        try {
+            r.setResult(dtoFactory.create(userDao.getById(userId)));
+        } catch (RuntimeException e) {
+            r.addErrorMessage("Ocurrió un error en la base de datos.");
+        }
+
+        return r;
+    }
+
+    private boolean validateUserSaving(UserDto userDto, Result result) {
         FieldsValidationResult validationResult = fieldsValidator.validate(
-                user);
+                userDto);
 
         if (!validationResult.isValid()) {
             result.setSuccess(false);
             result.addErrorMessages(validationResult.getErrorMessages());
             return false;
         }
-        
+        User user = userDto.getUser();
         User existingUser = this.userDao.getByUsername(user.getUsername());
-        
-        if(existingUser!=null 
-                && !existingUser.isDeleted() 
+
+        if (existingUser != null
+                && !existingUser.isDeleted()
                 && !existingUser.getId().equals(user.getId())) {
             result.addErrorMessage("Ya existe otro usuario con el mismo nombre de usuario.");
         }
 
-        if (user.isDeleted()) {
+        if (existingUser.isDeleted()) {
             result.addErrorMessage("El usuario fue borrado con anterioridad.");
             return false;
         }
@@ -114,8 +127,8 @@ public class UserManagementServiceImpl implements UserManagementService {
     }
 
     @Override
-    public Result<User> remove(Long userId) {
-        Result<User> res = new Result<User>();
+    public Result<UserDto> remove(Long userId) {
+        Result<UserDto> res = new Result<UserDto>();
 
         //Don't let a user to be removed if it is the current user
         if (userId.equals(userSessionInfo.getCurrentUser().getId())) {
@@ -127,7 +140,7 @@ public class UserManagementServiceImpl implements UserManagementService {
         User persistedUser = userDao.getById(userId);
 
         if (persistedUser == null) {
-            
+
             res.addErrorMessage("El usuario no existe.");
         } else {
             // Flag as deleted
@@ -135,21 +148,21 @@ public class UserManagementServiceImpl implements UserManagementService {
             // We are changing the flag for an existing user so we don't
             // need to provide the encoded password.
             userDao.save(persistedUser, null);
-            res.setResult(persistedUser);
+            res.setResult(dtoFactory.create(persistedUser));
         }
 
         return res;
     }
 
     @Override
-    public Result<User> changePassword(
+    public Result<UserDto> changePassword(
             String currentPassword,
             String newPassword) {
 
         String encodedCurrentPassword = passwordEncoder.encodePassword(
                 currentPassword, null);
 
-        Result<User> result = new Result<User>();
+        Result<UserDto> result = new Result<UserDto>();
         User currentUser = userSessionInfo.getCurrentUser();
         if (encodedCurrentPassword.equals(currentUser.getPassword())) {
             if (newPassword.length() < 6) {
@@ -161,7 +174,7 @@ public class UserManagementServiceImpl implements UserManagementService {
                 userDao.save(currentUser, passwordEncoder.encodePassword(
                         newPassword, null));
 
-                result.setResult(currentUser);
+                result.setResult(dtoFactory.create(currentUser));
             }
 
         } else {
@@ -176,10 +189,18 @@ public class UserManagementServiceImpl implements UserManagementService {
     }
 
     @Override
-    public Result<List<User>> getUsers() {
-        Result<List<User>> result = new Result<List<User>>();
+    public Result<List<UserDto>> getUsers() {
+        Result<List<UserDto>> result = new Result<List<UserDto>>();
         try {
-            result.setResult(userDao.getAllNotDeletedUsers());
+            List<User> users = userDao.getAllNotDeletedUsers();
+            
+            result.setResult(Lists.apply(users, new Applicable<User, UserDto>() {
+
+                @Override
+                public UserDto apply(User element) {
+                    return dtoFactory.create(element);
+                }
+            }));
         } catch (Exception ex) {
             result.setSuccess(false);
             result.formatErrorMessage(ex.getMessage());
@@ -197,4 +218,29 @@ public class UserManagementServiceImpl implements UserManagementService {
         return result;
     }
     // </editor-fold>
+
+    @Override
+    public Result save(UserDto userDto) {
+
+        Result<UserDto> result = new Result<UserDto>();
+
+        if (!validateUserSaving(userDto, result)) {
+            return result;
+        }
+
+        User user = userDto.getUser();
+
+        try {
+            userDao.save(user,
+                    passwordEncoder.encodePassword(user.getPassword(), null));
+
+            UserDto dUser = dtoFactory.create(user);
+            result.setResult(dUser);
+        } catch (RuntimeException re) {
+            result.addErrorMessage("Ocurrió un error de base de datos.");
+        }
+
+
+        return result;
+    }
 }
