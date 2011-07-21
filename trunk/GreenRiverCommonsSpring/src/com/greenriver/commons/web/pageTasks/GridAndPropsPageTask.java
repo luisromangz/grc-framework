@@ -11,8 +11,7 @@ public class GridAndPropsPageTask
 
     private String propsViewClass;
     private String gridClass;
-    private String gridLoadServiceCall;
-    private String propsViewLoadServiceCall;
+  
     // The label to be used for the element.
     private String element;
     // A boolean marking the gender of the element.
@@ -135,34 +134,6 @@ public class GridAndPropsPageTask
      */
     public void setGridClass(String gridClass) {
         this.gridClass = gridClass;
-    }
-
-    /**
-     * @return the gridLoadServiceCall
-     */
-    public String getGridLoadServiceCall() {
-        return gridLoadServiceCall;
-    }
-
-    /**
-     * @param gridLoadServiceCall the gridLoadServiceCall to set
-     */
-    public void setGridLoadServiceCall(String gridLoadServiceCall) {
-        this.gridLoadServiceCall = gridLoadServiceCall;
-    }
-
-    /**
-     * @return the propsViewLoadServiceCall
-     */
-    public String getPropsViewLoadServiceCall() {
-        return propsViewLoadServiceCall;
-    }
-
-    /**
-     * @param propsViewLoadServiceCall the propsViewLoadServiceCall to set
-     */
-    public void setPropsViewLoadServiceCall(String propsViewLoadServiceCall) {
-        this.propsViewLoadServiceCall = propsViewLoadServiceCall;
-    }
+    }   
     //</editor-fold>
 }
