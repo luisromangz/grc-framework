@@ -1,7 +1,8 @@
 
-package com.greenriver.commons.web.services;
+package com.greenriver.commons.web.services.install;
 
 import com.greenriver.commons.data.model.User;
+import com.greenriver.commons.web.services.Result;
 
 /**
  *

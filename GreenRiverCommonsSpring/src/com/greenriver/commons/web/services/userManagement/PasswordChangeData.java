@@ -1,4 +1,4 @@
-package com.greenriver.commons.web.services;
+package com.greenriver.commons.web.services.userManagement;
 
 import com.greenriver.commons.data.fieldProperties.FieldProperties;
 import com.greenriver.commons.data.fieldProperties.FieldType;

@@ -1,10 +1,11 @@
-package com.greenriver.commons.web.services;
+package com.greenriver.commons.web.services.install;
 
 import com.greenriver.commons.data.dao.UserDao;
 import com.greenriver.commons.data.model.User;
 import com.greenriver.commons.data.validation.FieldsValidationResult;
 import com.greenriver.commons.data.validation.FieldsValidator;
 import com.greenriver.commons.web.helpers.session.InstallHelper;
+import com.greenriver.commons.web.services.Result;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
