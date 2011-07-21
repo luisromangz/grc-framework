@@ -58,13 +58,12 @@ public class User implements Serializable, Comparable<User>, Labelled {
     }
 
     public boolean hasAnyRole(String[] roles) {
-	List<String> curRoles = Arrays.asList(this.roles);
 	
 	for (String role : roles) {
-	    if (curRoles.contains(role)) {
-		return true;
-	    }
-	}
+	    if (this.getRoles().contains(role)) {
+                return true;
+            }
+        }
 
 	return false;
     }
@@ -159,15 +158,19 @@ public class User implements Serializable, Comparable<User>, Labelled {
     /**
      * @return the roles
      */
-    public String[] getRoles() {
-        return roles;
+    public List<String> getRoles() {
+        return Arrays.asList(roles);
     }
 
     /**
      * @param roles the roles to set
      */
+    public void setRoles(List<String> roles) {
+        this.roles = roles.toArray(new String[]{});
+    }
+    
     public void setRoles(String[] roles) {
-        this.roles = roles;
+        this.roles= roles;
     }
 
     public Boolean isDeleted() {
@@ -192,4 +195,20 @@ public class User implements Serializable, Comparable<User>, Labelled {
         this.emailAddress = emailAddress;
     }
     // </editor-fold>
+
+    public void addRole(String role) {
+        List<String> rolesList = getRoles();
+        if(!rolesList.contains(role)) {
+            rolesList.add(name);
+        }
+        setRoles(rolesList);
+    }
+
+    public void removeRole(String role) {
+         List<String> rolesList = getRoles();
+        if(rolesList.contains(role)) {
+            rolesList.remove(role);
+        }
+        setRoles(rolesList);
+    }
 }
