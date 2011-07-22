@@ -1,6 +1,8 @@
 package com.greenriver.commons.web.pageTasks;
 
 import com.greenriver.commons.Strings;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A page task including a Dojo DataGrid and a properties view.
@@ -18,12 +20,16 @@ public class GridAndPropsPageTask
     private boolean maleElement;
     private String indefiniteElementLabel;
     private String selectedElementLabel;
+    
+    private List<String> extraJspFiles;
 
     public GridAndPropsPageTask() {
         this.setMainJspFileName("../../gridAndPropsPageTask.jsp");
 
         this.setElement("elemento");
         this.setMaleElement(true);
+        
+        this.extraJspFiles = new ArrayList<String>();
     }
 
     @Override
@@ -135,5 +141,21 @@ public class GridAndPropsPageTask
     public void setGridClass(String gridClass) {
         this.gridClass = gridClass;
     }   
+    
+      /**
+     * @return the extraJspFiles
+     */
+    public List<String> getExtraJspFiles() {
+        return extraJspFiles;
+    }
+
+    /**
+     * @param extraJspFiles the extraJspFiles to set
+     */
+    public void setExtraJspFiles(List<String> extraJspFiles) {
+        this.extraJspFiles = extraJspFiles;
+    }
     //</editor-fold>
+
+  
 }
