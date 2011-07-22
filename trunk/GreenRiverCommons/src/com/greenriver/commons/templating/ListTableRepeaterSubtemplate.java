@@ -52,11 +52,11 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
     @FieldProperties(label = "Tipo de repetición", type = FieldType.SELECTION,
     possibleValues = {"true", "false"}, possibleValueLabels = {"Tabla", "Lista"})
     private boolean isTable = true;
-    @FieldProperties(label = "Lista ordenada", type = FieldType.BOOLEAN, editable = false, deactivationConditions = {
+    @FieldProperties(label = "Lista ordenada", type = FieldType.CHECKBOX, editable = false, deactivationConditions = {
         @FieldDeactivationCondition(equals = "'true'", newValue = "false", triggerField = "isTable")
     })
     private boolean isOrderedList;
-    @FieldProperties(label = "Mostrar encabezados de la tabla", type = FieldType.BOOLEAN,
+    @FieldProperties(label = "Mostrar encabezados de la tabla", type = FieldType.CHECKBOX,
     deactivationConditions = {
         @FieldDeactivationCondition(equals = "'false'", triggerField = "isTable", newValue = "false")
     })

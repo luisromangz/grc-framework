@@ -382,7 +382,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
             List<String> validationMessages) {
 
         switch (properties.type()) {
-            case BOOLEAN:
+            case CHECKBOX:
                 break;
             case TEXT:
             case LONGTEXT:
