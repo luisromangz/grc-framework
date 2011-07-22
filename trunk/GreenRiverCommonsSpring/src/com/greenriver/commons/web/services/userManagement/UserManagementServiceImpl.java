@@ -1,5 +1,6 @@
 package com.greenriver.commons.web.services.userManagement;
 
+import com.greenriver.commons.Strings;
 import com.greenriver.commons.collections.Applicable;
 import com.greenriver.commons.collections.Lists;
 import com.greenriver.commons.data.dao.UserDao;
@@ -12,6 +13,8 @@ import com.greenriver.commons.web.helpers.session.UserSessionInfo;
 import com.greenriver.commons.web.services.Result;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
+import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.security.authentication.encoding.PasswordEncoder;
 
 /**
@@ -86,7 +89,7 @@ public class UserManagementServiceImpl
     public Result<UserFormDto> getNew() {
         Result<UserFormDto> r = new Result<UserFormDto>();
         r.setResult(formDtoFactory.create(new User()));
-        return r;      
+        return r;
     }
 
     @Override
@@ -216,21 +219,30 @@ public class UserManagementServiceImpl
             return result;
         }
 
-        try {
-            userDao.save(user,
-                    passwordEncoder.encodePassword(user.getPassword(), null));
+        if (user.getId() == null
+                && Strings.isNullOrEmpty(user.getPassword())) {
+            // We create a new password
+            user.setPassword(createRandomPassword());
+        }
 
-            UserDto dUser = getDtoFactory().create(user);
-            result.setResult(dUser);
+        String encodedPassword = passwordEncoder.encodePassword(user.getPassword(), null);
+        try {
+            userDao.save(user, encodedPassword);
         } catch (RuntimeException re) {
             result.addErrorMessage("Ocurrió un error de base de datos.");
         }
 
+        UserDto dUser = getDtoFactory().create(user);
+        result.setResult(dUser);
 
         return result;
     }
 
-    private User validateUserSaving(UserDto userDto, Result result) {
+    private String createRandomPassword() {
+        return RandomStringUtils.random(9, true, true);
+    }
+
+    private User validateUserSaving(UserFormDto userDto, Result result) {
         FieldsValidationResult validationResult = fieldsValidator.validate(
                 userDto);
 
@@ -245,13 +257,15 @@ public class UserManagementServiceImpl
         if (existingUser != null
                 && !existingUser.isDeleted()
                 && !existingUser.getId().equals(userDto.getId())) {
+
             result.addErrorMessage("Ya existe otro usuario con el mismo nombre de usuario.");
+            return null;
+        } else if (existingUser==null || existingUser.isDeleted()) {     
+            // We create a new user.
+            existingUser = new User();
         }
 
-        if (existingUser.isDeleted()) {
-            result.addErrorMessage("El usuario fue borrado con anterioridad.");
-            return null;
-        }
+        userDto.copyTo(existingUser);
 
         return existingUser;
     }

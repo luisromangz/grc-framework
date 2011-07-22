@@ -7,8 +7,8 @@ import com.greenriver.commons.data.Labelled;
  * Interface that UserDtos need to implement.
  * @author luisro
  */
-public interface UserDto extends Labelled {
-   Long getId();
+public abstract class UserDto implements Labelled {
+   public abstract Long getId();
    
-   public String getUsername();
+   public abstract String getUsername();
 }
