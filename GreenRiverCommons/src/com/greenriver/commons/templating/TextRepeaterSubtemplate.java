@@ -46,9 +46,9 @@ public abstract class TextRepeaterSubtemplate<T extends TemplateReplacement, K e
         @FieldDeactivationCondition(triggerField = "horizontalRepetitions", equals = "1", newValue = "'NONE'")})
     @Enumerated(EnumType.STRING)
     private BorderType borderType = BorderType.NONE;
-    @FieldProperties(label = "Página nueva tras el texto", type = FieldType.BOOLEAN)
+    @FieldProperties(label = "Página nueva tras el texto", type = FieldType.CHECKBOX)
     private boolean newPageAfterText = false;
-    @FieldProperties(label = "Añadir nueva línea tras el texto", type = FieldType.BOOLEAN,
+    @FieldProperties(label = "Añadir nueva línea tras el texto", type = FieldType.CHECKBOX,
     deactivationConditions = {
         @FieldDeactivationCondition(triggerField = "newPageAfterText", equals = "'on'")
     })

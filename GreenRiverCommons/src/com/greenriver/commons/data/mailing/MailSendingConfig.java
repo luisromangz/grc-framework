@@ -20,7 +20,7 @@ public class MailSendingConfig {
     @FieldProperties(label="Puerto",type=FieldType.NUMBER)
     private int portNumber;
 
-    @FieldProperties(label="Requiere autenticación", type=FieldType.BOOLEAN)
+    @FieldProperties(label="Requiere autenticación", type=FieldType.CHECKBOX)
     private boolean requiresAuthentication;
 
     @FieldProperties(label="Nombre de usuario",required=false,deactivationConditions={
@@ -34,7 +34,7 @@ public class MailSendingConfig {
 
     @FieldProperties(label="Protocolo de envío", type=FieldType.SELECTION)
     private MailSendingProtocol protocol;
-    @FieldProperties(label="Usar StartTTLS (requerido por GMail)", type=FieldType.BOOLEAN)
+    @FieldProperties(label="Usar StartTTLS (requerido por GMail)", type=FieldType.CHECKBOX)
     private boolean useStartTtls;
     // </editor-fold>
 
