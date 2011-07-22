@@ -60,6 +60,10 @@ public class GridAndPropsPageTask
     public Properties getClientControllerInitArgs() {
         Properties props = super.getClientControllerInitArgs();
         props.put("service", getService());
+        props.put("element",element);
+        props.put("maleElement", maleElement);
+        props.put("indefiniteElement", indefiniteElementLabel);
+        props.put("selectedElement",selectedElementLabel);
         return props;
     }
     
