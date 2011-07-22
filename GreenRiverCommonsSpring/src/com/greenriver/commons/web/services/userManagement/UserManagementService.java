@@ -15,7 +15,8 @@ public interface UserManagementService extends CRUDService<UserDto, UserFormDto>
      * Creates a new, not persisted, user object
      * @return a new user
      */
-    public Result<UserDto> getNewUser();
+    @Override
+    public Result<UserFormDto> getNew();
     
     @Override
     public Result<UserFormDto> getForEdit(Long userId);

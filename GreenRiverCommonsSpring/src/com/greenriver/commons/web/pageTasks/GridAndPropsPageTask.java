@@ -28,6 +28,9 @@ public class GridAndPropsPageTask
     
     private String service;
     
+    private String getForViewMethod ="getForView";
+    private String queryMethod = "query";
+    
 
     public GridAndPropsPageTask() {
         this.setMainJspFileName("../../gridAndPropsPageTask.jsp");
@@ -46,6 +49,8 @@ public class GridAndPropsPageTask
         props.put("maleElement", maleElement);
         props.put("indefiniteElement", indefiniteElementLabel);
         props.put("selectedElement",selectedElementLabel);
+        props.put("queryMethod",queryMethod);
+        props.put("getForViewMethod", getForViewMethod);
         return props;
     }
     
