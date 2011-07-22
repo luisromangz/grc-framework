@@ -1,5 +1,7 @@
 package com.greenriver.commons.web.services.userManagement;
 
+import com.greenriver.commons.data.dao.queryArguments.QueryArgs;
+import com.greenriver.commons.web.services.CRUDService;
 import com.greenriver.commons.web.services.Result;
 import java.util.List;
 import java.util.Map;
@@ -8,14 +10,17 @@ import java.util.Map;
  * Operations UserDtoor the user management service
  * @author luis
  */
-public interface UserManagementService {
+public interface UserManagementService extends CRUDService<UserDto, UserFormDto> {
     /**
      * Creates a new, not persisted, user object
      * @return a new user
      */
     public Result<UserDto> getNewUser();
     
-    public Result<UserFormDto> getForForm(Long userId);
+    @Override
+    public Result<UserFormDto> getForEdit(Long userId);
+    
+    @Override
     public Result<UserDto> get(Long userId);
     
     /**
@@ -23,6 +28,7 @@ public interface UserManagementService {
      * @param user Entity to save or update
      * @return the Result result oUserDto the operation
      */
+    @Override
     public Result<UserDto> save(UserFormDto userDto);
     /**
      * Changes the password UserDtoor the user
@@ -36,12 +42,14 @@ public interface UserManagementService {
      * @param user The id oUserDto the user to be removed
      * @return the Result result oUserDto the operation
      */
+    @Override
     public Result<UserDto> remove(Long userId);
     /**
      * Gets a list with all the users
      * @return the Result result oUserDto the operation
      */
-    public Result<List<UserDto>> getUsers();
+    @Override
+    public Result<List<UserDto>> query(QueryArgs query);
     /**
      * Gets a map that matches UserDtoor each role (key) the display name (value).
      * @return a Result result oUserDto the operation
