@@ -8,7 +8,7 @@ import java.util.List;
  * @author luisro
  */
 public interface CRUDService <D,F>{
-    Result<D> get(Long id);
+    Result<D> getForView(Long id);
     Result<F> getForEdit(Long id);
     
     Result<D> save(F item);

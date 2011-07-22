@@ -21,7 +21,7 @@ public interface UserManagementService extends CRUDService<UserDto, UserFormDto>
     public Result<UserFormDto> getForEdit(Long userId);
     
     @Override
-    public Result<UserDto> get(Long userId);
+    public Result<UserDto> getForView(Long userId);
     
     /**
      * Saves or updates the user entity

@@ -108,7 +108,7 @@ public class UserManagementServiceImpl
     }
 
     @Override
-    public Result<UserDto> get(Long userId) {
+    public Result<UserDto> getForView(Long userId) {
         Result<UserDto> r = new Result<UserDto>();
         User user = getUserById(userId, r);
         if (!r.isSuccess()) {
