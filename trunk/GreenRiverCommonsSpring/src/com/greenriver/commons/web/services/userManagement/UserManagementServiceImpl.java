@@ -83,15 +83,10 @@ public class UserManagementServiceImpl
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Service methods">
     @Override
-    public Result getNewUser() {
-        Result<UserDto> r = new Result<UserDto>();
-        User newUser = new User();
-        newUser.setName("");
-        newUser.setUsername("");
-        newUser.setPassword("");
-        newUser.setRoles(new String[]{"ROLE_USER"});
-        r.setResult(getFormDtoFactory().create(newUser));
-        return r;
+    public Result<UserFormDto> getNew() {
+        Result<UserFormDto> r = new Result<UserFormDto>();
+        r.setResult(formDtoFactory.create(new User()));
+        return r;      
     }
 
     @Override
