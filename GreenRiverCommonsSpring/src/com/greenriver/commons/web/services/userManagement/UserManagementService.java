@@ -10,7 +10,9 @@ import java.util.Map;
  * Operations UserDtoor the user management service
  * @author luis
  */
-public interface UserManagementService extends CRUDService<UserDto, UserFormDto> {
+public interface UserManagementService 
+    extends CRUDService<UserDto, UserFormDto>{
+    
     /**
      * Creates a new, not persisted, user object
      * @return a new user
