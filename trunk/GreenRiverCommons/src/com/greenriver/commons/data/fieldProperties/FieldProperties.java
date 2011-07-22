@@ -130,7 +130,7 @@ public @interface FieldProperties {
      * The prefix used by the getter method.
      * @return the prefix used in the getter's name.
      */
-    public String getterPrefix() default "get";
+    public String getterPrefix() default "";
 
     /**
      * Minimum size of a field value. For file fields this is the file size and
