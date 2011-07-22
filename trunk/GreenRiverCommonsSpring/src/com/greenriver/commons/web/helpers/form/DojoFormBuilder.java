@@ -810,7 +810,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
             case NUMBER:
                 setupNumberField(formFieldElement, fieldType, properties);
                 break;
-            case BOOLEAN:
+            case CHECKBOX:
                 setupBooleanField(formFieldElement, fieldType, properties);
                 break;
             case EMAIL:
