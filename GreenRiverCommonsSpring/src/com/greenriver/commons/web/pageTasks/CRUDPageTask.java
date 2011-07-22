@@ -12,6 +12,13 @@ public class CRUDPageTask extends GridAndPropsPageTask {
     private String getForEditMethod="getForEdit";
     private String removeMethod="remove";
     private String getNewMethod="getNew";
+    private String saveMethod = "save";
+
+    public CRUDPageTask() {
+        this.setMainJspFileName("../../crudPageTask.jsp");
+    }
+    
+    
 
     @Override
     public Properties getControllerInitArgs() {
@@ -20,6 +27,7 @@ public class CRUDPageTask extends GridAndPropsPageTask {
         p.put("getForEditMethod",getForEditMethod);
         p.put("removeMethod",removeMethod);
         p.put("getNewMethod",getNewMethod);
+        p.put("saveMethod",saveMethod);
         
         return p;
     }
@@ -61,4 +69,18 @@ public class CRUDPageTask extends GridAndPropsPageTask {
     }
     
     //</editor-fold>
+
+    /**
+     * @return the saveMethod
+     */
+    public String getSaveMethod() {
+        return saveMethod;
+    }
+
+    /**
+     * @param saveMethod the saveMethod to set
+     */
+    public void setSaveMethod(String saveMethod) {
+        this.saveMethod = saveMethod;
+    }
 }
