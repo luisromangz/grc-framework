@@ -2,7 +2,9 @@ package com.greenriver.commons.web.pageTasks;
 
 import com.greenriver.commons.Strings;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -37,28 +39,8 @@ public class GridAndPropsPageTask
     }
 
     @Override
-    protected void initializeInternal() {
-        if (Strings.isNullOrEmpty(gridClass)) {
-            throw new IllegalStateException(
-                    "gridClass for task " + this.getTaskName() + " cannot be null!");
-        }
-        
-        this.addGrid("grid", gridClass);
-
-        if (Strings.isNullOrEmpty(propsViewClass)) {
-            throw new IllegalStateException(
-                    "propsViewClass for task " + this.getTaskName() + " cannot be null!");
-        }
-
-        this.addPropertiesView("propsView", propsViewClass);
-        
-        this.addDwrService(this.service);
-        
-    }
-
-    @Override
-    public Properties getClientControllerInitArgs() {
-        Properties props = super.getClientControllerInitArgs();
+    public Properties getControllerInitArgs() {
+        Properties props = super.getControllerInitArgs();
         props.put("service", getService());
         props.put("element",element);
         props.put("maleElement", maleElement);
@@ -67,18 +49,43 @@ public class GridAndPropsPageTask
         return props;
     }
     
-    
-
     private void createElementLabels() {
-        this.selectedElementLabel = String.format("%s %s %s",
+         this.selectedElementLabel = String.format("%s %s %s",
                 maleElement ? "el" : "la",
                 element,
                 maleElement ? "seleccionado" : "seleccionada");
 
-        this.setIndefiniteElementLabel(String.format("%s %s",
+        this.indefiniteElementLabel=String.format("%s %s",
                 maleElement ? "un" : "una",
-                element));
+                element);
     }
+
+    @Override
+    public List<String> getDwrServices() {
+        List<String> services=new ArrayList<String>(super.getDwrServices());
+        services.add(this.service);;
+        return services;
+    }
+
+    @Override
+    public Map<String, String> getPropertiesView() {
+        // New map required so we dont override config.
+        Map<String, String> propsViews=  new HashMap<String,String>(super.getPropertiesView());
+        propsViews.put("propsView", propsViewClass);
+        return propsViews;
+    }
+
+    @Override
+    public Map<String, String> getGrids() {
+        // New map required so we dont override config.
+        Map<String,String> grids= new HashMap<String,String>(super.getGrids());
+        grids.put("grid",gridClass);
+        return grids;
+    }
+    
+    
+    
+    
 
     //<editor-fold defaultstate="collapsed" desc="Getters and setters">
     /**
@@ -116,13 +123,6 @@ public class GridAndPropsPageTask
      */
     public String getIndefiniteElementLabel() {
         return indefiniteElementLabel;
-    }
-
-    /**
-     * @param indefiniteElementLabel the indefiniteElementLabel to set
-     */
-    public void setIndefiniteElementLabel(String indefiniteElementLabel) {
-        this.indefiniteElementLabel = indefiniteElementLabel;
     }
 
     /**

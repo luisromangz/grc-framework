@@ -21,6 +21,7 @@ public class DojoHandledPageTask
     implements DojoHandled {
     // <editor-fold defaultstate="collapsed" desc="Fields">
     private String dojoControllerModule = "grc.web.tasks.PageTaskController";
+    private String controllerInitArgsJson;
     // </editor-fold>
     
     @Override
@@ -30,6 +31,21 @@ public class DojoHandledPageTask
         super.configurePage(configuration,mav);
     }
 
+    @Override
+    protected void initializeInternal() {
+        super.initializeInternal();
+        
+        Properties props = getControllerInitArgs();
+         try {
+            
+            
+            controllerInitArgsJson=JsonUtil.toJson(props).replace("\"","'");
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    
 
     // <editor-fold defaultstate="collapsed" desc="Getters and setters">
     @Override
@@ -44,7 +60,7 @@ public class DojoHandledPageTask
     // </editor-fold>
 
     @Override
-    public Properties getClientControllerInitArgs() {
+    public Properties getControllerInitArgs() {
         Properties props = new Properties();
         props.put("taskName", this.getTaskName());
         props.put("taskTitle", this.getTitle());
@@ -54,15 +70,10 @@ public class DojoHandledPageTask
     }
 
     @Override
-    public final String getClientControllerInitArgsJson() {
-        try {
-            Properties props = getClientControllerInitArgs();
-            
-            return JsonUtil.toJson(props);
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
-        }
+    public final String getControllerInitArgsJson() {
+       return controllerInitArgsJson;
     }
+  
     
     
 }

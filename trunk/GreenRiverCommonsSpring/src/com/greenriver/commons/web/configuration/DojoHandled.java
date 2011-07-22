@@ -11,6 +11,6 @@ public interface DojoHandled {
 
     void setDojoControllerModule(String dojoModuleName);
     
-    Properties getClientControllerInitArgs();
-    String getClientControllerInitArgsJson();
+    Properties getControllerInitArgs();
+    String getControllerInitArgsJson();
 }

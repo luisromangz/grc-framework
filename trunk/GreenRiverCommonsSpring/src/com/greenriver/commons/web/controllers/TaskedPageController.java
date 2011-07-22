@@ -77,6 +77,11 @@ public class TaskedPageController
             PageTask pageTask,
             PageConfig configuration,
             ModelAndView mav) throws ClassNotFoundException {
+               
+        
+        if(!pageTask.isInitialized()) {
+            pageTask.initialize();
+        }
 
         pageTask.configurePage(configuration, mav);
 

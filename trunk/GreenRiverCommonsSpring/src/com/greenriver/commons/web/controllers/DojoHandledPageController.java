@@ -31,12 +31,12 @@ public class DojoHandledPageController
     }
 
     @Override
-    public Properties getClientControllerInitArgs() {
+    public Properties getControllerInitArgs() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public final String getClientControllerInitArgsJson() {
+    public final String getControllerInitArgsJson() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

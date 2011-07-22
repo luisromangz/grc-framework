@@ -3,6 +3,7 @@ package com.greenriver.commons.web.services.userManagement;
 import com.greenriver.commons.collections.Applicable;
 import com.greenriver.commons.collections.Lists;
 import com.greenriver.commons.data.dao.UserDao;
+import com.greenriver.commons.data.dao.queryArguments.QueryArgs;
 import com.greenriver.commons.data.model.User;
 import com.greenriver.commons.data.validation.FieldsValidationResult;
 import com.greenriver.commons.data.validation.FieldsValidator;
@@ -94,7 +95,7 @@ public class UserManagementServiceImpl
     }
 
     @Override
-    public Result<UserFormDto> getForForm(Long userId) {
+    public Result<UserFormDto> getForEdit(Long userId) {
         Result<UserFormDto> r = new Result<UserFormDto>();
 
         User user = getUserById(userId, r);
@@ -181,7 +182,7 @@ public class UserManagementServiceImpl
     }
 
     @Override
-    public Result<List<UserDto>> getUsers() {
+    public Result<List<UserDto>> query(QueryArgs args) {
         Result<List<UserDto>> result = new Result<List<UserDto>>();
         try {
             List<User> users = userDao.getAllNotDeletedUsers();
