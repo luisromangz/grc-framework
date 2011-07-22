@@ -3,6 +3,7 @@ package com.greenriver.commons.web.pageTasks;
 import com.greenriver.commons.Strings;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * A page task including a Dojo DataGrid and a properties view.
@@ -22,6 +23,9 @@ public class GridAndPropsPageTask
     private String selectedElementLabel;
     
     private List<String> extraJspFiles;
+    
+    private String service;
+    
 
     public GridAndPropsPageTask() {
         this.setMainJspFileName("../../gridAndPropsPageTask.jsp");
@@ -48,8 +52,18 @@ public class GridAndPropsPageTask
 
         this.addPropertiesView("propsView", propsViewClass);
         
+        this.addDwrService(this.service);
         
     }
+
+    @Override
+    public Properties getClientControllerInitArgs() {
+        Properties props = super.getClientControllerInitArgs();
+        props.put("service", getService());
+        return props;
+    }
+    
+    
 
     private void createElementLabels() {
         this.selectedElementLabel = String.format("%s %s %s",
@@ -157,5 +171,19 @@ public class GridAndPropsPageTask
     }
     //</editor-fold>
 
-  
+    /**
+     * @return the service
+     */
+    public String getService() {
+        return service;
+    }
+
+    /**
+     * @param service the service to set
+     */
+    public void setService(String service) {
+        this.service = service;
+    }
+
+   
 }
