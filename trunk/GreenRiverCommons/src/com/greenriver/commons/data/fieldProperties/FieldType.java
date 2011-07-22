@@ -39,7 +39,7 @@ public enum FieldType {
     /**
      * A yes no value.
      */
-    BOOLEAN,
+    CHECKBOX,
 
     /**
      * A natural, non-negative value.
