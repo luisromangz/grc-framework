@@ -37,7 +37,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
     public FieldsValidationResult validate(Object object) {
         FieldsValidationResult result = new FieldsValidationResult();
 
-        if(object==null) {
+        if (object == null) {
             result.addErrorMessage("El objeto recibido es nulo.");
             result.setValid(false);
             return result;
@@ -91,11 +91,15 @@ public class FieldPropertiesValidator implements FieldsValidator {
             methodName = properties.accesorFieldName();
         }
 
+        // We compose the name of the accesor;
+        methodName = Strings.toUpperCase(methodName, 0, 1);
         if (!Strings.isNullOrEmpty(properties.getterPrefix())) {
-            // We compose the name of the accesor;
-            methodName = Strings.toUpperCase(methodName, 0, 1);
             // We add the prefix.
             methodName = properties.getterPrefix() + methodName;
+        } else if (field.getType().getName().equals("boolean")) {
+            methodName = "is" + methodName;
+        } else {
+            methodName = "get" + methodName;
         }
 
         Object value = null;
@@ -672,13 +676,13 @@ public class FieldPropertiesValidator implements FieldsValidator {
     private void validateCIFOrNIF(Object value, FieldProperties properties,
             List<String> validationMessages) {
 
-	 String cifOrNif = (String) value;
+        String cifOrNif = (String) value;
         if (!properties.required() && Strings.isNullOrEmpty(cifOrNif)) {
             return;
         }
 
         CIFOrNIFValidator validator = new CIFOrNIFValidator();
-       
+
         // remove unwanted characters to left only numbers and letters
         cifOrNif = cifOrNif.replaceAll("[/b-]+", "");
 
