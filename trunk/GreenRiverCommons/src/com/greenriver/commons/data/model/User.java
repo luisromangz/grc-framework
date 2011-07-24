@@ -55,7 +55,7 @@ public class User implements Serializable, Comparable<User>, Labelled {
     }
 
     public boolean hasRole(String role) {
-        return Arrays.asList(this.roles).contains(role);
+        return getRoles().contains(role);
     }
 
     public boolean hasAnyRole(String[] roles) {
