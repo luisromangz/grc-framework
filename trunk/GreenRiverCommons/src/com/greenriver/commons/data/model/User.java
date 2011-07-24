@@ -5,6 +5,7 @@ import com.greenriver.commons.data.Labelled;
 import com.greenriver.commons.data.fieldProperties.FieldProperties;
 import com.greenriver.commons.data.fieldProperties.FieldType;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.persistence.Column;
@@ -159,6 +160,9 @@ public class User implements Serializable, Comparable<User>, Labelled {
      * @return the roles
      */
     public List<String> getRoles() {
+        if(roles == null) {
+            return new ArrayList<String>();
+        }
         return Arrays.asList(roles);
     }
 
