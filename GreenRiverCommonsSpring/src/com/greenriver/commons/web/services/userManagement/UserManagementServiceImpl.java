@@ -193,8 +193,7 @@ public class UserManagementServiceImpl
                 }
             }));
         } catch (Exception ex) {
-            result.setSuccess(false);
-            result.formatErrorMessage(ex.getMessage());
+            result.formatErrorMessage("Ocurrió un error  de base de datos.");
         }
         return result;
     }
