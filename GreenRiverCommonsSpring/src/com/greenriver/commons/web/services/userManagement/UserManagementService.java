@@ -1,6 +1,6 @@
 package com.greenriver.commons.web.services.userManagement;
 
-import com.greenriver.commons.data.dao.queryArguments.QueryArgs;
+import com.greenriver.commons.data.dao.queryArgs.QueryArgs;
 import com.greenriver.commons.web.services.CRUDService;
 import com.greenriver.commons.web.services.Result;
 import java.util.List;
