@@ -17,7 +17,7 @@ public class HibernatePagedResultsDao<T, Q extends QueryArgs>
             throw new IllegalArgumentException("elements must be empty.");
         }
         
-        Criteria crit = createCriteria(args);
+        Criteria crit = createPagedCriteria(args);
 
         for(Criterion c : criterions) {
             crit.add(c);
