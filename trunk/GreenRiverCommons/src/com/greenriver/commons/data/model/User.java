@@ -1,10 +1,10 @@
 package com.greenriver.commons.data.model;
 
 import com.greenriver.commons.Strings;
-import com.greenriver.commons.data.Labelled;
+import com.greenriver.commons.data.DataEntity;
+import com.greenriver.commons.data.dao.queryArgs.QueryArgsProps;
 import com.greenriver.commons.data.fieldProperties.FieldProperties;
 import com.greenriver.commons.data.fieldProperties.FieldType;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -25,7 +25,8 @@ import javax.persistence.InheritanceType;
  */
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public class User implements Serializable, Comparable<User>, Labelled {
+@QueryArgsProps(textFilterFields={"name","username","emailAddress"})
+public class User implements Comparable<User>, DataEntity {
     // <editor-fold defaultstate="collapsed" desc="Fields">
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -104,6 +105,7 @@ public class User implements Serializable, Comparable<User>, Labelled {
     }
 
     // <editor-fold defaultstate="collapsed" desc="Getters and setters">
+    @Override
     public Long getId() {
         return id;
     }
