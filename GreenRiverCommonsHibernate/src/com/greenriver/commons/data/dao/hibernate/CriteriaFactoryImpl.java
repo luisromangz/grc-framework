@@ -6,9 +6,6 @@ import com.greenriver.commons.data.DataEntity;
 import com.greenriver.commons.data.dao.queryArgs.QueryArgs;
 import com.greenriver.commons.data.dao.queryArgs.QueryArgsProps;
 import com.greenriver.commons.data.dao.queryArgs.QueryArgsRestriction;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -66,7 +63,7 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
 
     @Override
     public Criteria createPagedCriteria(
-            Class entityClass, QueryArgs queryArguments) {
+            Class<? extends DataEntity> entityClass, QueryArgs queryArguments) {
 
         Criteria crit = internalCreateCriteria(entityClass, queryArguments, true);
         // We set the pagination values
@@ -76,8 +73,9 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
         return crit;
     }
 
-    private Criteria internalCreateCriteria(Class entityClass, QueryArgs queryArguments, boolean doSorting) {
-        Class argumentClass = queryArguments.getClass();
+    private Criteria internalCreateCriteria(
+            Class entityClass, QueryArgs queryArguments, boolean doSorting) {
+       
         QueryArgsProps queryProperties =
                 (QueryArgsProps) entityClass.getAnnotation(QueryArgsProps.class);
 
@@ -89,7 +87,7 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
         // The criteria for the target class is created
         Criteria crit = getSession().createCriteria(entityClass);
 
-        setBasicCriteriaParameters(crit, queryArguments, queryProperties, doSorting);
+        setTextFilter(crit, queryArguments, queryProperties);
         setRestrictions(crit, queryArguments);
 
         if (doSorting) {
@@ -99,45 +97,11 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
         return crit;
     }
 
-    private Object getValueForField(
-            Field queryArgumentField,
-            QueryArgs queryArguments) {
-        String methodName = "get" + Strings.toUpperCase(
-                queryArgumentField.getName(), 0, 1);
-        Method accesorMethod = null;
-        Object value = null;
-        try {
-            accesorMethod = queryArguments.getClass().getMethod(methodName);
-            value = accesorMethod.invoke(queryArguments);
-        } catch (IllegalAccessException ex) {
-            throw new RuntimeException(ex);
-        } catch (IllegalArgumentException ex) {
-            throw new RuntimeException(ex);
-        } catch (InvocationTargetException ex) {
-            throw new RuntimeException(ex);
-        } catch (NoSuchMethodException ex) {
-            throw new RuntimeException(ex);
-        } catch (SecurityException ex) {
-            throw new RuntimeException(ex);
-        }
-        return value;
-    }
-
-    private void setBasicCriteriaParameters(
+    private void setTextFilter(
             Criteria crit,
             QueryArgs queryArguments,
-            QueryArgsProps queryProperties,
-            boolean doSorting) {
-
-        // We manage the sorting field.
-        if (doSorting && !Strings.isNullOrEmpty(queryArguments.getSortFieldName())) {
-            if (queryArguments.isSortAscending()) {
-                crit.addOrder(Order.asc(queryArguments.getSortFieldName()));
-            } else {
-                crit.addOrder(Order.desc(queryArguments.getSortFieldName()));
-            }
-        }
-
+            QueryArgsProps queryProperties) {
+        
         // We add a disjuntion of likes for the fields affected by the text filter.
         if (!Strings.isNullOrEmpty(queryArguments.getTextFilter())) {
             Disjunction disjunction = Restrictions.disjunction();
@@ -206,14 +170,13 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
             QueryArgs queryArguments) throws SecurityException {
         // For the fields of the query argument annotated with @QueryArgsField
         for (QueryArgsRestriction restriction : queryArguments.getRestrictions()) {
-            addFieldRestriction(crit, restriction, queryArguments);
+            addFieldRestriction(crit, restriction);
         }
     }
 
     private void addFieldRestriction(
             Criteria crit,
-            QueryArgsRestriction restriction,
-            QueryArgs queryArguments) {
+            QueryArgsRestriction restriction) {
         
         String fieldName = restriction.getFieldName();
         Object value = restriction.getValue();
@@ -301,11 +264,9 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
             QueryArgsProps queryProperties) {
 
         boolean sortingSpecified = !Strings.isNullOrEmpty(queryArgs.getSortFieldName());
-
-        addSorting(crit, queryArgs.getSortFieldName(), queryArgs.isSortAscending());
-
-
-        if (!sortingSpecified) {
+        if(sortingSpecified) {
+            addSorting(crit, queryArgs.getSortFieldName(), queryArgs.isSortAscending());
+        } else {
             // If no sorting was specified we try the default sorting stuff
             addDefaultSorting(crit, queryProperties);
         }
