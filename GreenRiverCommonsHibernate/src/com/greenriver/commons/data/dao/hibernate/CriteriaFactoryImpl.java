@@ -71,8 +71,8 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
 
         Criteria crit = internalCreateCriteria(queryArguments, true);
         // We set the pagination values
-        crit.setMaxResults(queryArguments.getSize());
-        crit.setFirstResult(queryArguments.getFirstIndex());
+        crit.setMaxResults(queryArguments.getCount());
+        crit.setFirstResult(queryArguments.getFirst());
 
         return crit;
     }
