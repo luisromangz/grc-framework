@@ -13,5 +13,5 @@ public interface CRUDDao<E extends DataEntity, Q extends QueryArgs> {
     public E getById(Long id);
     public void save(E entity);
     public void remove(E entity);
-    public List<E> query(Q qArgs);
+    public int query(Q qArgs, List<E> entities);
 }
