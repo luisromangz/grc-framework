@@ -4,7 +4,7 @@ import com.greenriver.commons.Strings;
 import com.greenriver.commons.collections.Applicable;
 import com.greenriver.commons.collections.Lists;
 import com.greenriver.commons.data.dao.UserDao;
-import com.greenriver.commons.data.dao.queryArguments.QueryArgs;
+import com.greenriver.commons.data.dao.queryArgs.QueryArgs;
 import com.greenriver.commons.data.model.User;
 import com.greenriver.commons.data.validation.FieldsValidationResult;
 import com.greenriver.commons.data.validation.FieldsValidator;
@@ -182,19 +182,23 @@ public class UserManagementServiceImpl
     @Override
     public Result<List<UserDto>> query(QueryArgs args) {
         Result<List<UserDto>> result = new Result<List<UserDto>>();
+
+        List<User> users = null;
         try {
-            List<User> users = userDao.getAllNotDeletedUsers();
-
-            result.setResult(Lists.apply(users, new Applicable<User, UserDto>() {
-
-                @Override
-                public UserDto apply(User element) {
-                    return getDtoFactory().create(element);
-                }
-            }));
-        } catch (Exception ex) {
+            users = userDao.query(args);
+        } catch (RuntimeException ex) {
             result.formatErrorMessage("Ocurrió un error  de base de datos.");
+            return result;
         }
+
+        result.setResult(Lists.apply(users, new Applicable<User, UserDto>() {
+
+            @Override
+            public UserDto apply(User element) {
+                return getDtoFactory().create(element);
+            }
+        }));
+
         return result;
     }
 
@@ -259,7 +263,7 @@ public class UserManagementServiceImpl
 
             result.addErrorMessage("Ya existe otro usuario con el mismo nombre de usuario.");
             return null;
-        } else if (existingUser==null || existingUser.isDeleted()) {     
+        } else if (existingUser == null || existingUser.isDeleted()) {
             // We create a new user.
             existingUser = new User();
         }
