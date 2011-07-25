@@ -1,45 +1,36 @@
-
 package com.greenriver.commons.web.services;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * Result extension that adds an extra field to store the number of
- * pages available.
- * @param <T> Type of the result
- * @author mangelp
+ * This class encapsulates the result given by a service call, so we can
+ * return if the proccess was successful and an error message if it wasn't.
+ * @param <T> The type of the contained payload.
+ * @author luis
  */
-public class PagedResult<T> extends Result<T> {
+public class PagedResult<T> extends Result<List<T>>{
 
-    private int totalPages;
-    private int pageNumber = -1;
-
-    /**
-     * @return the numPages
-     */
-    public int getTotalPages() {
-	return totalPages;
-    }
-
-    /**
-     * @param numPages the numPages to set
-     */
-    public void setTotalPages(int numPages) {
-	this.totalPages = numPages;
-    }
-
-    /**
-     * Gets the page number of the returned result if any. If the result is an
-     * error this is -1.
-     * @return
-     */
-    public int getPageNumber() {
-        return pageNumber;
-    }
-
-    public void setPageNumber(int pageNumber) {
-        this.pageNumber = pageNumber;
-    }
-
+    private int total;
+    
     public PagedResult() {
-	super();
+        super();
+        this.setResult(new ArrayList<T>());
     }
+
+    /**
+     * @return the total
+     */
+    public int getTotal() {
+        return total;
+    }
+
+    /**
+     * @param total the total to set
+     */
+    public void setTotal(int total) {
+        this.total = total;
+    }
+
+   
 }

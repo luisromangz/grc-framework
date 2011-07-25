@@ -2,8 +2,8 @@ package com.greenriver.commons.web.services.userManagement;
 
 import com.greenriver.commons.data.dao.queryArgs.QueryArgs;
 import com.greenriver.commons.web.services.CRUDService;
+import com.greenriver.commons.web.services.PagedResult;
 import com.greenriver.commons.web.services.Result;
-import java.util.List;
 import java.util.Map;
     
 /**
@@ -52,7 +52,7 @@ public interface UserManagementService
      * @return the Result result oUserDto the operation
      */
     @Override
-    public Result<List<UserDto>> query(QueryArgs query);
+    public PagedResult<UserDto> query(QueryArgs query);
     /**
      * Gets a map that matches UserDtoor each role (key) the display name (value).
      * @return a Result result oUserDto the operation
