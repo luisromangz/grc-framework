@@ -74,6 +74,10 @@ public abstract class HibernateDaoBase<T> {
     protected Criteria createPagedCriteria(QueryArgs queryArgs) {
         return getCriteriaFactory().createPagedCriteria(getEntityClass(),queryArgs);
     }
+    
+    protected Criteria createCountingCriteria(QueryArgs queryArgs) {
+        return getCriteriaFactory().createCountingCriteria(getEntityClass(),queryArgs);
+    }
     // </editor-fold>
 
 }
