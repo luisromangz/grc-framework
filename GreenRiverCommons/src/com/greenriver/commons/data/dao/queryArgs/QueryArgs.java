@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Common query arguments stuff
+ * This class instances are used to pass queries to the server.
+ * 
  * @author Miguel Angel
  */
 public class QueryArgs {
