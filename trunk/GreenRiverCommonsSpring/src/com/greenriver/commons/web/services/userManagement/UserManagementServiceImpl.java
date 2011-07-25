@@ -10,10 +10,11 @@ import com.greenriver.commons.data.validation.FieldsValidationResult;
 import com.greenriver.commons.data.validation.FieldsValidator;
 import com.greenriver.commons.roleManagement.RoleManager;
 import com.greenriver.commons.web.helpers.session.UserSessionInfo;
+import com.greenriver.commons.web.services.PagedResult;
 import com.greenriver.commons.web.services.Result;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.security.authentication.encoding.PasswordEncoder;
 
@@ -180,12 +181,13 @@ public class UserManagementServiceImpl
     }
 
     @Override
-    public Result<List<UserDto>> query(QueryArgs args) {
-        Result<List<UserDto>> result = new Result<List<UserDto>>();
+    public PagedResult<UserDto> query(QueryArgs args) {
+        PagedResult<UserDto> result = new  PagedResult<UserDto>();
 
-        List<User> users = null;
+        List<User> users = new ArrayList<User>();
+       
         try {
-            users = userDao.query(args);
+            result.setTotal(userDao.query(args,users));
         } catch (RuntimeException ex) {
             result.formatErrorMessage("Ocurrió un error  de base de datos.");
             return result;

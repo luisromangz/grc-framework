@@ -17,5 +17,5 @@ public interface CRUDService <D,F>{
     Result<D> save(F item);
     Result<D> remove(Long id);
     
-    Result<List<D>> query(QueryArgs args);
+    PagedResult<D> query(QueryArgs args);
 }
