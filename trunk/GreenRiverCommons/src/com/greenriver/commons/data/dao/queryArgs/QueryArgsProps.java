@@ -8,7 +8,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- *
+ * This annotation, when applied to an entity class, defines properties of the queries
+ * generated against said class.
  * @author luis
  */
 @Documented

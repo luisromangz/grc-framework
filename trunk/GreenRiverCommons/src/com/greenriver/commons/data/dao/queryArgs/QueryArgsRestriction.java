@@ -1,7 +1,9 @@
 package com.greenriver.commons.data.dao.queryArgs;
 
 /**
- *
+ * This class entities are used to represent individual field restrictions
+ * for queries.
+ * 
  * @author luisro
  */
 public class QueryArgsRestriction {

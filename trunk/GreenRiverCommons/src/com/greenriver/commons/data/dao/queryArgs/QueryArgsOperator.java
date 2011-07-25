@@ -1,9 +1,9 @@
 package com.greenriver.commons.data.dao.queryArgs;
 
 /**
- * This enumerate type is used by the annotation QueryArgumentFieldProperties
- * to indicate which kind of comparison must take place between the annotated
- * query field and the values in the referenced field.
+ * This enumerate type is used by the annotation QueryArgsRestriction
+ * to indicate which kind of comparison must take place between the query 
+ * field and the comparison value.
  *
  * @author luis
  */
