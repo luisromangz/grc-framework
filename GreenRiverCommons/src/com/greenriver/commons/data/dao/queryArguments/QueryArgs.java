@@ -6,47 +6,48 @@ package com.greenriver.commons.data.dao.queryArguments;
  */
 public class QueryArgs {
 
-    private int firstIndex;
-    private int size;
+    private int first;
+    private int count;
     private String textFilter = "";
     private String sortFieldName;
     private boolean sortAscending;
 
+    //<editor-fold defaultstate="collapsed" desc="Getters and setters">
     /**
      * @return the fieldName
      */
     public String getSortFieldName() {
         return sortFieldName;
     }
-
+    
     /**
      * @param fieldName the fieldName to set
      */
     public void setSortFieldName(String fieldName) {
         this.sortFieldName = fieldName;
     }
-
+    
     /**
      * @return the ascending
      */
     public boolean isSortAscending() {
         return sortAscending;
     }
-
+    
     /**
      * @param ascending the ascending to set
      */
     public void setSortAscending(boolean ascending) {
         this.sortAscending = ascending;
     }
-
+    
     /**
      * @return the textFilter
      */
     public String getTextFilter() {
         return textFilter;
     }
-
+    
     /**
      * @param textFilter the textFilter to set
      */
@@ -54,31 +55,35 @@ public class QueryArgs {
         this.textFilter = textFilter.trim();
     }
 
+    
+    
+    //</editor-fold>
+
     /**
-     * @return the firstIndex
+     * @return the count
      */
-    public int getFirstIndex() {
-        return firstIndex;
+    public int getCount() {
+        return count;
     }
 
     /**
-     * @param firstIndex the firstIndex to set
+     * @param count the count to set
      */
-    public void setFirstIndex(int firstIndex) {
-        this.firstIndex = firstIndex;
+    public void setCount(int count) {
+        this.count = count;
     }
 
     /**
-     * @return the size
+     * @return the first
      */
-    public int getSize() {
-        return size;
+    public int getFirst() {
+        return first;
     }
 
     /**
-     * @param size the size to set
+     * @param first the first to set
      */
-    public void setSize(int size) {
-        this.size = size;
+    public void setFirst(int first) {
+        this.first = first;
     }
 }
