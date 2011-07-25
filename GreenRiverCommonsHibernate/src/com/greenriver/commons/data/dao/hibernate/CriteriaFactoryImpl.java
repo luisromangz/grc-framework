@@ -1,16 +1,15 @@
 package com.greenriver.commons.data.dao.hibernate;
 
 import com.greenriver.commons.DateRange;
-import com.greenriver.commons.Dates;
 import com.greenriver.commons.Strings;
-import com.greenriver.commons.data.dao.queryArguments.QueryArgs;
-import com.greenriver.commons.data.dao.queryArguments.QueryArgsFieldProps;
-import com.greenriver.commons.data.dao.queryArguments.QueryArgsProperties;
+import com.greenriver.commons.data.DataEntity;
+import com.greenriver.commons.data.dao.queryArgs.QueryArgs;
+import com.greenriver.commons.data.dao.queryArgs.QueryArgsProps;
+import com.greenriver.commons.data.dao.queryArgs.QueryArgsRestriction;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -60,16 +59,16 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
     // <editor-fold defaultstate="collapsed" desc="QueryArgs related methods">
     @Override
     public Criteria createCriteria(
-            QueryArgs queryArguments) {
+            Class<? extends DataEntity> entityClass, QueryArgs queryArguments) {
 
-        return internalCreateCriteria(queryArguments, true);
+        return internalCreateCriteria(entityClass, queryArguments, true);
     }
 
     @Override
     public Criteria createPagedCriteria(
-            QueryArgs queryArguments) {
+            Class entityClass, QueryArgs queryArguments) {
 
-        Criteria crit = internalCreateCriteria(queryArguments, true);
+        Criteria crit = internalCreateCriteria(entityClass, queryArguments, true);
         // We set the pagination values
         crit.setMaxResults(queryArguments.getCount());
         crit.setFirstResult(queryArguments.getFirst());
@@ -77,11 +76,10 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
         return crit;
     }
 
-    private Criteria internalCreateCriteria(QueryArgs queryArguments, boolean doSorting) {
+    private Criteria internalCreateCriteria(Class entityClass, QueryArgs queryArguments, boolean doSorting) {
         Class argumentClass = queryArguments.getClass();
-        QueryArgsProperties queryProperties =
-                (QueryArgsProperties) argumentClass.getAnnotation(
-                QueryArgsProperties.class);
+        QueryArgsProps queryProperties =
+                (QueryArgsProps) entityClass.getAnnotation(QueryArgsProps.class);
 
         if (queryProperties == null) {
             throw new RuntimeException(
@@ -89,11 +87,10 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
         }
 
         // The criteria for the target class is created
-        Criteria crit = getSession().createCriteria(
-                queryProperties.targetClass());
+        Criteria crit = getSession().createCriteria(entityClass);
 
         setBasicCriteriaParameters(crit, queryArguments, queryProperties, doSorting);
-        setRestrictions(argumentClass, crit, queryArguments);
+        setRestrictions(crit, queryArguments);
 
         if (doSorting) {
             setSorting(crit, queryArguments, queryProperties);
@@ -129,7 +126,7 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
     private void setBasicCriteriaParameters(
             Criteria crit,
             QueryArgs queryArguments,
-            QueryArgsProperties queryProperties,
+            QueryArgsProps queryProperties,
             boolean doSorting) {
 
         // We manage the sorting field.
@@ -204,26 +201,22 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
         }
     }
 
-    private void setRestrictions(Class argumentClass, Criteria crit, QueryArgs queryArguments) throws SecurityException {
-        // For the fields of the query argument annotated with @QueryArgsFieldProps
-        for (Field queryArgumentField : argumentClass.getDeclaredFields()) {
-            addFieldRestriction(crit, queryArgumentField, queryArguments);
+    private void setRestrictions(
+            Criteria crit,
+            QueryArgs queryArguments) throws SecurityException {
+        // For the fields of the query argument annotated with @QueryArgsField
+        for (QueryArgsRestriction restriction : queryArguments.getRestrictions()) {
+            addFieldRestriction(crit, restriction, queryArguments);
         }
     }
 
     private void addFieldRestriction(
             Criteria crit,
-            Field queryArgumentField,
+            QueryArgsRestriction restriction,
             QueryArgs queryArguments) {
-        QueryArgsFieldProps queryFieldProperties =
-                queryArgumentField.getAnnotation(
-                QueryArgsFieldProps.class);
-        if (queryFieldProperties == null) {
-            // We skip non annotated fields
-            return;
-        }
-
-        Object value = getValueForField(queryArgumentField, queryArguments);
+        
+        String fieldName = restriction.getFieldName();
+        Object value = restriction.getValue();
         if (value == null) {
             // We dont apply restrictions for null values.
             return;
@@ -236,10 +229,8 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
             }
         }
 
-        String fieldName = queryFieldProperties.fieldName();
-
         // We add a condition based on the field specified comparison type.
-        switch (queryFieldProperties.operator()) {
+        switch (restriction.getOperator()) {
             case EQUALS:
                 crit.add(Restrictions.eq(fieldName, value));
                 break;
@@ -250,17 +241,7 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
                 crit.add(Restrictions.gt(fieldName, value));
                 break;
             case LOWER_EQUALS:
-                if (value.getClass() == Date.class
-                        && queryFieldProperties.fullDay()) {
-                    Calendar cal = Calendar.getInstance();
-                    cal.setTime(Dates.getDatePart((Date) value));
-                    cal.add(Calendar.DATE, 1);
-                    value = cal.getTime();
-                    crit.add(Restrictions.lt(fieldName, value));
-                } else {
-                    crit.add(Restrictions.le(fieldName, value));
-                }
-
+                crit.add(Restrictions.le(fieldName, value));
                 break;
             case LOWER_THAN:
                 crit.add(Restrictions.lt(fieldName, value));
@@ -273,8 +254,8 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
                 this.addInRangeFieldRestriction(fieldName, value, crit);
                 break;
             default:
-                throw new IllegalStateException("Type "
-                        + queryFieldProperties.operator() + " not handled properly.");
+                throw new IllegalStateException(
+                        "Operator "+ restriction.getOperator() + " not handled properly.");
         }
     }
 
@@ -299,8 +280,8 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
     }
 
     @Override
-    public Criteria createCountingCriteria(QueryArgs entityQueryArguments) {
-        Criteria crit = internalCreateCriteria(entityQueryArguments, false);
+    public Criteria createCountingCriteria(Class<? extends DataEntity> entityClass, QueryArgs entityQueryArguments) {
+        Criteria crit = internalCreateCriteria(entityClass, entityQueryArguments, false);
         crit.setProjection(Projections.rowCount());
 
         return crit;
@@ -313,43 +294,43 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
             crit.addOrder(Order.desc(fieldName));
         }
     }
-    
+
     private void setSorting(
             Criteria crit,
             QueryArgs queryArgs,
-            QueryArgsProperties queryProperties) {
+            QueryArgsProps queryProperties) {
 
         boolean sortingSpecified = !Strings.isNullOrEmpty(queryArgs.getSortFieldName());
-        
+
         addSorting(crit, queryArgs.getSortFieldName(), queryArgs.isSortAscending());
 
-       
+
         if (!sortingSpecified) {
             // If no sorting was specified we try the default sorting stuff
             addDefaultSorting(crit, queryProperties);
         }
     }
 
-    private void addDefaultSorting(Criteria crit, QueryArgsProperties queryProperties) {
-        if (queryProperties.defaultSortFields() == null 
+    private void addDefaultSorting(Criteria crit, QueryArgsProps queryProperties) {
+        if (queryProperties.defaultSortFields() == null
                 || queryProperties.defaultSortFields().length == 0) {
             // Nothing to do if there isn't at least one field
             return;
         }
 
-        if(queryProperties.defaultSortFields().length!=
-                queryProperties.defaultSortOrders().length) {
+        if (queryProperties.defaultSortFields().length
+                != queryProperties.defaultSortOrders().length) {
             throw new IllegalArgumentException("Sorting modes not defined for all default sort fields.");
         }
 
         for (int i = 0; i < queryProperties.defaultSortFields().length; i++) {
-            this.addSorting(crit, 
-                    queryProperties.defaultSortFields()[i], 
+            this.addSorting(crit,
+                    queryProperties.defaultSortFields()[i],
                     queryProperties.defaultSortOrders()[i]);
-            
+
         }
 
-        
+
     }
 }
 // </editor-fold>

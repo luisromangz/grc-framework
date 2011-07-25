@@ -1,8 +1,6 @@
 package com.greenriver.commons.data.dao.hibernate;
 
-import com.greenriver.commons.data.dao.hibernate.pagination.CriteriaPagingHelperImpl;
-import com.greenriver.commons.data.dao.queryArguments.QueryArgs;
-import com.greenriver.commons.data.dao.hibernate.pagination.CriteriaPagingHelper;
+import com.greenriver.commons.data.dao.queryArgs.QueryArgs;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
@@ -70,20 +68,12 @@ public abstract class HibernateDaoBase<T> {
     }
 
     protected Criteria createCriteria(QueryArgs entityQueryArguments) {
-        return getCriteriaFactory().createCriteria(entityQueryArguments);
+        return getCriteriaFactory().createCriteria(getEntityClass(),entityQueryArguments);
     }
 
     protected Criteria createPagedCriteria(QueryArgs queryArgs) {
-        return getCriteriaFactory().createPagedCriteria(queryArgs);
+        return getCriteriaFactory().createPagedCriteria(getEntityClass(),queryArgs);
     }
     // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="Pagination using a helper">
-    protected CriteriaPagingHelper getPagingHelper(QueryArgs args) {
-        CriteriaFactory critFactory = this.getCriteriaFactory();
-        // For now is easier to instance this here
-        CriteriaPagingHelper helper = new CriteriaPagingHelperImpl(critFactory, args);
-        return helper;
-    }
-    // </editor-fold>
 }

@@ -2,6 +2,7 @@ package com.greenriver.commons.data.dao.hibernate;
 
 import com.greenriver.commons.Strings;
 import com.greenriver.commons.data.dao.UserDao;
+import com.greenriver.commons.data.dao.queryArgs.QueryArgs;
 import com.greenriver.commons.data.model.User;
 import com.greenriver.commons.data.model.UserAuthority;
 import java.util.List;
@@ -14,7 +15,9 @@ import org.hibernate.criterion.Restrictions;
  * User dao implementation for hibernate
  * @author luis
  */
-public class HibernateUserDao extends HibernateDaoBase<User> implements UserDao {
+public class HibernateUserDao 
+    extends HibernatePagedResultsDao<User, QueryArgs> 
+    implements UserDao {
 
     @Override
     public void save(User user, String encodedPassword) {
@@ -69,6 +72,7 @@ public class HibernateUserDao extends HibernateDaoBase<User> implements UserDao 
     @Override
     public int getUserCount() {
         Criteria c = getCurrentSession().createCriteria(User.class);
+        c.add(Restrictions.eq("deleted", false));
         c.setProjection(Projections.rowCount());
 
         Integer count = (Integer) c.uniqueResult();
@@ -124,5 +128,10 @@ public class HibernateUserDao extends HibernateDaoBase<User> implements UserDao 
     public User getById(Long userId) {
         User user = (User) getCurrentSession().get(User.class, userId);
         return user;
+    }
+
+    @Override
+    public List<User> query(QueryArgs qArgs) {
+       return query(qArgs, Restrictions.eq("deleted", false));
     }
 }
