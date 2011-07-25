@@ -131,7 +131,7 @@ public class HibernateUserDao
     }
 
     @Override
-    public List<User> query(QueryArgs qArgs) {
-       return query(qArgs, Restrictions.eq("deleted", false));
+    public int query(QueryArgs qArgs, List<User> entities) {
+       return query(qArgs, entities, Restrictions.eq("deleted", false));
     }
 }
