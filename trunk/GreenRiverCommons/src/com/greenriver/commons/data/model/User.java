@@ -25,7 +25,8 @@ import javax.persistence.InheritanceType;
  */
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-@QueryArgsProps(textFilterFields={"name","username","emailAddress"})
+@QueryArgsProps(textFilterFields={"name","username","emailAddress"},
+  defaultSortFields={"name"},defaultSortOrders={true})
 public class User implements Comparable<User>, DataEntity {
     // <editor-fold defaultstate="collapsed" desc="Fields">
     @Id
