@@ -1,10 +1,12 @@
 package com.greenriver.commons.web.services;
 
-import com.greenriver.commons.data.dao.queryArguments.QueryArgs;
+import com.greenriver.commons.data.dao.queryArgs.QueryArgs;
 import java.util.List;
 
 /**
- *
+ * This interface defines the methods a service ofering CRUD operations for 
+ * an entity must implement.
+ * 
  * @author luisro
  */
 public interface CRUDService <D,F>{
