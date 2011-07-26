@@ -1,11 +1,12 @@
 package com.greenriver.commons.data.dao.hibernate;
 
-import com.greenriver.commons.DateRange;
 import com.greenriver.commons.Strings;
 import com.greenriver.commons.data.DataEntity;
 import com.greenriver.commons.data.dao.queryArgs.QueryArgs;
 import com.greenriver.commons.data.dao.queryArgs.QueryArgsProps;
 import com.greenriver.commons.data.dao.queryArgs.QueryArgsRestriction;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -112,7 +113,7 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
         Criteria crit = getSession().createCriteria(entityClass);
 
         setTextFilter(crit, queryArguments, queryProperties);
-        setRestrictions(crit, queryArguments);
+        setRestrictions(entityClass, crit, queryArguments);
 
         if (doSorting) {
             setSorting(crit, queryArguments, queryProperties);
@@ -194,20 +195,29 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
     }
 
     private void setRestrictions(
+            Class entityClass,
             Criteria crit,
             QueryArgs queryArguments) throws SecurityException {
         // For the fields of the query argument annotated with @QueryArgsField
         for (QueryArgsRestriction restriction : queryArguments.getRestrictions()) {
-            addFieldRestriction(crit, restriction);
+            addFieldRestriction(entityClass, crit, restriction);
         }
     }
 
     private void addFieldRestriction(
+            Class entityClass,
             Criteria crit,
             QueryArgsRestriction restriction) {
         
-        String fieldName = restriction.getFieldName();
-        Object value = restriction.getValue();
+        String fieldName = restriction.getField();
+        Object value;
+        try {
+            value = getRestrictionValue(entityClass, fieldName,restriction.getValue());
+        } catch (NoSuchFieldException ex) {
+            throw new RuntimeException(ex);
+        } catch (ParseException ex) {
+            throw new RuntimeException(ex);
+        }
         if (value == null) {
             // We dont apply restrictions for null values.
             return;
@@ -241,34 +251,12 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
                 crit.add(Restrictions.ilike(fieldName, value.toString(),
                         MatchMode.ANYWHERE));
                 break;
-            case IN_RANGE:
-                this.addInRangeFieldRestriction(fieldName, value, crit);
-                break;
             default:
                 throw new IllegalStateException(
                         "Operator "+ restriction.getOperator() + " not handled properly.");
         }
     }
 
-    private void addInRangeFieldRestriction(String fieldName, Object value, Criteria crit) {
-        DateRange range = null;
-
-        if (value instanceof DateRange) {
-            range = (DateRange) value;
-        } else if (value instanceof Date) {
-            range = new DateRange((Date) value);
-        } else {
-            throw new IllegalStateException(
-                    "In range comparison type specified for a value that"
-                    + " is not a date nor a date range.");
-        }
-
-        if (range.getMax() != null) {
-            crit.add(Restrictions.le(fieldName, range.getMax()));
-        } else if (range.getMin() != null) {
-            crit.add(Restrictions.ge(fieldName, range.getMin()));
-        }
-    }
 
 
     private void addSorting(Criteria crit, String fieldName, boolean ascending) {
@@ -314,6 +302,27 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
 
 
     }
+
+    private Object getRestrictionValue(
+            Class entityClass, String fieldName,String value)
+            throws NoSuchFieldException, ParseException {
+        
+       Class fieldClass=entityClass.getDeclaredField(fieldName).getType();
+       
+       if(fieldClass.isAssignableFrom(String.class)) {
+           return value;
+       } else if(fieldClass.isAssignableFrom(Long.class)){
+           return Long.parseLong(value);
+       } else if(fieldClass.isAssignableFrom(Double.class)) {
+           return Double.parseDouble(value);
+       } else if(fieldClass.isAssignableFrom(Date.class)) {
+           return DateFormat.getInstance().parse(value);
+       } else {
+           throw new IllegalArgumentException("Not handled field type.");
+       }
+           
+    }
 }
 // </editor-fold>
 
+ 
