@@ -65,10 +65,10 @@ public class ConfigurablePageController
 
         ModelAndView mav = new ModelAndView(viewName);
 
-        configureForms(this.getForms(), mav, null);
+        configureForms(this.getForms(), mav,configuration, null);
         configurePropertiesView(this.getPropertiesView(), mav, null);
-        configureGrids(this.getGrids(), mav, null);
-        configurePageTools(mav);
+        configureGrids(this.getGrids(), mav,configuration, null);
+        configurePageTools(mav,configuration);
 
         if (this.userSessionInfo != null) {
             mav.addObject("userSessionInfo", this.userSessionInfo);
@@ -104,6 +104,7 @@ public class ConfigurablePageController
     protected void configureForms(
             Map<String, String> forms,
             ModelAndView mav,
+            PageConfig pageConfig,
             String prefix)
             throws ClassNotFoundException {
 
@@ -119,7 +120,7 @@ public class ConfigurablePageController
         for (String formId : forms.keySet()) {
             String className = forms.get(formId);
             Class entityClass = Class.forName(className);
-            formBuilder.addForm(prefix + formId, this.getPageConfig(), mav);
+            formBuilder.addForm(prefix + formId, pageConfig, mav);
             formBuilder.addFieldsFromClass(entityClass);
         }
     }
@@ -158,6 +159,7 @@ public class ConfigurablePageController
     protected void configureGrids(
             Map<String, String> grids,
             ModelAndView mav,
+            PageConfig pageConfig,
             String prefix) {
         if (getGridBuilder() == null && grids.size() > 0) {
             throw new IllegalStateException(
@@ -169,12 +171,12 @@ public class ConfigurablePageController
         }
 
         for (String gridId : grids.keySet()) {
-            getGridBuilder().addGridInfo(prefix + gridId, mav);
+            getGridBuilder().addGridInfo(prefix + gridId, pageConfig,mav);
             getGridBuilder().addGridInfoFromClass(grids.get(gridId));
         }
     }
 
-    private void configurePageTools(ModelAndView mav)
+    private void configurePageTools(ModelAndView mav, PageConfig configuration)
             throws ClassNotFoundException {
 
         List<String> dialogJspFiles = new ArrayList<String>();
@@ -212,8 +214,8 @@ public class ConfigurablePageController
             // actually needed.
 
             //Forms ids are prefixed with the task name
-            configureForms(pageTool.getForms(), mav,
-                    pageTool.getName() + "_");
+            configureForms(
+                    pageTool.getForms(), mav, configuration, pageTool.getName() + "_");
 
 
             // We always include the rest of things, so we are sure

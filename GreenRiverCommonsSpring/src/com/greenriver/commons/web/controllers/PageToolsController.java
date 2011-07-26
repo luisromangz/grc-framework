@@ -38,11 +38,11 @@ public class PageToolsController extends ConfigurablePageController {
                     pageTool.getSetupPaneJspFiles()));
 
             //Forms ids are prefixed with the task name
-            configureForms(pageTool.getForms(), mav,
-                    pageTool.getName() + "_");
+            configureForms(
+                    pageTool.getForms(), mav, configuration,pageTool.getName() + "_");
 
-            configurePropertiesView(pageTool.getPropertiesView(), mav,
-                    pageTool.getName() + "_");
+            configurePropertiesView(
+                    pageTool.getPropertiesView(), mav,pageTool.getName() + "_");
 
         }
 

@@ -85,15 +85,17 @@ public class TaskedPageController
 
         pageTask.configurePage(configuration, mav);
 
-        // If the load of the task is on demand, we add global functions intended for loading this.
+        // We add global functions intended for loading this.
         configuration.addOnLoadScript(String.format(
                 "window['%s_onLoad']=function(){",
                 pageTask.getTaskName()));
         configuration.getOnLoadScripts().addAll(pageTask.getOnLoadScripts());
 
-        //Forms ids are prefixed with the task name
-        configureForms(pageTask.getForms(), mav,pageTask.getTaskName() + "_");
-
+        // We configure forms and grids because they can add on load methods.
+        // ids are prefixed with the task name
+        configureForms(pageTask.getForms(), mav, configuration,pageTask.getTaskName() + "_");
+        configureGrids(pageTask.getGrids(), mav, configuration, pageTask.getTaskName()+"_");
+        
         configuration.addOnLoadScript(String.format(
                 "} // End of %s.onLoad function",
                 pageTask.getTaskName()));
