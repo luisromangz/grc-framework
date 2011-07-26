@@ -67,16 +67,19 @@ public abstract class HibernateDaoBase<T> {
         return new CriteriaFactoryImpl(this.sessionFactory.getCurrentSession());
     }
 
-    protected Criteria createCriteria(QueryArgs entityQueryArguments) {
-        return getCriteriaFactory().createCriteria(getEntityClass(),entityQueryArguments);
+    protected Criteria createCriteria(QueryArgs entityQueryArguments, Criterion... restrictions) {
+        return getCriteriaFactory().createCriteria(
+                getEntityClass(),entityQueryArguments, restrictions);
     }
 
-    protected Criteria createPagedCriteria(QueryArgs queryArgs) {
-        return getCriteriaFactory().createPagedCriteria(getEntityClass(),queryArgs);
+    protected Criteria createPagedCriteria(QueryArgs queryArgs, Criterion... restrictions) {
+        return getCriteriaFactory().createPagedCriteria(
+                getEntityClass(),queryArgs, restrictions);
     }
     
-    protected Criteria createCountingCriteria(QueryArgs queryArgs) {
-        return getCriteriaFactory().createCountingCriteria(getEntityClass(),queryArgs);
+    protected Criteria createCountingCriteria(QueryArgs queryArgs, Criterion... restrictions) {
+        return getCriteriaFactory().createCountingCriteria(
+                getEntityClass(),queryArgs,restrictions);
     }
     // </editor-fold>
 

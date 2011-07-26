@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
@@ -53,28 +54,51 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
         this.session = session;
     }
 
-    // <editor-fold defaultstate="collapsed" desc="QueryArgs related methods">
+    
     @Override
     public Criteria createCriteria(
-            Class<? extends DataEntity> entityClass, QueryArgs queryArguments) {
+            Class<? extends DataEntity> entityClass, 
+            QueryArgs queryArguments,
+            Criterion... restrictions) {
 
-        return internalCreateCriteria(entityClass, queryArguments, true);
+        return internalCreateCriteria(entityClass, queryArguments, true,restrictions);
     }
 
     @Override
     public Criteria createPagedCriteria(
-            Class<? extends DataEntity> entityClass, QueryArgs queryArguments) {
+            Class<? extends DataEntity> entityClass,
+            QueryArgs queryArguments,
+            Criterion... restrictions) {
 
-        Criteria crit = internalCreateCriteria(entityClass, queryArguments, true);
+        Criteria crit = internalCreateCriteria(
+                entityClass, queryArguments, true,restrictions);
         // We set the pagination values
         crit.setFirstResult(queryArguments.getFirst());        
         crit.setMaxResults(queryArguments.getCount());
 
         return crit;
     }
+    
+    
+    @Override
+    public Criteria createCountingCriteria(
+            Class<? extends DataEntity> entityClass, 
+            QueryArgs entityQueryArguments,
+            Criterion... restrictions) {
+        Criteria crit = internalCreateCriteria(
+                entityClass, entityQueryArguments, false,restrictions);
+        crit.setProjection(Projections.rowCount());
 
+        return crit;
+    }
+
+    
+    // <editor-fold defaultstate="collapsed" desc="Auxiliary methods">
     private Criteria internalCreateCriteria(
-            Class entityClass, QueryArgs queryArguments, boolean doSorting) {
+            Class entityClass,
+            QueryArgs queryArguments,
+            boolean doSorting,
+            Criterion... restrictions) {
        
         QueryArgsProps queryProperties =
                 (QueryArgsProps) entityClass.getAnnotation(QueryArgsProps.class);
@@ -92,6 +116,10 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
 
         if (doSorting) {
             setSorting(crit, queryArguments, queryProperties);
+        }
+        
+        for (Criterion c: restrictions) {
+            crit.add(c);
         }
 
         return crit;
@@ -242,13 +270,6 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
         }
     }
 
-    @Override
-    public Criteria createCountingCriteria(Class<? extends DataEntity> entityClass, QueryArgs entityQueryArguments) {
-        Criteria crit = internalCreateCriteria(entityClass, entityQueryArguments, false);
-        crit.setProjection(Projections.rowCount());
-
-        return crit;
-    }
 
     private void addSorting(Criteria crit, String fieldName, boolean ascending) {
         if (ascending) {
