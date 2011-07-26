@@ -7,24 +7,15 @@ package com.greenriver.commons.data.dao.queryArgs;
  * @author luisro
  */
 public class QueryArgsRestriction {
-    private String fieldName;
+    private String field;
     private QueryArgsOperator operator;
-    private Object value;
+    private String value;
+    
+    public QueryArgsRestriction() {
+        
+    }
 
     //<editor-fold defaultstate="collapsed" desc="Getters and setters">
-    /**
-     * @return the fieldName
-     */
-    public String getFieldName() {
-        return fieldName;
-    }
-    
-    /**
-     * @param fieldName the fieldName to set
-     */
-    public void setFieldName(String fieldName) {
-        this.fieldName = fieldName;
-    }
     
     /**
      * @return the operator
@@ -43,15 +34,29 @@ public class QueryArgsRestriction {
     /**
      * @return the value
      */
-    public Object getValue() {
+    public String getValue() {
         return value;
     }
     
     /**
      * @param value the value to set
      */
-    public void setValue(Object value) {
+    public void setValue(String value) {
         this.value = value;
     }
     //</editor-fold>
+
+    /**
+     * @return the field
+     */
+    public String getField() {
+        return field;
+    }
+
+    /**
+     * @param field the field to set
+     */
+    public void setField(String field) {
+        this.field = field;
+    }
 }
