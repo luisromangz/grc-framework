@@ -238,6 +238,7 @@ public class UserManagementServiceImpl
         }
 
         UserDto dUser = getDtoFactory().create(user);
+        dUser.setNewEntity(userDto.getId()==null);
         result.setResult(dUser);
 
         return result;
@@ -265,9 +266,13 @@ public class UserManagementServiceImpl
 
             result.addErrorMessage("Ya existe otro usuario con el mismo nombre de usuario.");
             return null;
-        } else if (existingUser == null || existingUser.isDeleted()) {
-            // We create a new user.
+        } 
+        
+        
+        if(userDto.getId()==null) {
             existingUser = new User();
+        } else {
+            existingUser = userDao.getById(userDto.getId());
         }
 
         userDto.copyTo(existingUser);
