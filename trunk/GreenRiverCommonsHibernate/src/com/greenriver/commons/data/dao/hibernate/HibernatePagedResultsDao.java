@@ -12,20 +12,17 @@ import org.hibernate.criterion.Criterion;
 public class HibernatePagedResultsDao<T, Q extends QueryArgs>
         extends HibernateMultipleResultsDao<T> {
 
-    public int query(Q args, List<T> elements, Criterion... criterions) {
+    public int query(Q args, List<T> elements, Criterion... restrictions) {
         if(elements==null || !elements.isEmpty()) {
             throw new IllegalArgumentException("elements must be empty.");
         }
         
-        Criteria crit = createPagedCriteria(args);
+        Criteria crit = createPagedCriteria(args,restrictions);
 
-        for(Criterion c : criterions) {
-            crit.add(c);
-        }
-        
         elements.addAll(crit.list());
         
-        crit = createCountingCriteria(args);
+        crit = createCountingCriteria(args, restrictions);
+     
         Integer total = (Integer) crit.uniqueResult();
 
         return total;

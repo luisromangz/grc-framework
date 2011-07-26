@@ -4,6 +4,7 @@ import com.greenriver.commons.data.DataEntity;
 import com.greenriver.commons.data.dao.queryArgs.QueryArgs;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Criterion;
 
 /**
  * Operations to define a factory that builds criteria instances over specific
@@ -19,7 +20,10 @@ public interface CriteriaFactory {
      * @param entityQueryArguments
      * @return
      */
-    Criteria createCriteria(Class<? extends DataEntity> entityClass, QueryArgs entityQueryArguments);
+    Criteria createCriteria(
+            Class<? extends DataEntity> entityClass, 
+            QueryArgs entityQueryArguments,
+            Criterion... restrictions);
 
     /**
      * Creates a criteria that returns a page of data from the total set of
@@ -28,7 +32,10 @@ public interface CriteriaFactory {
      * @param entityQueryArguments
      * @return
      */
-    Criteria createPagedCriteria(Class<? extends DataEntity> entityClass, QueryArgs entityQueryArguments);
+    Criteria createPagedCriteria(
+            Class<? extends DataEntity> entityClass, 
+            QueryArgs entityQueryArguments,
+            Criterion... restrictions);
 
     /**
      * Creates a criteria that returns the total count of results that matches
@@ -38,7 +45,10 @@ public interface CriteriaFactory {
      * @param entityQueryArguments
      * @return
      */
-    Criteria createCountingCriteria(Class<? extends DataEntity> entityClass, QueryArgs entityQueryArguments);
+    Criteria createCountingCriteria(
+            Class<? extends DataEntity> entityClass, 
+            QueryArgs entityQueryArguments,
+            Criterion... restrictions);
 
     /**
      * Gets the current session that this criteria factory is using to build
