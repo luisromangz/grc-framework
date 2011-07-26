@@ -1,6 +1,6 @@
 package com.greenriver.commons.web.helpers.grid;
 
-import com.greenriver.commons.data.fieldProperties.FieldProps;
+import com.greenriver.commons.web.helpers.header.HeaderConfig;
 import java.util.List;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -20,7 +20,7 @@ public interface GridBuilder {
      * the id specified.
      * @return The newly created GridInfo instance.
      */
-    GridInfo addGridInfo(String id, ModelAndView mav);
+    GridInfo addGridInfo(String id, HeaderConfig configuration, ModelAndView mav);
 
     /**
      * Gets all the defined properties views.

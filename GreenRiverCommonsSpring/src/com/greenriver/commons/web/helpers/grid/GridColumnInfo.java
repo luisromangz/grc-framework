@@ -8,6 +8,7 @@ public class GridColumnInfo {
     private String field;
     private String label;
     private String width;
+    private boolean sortable;
 
     public GridColumnInfo(String field) {
         this.field=field;
@@ -68,5 +69,21 @@ public class GridColumnInfo {
         this.width = width;
     }
     
+    
+    /**
+     * @return the sortable
+     */
+    public boolean isSortable() {
+        return sortable;
+    }
+
+    /**
+     * @param sortable the sortable to set
+     */
+    public void setSortable(boolean sortable) {
+        this.sortable = sortable;
+    }
+    
     //</editor-fold>
+
 }
