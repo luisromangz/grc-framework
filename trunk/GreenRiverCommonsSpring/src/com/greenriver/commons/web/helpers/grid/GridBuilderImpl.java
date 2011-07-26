@@ -6,6 +6,7 @@ import com.greenriver.commons.data.fieldProperties.FieldsProperties;
 import com.greenriver.commons.data.fieldProperties.FieldProps;
 import com.greenriver.commons.data.fieldProperties.FieldsInsertionMode;
 import com.greenriver.commons.data.fieldProperties.GridColumn;
+import com.greenriver.commons.web.helpers.header.HeaderConfig;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 public class GridBuilderImpl implements GridBuilder {
     private List<GridInfo> gridInfos;
     private GridInfo currentGridInfo;
+    private HeaderConfig configuration;
     private Map<String, Class> classCache;
 
     public GridBuilderImpl() {
@@ -35,11 +37,13 @@ public class GridBuilderImpl implements GridBuilder {
     }
 
     @Override
-    public GridInfo addGridInfo(String id, ModelAndView mav) {
+    public GridInfo addGridInfo(String id, HeaderConfig configuration, ModelAndView mav) {
         if (mav.getModel().containsKey(id)) {
             throw new IllegalArgumentException(
                     "There is already a grid with the id " + id);
         }
+        
+        this.configuration = configuration;
 
         currentGridInfo = new GridInfo(id);
         mav.addObject(id, currentGridInfo);
@@ -94,15 +98,13 @@ public class GridBuilderImpl implements GridBuilder {
         
         if(columnProps!=null) {
             column.setWidth(columnProps.width());
-            
-            if(columnProps.canSort()) {
-                this.currentGridInfo.addSortableColumn(field);
-            }
-        }
-        
+            column.setSortable(columnProps.canSort());
+        } else {
+            // By default, we can sort;
+            column.setSortable(true);
+        }        
      
-        this.currentGridInfo.addGridColumn(column);
-       
+        this.currentGridInfo.addGridColumn(column);       
 
         return column;
     }
@@ -165,8 +167,16 @@ public class GridBuilderImpl implements GridBuilder {
             //Only go ahead if there is a field property
             if (fieldProps != null) {
                 addGridColumn(propName, fieldProps, columnProps);
-            }
+            }            
+            
         }
+        
+        this.currentGridInfo.createCanSortFunction();
+        
+        this.configuration.addOnLoadScript(String.format(
+                "dijit.byId('%s').canSort=%s;",
+                this.currentGridInfo.getId(),
+                this.currentGridInfo.getCanSortFunction()));
     }   
 
     @Override

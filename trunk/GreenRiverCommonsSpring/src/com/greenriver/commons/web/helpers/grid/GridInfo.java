@@ -11,22 +11,16 @@ public class GridInfo {
 
     private String id;
     private List<GridColumnInfo> columns;
-    private List<String> sortableColumns;
+    private String canSortFunction = "function(idx){return true;}";
 
     public GridInfo(String id) {
         this.id = id;
         this.columns = new ArrayList<GridColumnInfo>();
-        this.sortableColumns = new ArrayList<String>();
     }
 
     public void addGridColumn(GridColumnInfo column) {
         this.columns.add(column);
     }
-    
-    public void addSortableColumn(String columnField) {
-        this.sortableColumns.add(columnField);
-    }
-
     public boolean containsColumnForField(String field) {
         for (GridColumnInfo c : columns) {
             if (c.getField().equals(field)) {
@@ -42,12 +36,27 @@ public class GridInfo {
 
             if (c.getField().equals(field)) {
                 columns.remove(c);
-                return;
+                 return;
             }
         }
 
         throw new IndexOutOfBoundsException(
                 "Column for specified field " + field + "  not found.");
+
+    }
+
+    public void createCanSortFunction() {
+        
+        this.canSortFunction="function(idx){";
+        
+        this.canSortFunction+="var canSort=[";
+        
+        for(GridColumnInfo c : columns) {
+            canSortFunction+= (c.isSortable()?"true,":"false,");
+        }
+        
+        this.canSortFunction+="];return canSort[Math.abs(idx)];}";
+        
     }
 
     //<editor-fold defaultstate="collapsed" desc="Getters and setters">
@@ -80,17 +89,17 @@ public class GridInfo {
     }
 
     /**
-     * @return the sortableColumns
+     * @return the canSortFunction
      */
-    public List<String> getSortableColumns() {
-        return sortableColumns;
+    public String getCanSortFunction() {
+        return canSortFunction;
     }
 
     /**
-     * @param sortableColumns the sortableColumns to set
+     * @param canSortFunction the canSortFunction to set
      */
-    public void setSortableColumns(List<String> sortableColumns) {
-        this.sortableColumns = sortableColumns;
+    public void setCanSortFunction(String canSortFunction) {
+        this.canSortFunction = canSortFunction;
     }
     //</editor-fold>
 }
