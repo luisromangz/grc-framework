@@ -47,15 +47,14 @@ public class GridInfo {
 
     public void createCanSortFunction() {
         
-        this.canSortFunction="function(idx){";
-        
+        this.canSortFunction="function(idx){";       
         this.canSortFunction+="var canSort=[";
         
         for(GridColumnInfo c : columns) {
             canSortFunction+= (c.isSortable()?"true,":"false,");
         }
         
-        this.canSortFunction+="];return canSort[Math.abs(idx)];}";
+        this.canSortFunction+="];return canSort[Math.abs(idx)-1];}";
         
     }
 
