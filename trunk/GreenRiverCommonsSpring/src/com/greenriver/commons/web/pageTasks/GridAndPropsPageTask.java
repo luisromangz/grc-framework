@@ -1,6 +1,5 @@
 package com.greenriver.commons.web.pageTasks;
 
-import com.greenriver.commons.Strings;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +23,7 @@ public class GridAndPropsPageTask
     private String indefiniteElementLabel;
     private String selectedElementLabel;
     
+    private String itemToolbarJspFile="itemToolbar.jsp";
     private List<String> extraJspFiles;
     
     private String service;
@@ -88,10 +88,6 @@ public class GridAndPropsPageTask
         return grids;
     }
     
-    
-    
-    
-
     //<editor-fold defaultstate="collapsed" desc="Getters and setters">
     /**
      * @return the element
@@ -192,6 +188,20 @@ public class GridAndPropsPageTask
      */
     public void setService(String service) {
         this.service = service;
+    }
+
+    /**
+     * @return the itemToolbarJspFile
+     */
+    public String getItemToolbarJspFile() {
+        return itemToolbarJspFile;
+    }
+
+    /**
+     * @param itemToolbarJspFile the itemToolbarJspFile to set
+     */
+    public void setItemToolbarJspFile(String itemToolbarJspFile) {
+        this.itemToolbarJspFile = itemToolbarJspFile;
     }
 
    
