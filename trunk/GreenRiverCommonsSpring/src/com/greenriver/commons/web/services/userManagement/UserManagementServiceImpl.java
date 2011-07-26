@@ -189,7 +189,7 @@ public class UserManagementServiceImpl
         try {
             result.setTotal(userDao.query(args,users));
         } catch (RuntimeException ex) {
-            result.formatErrorMessage("Ocurrió un error  de base de datos.");
+            result.formatErrorMessage("Ocurrió un error de base de datos.");
             return result;
         }
 
