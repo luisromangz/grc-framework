@@ -88,6 +88,7 @@ public class UserManagementServiceImpl
      * @return the formDtoFactory
      */
     // </editor-fold>
+    
     // <editor-fold defaultstate="collapsed" desc="Service methods">
     @Override
     public Result<UserFormDto> getNew() {
@@ -234,6 +235,8 @@ public class UserManagementServiceImpl
                 && Strings.isNullOrEmpty(user.getPassword())) {
             // We create a new password
             user.setPassword(createRandomPassword());
+            // New users can access the app by default.
+            user.addRole("ROLE_USER");
         }
 
         String encodedPassword = passwordEncoder.encodePassword(user.getPassword(), null);
