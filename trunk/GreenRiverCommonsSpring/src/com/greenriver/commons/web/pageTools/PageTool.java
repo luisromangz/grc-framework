@@ -32,6 +32,7 @@ public class PageTool
     private PageConfig pageConfiguration;
 
 
+    private boolean initialized = false;
     // </editor-fold>
 
     public PageTool() {
@@ -39,6 +40,19 @@ public class PageTool
         dialogJspFiles = new ArrayList<String>();
         setupPaneJspFiles = new ArrayList<String>();
         pageConfiguration = new PageConfig();
+    }
+    
+    public final void initialize() {
+        this.initialized = true;
+        this.internalInitialize();
+    }
+    
+    protected void internalInitialize(){
+        
+    }
+    
+    public final boolean isInitialized() {
+        return initialized;
     }
 
     @Override
