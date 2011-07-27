@@ -88,7 +88,6 @@ public class UserManagementServiceImpl
      * @return the formDtoFactory
      */
     // </editor-fold>
-    
     // <editor-fold defaultstate="collapsed" desc="Service methods">
     @Override
     public Result<UserFormDto> getNew() {
@@ -148,7 +147,7 @@ public class UserManagementServiceImpl
             // We are changing the flag for an existing user so we don't
             // need to provide the encoded password.
             userDao.save(persistedUser, null);
-            res.setResult(getUserDto(persistedUser, false));
+            res.setResult(getUserDto(persistedUser, true));
         }
 
         return res;
@@ -246,7 +245,7 @@ public class UserManagementServiceImpl
             result.addErrorMessage("Ocurrió un error de base de datos.");
         }
 
-        UserDto dUser = getUserDto(user, false);
+        UserDto dUser = getUserDto(user, true);
         dUser.setNewEntity(userDto.getId() == null);
         result.setResult(dUser);
 
@@ -288,44 +287,77 @@ public class UserManagementServiceImpl
 
         return existingUser;
     }
+
+    @Override
+    public Result<UserDto> toggleActivationState(Long id) {
+       Result<UserDto> result = new Result<UserDto>();
+       
+       User user = getUserById(id, result);
+       if(!result.isSuccess()){
+           return result;
+       }
+       
+       if(userSessionInfo.getCurrentUser().equals(user)){
+           result.addErrorMessage("El usuario actual no puede desactivarse a sí mismo.");
+           return result;
+       }
+       
+       
+       if(user.hasRole("ROLE_USER")) {
+           user.removeRole("ROLE_USER");
+       } else{
+           user.addRole("ROLE_USER");
+       }
+       
+       try {
+           userDao.save(user);
+       } catch(RuntimeException e) {
+           result.addErrorMessage("Ocurrió un error de base de datos.");
+           return result;
+       }
+       
+       result.setResult(getUserDto(user, true));
+       
+       return result;        
+    }
     // </editor-fold>
-    
+
     //<editor-fold defaultstate="collapsed" desc="Auxiliary methods">
     private User getUserById(Long userId, Result r) {
         User user = null;
         try {
             user = userDao.getById(userId);
-            
+
         } catch (RuntimeException e) {
             r.addErrorMessage("Ocurrió un error en la base de datos.");
         }
-        
+
         if (user == null) {
             r.addErrorMessage("No se encontró el usuario especificado.");
         }
         return user;
     }
-    
+
     private UserFormDto getUserFormDto(User user) {
         UserFormDto dto = null;
         try {
             dto = getFormDtoClass().newInstance();
         } catch (Exception ex) {
         }
-        
+
         dto.fromUser(user);
         return dto;
     }
-    
+
     private UserDto getUserDto(User user, boolean forGrid) {
         UserDto dto = null;
         try {
             dto = getDtoClass().newInstance();
         } catch (Exception ex) {
         }
-        
+
         dto.fromUser(user, forGrid);
         return dto;
     }
-}
 //</editor-fold>
+}
