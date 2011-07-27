@@ -152,12 +152,6 @@ public @interface FieldProperties {
     public String[] allowedFileTypes() default {};
 
     /**
-     * A field's deactivation condition.
-     * @return
-     */
-    public FieldDeactivationCondition[] deactivationConditions() default {};
-
-    /**
      * The desired widget size, in css format.
      * @return
      */
