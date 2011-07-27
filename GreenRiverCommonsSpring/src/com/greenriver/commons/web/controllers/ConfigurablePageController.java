@@ -249,6 +249,7 @@ public class ConfigurablePageController
             pageConfig.addOnLoadScript("window.onToolsLoaded()");
         }
 
+        mav.addObject("pageTools",this.getPageTools());
         mav.addObject("toolsDialogJspFiles", dialogJspFiles);
         mav.addObject("toolsSetupJspFiles", setupJspFiles);
     }
