@@ -97,6 +97,10 @@ public class GridBuilderImpl implements GridBuilder {
         column.setLabel(props.label());
         
         if(columnProps!=null) {
+            if(columnProps.exclude()) {
+                return null;
+            }
+            
             column.setWidth(columnProps.width());
             column.setSortable(columnProps.canSort());
         } else {
