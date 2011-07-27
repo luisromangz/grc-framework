@@ -1,5 +1,6 @@
 package com.greenriver.commons.web.pageTools;
 
+import com.greenriver.commons.data.model.User;
 import com.greenriver.commons.web.configuration.FormsContainer;
 import com.greenriver.commons.web.configuration.PageConfig;
 import com.greenriver.commons.web.configuration.PropertiesViewsContainer;
@@ -17,6 +18,8 @@ public class PageTool
         implements FormsContainer, PropertiesViewsContainer, HeaderConfig {
 
     // <editor-fold defaultstate="collapsed" desc="Attributes">
+    private String[] allowedRoles = {"ROLE_USER"};
+    
     /**
      * The tool's name.
      */
@@ -40,6 +43,11 @@ public class PageTool
         dialogJspFiles = new ArrayList<String>();
         setupPaneJspFiles = new ArrayList<String>();
         pageConfiguration = new PageConfig();
+    }
+    
+    public boolean isAllowedForUser(User user) {
+        boolean allowed = user.hasAnyRole(this.getAllowedRoles());
+        return allowed;
     }
     
     public final void initialize() {
@@ -267,6 +275,20 @@ public class PageTool
     }
 
    // </editor-fold>
+
+    /**
+     * @return the allowedRoles
+     */
+    public String[] getAllowedRoles() {
+        return allowedRoles;
+    }
+
+    /**
+     * @param allowedRoles the allowedRoles to set
+     */
+    public void setAllowedRoles(String[] allowedRoles) {
+        this.allowedRoles = allowedRoles;
+    }
 }
 
 
