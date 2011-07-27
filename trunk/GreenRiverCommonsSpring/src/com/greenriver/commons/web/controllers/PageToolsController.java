@@ -2,6 +2,7 @@ package com.greenriver.commons.web.controllers;
 
 import com.greenriver.commons.Strings;
 import com.greenriver.commons.web.configuration.PageConfig;
+import com.greenriver.commons.web.configuration.PageToolsContainer;
 import com.greenriver.commons.web.pageTools.PageTool;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,8 @@ import org.springframework.web.servlet.ModelAndView;
  */
 public class PageToolsController extends ConfigurablePageController {
 
+    private PageToolsContainer pageToolsContainer;
+    
     @Override
     public void customHandleRequest(
             HttpServletRequest request,
@@ -24,7 +27,7 @@ public class PageToolsController extends ConfigurablePageController {
 
         List<String> dialogJspFiles = new ArrayList<String>();
         List<String> setupJspFiles = new ArrayList<String>();
-        for (PageTool pageTool : this.getPageTools()) {
+        for (PageTool pageTool : pageToolsContainer.getPageTools()) {
 
 
             // We only load the jsp files if we are loading the
@@ -50,4 +53,20 @@ public class PageToolsController extends ConfigurablePageController {
         mav.addObject("toolsDialogJspFiles", dialogJspFiles);
         mav.addObject("toolsSetupJspFiles", setupJspFiles);
     }
+
+    //<editor-fold defaultstate="collapsed" desc="Getter and setters">
+    /**
+     * @return the pageToolsContainer
+     */
+    public PageToolsContainer getPageToolsContainer() {
+        return pageToolsContainer;
+    }
+    
+    /**
+     * @param pageToolsContainer the pageToolsContainer to set
+     */
+    public void setPageToolsContainer(PageToolsContainer pageToolsContainer) {
+        this.pageToolsContainer = pageToolsContainer;
+    }
+    //</editor-fold>
 }
