@@ -1,4 +1,4 @@
-package com.greenriver.commons.data.dao.hibernate;
+package com.greenriver.commons.data.dao.hibernate.base;
 
 import com.greenriver.commons.data.dao.queryArgs.QueryArgs;
 import java.lang.reflect.ParameterizedType;

@@ -1,5 +1,6 @@
 package com.greenriver.commons.data.dao.hibernate;
 
+import com.greenriver.commons.data.dao.hibernate.base.HibernatePagedResultsDao;
 import com.greenriver.commons.Strings;
 import com.greenriver.commons.data.dao.UserDao;
 import com.greenriver.commons.data.dao.queryArgs.QueryArgs;

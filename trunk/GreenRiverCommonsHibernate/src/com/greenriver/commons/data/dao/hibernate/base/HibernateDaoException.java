@@ -1,5 +1,5 @@
 
-package com.greenriver.commons.data.dao.hibernate;
+package com.greenriver.commons.data.dao.hibernate.base;
 
 /**
  * @author Miguel Angel

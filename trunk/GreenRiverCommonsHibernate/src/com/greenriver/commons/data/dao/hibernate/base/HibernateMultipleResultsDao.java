@@ -1,4 +1,4 @@
-package com.greenriver.commons.data.dao.hibernate;
+package com.greenriver.commons.data.dao.hibernate.base;
 
 import java.util.List;
 import org.hibernate.Criteria;
