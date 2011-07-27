@@ -204,15 +204,15 @@ public class User implements Comparable<User>, DataEntity {
     // </editor-fold>
 
     public void addRole(String role) {
-        List<String> rolesList = getRoles();
+        List<String> rolesList =new ArrayList<String>(getRoles());
         if(!rolesList.contains(role)) {
-            rolesList.add(name);
+            rolesList.add(role);
         }
         setRoles(rolesList);
     }
 
     public void removeRole(String role) {
-         List<String> rolesList = getRoles();
+         List<String> rolesList = new ArrayList<String>(getRoles());
         if(rolesList.contains(role)) {
             rolesList.remove(role);
         }
