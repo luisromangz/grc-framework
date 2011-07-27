@@ -31,8 +31,8 @@ public class UserManagementServiceImpl
     private PasswordEncoder passwordEncoder;
     private FieldsValidator fieldsValidator;
     private RoleManager roleManager;
-    private UserDtoFactory<UserFormDto> formDtoFactory;
-    private UserDtoFactory<UserDto> dtoFactory;
+    private Class<UserFormDto> formDtoClass;
+    private Class<UserDto> dtoClass;
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Getters & setters">
@@ -59,37 +59,17 @@ public class UserManagementServiceImpl
     /**
      * @return the formDtoFactory
      */
-    public UserDtoFactory<UserFormDto> getFormDtoFactory() {
-        return formDtoFactory;
-    }
-
-    /**
-     * @param formDtoFactory the formDtoFactory to set
-     */
-    public void setFormDtoFactory(UserDtoFactory<UserFormDto> formDtoFactory) {
-        this.formDtoFactory = formDtoFactory;
-    }
-
-    /**
-     * @return the dtoFactory
-     */
-    public UserDtoFactory<UserDto> getDtoFactory() {
-        return dtoFactory;
-    }
-
-    /**
-     * @param dtoFactory the dtoFactory to set
-     */
-    public void setDtoFactory(UserDtoFactory<UserDto> dtoFactory) {
-        this.dtoFactory = dtoFactory;
-    }
-
+  
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Service methods">
     @Override
     public Result<UserFormDto> getNew() {
         Result<UserFormDto> r = new Result<UserFormDto>();
-        r.setResult(formDtoFactory.create(new User()));
+        
+        UserFormDto dto =getUserFormDto(new User());
+       
+        
+        r.setResult(dto);
         return r;
     }
 
@@ -102,7 +82,7 @@ public class UserManagementServiceImpl
             return r;
         }
 
-        r.setResult(formDtoFactory.create(user));
+        r.setResult(getUserFormDto(user));
         return r;
     }
 
@@ -114,7 +94,7 @@ public class UserManagementServiceImpl
             return r;
         }
 
-        r.setResult(dtoFactory.create(user));
+        r.setResult(getUserDto(user, false));
         return r;
     }
 
@@ -140,7 +120,7 @@ public class UserManagementServiceImpl
             // We are changing the flag for an existing user so we don't
             // need to provide the encoded password.
             userDao.save(persistedUser, null);
-            res.setResult(getDtoFactory().create(persistedUser));
+            res.setResult(getUserDto(persistedUser, false));
         }
 
         return res;
@@ -166,7 +146,7 @@ public class UserManagementServiceImpl
                 userDao.save(currentUser, passwordEncoder.encodePassword(
                         newPassword, null));
 
-                result.setResult(getDtoFactory().create(currentUser));
+                result.setResult(getUserDto(currentUser, false));
             }
 
         } else {
@@ -197,7 +177,7 @@ public class UserManagementServiceImpl
 
             @Override
             public UserDto apply(User element) {
-                return getDtoFactory().create(element);
+                return getUserDto(element, true);
             }
         }));
 
@@ -237,7 +217,7 @@ public class UserManagementServiceImpl
             result.addErrorMessage("Ocurrió un error de base de datos.");
         }
 
-        UserDto dUser = getDtoFactory().create(user);
+        UserDto dUser = getUserDto(user, false);
         dUser.setNewEntity(userDto.getId()==null);
         result.setResult(dUser);
 
@@ -294,5 +274,57 @@ public class UserManagementServiceImpl
             r.addErrorMessage("No se encontró el usuario especificado.");
         }
         return user;
+    }
+    
+    private UserFormDto getUserFormDto(User user) {
+        UserFormDto dto = null;
+         try {
+            dto = getFormDtoClass().newInstance();
+        } catch (Exception ex) {
+           
+        }
+        
+        dto.fromUser(user);
+        return dto;
+    }
+    
+    private UserDto getUserDto(User user, boolean forGrid) {
+        UserDto dto = null;
+         try {
+            dto = getDtoClass().newInstance();
+        } catch (Exception ex) {
+           
+        }
+        
+        dto.fromUser(user,forGrid);
+        return dto;
+    }
+
+    /**
+     * @return the formDtoClass
+     */
+    public Class<UserFormDto> getFormDtoClass() {
+        return formDtoClass;
+    }
+
+    /**
+     * @param formDtoClass the formDtoClass to set
+     */
+    public void setFormDtoClass(Class<UserFormDto> formDtoClass) {
+        this.formDtoClass = formDtoClass;
+    }
+
+    /**
+     * @return the dtoClass
+     */
+    public Class<UserDto> getDtoClass() {
+        return dtoClass;
+    }
+
+    /**
+     * @param dtoClass the dtoClass to set
+     */
+    public void setDtoClass(Class<UserDto> dtoClass) {
+        this.dtoClass = dtoClass;
     }
 }
