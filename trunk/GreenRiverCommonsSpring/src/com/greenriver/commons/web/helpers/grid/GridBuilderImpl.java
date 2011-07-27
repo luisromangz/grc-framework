@@ -2,9 +2,9 @@ package com.greenriver.commons.web.helpers.grid;
 
 import com.greenriver.commons.ClassFields;
 import com.greenriver.commons.Strings;
-import com.greenriver.commons.data.fieldProperties.FieldsProperties;
 import com.greenriver.commons.data.fieldProperties.FieldProps;
 import com.greenriver.commons.data.fieldProperties.FieldsInsertionMode;
+import com.greenriver.commons.data.fieldProperties.FieldsProps;
 import com.greenriver.commons.data.fieldProperties.GridColumn;
 import com.greenriver.commons.web.helpers.header.HeaderConfig;
 import java.lang.reflect.Field;
@@ -219,9 +219,8 @@ public class GridBuilderImpl implements GridBuilder {
             return new ArrayList<String>(0);
         }
 
-        FieldsProperties entityProperties =
-                (FieldsProperties) entityClass.getAnnotation(
-                FieldsProperties.class);
+        FieldsProps entityProperties =
+                (FieldsProps) entityClass.getAnnotation(FieldsProps.class);
 
         return ClassFields.getNames(
                 entityClass,

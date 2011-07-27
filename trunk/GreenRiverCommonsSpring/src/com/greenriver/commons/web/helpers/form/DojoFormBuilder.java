@@ -1,11 +1,12 @@
 package com.greenriver.commons.web.helpers.form;
 
 import com.greenriver.commons.Strings;
-import com.greenriver.commons.data.fieldProperties.FieldsProperties;
-import com.greenriver.commons.data.fieldProperties.FieldDeactivationCondition;
+import com.greenriver.commons.data.fieldProperties.FieldAction;
+import com.greenriver.commons.data.fieldProperties.FieldActions;
 import com.greenriver.commons.data.fieldProperties.FieldProperties;
 import com.greenriver.commons.data.fieldProperties.FieldType;
 import com.greenriver.commons.data.fieldProperties.FieldsInsertionMode;
+import com.greenriver.commons.data.fieldProperties.FieldsProps;
 import com.greenriver.commons.data.validation.ValidationRegex;
 import com.greenriver.commons.web.helpers.header.HeaderConfig;
 import com.greenriver.commons.roleManagement.RoleManager;
@@ -40,28 +41,23 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         currentForm.addField(field);
     }
 
-    @Override
-    public void addField(String id, FieldProperties properties, Class fieldType) {
+    public void addField(String id, FieldProperties properties, Field field) {
         String fieldId = currentForm.getId() + "_" + id;
 
         HtmlFormElementInfo formFieldElement = new HtmlFormElementInfo(fieldId);
-        
-        
-
-        setupFieldElement(formFieldElement, fieldType, properties);
-
-
+        setupFieldElement(formFieldElement, field.getType(), properties);
         setFieldProperties(properties, formFieldElement);
+        setFieldActions(id, field);
 
         // The field is added to the form.
-        FormField field = new FormField(
+        FormField formField = new FormField(
                 formFieldElement.getId(),
                 formFieldElement.getElementType(),
                 properties.label(),
                 formFieldElement.getContents(),
                 formFieldElement.getAttributes());
 
-        currentForm.addField(field);
+        currentForm.addField(formField);
 
         if (properties.type() == FieldType.PASSWORDEDITOR) {
             // If the field is a password editor, then we need to add a second
@@ -69,66 +65,78 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
             createPasswordConfirmationFormField(formFieldElement,
                     properties.label());
         }
-
-        for (FieldDeactivationCondition condition : properties.deactivationConditions()) {
-            addFieldDeactivationCondition(field.getId(), condition);
+    }
+    
+    private void setFieldActions(String fieldId, Field field) {
+        
+        FieldActions actions = (FieldActions) field.getAnnotation(FieldActions.class);
+        if(actions!=null) {
+            for(FieldAction action : actions.value()) {
+                this.addAction(fieldId, action);
+            }
+        }
+        
+        FieldAction action =(FieldAction) field.getAnnotation(FieldAction.class);
+        if(action!=null) {
+            this.addAction(fieldId, action);
         }
     }
 
-    public void addFieldDeactivationCondition(
+    public void addAction(
             String fieldIdentifier,
-            FieldDeactivationCondition condition) {
+            FieldAction action) {
 
         String fieldId = null;
         if (!Strings.isNullOrEmpty(fieldIdentifier)) {
             // Real field name takes preference over the name passed in the annotation.
             fieldId = fieldIdentifier;
-        } else if (!Strings.isNullOrEmpty(condition.targetField())) {
-            fieldId = currentForm.getId() + "_" + condition.targetField();
+        } else if (!Strings.isNullOrEmpty(action.targetField())) {
+            fieldId = currentForm.getId() + "_" + action.targetField();
         } else {
             throw new IllegalArgumentException(
                     "addFieldDeactivationCondition: A non-empty target field identifier is required");
         }
 
-
-        ArrayList<String> conditions = new ArrayList<String>();
-        if (!Strings.isNullOrEmpty(condition.equals())) {
-            conditions.add(String.format("value==%s", condition.equals()));
+        String condition ="";
+        if (!Strings.isNullOrEmpty(action.triggerValue())) {
+            condition =String.format("value%s%s", action.equals()?"==":"!=",action.triggerValue());
         }
-
-        if (!Strings.isNullOrEmpty(condition.notEquals())) {
-            conditions.add(String.format("value!=%s", condition.notEquals()));
-        }
-
-        String conditionString = Strings.join(conditions, "||");
 
         String asignationStatement = "";
-        if (!condition.newValue().equals("\0")) {
+        if (!action.newValue().equals("\0")) {
             asignationStatement = String.format(
                     "if(%s){widget.attr('value',%s);}",
-                    conditionString,
-                    condition.newValue());
+                    condition,
+                    action.newValue());
+        }
+        
+        String deactivationStatement="";
+        
+        if(action.deactivate()) {
+            deactivationStatement=String.format(
+                    "widget.setDisabled(%s);",
+                    condition);
         }
 
         String function = String.format("function(){"
                 + "var value=dijit.byId('%s').attr('value');"
                 + "var widget = dijit.byId('%s');"
-                + "widget.setDisabled(%s);%s}",
-                currentForm.getId() + "_" + condition.triggerField(),
-                fieldId,
-                conditionString,
+                + "%s%s}",
+                currentForm.getId() + "_" + action.triggerField(),
+                currentForm.getId() + "_" +fieldId,
+                deactivationStatement,
                 asignationStatement);
 
         String onChangeCode = String.format(
                 "dojo.connect(dijit.byId('%s'),'onChange',%s);",
-                currentForm.getId() + "_" + condition.triggerField(),
+                currentForm.getId() + "_" + action.triggerField(),
                 function);
 
         configuration.addOnLoadScript(onChangeCode);
 
         String widgetInitCode = String.format(
                 "dojo.connect(dijit.byId('%s'),'setValue',%s);",
-                currentForm.getId() + "_" + condition.triggerField(),
+                currentForm.getId() + "_" + action.triggerField(),
                 function);
 
         configuration.addOnLoadScript(widgetInitCode);
@@ -136,13 +144,12 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
 
     @Override
     public void addFieldsFromClass(Class modelClass) {
-        FieldsProperties entityProperties =
-                (FieldsProperties) modelClass.getAnnotation(FieldsProperties.class);
+        FieldsProps entityProperties =
+                (FieldsProps) modelClass.getAnnotation(FieldsProps.class);
 
         if (entityProperties != null) {
-            for (FieldDeactivationCondition deactivationCondition :
-                    entityProperties.deactivationConditions()) {
-                addFieldDeactivationCondition(null, deactivationCondition);
+            for (FieldAction action : entityProperties.actions()) {
+                addAction(null, action);
             }
         }
 
@@ -164,7 +171,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
                         Strings.isNullOrEmpty(props.accesorFieldName())
                         ? field.getName()
                         : props.accesorFieldName();
-                this.addField(fieldName, props, field.getType());
+                this.addField(fieldName, props, field);
             }
         }
 

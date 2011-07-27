@@ -2,6 +2,7 @@ package com.greenriver.commons.web.helpers.form;
 
 import com.greenriver.commons.data.fieldProperties.FieldProperties;
 import com.greenriver.commons.web.helpers.header.HeaderConfig;
+import java.lang.reflect.Field;
 import java.util.List;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -42,13 +43,6 @@ public interface FormBuilder {
      */
     public void addField(FormField field);
 
-    /**
-     * Adds a field to the form currently being edited.
-     * @param id The new field's id.
-     * @param properties The field properties.
-     * @param fieldType The type of the field to be added.
-     */
-    public void addField(String id, FieldProperties properties, Class fieldType);
 
     /**
      * Adds a set of fields dinamically using annotations given to a class'
