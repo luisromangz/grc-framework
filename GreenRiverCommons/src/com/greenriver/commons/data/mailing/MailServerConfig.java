@@ -1,6 +1,7 @@
 package com.greenriver.commons.data.mailing;
 
-import com.greenriver.commons.data.fieldProperties.FieldDeactivationCondition;
+import com.greenriver.commons.data.fieldProperties.FieldAction;
+import com.greenriver.commons.data.fieldProperties.FieldActions;
 import com.greenriver.commons.data.fieldProperties.FieldProperties;
 import com.greenriver.commons.data.fieldProperties.FieldType;
 import java.io.Serializable;
@@ -21,21 +22,22 @@ public class MailServerConfig implements Serializable {
     private Long id;
     @FieldProperties(label = "Servidor de correo")
     private String hostName;
-    @FieldProperties(label = "Puerto", type = FieldType.NUMBER)
-    private int portNumber;
-    @FieldProperties(label = "Requiere autenticación", type = FieldType.CHECKBOX)
-    private boolean requiresAuthentication;
-    @FieldProperties(label = "Nombre de usuario", required = false, deactivationConditions = {
-        @FieldDeactivationCondition(triggerField = "requiresAuthentication", newValue = "null", equals = "false")
-    })
-    private String userName;
-    @FieldProperties(label = "Contraseña", required = false, type = FieldType.PASSWORDEDITOR, deactivationConditions = {
-        @FieldDeactivationCondition(triggerField = "requiresAuthentication", newValue = "null", equals = "false")
-    })
-    private String password;
     @FieldProperties(label = "Protocolo de envío", type = FieldType.SELECTION)
     @Enumerated(EnumType.STRING)
     private MailSendingProtocol protocol;
+    @FieldProperties(label = "Puerto", type = FieldType.NUMBER)
+    @FieldActions({
+        @FieldAction(triggerField = "protocol", triggerValue = "'SMTP'", newValue = "25"),
+        @FieldAction(triggerField = "protocol", triggerValue = "'SMTPS'", newValue = "465")})
+    private int portNumber;
+    @FieldProperties(label = "Requiere autenticación", type = FieldType.CHECKBOX)
+    private boolean requiresAuthentication;
+    @FieldProperties(label = "Nombre de usuario", required = false)
+    @FieldAction(triggerField = "requiresAuthentication", triggerValue = "false", newValue = "null", deactivate = true)
+    private String userName;
+    @FieldProperties(label = "Contraseña", required = false, type = FieldType.PASSWORDEDITOR)
+    @FieldAction(triggerField = "requiresAuthentication", triggerValue = "false", newValue = "null", deactivate = true)
+    private String password;
     @FieldProperties(label = "Usar StartTTLS (requerido por GMail)", type = FieldType.CHECKBOX)
     private boolean useStartTtls;
     // </editor-fold>

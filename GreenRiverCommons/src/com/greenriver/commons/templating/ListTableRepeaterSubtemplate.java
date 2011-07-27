@@ -2,7 +2,8 @@ package com.greenriver.commons.templating;
 
 import com.greenriver.commons.Strings;
 import com.greenriver.commons.collections.SortedArrayList;
-import com.greenriver.commons.data.fieldProperties.FieldDeactivationCondition;
+import com.greenriver.commons.data.fieldProperties.FieldAction;
+import com.greenriver.commons.data.fieldProperties.FieldActions;
 import com.greenriver.commons.data.fieldProperties.FieldProperties;
 import com.greenriver.commons.data.fieldProperties.FieldType;
 import java.text.DateFormat;
@@ -38,7 +39,7 @@ import javax.persistence.InheritanceType;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(length = 255)
 public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement, K extends Collection<?>>
-           extends RepeaterSubtemplate<T, K>
+        extends RepeaterSubtemplate<T, K>
         implements Subtemplateable {
 
     // <editor-fold defaultstate="collapsed" desc="Fields">
@@ -52,29 +53,23 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
     @FieldProperties(label = "Tipo de repetición", type = FieldType.SELECTION,
     possibleValues = {"true", "false"}, possibleValueLabels = {"Tabla", "Lista"})
     private boolean isTable = true;
-    @FieldProperties(label = "Lista ordenada", type = FieldType.CHECKBOX, editable = false, deactivationConditions = {
-        @FieldDeactivationCondition(equals = "'true'", newValue = "false", triggerField = "isTable")
-    })
+    @FieldProperties(label = "Lista ordenada", type = FieldType.CHECKBOX, editable = false)
+    @FieldAction(triggerValue = "'true'", newValue = "false", triggerField = "isTable", deactivate = true)
     private boolean isOrderedList;
-    @FieldProperties(label = "Mostrar encabezados de la tabla", type = FieldType.CHECKBOX,
-    deactivationConditions = {
-        @FieldDeactivationCondition(equals = "'false'", triggerField = "isTable", newValue = "false")
-    })
+    @FieldProperties(label = "Mostrar encabezados de la tabla", type = FieldType.CHECKBOX)
+    @FieldAction(triggerValue = "'false'", triggerField = "isTable", newValue = "false")  
     private boolean showTableHeaders = true;
-    @FieldProperties(label = "Encabezados de la tabla", type = FieldType.LONGTEXT, required = false, widgetStyle = "width:98%",
-    deactivationConditions = {
-        @FieldDeactivationCondition(equals = "'false'", triggerField = "isTable"),
-        @FieldDeactivationCondition(equals = "false", triggerField = "showTableHeaders")
+    @FieldProperties(label = "Encabezados de la tabla", type = FieldType.LONGTEXT, required = false, widgetStyle = "width:98%")
+    @FieldActions({
+        @FieldAction(triggerValue = "'false'", triggerField = "isTable", deactivate = true),
+        @FieldAction(triggerValue = "false", triggerField = "showTableHeaders", deactivate = true)
     })
     private String tableHeader = "";
-    @FieldProperties(label = "Anchuras de las columnas", type = FieldType.LONGTEXT, required = false, widgetStyle = "width:98%",
-    deactivationConditions = {
-        @FieldDeactivationCondition(equals = "'false'", triggerField = "isTable")})
+    @FieldProperties(label = "Anchuras de las columnas", type = FieldType.LONGTEXT, required = false, widgetStyle = "width:98%")
+    @FieldAction(triggerValue = "'false'", triggerField = "isTable", deactivate = true)
     private String columnSizes = "";
-    @FieldProperties(label = "Columnas por las que se ordena", customRegExp = "\\d+(;\\d+)*", required = false,
-    deactivationConditions = {
-        @FieldDeactivationCondition(equals = "'false'", triggerField = "isTable")
-    })
+    @FieldProperties(label = "Columnas por las que se ordena", customRegExp = "\\d+(;\\d+)*", required = false)
+    @FieldAction(triggerValue = "'false'", triggerField = "isTable", deactivate = true)
     private String orderByColumns = "";
     @FieldProperties(label = "Formato del elemento", type = FieldType.LONGTEXT, widgetStyle = "width:98%")
     private String elementFormat;
@@ -86,19 +81,16 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
     private int fontSize = 9;
     @FieldProperties(label = "Alineación del texto en la celda", type = FieldType.SELECTION,
     possibleValueLabels = {"Izquierda", "Centro", "Derecha"},
-    possibleValues = {"left", "center", "right"},
-    deactivationConditions = {
-        @FieldDeactivationCondition(triggerField = "isTable", equals = "'false'", newValue = "'left'")})
+    possibleValues = {"left", "center", "right"})
+    @FieldAction(triggerField = "isTable", triggerValue = "'false'", newValue = "'left'", deactivate = true)
     private String textAlign = "center";
     @FieldProperties(label = "Bordes", type = FieldType.SELECTION,
     possibleValueLabels = {"Todos", "Horizontales", "Verticales"},
-    possibleValues = {"border-top,border-bottom,border-left,border-right", "border-top,border-bottom", "border-left,border-right"},
-    deactivationConditions = {
-        @FieldDeactivationCondition(triggerField = "isTable", equals = "'false'")})
+    possibleValues = {"border-top,border-bottom,border-left,border-right", "border-top,border-bottom", "border-left,border-right"})
+    @FieldAction(triggerField = "isTable", triggerValue = "'false'", deactivate = true)
     private String borders = "border-top,border-bottom,border-left,border-right";
-
-    @FieldProperties(label="Filas vacías a añadir al final", type=FieldType.NUMBER, minValue=0)
-    @FieldDeactivationCondition(triggerField="isTable", equals="'false'")
+    @FieldProperties(label = "Filas vacías a añadir al final", type = FieldType.NUMBER, minValue = 0)
+    @FieldAction(triggerField = "isTable", triggerValue = "'false'", deactivate = true)
     private int emptyRowsAppended = 0;
     // </editor-fold>
 
@@ -165,6 +157,14 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
             try {
                 // We have to sort the table rows before creating the table.
                 tableRows = new SortedArrayList<TableRow>(new TableRowComparator(this.getOrderByColumns()));
+
+
+
+
+
+
+
+
             } catch (ParseException ex) {
                 // This shouldnt happen, as the order string was validated before saving.
                 Logger.getLogger(ListTableRepeaterSubtemplate.class.getName()).log(Level.SEVERE, null, ex);
@@ -192,10 +192,10 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
             tableRows.add(row);
         }
 
-        for(int i=0; i< emptyRowsAppended; i++) {
-             // Then we add blanki lines.
+        for (int i = 0; i < emptyRowsAppended; i++) {
+            // Then we add blanki lines.
             TableRow emptyRow = new TableRow();
-            for(int j=0; j < sizes.size(); j++) {
+            for (int j = 0; j < sizes.size(); j++) {
                 emptyRow.addCell("<span style=\"color:white\">empty</span>", sizes.get(j), elementStyle);
             }
 
@@ -442,6 +442,14 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
      */
     public void setEmptyRowsAppended(int numberOfEmptyRowsAppended) {
         this.emptyRowsAppended = numberOfEmptyRowsAppended;
+
+
+
+
+
+
+
+
     }
     // </editor-fold>
 }

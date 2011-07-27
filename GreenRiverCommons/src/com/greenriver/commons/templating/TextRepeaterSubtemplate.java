@@ -1,8 +1,7 @@
 package com.greenriver.commons.templating;
 
 import com.greenriver.commons.Strings;
-import com.greenriver.commons.data.fieldProperties.FieldsProperties;
-import com.greenriver.commons.data.fieldProperties.FieldDeactivationCondition;
+import com.greenriver.commons.data.fieldProperties.FieldAction;
 import com.greenriver.commons.data.fieldProperties.FieldProperties;
 import com.greenriver.commons.data.fieldProperties.FieldType;
 import java.io.Serializable;
@@ -29,7 +28,7 @@ import javax.persistence.InheritanceType;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(length = 255)
 public abstract class TextRepeaterSubtemplate<T extends TemplateReplacement, K extends Collection<?>>
-            extends RepeaterSubtemplate<T, K>
+        extends RepeaterSubtemplate<T, K>
         implements Serializable, Subtemplateable {
 
     private static final long serialVersionUID = 1L;
@@ -41,17 +40,14 @@ public abstract class TextRepeaterSubtemplate<T extends TemplateReplacement, K e
     private String body;
     @FieldProperties(label = "Número de repeticiones horizontales", type = FieldType.NUMBER, minValue = 1)
     private int horizontalRepetitions = 1;
-    @FieldProperties(label = "Bordes de la tabla", type = FieldType.SELECTION, enumLabelMethod = "getLabel",
-    deactivationConditions = {
-        @FieldDeactivationCondition(triggerField = "horizontalRepetitions", equals = "1", newValue = "'NONE'")})
+    @FieldProperties(label = "Bordes de la tabla", type = FieldType.SELECTION, enumLabelMethod = "getLabel")
+    @FieldAction(triggerField = "horizontalRepetitions", triggerValue = "1", newValue = "'NONE'", deactivate=true)
     @Enumerated(EnumType.STRING)
     private BorderType borderType = BorderType.NONE;
     @FieldProperties(label = "Página nueva tras el texto", type = FieldType.CHECKBOX)
     private boolean newPageAfterText = false;
-    @FieldProperties(label = "Añadir nueva línea tras el texto", type = FieldType.CHECKBOX,
-    deactivationConditions = {
-        @FieldDeactivationCondition(triggerField = "newPageAfterText", equals = "'on'")
-    })
+    @FieldProperties(label = "Añadir nueva línea tras el texto", type = FieldType.CHECKBOX)        
+    @FieldAction(triggerField = "newPageAfterText", triggerValue = "'on'", deactivate=true)
     private boolean newLineAfterText = true;
 
     @Override
@@ -78,7 +74,7 @@ public abstract class TextRepeaterSubtemplate<T extends TemplateReplacement, K e
             int counter = 0;
             List<String> currentTableCells = new ArrayList<String>();
 
-            
+
             for (String text : texts) {
                 currentTableCells.add(text);
                 counter++;
@@ -107,7 +103,7 @@ public abstract class TextRepeaterSubtemplate<T extends TemplateReplacement, K e
 
             if (counter > 0) {
                 // We have an extra row with cellNumber < horizontalrepetitions.
-                String tableWidth = 100.0* currentTableCells.size()/horizontalRepetitions+"%";
+                String tableWidth = 100.0 * currentTableCells.size() / horizontalRepetitions + "%";
                 String formattedTable = String.format("<table style=\"%s;width:%s\"><tbody><tr>",
                         this.borderType.getTableStyle(),
                         tableWidth);

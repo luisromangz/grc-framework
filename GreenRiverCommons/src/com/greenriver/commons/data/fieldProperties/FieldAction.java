@@ -11,15 +11,13 @@ import java.lang.annotation.Target;
  * @author luis
  */
 @Documented
-@Target({ElementType.TYPE})
+@Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface FieldsProperties {
-    
-    FieldsInsertionMode parentInsertionMode() default FieldsInsertionMode.APPEND;
-
-    /**
-     * A list of deactivation conditions for the fields.
-     * @return
-     */
-    FieldDeactivationCondition[] deactivationConditions() default {};
+public @interface FieldAction {
+    public String targetField() default "";
+    public String triggerField();
+    public String triggerValue();
+    public boolean equals() default true;
+    public String newValue() default  "\0";
+    public boolean deactivate() default false;
 }
