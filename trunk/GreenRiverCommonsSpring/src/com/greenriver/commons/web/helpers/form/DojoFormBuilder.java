@@ -487,6 +487,8 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         assertNotNumber(properties);
         assertNotSelection(properties);
         assertNotFile(properties);
+        
+         configuration.addDojoModule("dijit.form.ValidationTextBox");
 
         element.getAttributes().setProperty("type", "text");
         element.getAttributes().setProperty("trim", "true");
@@ -506,6 +508,8 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         assertNotSelection(properties);
         assertNotFile(properties);
 
+        configuration.addDojoModule("dijit.form.ValidationTextBox");
+        
         element.getAttributes().setProperty("type", "text");
         element.getAttributes().setProperty("regExpGen",
                 "dojox.regexp.ipAddress");
@@ -521,6 +525,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
     private void setupSelectionField(HtmlFormElementInfo element,
             Class fieldType, FieldProperties properties) {
 
+        configuration.addDojoModule("dijit.form.FilteringSelect");
         assertNotNumber(properties);
         assertNotText(properties);
         assertNotFile(properties);
