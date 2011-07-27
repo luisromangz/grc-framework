@@ -1,46 +1,49 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.greenriver.commons.data.mailing;
 
 import com.greenriver.commons.data.fieldProperties.FieldDeactivationCondition;
 import com.greenriver.commons.data.fieldProperties.FieldProperties;
 import com.greenriver.commons.data.fieldProperties.FieldType;
+import java.io.Serializable;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Id;
 
 /**
- *
+ * This class contains the config info for conecction to a mail server.
  * @author luis
  */
-public class MailSendingConfig {
+@Entity
+public class MailServerConfig implements Serializable {
+
     // <editor-fold defaultstate="collapsed" desc="Fields">
-    @FieldProperties(label="Servidor de correo")
+    @Id
+    private Long id;
+    @FieldProperties(label = "Servidor de correo")
     private String hostName;
-    @FieldProperties(label="Puerto",type=FieldType.NUMBER)
+    @FieldProperties(label = "Puerto", type = FieldType.NUMBER)
     private int portNumber;
-
-    @FieldProperties(label="Requiere autenticación", type=FieldType.CHECKBOX)
+    @FieldProperties(label = "Requiere autenticación", type = FieldType.CHECKBOX)
     private boolean requiresAuthentication;
-
-    @FieldProperties(label="Nombre de usuario",required=false,deactivationConditions={
-        @FieldDeactivationCondition(triggerField="requiresAuthentication", newValue="",equals="false")
+    @FieldProperties(label = "Nombre de usuario", required = false, deactivationConditions = {
+        @FieldDeactivationCondition(triggerField = "requiresAuthentication", newValue = "", equals = "false")
     })
     private String userName;
-    @FieldProperties(label="Contraseña", required=false, type=FieldType.PASSWORDEDITOR,deactivationConditions={
-        @FieldDeactivationCondition(triggerField="requiresAuthentication", newValue="",equals="false")
+    @FieldProperties(label = "Contraseña", required = false, type = FieldType.PASSWORDEDITOR, deactivationConditions = {
+        @FieldDeactivationCondition(triggerField = "requiresAuthentication", newValue = "", equals = "false")
     })
     private String password;
-
-    @FieldProperties(label="Protocolo de envío", type=FieldType.SELECTION)
+    @FieldProperties(label = "Protocolo de envío", type = FieldType.SELECTION)
+    @Enumerated(EnumType.STRING)
     private MailSendingProtocol protocol;
-    @FieldProperties(label="Usar StartTTLS (requerido por GMail)", type=FieldType.CHECKBOX)
+    @FieldProperties(label = "Usar StartTTLS (requerido por GMail)", type = FieldType.CHECKBOX)
     private boolean useStartTtls;
     // </editor-fold>
 
     public String getProtocolName() {
         return this.protocol.configValue();
     }
+
     public void setProtocolName(String protocolName) {
         this.protocol = MailSendingProtocol.valueOf(protocolName);
     }
@@ -144,4 +147,12 @@ public class MailSendingConfig {
         this.requiresAuthentication = requiresAuthentication;
     }
     // </editor-fold>
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 }
