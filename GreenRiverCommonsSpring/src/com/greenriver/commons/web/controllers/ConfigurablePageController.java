@@ -190,6 +190,9 @@ public class ConfigurablePageController
 
 
         for (PageTool pageTool : this.getPageTools()) {
+            if(!pageTool.isInitialized()) {
+                pageTool.initialize();
+            }
 
             if (!this.toolsLoadDelayed) {
                 // We only load the jsp files if we are loading the
@@ -207,8 +210,7 @@ public class ConfigurablePageController
                 configurePropertiesView(pageTool.getPropertiesView(), mav,
                         pageTool.getName() + "_");
 
-                configuration.getOnLoadScripts().addAll(
-                        pageTool.getOnLoadScripts());
+                
             }
 
             // We always process forms, even if loading on demand, so
@@ -218,8 +220,7 @@ public class ConfigurablePageController
             //Forms ids are prefixed with the task name
             configureForms(
                     pageTool.getForms(), mav, configuration, pageTool.getName() + "_");
-
-
+            
             // We always include the rest of things, so we are sure
             // we bundle (if bundling is activated) all the required modules
             // and js files.
@@ -227,7 +228,8 @@ public class ConfigurablePageController
             configuration.getJavaScriptFiles().addAll(Strings.addPrefix(
                     "tools/" + pageTool.getName()+"/",
                     pageTool.getJavaScriptFiles()));
-
+            
+            
             configuration.getCssFiles().addAll(Strings.addPrefix(
                     pageTool.getName()+"/",
                     pageTool.getCssFiles()));
@@ -241,6 +243,9 @@ public class ConfigurablePageController
                     pageTool.getDwrServices());
 
             configuration.getScripts().addAll(pageTool.getScripts());
+            
+            configuration.getOnLoadScripts().addAll(
+                        pageTool.getOnLoadScripts());
 
         }
 
