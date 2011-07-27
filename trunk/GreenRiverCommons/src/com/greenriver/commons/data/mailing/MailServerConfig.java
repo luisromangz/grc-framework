@@ -26,11 +26,11 @@ public class MailServerConfig implements Serializable {
     @FieldProperties(label = "Requiere autenticación", type = FieldType.CHECKBOX)
     private boolean requiresAuthentication;
     @FieldProperties(label = "Nombre de usuario", required = false, deactivationConditions = {
-        @FieldDeactivationCondition(triggerField = "requiresAuthentication", newValue = "", equals = "false")
+        @FieldDeactivationCondition(triggerField = "requiresAuthentication", newValue = "null", equals = "false")
     })
     private String userName;
     @FieldProperties(label = "Contraseña", required = false, type = FieldType.PASSWORDEDITOR, deactivationConditions = {
-        @FieldDeactivationCondition(triggerField = "requiresAuthentication", newValue = "", equals = "false")
+        @FieldDeactivationCondition(triggerField = "requiresAuthentication", newValue = "null", equals = "false")
     })
     private String password;
     @FieldProperties(label = "Protocolo de envío", type = FieldType.SELECTION)
