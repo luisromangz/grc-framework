@@ -10,5 +10,7 @@ import com.greenriver.commons.data.mailing.MailServerConfig;
 public interface MailServerConfigDao {
 
     public MailServerConfig get();
+
+    public void save(MailServerConfig newConfig);
     
 }
