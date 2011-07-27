@@ -2,9 +2,9 @@ package com.greenriver.commons.web.helpers.propertiesView;
 
 import com.greenriver.commons.ClassFields;
 import com.greenriver.commons.Strings;
-import com.greenriver.commons.data.fieldProperties.FieldsProperties;
 import com.greenriver.commons.data.fieldProperties.FieldProps;
 import com.greenriver.commons.data.fieldProperties.FieldsInsertionMode;
+import com.greenriver.commons.data.fieldProperties.FieldsProps;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -249,9 +249,8 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
             return new ArrayList<String>(0);
         }
 
-        FieldsProperties entityProperties =
-                (FieldsProperties) entityClass.getAnnotation(
-                FieldsProperties.class);
+        FieldsProps entityProperties =
+                (FieldsProps) entityClass.getAnnotation(FieldsProps.class);
 
         return ClassFields.getNames(
                 entityClass,
