@@ -176,14 +176,16 @@ public class ConfigurablePageController
         }
     }
 
-    private void configurePageTools(ModelAndView mav, PageConfig configuration)
+    private void configurePageTools(
+            ModelAndView mav, 
+            PageConfig configuration)
             throws ClassNotFoundException {
 
         List<String> dialogJspFiles = new ArrayList<String>();
         List<String> setupJspFiles = new ArrayList<String>();
 
         // This makes the initilization code needed by forms to be inside this function.
-        pageConfig.addOnLoadScript("window['onToolsLoaded']=function(){");
+        configuration.addOnLoadScript("window['onToolsLoaded']=function(){");
 
 
 
@@ -205,7 +207,7 @@ public class ConfigurablePageController
                 configurePropertiesView(pageTool.getPropertiesView(), mav,
                         pageTool.getName() + "_");
 
-                pageConfig.getOnLoadScripts().addAll(
+                configuration.getOnLoadScripts().addAll(
                         pageTool.getOnLoadScripts());
             }
 
@@ -222,31 +224,31 @@ public class ConfigurablePageController
             // we bundle (if bundling is activated) all the required modules
             // and js files.
 
-            pageConfig.getJavaScriptFiles().addAll(Strings.addPrefix(
+            configuration.getJavaScriptFiles().addAll(Strings.addPrefix(
                     "tools/" + pageTool.getName()+"/",
                     pageTool.getJavaScriptFiles()));
 
-            pageConfig.getCssFiles().addAll(Strings.addPrefix(
+            configuration.getCssFiles().addAll(Strings.addPrefix(
                     pageTool.getName()+"/",
                     pageTool.getCssFiles()));
 
-            pageConfig.getDojoBundles().addAll(
+            configuration.getDojoBundles().addAll(
                     pageTool.getDojoBundles());
 
-            pageConfig.getDojoModules().addAll(
+            configuration.getDojoModules().addAll(
                     pageTool.getDojoModules());
-            pageConfig.getDwrServices().addAll(
+            configuration.getDwrServices().addAll(
                     pageTool.getDwrServices());
 
-            pageConfig.getScripts().addAll(pageTool.getScripts());
+            configuration.getScripts().addAll(pageTool.getScripts());
 
         }
 
         // Close of the init function.
-        pageConfig.addOnLoadScript("}");
+        configuration.addOnLoadScript("} // End of onToolsLoaded");
 
         if (!this.isToolsLoadDelayed()) {
-            pageConfig.addOnLoadScript("window.onToolsLoaded()");
+            configuration.addOnLoadScript("window.onToolsLoaded()");
         }
 
         mav.addObject("pageTools",this.getPageTools());
