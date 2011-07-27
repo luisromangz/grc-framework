@@ -57,18 +57,45 @@ public class UserManagementServiceImpl
     }
 
     /**
+     * @return the formDtoClass
+     */
+    public Class<UserFormDto> getFormDtoClass() {
+        return formDtoClass;
+    }
+
+    /**
+     * @param formDtoClass the formDtoClass to set
+     */
+    public void setFormDtoClass(Class<UserFormDto> formDtoClass) {
+        this.formDtoClass = formDtoClass;
+    }
+
+    /**
+     * @return the dtoClass
+     */
+    public Class<UserDto> getDtoClass() {
+        return dtoClass;
+    }
+
+    /**
+     * @param dtoClass the dtoClass to set
+     */
+    public void setDtoClass(Class<UserDto> dtoClass) {
+        this.dtoClass = dtoClass;
+    }
+
+    /**
      * @return the formDtoFactory
      */
-  
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Service methods">
     @Override
     public Result<UserFormDto> getNew() {
         Result<UserFormDto> r = new Result<UserFormDto>();
-        
-        UserFormDto dto =getUserFormDto(new User());
-       
-        
+
+        UserFormDto dto = getUserFormDto(new User());
+
+
         r.setResult(dto);
         return r;
     }
@@ -127,16 +154,15 @@ public class UserManagementServiceImpl
     }
 
     @Override
-    public Result<UserDto> changePassword(
-            String currentPassword,
-            String newPassword) {
+    public Result<UserDto> changePassword(PasswordChangeData changeData) {
 
         String encodedCurrentPassword = passwordEncoder.encodePassword(
-                currentPassword, null);
+                changeData.getCurrentPassword(), null);
 
         Result<UserDto> result = new Result<UserDto>();
         User currentUser = userSessionInfo.getCurrentUser();
         if (encodedCurrentPassword.equals(currentUser.getPassword())) {
+            String newPassword = changeData.getNewPassword();
             if (newPassword.length() < 6) {
                 result.setSuccess(false);
                 result.formatErrorMessage(
@@ -162,12 +188,12 @@ public class UserManagementServiceImpl
 
     @Override
     public PagedResult<UserDto> query(QueryArgs args) {
-        PagedResult<UserDto> result = new  PagedResult<UserDto>();
+        PagedResult<UserDto> result = new PagedResult<UserDto>();
 
         List<User> users = new ArrayList<User>();
-       
+
         try {
-            result.setTotal(userDao.query(args,users));
+            result.setTotal(userDao.query(args, users));
         } catch (RuntimeException ex) {
             result.formatErrorMessage("Ocurrió un error de base de datos.");
             return result;
@@ -218,7 +244,7 @@ public class UserManagementServiceImpl
         }
 
         UserDto dUser = getUserDto(user, false);
-        dUser.setNewEntity(userDto.getId()==null);
+        dUser.setNewEntity(userDto.getId() == null);
         result.setResult(dUser);
 
         return result;
@@ -246,10 +272,10 @@ public class UserManagementServiceImpl
 
             result.addErrorMessage("Ya existe otro usuario con el mismo nombre de usuario.");
             return null;
-        } 
-        
-        
-        if(userDto.getId()==null) {
+        }
+
+
+        if (userDto.getId() == null) {
             existingUser = new User();
         } else {
             existingUser = userDao.getById(userDto.getId());
@@ -260,16 +286,17 @@ public class UserManagementServiceImpl
         return existingUser;
     }
     // </editor-fold>
-
+    
+    //<editor-fold defaultstate="collapsed" desc="Auxiliary methods">
     private User getUserById(Long userId, Result r) {
         User user = null;
         try {
             user = userDao.getById(userId);
-
+            
         } catch (RuntimeException e) {
             r.addErrorMessage("Ocurrió un error en la base de datos.");
         }
-
+        
         if (user == null) {
             r.addErrorMessage("No se encontró el usuario especificado.");
         }
@@ -278,10 +305,9 @@ public class UserManagementServiceImpl
     
     private UserFormDto getUserFormDto(User user) {
         UserFormDto dto = null;
-         try {
+        try {
             dto = getFormDtoClass().newInstance();
         } catch (Exception ex) {
-           
         }
         
         dto.fromUser(user);
@@ -290,41 +316,13 @@ public class UserManagementServiceImpl
     
     private UserDto getUserDto(User user, boolean forGrid) {
         UserDto dto = null;
-         try {
+        try {
             dto = getDtoClass().newInstance();
         } catch (Exception ex) {
-           
         }
         
-        dto.fromUser(user,forGrid);
+        dto.fromUser(user, forGrid);
         return dto;
     }
-
-    /**
-     * @return the formDtoClass
-     */
-    public Class<UserFormDto> getFormDtoClass() {
-        return formDtoClass;
-    }
-
-    /**
-     * @param formDtoClass the formDtoClass to set
-     */
-    public void setFormDtoClass(Class<UserFormDto> formDtoClass) {
-        this.formDtoClass = formDtoClass;
-    }
-
-    /**
-     * @return the dtoClass
-     */
-    public Class<UserDto> getDtoClass() {
-        return dtoClass;
-    }
-
-    /**
-     * @param dtoClass the dtoClass to set
-     */
-    public void setDtoClass(Class<UserDto> dtoClass) {
-        this.dtoClass = dtoClass;
-    }
 }
+//</editor-fold>

@@ -35,11 +35,9 @@ public interface UserManagementService
     public Result<UserDto> save(UserFormDto userDto);
     /**
      * Changes the password UserDtoor the user
-     * @param currentPassword
-     * @param newPassword
      * @return the Result result oUserDto the operation
      */
-    public Result<UserDto> changePassword(String currentPassword, String newPassword);
+    public Result<UserDto> changePassword(PasswordChangeData changedata);
     /**
      * Removes a user entity
      * @param user The id oUserDto the user to be removed
