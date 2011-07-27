@@ -19,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
  * @author Miguel Angel
  */
 public class GridBuilderImpl implements GridBuilder {
+
     private List<GridInfo> gridInfos;
     private GridInfo currentGridInfo;
     private HeaderConfig configuration;
@@ -42,7 +43,7 @@ public class GridBuilderImpl implements GridBuilder {
             throw new IllegalArgumentException(
                     "There is already a grid with the id " + id);
         }
-        
+
         this.configuration = configuration;
 
         currentGridInfo = new GridInfo(id);
@@ -77,7 +78,7 @@ public class GridBuilderImpl implements GridBuilder {
     }
 
     private GridColumnInfo addGridColumn(
-            String field, FieldProps props, GridColumn  columnProps) {
+            String field, FieldProps props, GridColumn columnProps) {
 
         if (props == null) {
             throw new IllegalArgumentException("Properties can't be null");
@@ -95,20 +96,13 @@ public class GridBuilderImpl implements GridBuilder {
 
         GridColumnInfo column = new GridColumnInfo(field);
         column.setLabel(props.label());
-        
-        if(columnProps!=null) {
-            if(columnProps.exclude()) {
-                return null;
-            }
-            
-            column.setWidth(columnProps.width());
-            column.setSortable(columnProps.canSort());
-        } else {
-            // By default, we can sort;
-            column.setSortable(true);
-        }        
-     
-        this.currentGridInfo.addGridColumn(column);       
+
+
+        column.setWidth(columnProps.width());
+        column.setSortable(columnProps.canSort());
+
+
+        this.currentGridInfo.addGridColumn(column);
 
         return column;
     }
@@ -138,9 +132,9 @@ public class GridBuilderImpl implements GridBuilder {
         }
 
         GridColumnInfo column = new GridColumnInfo(field);
-        column.setLabel(label);        
+        column.setLabel(label);
         this.currentGridInfo.addGridColumn(column);
-        
+
         return column;
     }
 
@@ -148,7 +142,6 @@ public class GridBuilderImpl implements GridBuilder {
     public void addGridInfoFromClass(String classFullName) {
         addGridInfoFromClass(getClassFromName(classFullName));
     }
-  
 
     @Override
     public void addGridInfoFromClass(Class viewClass) {
@@ -156,7 +149,7 @@ public class GridBuilderImpl implements GridBuilder {
         assertCurrent();
 
         // If the list of properties is empty we include all of them.
-        List<String>  propertiesToShow = generatePropertyList(viewClass);
+        List<String> propertiesToShow = generatePropertyList(viewClass);
 
         for (String propName : propertiesToShow) {
             // Let this throw an exception if the field is not defined. This
@@ -165,23 +158,23 @@ public class GridBuilderImpl implements GridBuilder {
             Field classField = ClassFields.get(propName, viewClass, true, true);
 
             FieldProps fieldProps = classField.getAnnotation(FieldProps.class);
-            
+
             GridColumn columnProps = classField.getAnnotation(GridColumn.class);
 
             //Only go ahead if there is a field property
-            if (fieldProps != null) {
+            if (fieldProps != null && columnProps != null) {
                 addGridColumn(propName, fieldProps, columnProps);
-            }            
-            
+            }
+
         }
-        
+
         this.currentGridInfo.createCanSortFunction();
-        
+
         this.configuration.addOnLoadScript(String.format(
                 "dijit.byId('%s').canSort=%s;",
                 this.currentGridInfo.getId(),
                 this.currentGridInfo.getCanSortFunction()));
-    }   
+    }
 
     @Override
     public void removeGridColumn(String field) {
@@ -233,9 +226,7 @@ public class GridBuilderImpl implements GridBuilder {
         return ClassFields.getNames(
                 entityClass,
                 true,
-                entityProperties==null?FieldsInsertionMode.NONE: entityProperties.parentInsertionMode(),
+                entityProperties == null ? FieldsInsertionMode.NONE : entityProperties.parentInsertionMode(),
                 new Class[]{FieldProps.class});
     }
-
-   
 }
