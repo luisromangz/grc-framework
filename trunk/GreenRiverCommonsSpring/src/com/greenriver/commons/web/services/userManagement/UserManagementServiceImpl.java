@@ -289,7 +289,7 @@ public class UserManagementServiceImpl
     }
 
     @Override
-    public Result<UserDto> toggleActivationState(Long id) {
+    public Result<UserDto> toggleAccess(Long id) {
        Result<UserDto> result = new Result<UserDto>();
        
        User user = getUserById(id, result);

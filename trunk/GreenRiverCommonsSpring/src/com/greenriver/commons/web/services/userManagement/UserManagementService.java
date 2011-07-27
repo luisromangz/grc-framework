@@ -25,6 +25,6 @@ public interface UserManagementService
      */
     public Result<Map<String, String>> getRolesMap();
     
-    public Result<UserDto> toggleActivationState(Long id);
+    public Result<UserDto> toggleAccess(Long id);
 }
 
