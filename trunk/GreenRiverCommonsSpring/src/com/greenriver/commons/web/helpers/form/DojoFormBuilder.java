@@ -784,7 +784,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
 
         FormField field = new FormField(confirmId,
                 formFieldElement.getElementType(),
-                "Confirmar " + label.toLowerCase(),
+                "Repetir " + label.toLowerCase(),
                 "", formFieldElement.getAttributes());
 
         currentForm.addField(field);
