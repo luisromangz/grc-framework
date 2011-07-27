@@ -19,4 +19,5 @@ import java.lang.annotation.Target;
 public @interface GridColumn {
     String width() default "auto";
     boolean canSort() default true;
+    boolean exclude() default false;
 }
