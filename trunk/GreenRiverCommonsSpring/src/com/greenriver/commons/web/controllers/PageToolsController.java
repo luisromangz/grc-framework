@@ -27,7 +27,16 @@ public class PageToolsController extends ConfigurablePageController {
 
         List<String> dialogJspFiles = new ArrayList<String>();
         List<String> setupJspFiles = new ArrayList<String>();
+        
+        List<PageTool> allowedTools = new ArrayList<PageTool>();
+        
         for (PageTool pageTool : pageToolsContainer.getPageTools()) {
+            
+            if(!pageTool.isAllowedForUser(this.getUserSessionInfo().getCurrentUser())) {
+                continue;
+            }
+            
+            allowedTools.add(pageTool);
 
 
             // We only load the jsp files if we are loading the
@@ -50,6 +59,7 @@ public class PageToolsController extends ConfigurablePageController {
         }
 
 
+        mav.addObject("pageTools", allowedTools);
         mav.addObject("toolsDialogJspFiles", dialogJspFiles);
         mav.addObject("toolsSetupJspFiles", setupJspFiles);
     }
