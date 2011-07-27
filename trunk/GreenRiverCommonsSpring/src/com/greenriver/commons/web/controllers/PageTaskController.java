@@ -5,6 +5,7 @@ package com.greenriver.commons.web.controllers;
 import com.greenriver.commons.Strings;
 import com.greenriver.commons.web.configuration.PageConfig;
 import com.greenriver.commons.web.configuration.PageTasksContainer;
+import com.greenriver.commons.web.helpers.session.UserSessionInfo;
 import com.greenriver.commons.web.pageTasks.PageTask;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -38,6 +39,10 @@ public class PageTaskController
             mav.addObject("errorMessage","La tarea indicada no esta registrada en el gestor.");
             return;
         }
+        
+        if(!pageTask.isAllowedForUser(this.getUserSessionInfo().getCurrentUser())) {
+            throw new IllegalAccessException("User is not authorized for the task "+pageTask.getTaskName());
+        }
 
         this.configureForms(pageTask.getForms(), mav, configuration, taskName+"_");
         this.configurePropertiesView(pageTask.getPropertiesView(), mav, taskName+"_");
@@ -63,6 +68,7 @@ public class PageTaskController
     public void setTasksContainer(PageTasksContainer tasksContainer) {
         this.tasksContainer = tasksContainer;
     }
+
 
 
 }
