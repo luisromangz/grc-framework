@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.greenriver.commons.data.mailing;
 
 /**
@@ -16,6 +11,10 @@ public enum MailSendingProtocol {
     String name;
     MailSendingProtocol(String name) {
         this.name=name;
+    }
+    
+    public String getName() {
+        return this.name();
     }
 
     public String configValue() {
