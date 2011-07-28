@@ -31,6 +31,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
     private Form currentForm;
     private RoleManager roleManager;
     private HeaderConfig configuration;
+    private static final String PASSWORD_CONFIRM_SUFFIX = "_confirm";
 
     public DojoFormBuilder() {
         forms = new ArrayList<Form>();
@@ -47,7 +48,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         HtmlFormElementInfo formFieldElement = new HtmlFormElementInfo(fieldId);
         setupFieldElement(formFieldElement, field.getType(), properties);
         setFieldProperties(properties, formFieldElement);
-        setFieldActions(id, field);
+        setFieldActions(id, properties, field);
 
         // The field is added to the form.
         FormField formField = new FormField(
@@ -66,19 +67,25 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
                     properties.label());
         }
     }
-    
-    private void setFieldActions(String fieldId, Field field) {
-        
+
+    private void setFieldActions(String fieldId, FieldProperties properties, Field field) {
+
         FieldActions actions = (FieldActions) field.getAnnotation(FieldActions.class);
-        if(actions!=null) {
-            for(FieldAction action : actions.value()) {
+        if (actions != null) {
+            for (FieldAction action : actions.value()) {
                 this.addAction(fieldId, action);
+                if (properties.type() == FieldType.PASSWORDEDITOR) {
+                    this.addAction(fieldId + PASSWORD_CONFIRM_SUFFIX, action);
+                }
             }
         }
-        
-        FieldAction action =(FieldAction) field.getAnnotation(FieldAction.class);
-        if(action!=null) {
+
+        FieldAction action = (FieldAction) field.getAnnotation(FieldAction.class);
+        if (action != null) {
             this.addAction(fieldId, action);
+            if (properties.type() == FieldType.PASSWORDEDITOR) {
+                this.addAction(fieldId + PASSWORD_CONFIRM_SUFFIX, action);
+            }
         }
     }
 
@@ -97,9 +104,9 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
                     "addFieldDeactivationCondition: A non-empty target field identifier is required");
         }
 
-        String condition ="";
+        String condition = "";
         if (!Strings.isNullOrEmpty(action.triggerValue())) {
-            condition =String.format("value%s%s", action.equals()?"==":"!=",action.triggerValue());
+            condition = String.format("value%s%s", action.equals() ? "==" : "!=", action.triggerValue());
         }
 
         String asignationStatement = "";
@@ -109,11 +116,11 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
                     condition,
                     action.newValue());
         }
-        
-        String deactivationStatement="";
-        
-        if(action.deactivate()) {
-            deactivationStatement=String.format(
+
+        String deactivationStatement = "";
+
+        if (action.deactivate()) {
+            deactivationStatement = String.format(
                     "widget.setDisabled(%s);",
                     condition);
         }
@@ -123,7 +130,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
                 + "var widget = dijit.byId('%s');"
                 + "%s%s}",
                 currentForm.getId() + "_" + action.triggerField(),
-                currentForm.getId() + "_" +fieldId,
+                currentForm.getId() + "_" + fieldId,
                 deactivationStatement,
                 asignationStatement);
 
@@ -154,7 +161,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         }
 
         if (entityProperties != null
-                && entityProperties.parentInsertionMode()== FieldsInsertionMode.PREPEND) {
+                && entityProperties.parentInsertionMode() == FieldsInsertionMode.PREPEND) {
 
             if (modelClass.getSuperclass() != null) {
                 addFieldsFromClass(modelClass.getSuperclass());
@@ -176,7 +183,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         }
 
         if (entityProperties == null
-                || entityProperties.parentInsertionMode()==FieldsInsertionMode.APPEND) {
+                || entityProperties.parentInsertionMode() == FieldsInsertionMode.APPEND) {
 
             if (modelClass.getSuperclass() != null) {
                 addFieldsFromClass(modelClass.getSuperclass());
@@ -494,8 +501,8 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         assertNotNumber(properties);
         assertNotSelection(properties);
         assertNotFile(properties);
-        
-         configuration.addDojoModule("dijit.form.ValidationTextBox");
+
+        configuration.addDojoModule("dijit.form.ValidationTextBox");
 
         element.getAttributes().setProperty("type", "text");
         element.getAttributes().setProperty("trim", "true");
@@ -516,7 +523,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         assertNotFile(properties);
 
         configuration.addDojoModule("dijit.form.ValidationTextBox");
-        
+
         element.getAttributes().setProperty("type", "text");
         element.getAttributes().setProperty("regExpGen",
                 "dojox.regexp.ipAddress");
@@ -728,8 +735,8 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
      */
     private void setFieldProperties(FieldProperties properties,
             HtmlFormElementInfo element) {
-       
-        element.getAttributes().setProperty("required", properties.required()?"true":"false");
+
+        element.getAttributes().setProperty("required", properties.required() ? "true" : "false");
 
 
         element.getAttributes().setProperty("unit", properties.unit());
@@ -761,8 +768,8 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
 
         // This ugly hack is required because just writing
         // intermediateChanges="false" in the element doesnt work.
-        if(!properties.intermediateChanges()) {
-            configuration.addOnLoadScript("dijit.byId('"+element.getId()+"').intermediateChanges=false");
+        if (!properties.intermediateChanges()) {
+            configuration.addOnLoadScript("dijit.byId('" + element.getId() + "').intermediateChanges=false");
         }
 
     }
@@ -774,7 +781,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
                 "Las contraseñas no coinciden.");
         formFieldElement.getAttributes().remove("regExp");
         formFieldElement.getAttributes().setProperty("style", "width:10em");
-        String confirmId = formFieldElement.getId() + "_confirm";
+        String confirmId = formFieldElement.getId() + PASSWORD_CONFIRM_SUFFIX;
         String validationFunction =
                 String.format(
                 "var %s_validate = function (value) {\n"
