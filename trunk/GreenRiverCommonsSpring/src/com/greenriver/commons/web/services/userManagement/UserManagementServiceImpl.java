@@ -1,20 +1,26 @@
 package com.greenriver.commons.web.services.userManagement;
 
+import com.greenriver.commons.ErrorMessagesException;
 import com.greenriver.commons.Strings;
 import com.greenriver.commons.collections.Applicable;
 import com.greenriver.commons.collections.Lists;
 import com.greenriver.commons.data.dao.UserDao;
 import com.greenriver.commons.data.dao.queryArgs.QueryArgs;
+import com.greenriver.commons.data.mailing.Mail;
 import com.greenriver.commons.data.model.User;
 import com.greenriver.commons.data.validation.FieldsValidationResult;
 import com.greenriver.commons.data.validation.FieldsValidator;
+import com.greenriver.commons.mailing.MailSendingHelper;
 import com.greenriver.commons.roleManagement.RoleManager;
 import com.greenriver.commons.web.helpers.session.UserSessionInfo;
 import com.greenriver.commons.web.services.PagedResult;
 import com.greenriver.commons.web.services.Result;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.security.authentication.encoding.PasswordEncoder;
 
@@ -33,6 +39,8 @@ public class UserManagementServiceImpl
     private RoleManager roleManager;
     private Class<UserFormDto> formDtoClass;
     private Class<UserDto> dtoClass;
+    private MailSendingHelper mailSendingHelper;
+    private String appTitle;
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Getters & setters">
@@ -82,6 +90,20 @@ public class UserManagementServiceImpl
      */
     public void setDtoClass(Class<UserDto> dtoClass) {
         this.dtoClass = dtoClass;
+    }
+
+    /**
+     * @return the mailSendingHelper
+     */
+    public MailSendingHelper getMailSendingHelper() {
+        return mailSendingHelper;
+    }
+
+    /**
+     * @param mailSendingHelper the mailSendingHelper to set
+     */
+    public void setMailSendingHelper(MailSendingHelper mailSendingHelper) {
+        this.mailSendingHelper = mailSendingHelper;
     }
 
     /**
@@ -230,12 +252,18 @@ public class UserManagementServiceImpl
             return result;
         }
 
-        if (user.getId() == null
-                && Strings.isNullOrEmpty(user.getPassword())) {
+        
+        boolean isNewWithoutPwd = user.getId() == null
+                && Strings.isNullOrEmpty(user.getPassword());
+        if (isNewWithoutPwd) {
             // We create a new password
             user.setPassword(createRandomPassword());
             // New users can access the app by default.
             user.addRole("ROLE_USER");
+            
+            if(!sendNewUserEmail(user, result)) {
+                return result;
+            }
         }
 
         String encodedPassword = passwordEncoder.encodePassword(user.getPassword(), null);
@@ -251,9 +279,37 @@ public class UserManagementServiceImpl
 
         return result;
     }
+    
+    private boolean sendNewUserEmail(User user, Result result) {
+        String mailTemplate = null;
+        try {
+            mailTemplate = Strings.fromInputStream(
+                    UserManagementServiceImpl.class.getResourceAsStream("newUserMailTemplate.html"));
+        } catch (IOException ex) {
+            
+        }
+        
+        mailTemplate=mailTemplate.replaceAll("%USERNAME%", user.getUsername());
+        mailTemplate=mailTemplate.replaceAll("%NAME%",user.getName());
+        mailTemplate=mailTemplate.replaceAll("%PASSWORD%", user.getPassword());
+        mailTemplate=mailTemplate.replaceAll("%APP_NAME%", this.getAppTitle().trim());
+        
+        Mail mail = new Mail();
+        mail.setBody(mailTemplate);
+        mail.setSubject("Información de acceso a "+this.getAppTitle());
+        mail.setTo(user.getEmailAddress());
+        try {
+            mailSendingHelper.sendHtmlMail(mail);
+        } catch (ErrorMessagesException ex) {
+            result.addErrorMessages(ex.getMessages());
+            return false;
+        }
+     
+        return true;
+    }
 
     private String createRandomPassword() {
-        return RandomStringUtils.random(9, true, true);
+        return RandomStringUtils.random(6, true, true);
     }
 
     private User validateUserSaving(UserFormDto userDto, Result result) {
@@ -290,35 +346,35 @@ public class UserManagementServiceImpl
 
     @Override
     public Result<UserDto> toggleAccess(Long id) {
-       Result<UserDto> result = new Result<UserDto>();
-       
-       User user = getUserById(id, result);
-       if(!result.isSuccess()){
-           return result;
-       }
-       
-       if(userSessionInfo.getCurrentUser().equals(user)){
-           result.addErrorMessage("El usuario actual no puede desactivarse a sí mismo.");
-           return result;
-       }
-       
-       
-       if(user.hasRole("ROLE_USER")) {
-           user.removeRole("ROLE_USER");
-       } else{
-           user.addRole("ROLE_USER");
-       }
-       
-       try {
-           userDao.save(user);
-       } catch(RuntimeException e) {
-           result.addErrorMessage("Ocurrió un error de base de datos.");
-           return result;
-       }
-       
-       result.setResult(getUserDto(user, true));
-       
-       return result;        
+        Result<UserDto> result = new Result<UserDto>();
+
+        User user = getUserById(id, result);
+        if (!result.isSuccess()) {
+            return result;
+        }
+
+        if (userSessionInfo.getCurrentUser().equals(user)) {
+            result.addErrorMessage("El usuario actual no puede desactivarse a sí mismo.");
+            return result;
+        }
+
+
+        if (user.hasRole("ROLE_USER")) {
+            user.removeRole("ROLE_USER");
+        } else {
+            user.addRole("ROLE_USER");
+        }
+
+        try {
+            userDao.save(user);
+        } catch (RuntimeException e) {
+            result.addErrorMessage("Ocurrió un error de base de datos.");
+            return result;
+        }
+
+        result.setResult(getUserDto(user, true));
+
+        return result;
     }
     // </editor-fold>
 
@@ -360,4 +416,18 @@ public class UserManagementServiceImpl
         return dto;
     }
 //</editor-fold>
+
+    /**
+     * @return the appTitle
+     */
+    public String getAppTitle() {
+        return appTitle;
+    }
+
+    /**
+     * @param appTitle the appTitle to set
+     */
+    public void setAppTitle(String appTitle) {
+        this.appTitle = appTitle;
+    }
 }
