@@ -41,8 +41,10 @@ public class UserManagementServiceImpl
     private Class<UserDto> dtoClass;
     private MailSendingHelper mailSendingHelper;
     private String appTitle;
-    // </editor-fold>
+    private static final String PASSWORD_CHANGE_MAIL_TEMPLATE = "generateNewPasswordMailTemplate.html";
+    private static final String NEW_USER_MAIL_TEMPLATE = "newUserMailTemplate.html";
 
+    // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Getters & setters">
     public void setUserSessionInfo(UserSessionInfo userSessionInfo) {
         this.userSessionInfo = userSessionInfo;
@@ -252,18 +254,16 @@ public class UserManagementServiceImpl
             return result;
         }
 
-        
+
         boolean isNewWithoutPwd = user.getId() == null
                 && Strings.isNullOrEmpty(user.getPassword());
+        String newPassword = null;
         if (isNewWithoutPwd) {
             // We create a new password
+            newPassword = createRandomPassword();
             user.setPassword(createRandomPassword());
             // New users can access the app by default.
             user.addRole("ROLE_USER");
-            
-            if(!sendNewUserEmail(user, result)) {
-                return result;
-            }
         }
 
         String encodedPassword = passwordEncoder.encodePassword(user.getPassword(), null);
@@ -272,6 +272,10 @@ public class UserManagementServiceImpl
         } catch (RuntimeException re) {
             result.addErrorMessage("Ocurrió un error de base de datos.");
         }
+        
+        if(newPassword!=null && !sendPasswordEmail(user, newPassword, result, false)){
+            return result;
+        }
 
         UserDto dUser = getUserDto(user, true);
         dUser.setNewEntity(userDto.getId() == null);
@@ -279,24 +283,26 @@ public class UserManagementServiceImpl
 
         return result;
     }
-    
-    private boolean sendNewUserEmail(User user, Result result) {
+
+    private boolean sendPasswordEmail(User user, String password, Result result, boolean changePassword) {
+        String templateName = changePassword
+                ? PASSWORD_CHANGE_MAIL_TEMPLATE
+                : NEW_USER_MAIL_TEMPLATE;
         String mailTemplate = null;
         try {
             mailTemplate = Strings.fromInputStream(
-                    UserManagementServiceImpl.class.getResourceAsStream("newUserMailTemplate.html"));
+                    UserManagementServiceImpl.class.getResourceAsStream(templateName));
         } catch (IOException ex) {
-            
         }
-        
-        mailTemplate=mailTemplate.replaceAll("%USERNAME%", user.getUsername());
-        mailTemplate=mailTemplate.replaceAll("%NAME%",user.getName());
-        mailTemplate=mailTemplate.replaceAll("%PASSWORD%", user.getPassword());
-        mailTemplate=mailTemplate.replaceAll("%APP_NAME%", this.getAppTitle().trim());
-        
+
+        mailTemplate = mailTemplate.replaceAll("%USERNAME%", user.getUsername());
+        mailTemplate = mailTemplate.replaceAll("%NAME%", user.getName());
+        mailTemplate = mailTemplate.replaceAll("%PASSWORD%", password);
+        mailTemplate = mailTemplate.replaceAll("%APP_NAME%", this.getAppTitle().trim());
+
         Mail mail = new Mail();
         mail.setBody(mailTemplate);
-        mail.setSubject("Información de acceso a "+this.getAppTitle());
+        mail.setSubject("Información de acceso a " + this.getAppTitle());
         mail.setTo(user.getEmailAddress());
         try {
             mailSendingHelper.sendHtmlMail(mail);
@@ -304,8 +310,34 @@ public class UserManagementServiceImpl
             result.addErrorMessages(ex.getMessages());
             return false;
         }
-     
+
         return true;
+    }
+
+    @Override
+    public Result generateNewPassword(Long id) {
+        Result result = new Result();
+
+        User user = getUserById(id, result);
+        if (!result.isSuccess()) {
+            return result;
+        }
+
+        String newPassword = createRandomPassword();
+        
+        user.setPassword(passwordEncoder.encodePassword(newPassword, null));
+
+        try {
+            userDao.save(user);
+        } catch (RuntimeException e) {
+            result.addErrorMessage("Ocurrió un error de base de datos.");
+            return result;
+        }
+        
+        sendPasswordEmail(user, newPassword, result, false);
+        
+        
+        return result;
     }
 
     private String createRandomPassword() {

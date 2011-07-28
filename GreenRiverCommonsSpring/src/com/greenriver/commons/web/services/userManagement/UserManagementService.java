@@ -24,5 +24,7 @@ public interface UserManagementService
     public Result<Map<String, String>> getRolesMap();
     
     public Result<UserDto> toggleAccess(Long id);
+    
+    public Result generateNewPassword(Long id);
 }
 
