@@ -19,32 +19,40 @@ public class MailServerConfigServiceImpl implements MailServerConfigService {
     @Override
     public Result<MailServerConfig> getConfig() {
         Result<MailServerConfig> result = new Result<MailServerConfig>();
-        
-        try{
-            result.setResult(mailServerConfigDao.get());
-        } catch(RuntimeException e) {
+
+        MailServerConfig config = null;
+        try {
+            config = mailServerConfigDao.get();
+        } catch (RuntimeException e) {
             result.addErrorMessage("Ocurrió un error de base de datos.");
         }
+
+        // If we don't have a config stored, we return a new entity.
+        if(config==null) {
+            config= new MailServerConfig();
+        }
         
+        result.setResult(config);
+
         return result;
     }
 
     @Override
     public Result saveConfig(MailServerConfig newConfig) {
-        Result result =new Result();
-        
+        Result result = new Result();
+
         FieldsValidationResult validation = fieldPropertiesValidator.validate(newConfig);
-        if(!validation.isValid()) {
+        if (!validation.isValid()) {
             result.addErrorMessages(validation.getErrorMessages());
             return result;
         }
-        
+
         try {
             mailServerConfigDao.save(newConfig);
-        } catch(RuntimeException e) {
+        } catch (RuntimeException e) {
             result.addErrorMessage("Ocurrió un error de base de datos.");
         }
-        
+
         return result;
     }
     //</editor-fold>
@@ -56,14 +64,13 @@ public class MailServerConfigServiceImpl implements MailServerConfigService {
     public MailServerConfigDao getMailServerConfigDao() {
         return mailServerConfigDao;
     }
-    
+
     /**
      * @param mailServerConfigDao the mailServerConfigDao to set
      */
     public void setMailServerConfigDao(MailServerConfigDao mailServerConfigDao) {
         this.mailServerConfigDao = mailServerConfigDao;
     }
-    //</editor-fold>
 
     /**
      * @return the fieldPropertiesValidator
@@ -78,4 +85,5 @@ public class MailServerConfigServiceImpl implements MailServerConfigService {
     public void setFieldPropertiesValidator(FieldPropertiesValidator fieldPropertiesValidator) {
         this.fieldPropertiesValidator = fieldPropertiesValidator;
     }
+    //</editor-fold>
 }
