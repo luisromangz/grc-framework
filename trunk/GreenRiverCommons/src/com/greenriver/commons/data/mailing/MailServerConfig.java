@@ -24,12 +24,12 @@ public class MailServerConfig implements Serializable {
     private String hostName;
     @FieldProperties(label = "Protocolo de envío", type = FieldType.SELECTION)
     @Enumerated(EnumType.STRING)
-    private MailSendingProtocol protocol;
+    private MailSendingProtocol protocol= MailSendingProtocol.SMTP;
     @FieldProperties(label = "Puerto", type = FieldType.NUMBER)
     @FieldActions({
         @FieldAction(triggerField = "protocol", triggerValue = "'SMTP'", newValue = "25"),
         @FieldAction(triggerField = "protocol", triggerValue = "'SMTPS'", newValue = "465")})
-    private int portNumber;
+    private int portNumber=25;
     @FieldProperties(label = "Requiere autenticación", type = FieldType.CHECKBOX)
     private boolean requiresAuthentication;
     @FieldProperties(label = "Nombre de usuario", required = false)
@@ -43,6 +43,9 @@ public class MailServerConfig implements Serializable {
     // </editor-fold>
 
     public String getProtocolName() {
+        if(this.protocol==null){
+            return "";
+        }
         return this.protocol.configValue();
     }
 
@@ -148,8 +151,8 @@ public class MailServerConfig implements Serializable {
     public void setRequiresAuthentication(boolean requiresAuthentication) {
         this.requiresAuthentication = requiresAuthentication;
     }
-    // </editor-fold>
-
+    
+    
     public Long getId() {
         return id;
     }
@@ -157,4 +160,6 @@ public class MailServerConfig implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
+    // </editor-fold>
+
 }
