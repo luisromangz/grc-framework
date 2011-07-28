@@ -12,12 +12,16 @@ import java.util.Properties;
 import javax.activation.DataHandler;
 import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.Multipart;
 import javax.mail.NoSuchProviderException;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
+import org.springframework.format.datetime.joda.MillisecondInstantPrinter;
 
 /**
  * Implemetantion of a mail server helper, using JavaMail.
@@ -93,28 +97,22 @@ public class MailSendingHelperImpl implements MailSendingHelper {
         message.setFrom(new InternetAddress(mail.getFrom()));
         message.setRecipients(Message.RecipientType.TO,
                 InternetAddress.parse(mail.getTo(), false));
+        
+        Multipart multipart = new MimeMultipart("alternative");
+        
+        MimeBodyPart plainBodyPart = new MimeBodyPart();
+        plainBodyPart.setText(Strings.stripTags(mail.getBody()));
+        multipart.addBodyPart(plainBodyPart);
+        
+        MimeBodyPart htmlBodyPart = new MimeBodyPart();
+        htmlBodyPart.setContent(mail.getBody(), "text/html");
+        
+        multipart.addBodyPart(htmlBodyPart);        
+        
+        
+        message.setContent(multipart);
 
-        StringBuilder sb = new StringBuilder();
-        sb.append("<HTML>\n");
-        sb.append("<HEAD>\n");
-        sb.append("<TITLE>\n");
-        sb.append(mail.getSubject()).append("\n");
-        sb.append("</TITLE>\n");
-        sb.append("</HEAD>\n");
-
-        sb.append("<BODY>\n");
-        sb.append(mail.getBody());
-        sb.append("</BODY>\n");
-        sb.append("</HTML>\n");
-
-
-        ByteArrayDataSource dataSource =
-                new ByteArrayDataSource(sb.toString(), "text/html");
-        DataHandler dataHandler = new DataHandler(dataSource);
-
-        message.setDataHandler(dataHandler);
-
-        message.setHeader("X-Mailer", "Comidas de Donnana");
+        message.setHeader("X-Mailer", "GRC Mailing Helper");
         message.setSentDate(new Date());
 
     }
