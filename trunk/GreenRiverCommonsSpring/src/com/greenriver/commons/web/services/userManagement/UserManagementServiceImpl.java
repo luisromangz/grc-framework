@@ -271,6 +271,7 @@ public class UserManagementServiceImpl
             userDao.save(user, encodedPassword);
         } catch (RuntimeException re) {
             result.addErrorMessage("Ocurrió un error de base de datos.");
+            return result;
         }
         
         if(newPassword!=null && !sendPasswordEmail(user, newPassword, result, false)){
