@@ -1,17 +1,13 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+package com.greenriver.commons.mailing;
 
-package com.greenriver.doñanaMealManager.services.helpers.interfaces;
-
-import com.greenriver.commons.services.ServiceResult;
+import com.greenriver.commons.ErrorMessagesException;
 import com.greenriver.commons.data.mailing.Mail;
 
 /**
- *
+ * Interface for a helper that allows sending mails.
  * @author luis
  */
 public interface MailSendingHelper {
-    boolean sendHtmlMail(Mail mail, ServiceResult serviceResult);
+    
+    boolean sendHtmlMail(Mail mail) throws ErrorMessagesException;
 }
