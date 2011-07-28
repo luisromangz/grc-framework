@@ -794,9 +794,12 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
                 confirmId);
 
         configuration.addOnLoadScript(validationFunction);
-        configuration.addOnLoadScript(
-                String.format(
+        configuration.addOnLoadScript(String.format(
                 "dojo.connect(dijit.byId('%s'),'onChange',function(){dijit.byId('%s').validate();});",
+                formFieldElement.getId(), confirmId));
+
+        configuration.addOnLoadScript(String.format(
+                "dojo.connect(dijit.byId('%s'),'setValue',function(newValue){dijit.byId('%s').setValue(newValue);});",
                 formFieldElement.getId(), confirmId));
 
         configuration.addOnLoadScript(validationFunctionConnector);
