@@ -38,7 +38,7 @@ public class User implements Comparable<User>, DataEntity {
     customRegExp = "[\\w]{6,}",
     invalidMessage = "El nombre de usuario debe tener al menos 6 carácteres y "
     + "sólo carácteres alfabéticos.")
-    @Column(unique = true)
+    @Column()
     private String username;
     @FieldProperties(label = "Correo electrónico", type = FieldType.EMAIL, required = false)
     private String emailAddress;
