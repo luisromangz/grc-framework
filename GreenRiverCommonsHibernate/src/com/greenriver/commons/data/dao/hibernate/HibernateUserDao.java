@@ -107,6 +107,7 @@ public class HibernateUserDao
     public User getByUsername(String username) {
         Criteria crit = getCurrentSession().createCriteria(User.class);
         crit.add(Restrictions.eq("username", username));
+        crit.add(Restrictions.eq("deleted", false));
         User user = (User) crit.uniqueResult();
         return user;
     }
