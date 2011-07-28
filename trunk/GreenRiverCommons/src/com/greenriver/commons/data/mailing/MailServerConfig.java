@@ -8,6 +8,8 @@ import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 /**
@@ -19,6 +21,7 @@ public class MailServerConfig implements Serializable {
 
     // <editor-fold defaultstate="collapsed" desc="Fields">
     @Id
+    @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
     @FieldProperties(label = "Servidor de correo")
     private String hostName;
@@ -30,15 +33,15 @@ public class MailServerConfig implements Serializable {
         @FieldAction(triggerField = "protocol", triggerValue = "'SMTP'", newValue = "25"),
         @FieldAction(triggerField = "protocol", triggerValue = "'SMTPS'", newValue = "465")})
     private int portNumber=25;
-    @FieldProperties(label = "Requiere autenticación", type = FieldType.CHECKBOX)
+    @FieldProperties(label = "Requiere autenticación", type = FieldType.CHECKBOX, getterPrefix="get")
     private boolean requiresAuthentication;
-    @FieldProperties(label = "Nombre de usuario", required = false)
-    @FieldAction(triggerField = "requiresAuthentication", triggerValue = "false", newValue = "null", deactivate = true)
+    @FieldProperties(label = "Nombre de usuario", required = false, getterPrefix="get")
+    @FieldAction(triggerField = "requiresAuthentication", triggerValue = "false", newValue = "''", deactivate = true)
     private String userName;
     @FieldProperties(label = "Contraseña", required = false, type = FieldType.PASSWORDEDITOR)
-    @FieldAction(triggerField = "requiresAuthentication", triggerValue = "false", newValue = "null", deactivate = true)
+    @FieldAction(triggerField = "requiresAuthentication", triggerValue = "false", newValue = "''", deactivate = true)
     private String password;
-    @FieldProperties(label = "Usar StartTTLS (requerido por GMail)", type = FieldType.CHECKBOX)
+    @FieldProperties(label = "Usar StartTTLS (requerido por GMail)", type = FieldType.CHECKBOX,getterPrefix="get")
     private boolean useStartTtls;
     // </editor-fold>
 
