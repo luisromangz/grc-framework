@@ -98,14 +98,14 @@ public class MailSendingHelperImpl implements MailSendingHelper {
         message.setRecipients(Message.RecipientType.TO,
                 InternetAddress.parse(mail.getTo(), false));
         
-        Multipart multipart = new MimeMultipart("alternative");
+        Multipart multipart = new MimeMultipart("alternative");        
         
         MimeBodyPart plainBodyPart = new MimeBodyPart();
         plainBodyPart.setText(Strings.stripTags(mail.getBody()));
         multipart.addBodyPart(plainBodyPart);
         
         MimeBodyPart htmlBodyPart = new MimeBodyPart();
-        htmlBodyPart.setContent(mail.getBody(), "text/html");
+        htmlBodyPart.setContent(mail.getBody(), "text/html; charset=UTF-8");
         
         multipart.addBodyPart(htmlBodyPart);        
         
