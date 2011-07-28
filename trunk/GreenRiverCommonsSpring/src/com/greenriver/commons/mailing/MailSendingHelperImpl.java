@@ -105,7 +105,7 @@ public class MailSendingHelperImpl implements MailSendingHelper {
         multipart.addBodyPart(plainBodyPart);
         
         MimeBodyPart htmlBodyPart = new MimeBodyPart();
-        htmlBodyPart.setContent(mail.getBody(), "text/html; charset=UTF-8");
+        htmlBodyPart.setContent(mail.getBody(), "text/html; charset=ISO-8859-1");
         
         multipart.addBodyPart(htmlBodyPart);        
         
