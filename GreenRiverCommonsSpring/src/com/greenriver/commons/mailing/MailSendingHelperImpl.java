@@ -1,6 +1,7 @@
 package com.greenriver.commons.mailing;
 
 import com.greenriver.commons.ErrorMessagesException;
+import com.greenriver.commons.Strings;
 import com.greenriver.commons.data.dao.MailServerConfigDao;
 import com.greenriver.commons.data.mailing.Mail;
 import com.greenriver.commons.data.mailing.MailServerConfig;
@@ -55,6 +56,9 @@ public class MailSendingHelperImpl implements MailSendingHelper {
         Session session = Session.getInstance(props);
         Message message = new MimeMessage(session);
 
+        if(Strings.isNullOrEmpty(mail.getFrom())) {
+            mail.setFrom(config.getUserName());
+        }
 
         try {
             buildHtmlMail(mail, message);
