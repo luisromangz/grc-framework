@@ -107,6 +107,10 @@ public class CssImageEmbedderPlugin implements ControllerPlugin {
 
                     String urlInside = matchResult.group(groupIndex);
                     String imageUrl = matchResult.group(groupIndex + 1);// Its the second group
+                    
+                    if(!imageUrl.endsWith("png") && !imageUrl.endsWith("jpg")) {
+                        continue;
+                    }
 
                     // We have an url, so we load the file. If paths are relative,
                     // they will be relative to the path of the css file.
