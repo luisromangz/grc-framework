@@ -19,7 +19,9 @@ public abstract class FormDto<T extends DataEntity> implements DataEntity {
         this.id = id;
     }
 
-    public abstract void copyFrom(T entity);
+    public void copyFrom(T entity) {
+        this.id = entity.getId();
+    }
     
     public abstract void copyTo(T entity);
 }
