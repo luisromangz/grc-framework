@@ -74,11 +74,11 @@ public abstract class CRUDServiceImpl<E extends DataEntity, D extends Dto, F ext
     }
 
     
-    protected Result<D> saveInternal(F item) {
+    protected Result<D> saveInternal(F formDto) {
         Result<D> result = new Result<D>();
 
         // We validate the received data.
-        FieldsValidationResult validation = fieldsValidator.validate(item);
+        FieldsValidationResult validation = fieldsValidator.validate(formDto);
         if (!validation.isValid()) {
             result.addErrorMessages(validation.getErrorMessages());
             return result;
@@ -87,22 +87,22 @@ public abstract class CRUDServiceImpl<E extends DataEntity, D extends Dto, F ext
         // We load the entity from the database, or create  a new instance
         // if the element is being added, nor updated.
         E entity = null;
-        if (item.getId() == null) {
+        if (formDto.getId() == null) {
             entity = getNewEntity(result);
         } else {
-            entity = getById(item.getId(), result);
+            entity = getById(formDto.getId(), result);
         }
 
         if (!result.isSuccess()) {
             return result;
         }
         
-        if(!validateSaving(item, entity,result)){
+        if(!validateSaving(formDto, entity,result)){
             return result;
         }
 
         // We copy the received values to the entity.
-        item.copyTo(entity);
+        formDto.copyTo(entity);
 
         // And save it.
         try {
@@ -112,7 +112,10 @@ public abstract class CRUDServiceImpl<E extends DataEntity, D extends Dto, F ext
             return result;
         }
 
-        result.setResult(getDto(entity, true));
+        D dto = getDto(entity, true);
+        dto.setNewEntity(formDto.getId()==null);;
+        
+        result.setResult(dto);
 
         return result;
     }
