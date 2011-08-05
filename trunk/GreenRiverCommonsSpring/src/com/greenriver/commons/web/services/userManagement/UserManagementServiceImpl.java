@@ -2,22 +2,16 @@ package com.greenriver.commons.web.services.userManagement;
 
 import com.greenriver.commons.ErrorMessagesException;
 import com.greenriver.commons.Strings;
-import com.greenriver.commons.collections.Applicable;
-import com.greenriver.commons.collections.Lists;
 import com.greenriver.commons.data.dao.UserDao;
-import com.greenriver.commons.data.dao.queryArgs.QueryArgs;
 import com.greenriver.commons.data.mailing.Mail;
 import com.greenriver.commons.data.model.User;
 import com.greenriver.commons.data.validation.FieldsValidationResult;
-import com.greenriver.commons.data.validation.FieldsValidator;
 import com.greenriver.commons.mailing.MailSendingHelper;
 import com.greenriver.commons.roleManagement.RoleManager;
 import com.greenriver.commons.web.helpers.session.UserSessionInfo;
-import com.greenriver.commons.web.services.PagedResult;
+import com.greenriver.commons.web.services.crud.CRUDServiceImpl;
 import com.greenriver.commons.web.services.Result;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.security.authentication.encoding.PasswordEncoder;
@@ -26,17 +20,16 @@ import org.springframework.security.authentication.encoding.PasswordEncoder;
  * This class implements <c>UserManagementService</c> .
  * @author luis
  */
-public class UserManagementServiceImpl
-        implements UserManagementService {
+public abstract class UserManagementServiceImpl<D extends UserDto, F extends UserFormDto>
+        extends CRUDServiceImpl<User, D, F>
+        implements UserManagementService<D, F> {
 
     // <editor-fold defaultstate="collapsed" desc="Fields">
     private UserSessionInfo userSessionInfo;
     private UserDao userDao;
     private PasswordEncoder passwordEncoder;
-    private FieldsValidator fieldsValidator;
+    
     private RoleManager roleManager;
-    private Class<UserFormDto> formDtoClass;
-    private Class<UserDto> dtoClass;
     private MailSendingHelper mailSendingHelper;
     private String appTitle;
     private static final String PASSWORD_CHANGE_MAIL_TEMPLATE = "generateNewPasswordMailTemplate.html";
@@ -48,11 +41,9 @@ public class UserManagementServiceImpl
         this.userSessionInfo = userSessionInfo;
     }
 
-    public void setFieldsValidator(FieldsValidator validator) {
-        this.fieldsValidator = validator;
-    }
-
     public void setUserDao(UserDao dao) {
+        // We set the general dao.
+        this.setDao(dao);
         this.userDao = dao;
     }
 
@@ -62,36 +53,7 @@ public class UserManagementServiceImpl
 
     public void setRoleManager(RoleManager roleManager) {
         this.roleManager = roleManager;
-    }
-
-    /**
-     * @return the formDtoClass
-     */
-    public Class<UserFormDto> getFormDtoClass() {
-        return formDtoClass;
-    }
-
-    /**
-     * @param formDtoClass the formDtoClass to set
-     */
-    public void setFormDtoClass(Class<UserFormDto> formDtoClass) {
-        this.formDtoClass = formDtoClass;
-    }
-
-    /**
-     * @return the dtoClass
-     */
-    public Class<UserDto> getDtoClass() {
-        return dtoClass;
-    }
-
-    /**
-     * @param dtoClass the dtoClass to set
-     */
-    public void setDtoClass(Class<UserDto> dtoClass) {
-        this.dtoClass = dtoClass;
-    }
-
+    }    
     /**
      * @return the mailSendingHelper
      */
@@ -111,45 +73,10 @@ public class UserManagementServiceImpl
      */
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Service methods">
+   
     @Override
-    public Result<UserFormDto> getNew() {
-        Result<UserFormDto> r = new Result<UserFormDto>();
-
-        UserFormDto dto = getUserFormDto(new User());
-
-
-        r.setResult(dto);
-        return r;
-    }
-
-    @Override
-    public Result<UserFormDto> getForEdit(Long userId) {
-        Result<UserFormDto> r = new Result<UserFormDto>();
-
-        User user = getUserById(userId, r);
-        if (!r.isSuccess()) {
-            return r;
-        }
-
-        r.setResult(getUserFormDto(user));
-        return r;
-    }
-
-    @Override
-    public Result<UserDto> getForView(Long userId) {
-        Result<UserDto> r = new Result<UserDto>();
-        User user = getUserById(userId, r);
-        if (!r.isSuccess()) {
-            return r;
-        }
-
-        r.setResult(getUserDto(user, false));
-        return r;
-    }
-
-    @Override
-    public Result<UserDto> remove(Long userId) {
-        Result<UserDto> res = new Result<UserDto>();
+    public Result<D> remove(Long userId) {
+        Result<D> res = new Result<D>();
 
         //Don't let a user to be removed if it is the current user
         if (userId.equals(userSessionInfo.getCurrentUser().getId())) {
@@ -169,19 +96,19 @@ public class UserManagementServiceImpl
             // We are changing the flag for an existing user so we don't
             // need to provide the encoded password.
             userDao.save(persistedUser, null);
-            res.setResult(getUserDto(persistedUser, true));
+            res.setResult(getDto(persistedUser, true));
         }
 
         return res;
     }
 
     @Override
-    public Result<UserDto> changePassword(PasswordChangeData changeData) {
+    public Result<D> changePassword(PasswordChangeData changeData) {
 
         String encodedCurrentPassword = passwordEncoder.encodePassword(
                 changeData.getCurrentPassword(), null);
 
-        Result<UserDto> result = new Result<UserDto>();
+        Result<D> result = new Result<D>();
         User currentUser = userSessionInfo.getCurrentUser();
         if (encodedCurrentPassword.equals(currentUser.getPassword())) {
             String newPassword = changeData.getNewPassword();
@@ -194,7 +121,7 @@ public class UserManagementServiceImpl
                 userDao.save(currentUser, passwordEncoder.encodePassword(
                         newPassword, null));
 
-                result.setResult(getUserDto(currentUser, false));
+                result.setResult(getDto(currentUser, false));
             }
 
         } else {
@@ -208,29 +135,7 @@ public class UserManagementServiceImpl
         return result;
     }
 
-    @Override
-    public PagedResult<UserDto> query(QueryArgs args) {
-        PagedResult<UserDto> result = new PagedResult<UserDto>();
-
-        List<User> users = new ArrayList<User>();
-
-        try {
-            result.setTotal(userDao.query(args, users));
-        } catch (RuntimeException ex) {
-            result.formatErrorMessage("Ocurrió un error de base de datos.");
-            return result;
-        }
-
-        result.setResult(Lists.apply(users, new Applicable<User, UserDto>() {
-
-            @Override
-            public UserDto apply(User element) {
-                return getUserDto(element, true);
-            }
-        }));
-
-        return result;
-    }
+    
 
     @Override
     public Result<Map<String, String>> getRolesMap() {
@@ -243,9 +148,9 @@ public class UserManagementServiceImpl
     }
 
     @Override
-    public Result<UserDto> save(UserFormDto userDto) {
+    protected Result<D> saveInternal(F userDto) {
 
-        Result<UserDto> result = new Result<UserDto>();
+        Result<D> result = new Result<D>();
 
         User user = validateUserSaving(userDto, result);
         if (!result.isSuccess()) {
@@ -276,7 +181,7 @@ public class UserManagementServiceImpl
             return result;
         }
 
-        UserDto dUser = getUserDto(user, true);
+        D dUser = getDto(user, true);
         dUser.setNewEntity(userDto.getId() == null);
         result.setResult(dUser);
 
@@ -317,7 +222,7 @@ public class UserManagementServiceImpl
     public Result generateNewPassword(Long id) {
         Result result = new Result();
 
-        User user = getUserById(id, result);
+        User user = getById(id, result);
         if (!result.isSuccess()) {
             return result;
         }
@@ -327,7 +232,7 @@ public class UserManagementServiceImpl
         user.setPassword(passwordEncoder.encodePassword(newPassword, null));
 
         try {
-            userDao.save(user);
+            getDao().save(user);
         } catch (RuntimeException e) {
             result.addErrorMessage("Ocurrió un error de base de datos.");
             return result;
@@ -344,8 +249,8 @@ public class UserManagementServiceImpl
     }
 
     private User validateUserSaving(UserFormDto userDto, Result result) {
-        FieldsValidationResult validationResult = fieldsValidator.validate(
-                userDto);
+        FieldsValidationResult validationResult = 
+                getFieldsValidator().validate(userDto);
 
         if (!validationResult.isValid()) {
             result.addErrorMessages(validationResult.getErrorMessages());
@@ -376,10 +281,10 @@ public class UserManagementServiceImpl
     }
 
     @Override
-    public Result<UserDto> toggleAccess(Long id) {
-        Result<UserDto> result = new Result<UserDto>();
+    public Result<D> toggleAccess(Long id) {
+        Result<D> result = new Result<D>();
 
-        User user = getUserById(id, result);
+        User user = getById(id, result);
         if (!result.isSuccess()) {
             return result;
         }
@@ -403,50 +308,11 @@ public class UserManagementServiceImpl
             return result;
         }
 
-        result.setResult(getUserDto(user, true));
+        result.setResult(getDto(user, true));
 
         return result;
     }
     // </editor-fold>
-
-    //<editor-fold defaultstate="collapsed" desc="Auxiliary methods">
-    private User getUserById(Long userId, Result r) {
-        User user = null;
-        try {
-            user = userDao.getById(userId);
-
-        } catch (RuntimeException e) {
-            r.addErrorMessage("Ocurrió un error en la base de datos.");
-        }
-
-        if (user == null) {
-            r.addErrorMessage("No se encontró el usuario especificado.");
-        }
-        return user;
-    }
-
-    private UserFormDto getUserFormDto(User user) {
-        UserFormDto dto = null;
-        try {
-            dto = getFormDtoClass().newInstance();
-        } catch (Exception ex) {
-        }
-
-        dto.copyFrom(user);
-        return dto;
-    }
-
-    private UserDto getUserDto(User user, boolean forGrid) {
-        UserDto dto = null;
-        try {
-            dto = getDtoClass().newInstance();
-        } catch (Exception ex) {
-        }
-
-        dto.copyFrom(user, forGrid);
-        return dto;
-    }
-//</editor-fold>
 
     /**
      * @return the appTitle
