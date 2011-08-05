@@ -1,7 +1,6 @@
 package com.greenriver.commons.web.services;
 
 import com.greenriver.commons.data.dao.queryArgs.QueryArgs;
-import java.util.List;
 
 /**
  * This interface defines the methods a service ofering CRUD operations for 
@@ -9,7 +8,7 @@ import java.util.List;
  * 
  * @author luisro
  */
-public interface CRUDService <D,F>{
+public interface CRUDService <D extends Dto,F extends FormDto>{
     Result<F> getNew();
     Result<D> getForView(Long id);
     Result<F> getForEdit(Long id);
