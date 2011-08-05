@@ -7,7 +7,7 @@ import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
 
 /**
- *
+ * Base class for Hibernate-based daos returning multiple results.
  * @author luis
  */
 public class HibernateMultipleResultsDao<T extends DataEntity>
