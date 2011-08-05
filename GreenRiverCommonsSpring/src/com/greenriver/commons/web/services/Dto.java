@@ -28,5 +28,7 @@ public abstract class Dto<T extends DataEntity> implements DataEntity {
         this.newEntity = newEntity;
     }
 
-    public abstract void copyFrom(T entity, boolean simplified);
+    public void copyFrom(T entity, boolean simplified) {
+        this.id = entity.getId();
+    }
 }
