@@ -1,5 +1,6 @@
 package com.greenriver.commons.data.mailing;
 
+import com.greenriver.commons.data.DataEntity;
 import com.greenriver.commons.data.fieldProperties.FieldAction;
 import com.greenriver.commons.data.fieldProperties.FieldActions;
 import com.greenriver.commons.data.fieldProperties.FieldProperties;
@@ -17,7 +18,7 @@ import javax.persistence.Id;
  * @author luis
  */
 @Entity
-public class MailServerConfig implements Serializable {
+public class MailServerConfig implements DataEntity{
 
     // <editor-fold defaultstate="collapsed" desc="Fields">
     @Id
@@ -164,5 +165,10 @@ public class MailServerConfig implements Serializable {
         this.id = id;
     }
     // </editor-fold>
+
+    @Override
+    public String getLabel() {
+        return "";
+    }
 
 }
