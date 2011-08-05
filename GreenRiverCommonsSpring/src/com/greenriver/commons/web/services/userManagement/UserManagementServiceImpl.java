@@ -432,7 +432,7 @@ public class UserManagementServiceImpl
         } catch (Exception ex) {
         }
 
-        dto.fromUser(user);
+        dto.copyFrom(user);
         return dto;
     }
 
@@ -443,7 +443,7 @@ public class UserManagementServiceImpl
         } catch (Exception ex) {
         }
 
-        dto.fromUser(user, forGrid);
+        dto.copyFrom(user, forGrid);
         return dto;
     }
 //</editor-fold>
