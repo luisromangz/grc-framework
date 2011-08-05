@@ -1,5 +1,6 @@
 package com.greenriver.commons.data.dao.hibernate.base;
 
+import com.greenriver.commons.data.DataEntity;
 import com.greenriver.commons.data.dao.queryArgs.QueryArgs;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -15,7 +16,7 @@ import org.hibernate.criterion.Projections;
  *
  * @author luis
  */
-public abstract class HibernateDaoBase<T> {
+public abstract class HibernateDaoBase<T extends DataEntity> {
 
     private Class entityClass = null;
     private SessionFactory sessionFactory;
