@@ -5,6 +5,15 @@ import com.greenriver.commons.data.fieldProperties.FieldPropertiesValidator;
 import com.greenriver.commons.data.mailing.MailServerConfig;
 import com.greenriver.commons.data.validation.FieldsValidationResult;
 import com.greenriver.commons.web.services.Result;
+import java.net.UnknownHostException;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.mail.AuthenticationFailedException;
+import javax.mail.MessagingException;
+import javax.mail.NoSuchProviderException;
+import javax.mail.Session;
+import javax.mail.Transport;
 
 /**
  *
@@ -28,10 +37,10 @@ public class MailServerConfigServiceImpl implements MailServerConfigService {
         }
 
         // If we don't have a config stored, we return a new entity.
-        if(config==null) {
-            config= new MailServerConfig();
+        if (config == null) {
+            config = new MailServerConfig();
         }
-        
+
         result.setResult(config);
 
         return result;
@@ -47,6 +56,10 @@ public class MailServerConfigServiceImpl implements MailServerConfigService {
             return result;
         }
 
+        if (!validateConnection(newConfig, result)) {
+            return result;
+        }
+
         try {
             mailServerConfigDao.save(newConfig);
         } catch (RuntimeException e) {
@@ -55,8 +68,49 @@ public class MailServerConfigServiceImpl implements MailServerConfigService {
 
         return result;
     }
-    //</editor-fold>
 
+    boolean validateConnection(MailServerConfig config, Result result) {
+        Properties props = createPropertiesFromConfig(config);
+        Session session = Session.getInstance(props);
+        Transport transport = null;
+        try {
+            transport = session.getTransport(config.getProtocol().configValue());
+        } catch (NoSuchProviderException ex) {
+            result.addErrorMessage(
+                    "No se encontró el protocolo de correo especificado en la configuración.");
+            return false;
+        }
+        try {
+            transport.connect(config.getHostName(), config.getPortNumber(), config.getUserName(), config.getPassword());
+            transport.close();
+
+        }catch (AuthenticationFailedException afe) {
+            result.addErrorMessage(
+                    "El usuario o la contraseña son incorrectos.");
+            return false;
+        } catch (MessagingException ex) {            
+            result.addErrorMessage(
+                    "El servidor de correo especificado no existe o no es accesible en el puerto especificado.");
+            return false;
+        }
+
+        return true;
+    }
+
+    private Properties createPropertiesFromConfig(MailServerConfig config) {
+        Properties properties = new Properties();
+
+        if (config.getRequiresAuthentication()) {
+            properties.put("mail.smtp.auth", "true");
+        }
+        if (config.getUseStartTtls()) {
+            properties.setProperty("mail.smtp.starttls.enable", "true");
+        }
+
+        return properties;
+    }
+
+    //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="comment">
     /**
      * @return the mailServerConfigDao
