@@ -83,6 +83,7 @@ public class MailSendingHelperImpl implements MailSendingHelper {
         try {
             transport.connect(config.getHostName(), config.getPortNumber(), config.getUserName(), config.getPassword());
             transport.sendMessage(message, message.getAllRecipients());
+            transport.close();
         } catch (MessagingException ex) {
             throw new ErrorMessagesException(
                     "Ocurrió un error al conectarse al servidor.");
