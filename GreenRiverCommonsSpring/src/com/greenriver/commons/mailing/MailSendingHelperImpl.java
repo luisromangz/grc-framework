@@ -21,6 +21,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
+import org.apache.log4j.Logger;
 import org.springframework.format.datetime.joda.MillisecondInstantPrinter;
 
 /**
@@ -53,6 +54,7 @@ public class MailSendingHelperImpl implements MailSendingHelper {
         try {
             config = getMailServerConfigDao().get();
         } catch (RuntimeException e) {
+            Logger.getLogger(MailSendingHelperImpl.class).error("Server config not found",e);
             throw new ErrorMessagesException("Ocurrió un error de base de datos.");
         }
 
@@ -77,6 +79,7 @@ public class MailSendingHelperImpl implements MailSendingHelper {
         try {
             transport = session.getTransport(config.getProtocol().configValue());
         } catch (NoSuchProviderException ex) {
+            Logger.getLogger(MailSendingHelperImpl.class).error("Protocol not found!",ex);
             throw new ErrorMessagesException(
                     "No se encontró el protocolo de correo especificado en la configuración.");
         }
@@ -85,6 +88,7 @@ public class MailSendingHelperImpl implements MailSendingHelper {
             transport.sendMessage(message, message.getAllRecipients());
             transport.close();
         } catch (MessagingException ex) {
+            Logger.getLogger(MailSendingHelperImpl.class).error("Couldn't send message!",ex);
             throw new ErrorMessagesException(
                     "Ocurrió un error al conectarse al servidor.");
         }
@@ -146,5 +150,6 @@ public class MailSendingHelperImpl implements MailSendingHelper {
         this.mailServerConfigDao = mailServerConfigDao;
     }
     
-    //</editor-fold>
+    //</editor-fold>    
+   
 }
