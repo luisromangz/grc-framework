@@ -34,35 +34,50 @@ public class MailSendingHelperImpl implements MailSendingHelper {
 
     @Override
     @TransactionRollback
-    public boolean sendHtmlMail(Mail mail) throws ErrorMessagesException {
+    public MailServerConfig getMailServerConfig() throws ErrorMessagesException {
+        MailServerConfig config = null;
+        try {
+            config = getMailServerConfigDao().get();
+        } catch (RuntimeException e) {
+            Logger.getLogger(MailSendingHelperImpl.class).error("Server config not found", e);
+            throw new ErrorMessagesException("No se configuró el servidor de correo.");
+        }
 
-        buildAndSendMail(mail);
+        return config;
+    }
+
+    @Override
+    @TransactionRollback
+    public boolean sendHtmlMail(Mail mail, MailServerConfig config) throws ErrorMessagesException {
+
+        buildAndSendMail(mail, config);
 
         if (mail.getSendCopyToSender()) {
             mail.setTo(mail.getFrom());
             mail.setSubject(mail.getSubject() + " (Copia al remitente)");
-            buildAndSendMail(mail);
+            buildAndSendMail(mail, config);
         }
 
 
         return true;
     }
 
-    private void buildAndSendMail(Mail mail) throws ErrorMessagesException {
+    @Override
+    @TransactionRollback
+    public boolean sendHtmlMail(Mail mail) throws ErrorMessagesException {
+        MailServerConfig config = getMailServerConfig();
+        return this.sendHtmlMail(mail, config);
+
+    }
+
+    private void buildAndSendMail(Mail mail, MailServerConfig config) throws ErrorMessagesException {
         // Retrieve config from database
-        MailServerConfig config = null;
-        try {
-            config = getMailServerConfigDao().get();
-        } catch (RuntimeException e) {
-            Logger.getLogger(MailSendingHelperImpl.class).error("Server config not found",e);
-            throw new ErrorMessagesException("Ocurrió un error de base de datos.");
-        }
 
         Properties props = createPropertiesFromConfig(config);
         Session session = Session.getInstance(props);
         Message message = new MimeMessage(session);
 
-        if(Strings.isNullOrEmpty(mail.getFrom())) {
+        if (Strings.isNullOrEmpty(mail.getFrom())) {
             mail.setFrom(config.getUserName());
         }
 
@@ -79,7 +94,7 @@ public class MailSendingHelperImpl implements MailSendingHelper {
         try {
             transport = session.getTransport(config.getProtocol().configValue());
         } catch (NoSuchProviderException ex) {
-            Logger.getLogger(MailSendingHelperImpl.class).error("Protocol not found!",ex);
+            Logger.getLogger(MailSendingHelperImpl.class).error("Protocol not found!", ex);
             throw new ErrorMessagesException(
                     "No se encontró el protocolo de correo especificado en la configuración.");
         }
@@ -88,7 +103,7 @@ public class MailSendingHelperImpl implements MailSendingHelper {
             transport.sendMessage(message, message.getAllRecipients());
             transport.close();
         } catch (MessagingException ex) {
-            Logger.getLogger(MailSendingHelperImpl.class).error("Couldn't send message!",ex);
+            Logger.getLogger(MailSendingHelperImpl.class).error("Couldn't send message!", ex);
             throw new ErrorMessagesException(
                     "Ocurrió un error al conectarse al servidor.");
         }
@@ -102,19 +117,19 @@ public class MailSendingHelperImpl implements MailSendingHelper {
         message.setFrom(new InternetAddress(mail.getFrom()));
         message.setRecipients(Message.RecipientType.TO,
                 InternetAddress.parse(mail.getTo(), false));
-        
-        Multipart multipart = new MimeMultipart("alternative");        
-        
+
+        Multipart multipart = new MimeMultipart("alternative");
+
         MimeBodyPart plainBodyPart = new MimeBodyPart();
         plainBodyPart.setText(Strings.stripTags(mail.getBody()));
         multipart.addBodyPart(plainBodyPart);
-        
+
         MimeBodyPart htmlBodyPart = new MimeBodyPart();
         htmlBodyPart.setContent(mail.getBody(), "text/html; charset=ISO-8859-1");
-        
-        multipart.addBodyPart(htmlBodyPart);        
-        
-        
+
+        multipart.addBodyPart(htmlBodyPart);
+
+
         message.setContent(multipart);
 
         message.setHeader("X-Mailer", "GRC Mailing Helper");
@@ -134,7 +149,7 @@ public class MailSendingHelperImpl implements MailSendingHelper {
 
         return properties;
     }
-    
+
     //<editor-fold defaultstate="collapsed" desc="Getters and setters">
     /**
      * @return the mailServerConfigDao
@@ -142,14 +157,12 @@ public class MailSendingHelperImpl implements MailSendingHelper {
     public MailServerConfigDao getMailServerConfigDao() {
         return mailServerConfigDao;
     }
-    
+
     /**
      * @param mailServerConfigDao the mailServerConfigDao to set
      */
     public void setMailServerConfigDao(MailServerConfigDao mailServerConfigDao) {
         this.mailServerConfigDao = mailServerConfigDao;
     }
-    
     //</editor-fold>    
-   
 }
