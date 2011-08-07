@@ -4,6 +4,7 @@ import com.greenriver.commons.ErrorMessagesException;
 import com.greenriver.commons.Strings;
 import com.greenriver.commons.data.dao.UserDao;
 import com.greenriver.commons.data.mailing.Mail;
+import com.greenriver.commons.data.mailing.MailServerConfig;
 import com.greenriver.commons.data.model.User;
 import com.greenriver.commons.data.validation.FieldsValidationResult;
 import com.greenriver.commons.mailing.MailSendingHelper;
@@ -67,10 +68,20 @@ public abstract class UserManagementServiceImpl<D extends UserDto, F extends Use
     public void setMailSendingHelper(MailSendingHelper mailSendingHelper) {
         this.mailSendingHelper = mailSendingHelper;
     }
+    
+    /**
+     * @return the appTitle
+     */
+    public String getAppTitle() {
+        return appTitle;
+    }
 
     /**
-     * @return the formDtoFactory
+     * @param appTitle the appTitle to set
      */
+    public void setAppTitle(String appTitle) {
+        this.appTitle = appTitle;
+    }
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Service methods">
    
@@ -177,7 +188,7 @@ public abstract class UserManagementServiceImpl<D extends UserDto, F extends Use
             return result;
         }
         
-        if(newPassword!=null && !sendPasswordEmail(user, newPassword, result, false)){
+        if(newPassword!=null && !sendPasswordEmail(user, newPassword, false, result)){
             return result;
         }
 
@@ -188,7 +199,9 @@ public abstract class UserManagementServiceImpl<D extends UserDto, F extends Use
         return result;
     }
 
-    private boolean sendPasswordEmail(User user, String password, Result result, boolean changePassword) {
+    private boolean sendPasswordEmail(
+            User user, String password,  boolean changePassword, Result result) {
+        
         String templateName = changePassword
                 ? PASSWORD_CHANGE_MAIL_TEMPLATE
                 : NEW_USER_MAIL_TEMPLATE;
@@ -208,12 +221,19 @@ public abstract class UserManagementServiceImpl<D extends UserDto, F extends Use
         mail.setBody(mailTemplate);
         mail.setSubject("Información de acceso a " + this.getAppTitle());
         mail.setTo(user.getEmailAddress());
+        
+        // We retrive the config here so we have an active transaction.
+        MailServerConfig config=null;
         try {
-            mailSendingHelper.sendHtmlMail(mail);
+            config = mailSendingHelper.getMailServerConfig();
         } catch (ErrorMessagesException ex) {
-            result.addErrorMessages(ex.getMessages());
-            return false;
+           result.addErrorMessages(ex.getMessages());
+           return false;
         }
+        
+        BackgroundMailer mailer = new BackgroundMailer(mail,config);
+        Thread t = new Thread(mailer);
+        t.start();
 
         return true;
     }
@@ -238,7 +258,7 @@ public abstract class UserManagementServiceImpl<D extends UserDto, F extends Use
             return result;
         }
         
-        sendPasswordEmail(user, newPassword, result, false);
+        sendPasswordEmail(user, newPassword, false, result);
         
         
         return result;
@@ -314,17 +334,23 @@ public abstract class UserManagementServiceImpl<D extends UserDto, F extends Use
     }
     // </editor-fold>
 
-    /**
-     * @return the appTitle
-     */
-    public String getAppTitle() {
-        return appTitle;
-    }
+    class BackgroundMailer implements Runnable {
+        Mail mail;
+        MailServerConfig config;
+        
+        public BackgroundMailer(Mail mail, MailServerConfig config) {
+            this.mail = mail;
+            this.config = config;
+        }
 
-    /**
-     * @param appTitle the appTitle to set
-     */
-    public void setAppTitle(String appTitle) {
-        this.appTitle = appTitle;
+        @Override
+        public void run() {
+            try {
+                mailSendingHelper.sendHtmlMail(this.mail,this.config);
+            } catch (ErrorMessagesException ex) {
+                // We dont log as we have logged the errors in the helper.
+            }
+        }
+        
     }
 }
