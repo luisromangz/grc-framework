@@ -245,7 +245,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         String contents = "";
         ArrayList<String> values = new ArrayList<String>();
         ArrayList<String> labels = new ArrayList<String>();
-
+        
         if (fieldType.isEnum()) {
 
             if (properties.externalValues()) {
@@ -570,7 +570,8 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         element.setElementType("select");
 
         try {
-            element.setContents(createSelectionContents(fieldType, properties,
+            element.setContents(createSelectionContents(
+                    fieldType, properties,
                     properties.possibleValues(),
                     properties.possibleValueLabels(),
                     element.getId()));
