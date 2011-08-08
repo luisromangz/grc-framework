@@ -152,7 +152,7 @@ public abstract class CRUDServiceImpl<E extends DataEntity, D extends Dto, F ext
         return true;
     }
     
-    private boolean validateSaving(F item, E entity, Result result) {
+    protected boolean validateSaving(F item, E entity, Result result) {
         return true;
     }
 
@@ -186,8 +186,7 @@ public abstract class CRUDServiceImpl<E extends DataEntity, D extends Dto, F ext
     protected E getNewEntity(Result result) {
         E newEntity = null;
         try {
-            newEntity = getEntityClass().newInstance();
-            result.setResult(getFormDto(newEntity));
+            newEntity = getEntityClass().newInstance();            
         } catch (Throwable e) {
             result.formatErrorMessage(
                     "Ocurrió un error al obtener %s %s.",
