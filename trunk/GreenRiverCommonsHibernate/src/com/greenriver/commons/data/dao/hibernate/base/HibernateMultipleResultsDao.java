@@ -22,6 +22,10 @@ public class HibernateMultipleResultsDao<T extends DataEntity>
         return (T) getCurrentSession().get(this.getEntityClass(), entityId);
         
     }
+    
+    public List<T> getAll(String orderField) {
+        return getAll(Order.asc(orderField));
+    }
 
     public List<T> getAll(Order order, Criterion... criterions) {
         Criteria crit = getCurrentSession().createCriteria(getEntityClass());
