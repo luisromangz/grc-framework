@@ -30,7 +30,8 @@ public class FormField implements Comparable<FormField> {
                 widgetElement = String.format("<%s id=\"%s\"%s/><span id=\"%s\">%s</span>",
                         element, id, attribs, id+"_unit", properties.getProperty("unit"));
             } else {
-                widgetElement = String.format("<%s id=\"%s\"%s>%s</%1$s><span id=\"%s\">%s</span>",
+                widgetElement = String.format(
+                        "<%s id=\"%s\"%s>%s</%1$s><span class=\"unit\" id=\"%s\">%s</span>",
                         element, id, attribs, contents,  id+"_unit",
                         properties.getProperty("unit"));
             }
