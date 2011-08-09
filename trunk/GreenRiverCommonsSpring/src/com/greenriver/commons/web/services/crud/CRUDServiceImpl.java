@@ -132,7 +132,7 @@ public abstract class CRUDServiceImpl<E extends DataEntity, D extends Dto, F ext
             return res;
         }
 
-        if (!validateDeletion(existingEntity, res)) {
+        if (!validateRemoval(existingEntity, res)) {
             return res;
         }
 
@@ -148,7 +148,7 @@ public abstract class CRUDServiceImpl<E extends DataEntity, D extends Dto, F ext
         return res;
     }
 
-    protected boolean validateDeletion(E entity, Result res) {
+    protected boolean validateRemoval(E entity, Result res) {
         return true;
     }
     

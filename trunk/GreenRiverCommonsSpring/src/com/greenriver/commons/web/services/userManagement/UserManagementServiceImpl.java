@@ -85,33 +85,23 @@ public abstract class UserManagementServiceImpl<D extends UserDto, F extends Use
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Service methods">
    
-    @Override
-    public Result<D> remove(Long userId) {
-        Result<D> res = new Result<D>();
-
+       @Override
+    protected boolean validateRemoval(User entity, Result res) {
+        if(!super.validateRemoval(entity, res)){
+            return false;
+        }    
+        
         //Don't let a user to be removed if it is the current user
-        if (userId.equals(userSessionInfo.getCurrentUser().getId())) {
+        if (entity.getId().equals(userSessionInfo.getCurrentUser().getId())) {
             res.setSuccess(false);
-            res.formatErrorMessage("El usuario no puede borrarse a si mismo");
-            return res;
+            res.formatErrorMessage("El usuario no puede borrarse a si mismo.");
+            return false;
         }
-
-        User persistedUser = userDao.getById(userId);
-
-        if (persistedUser == null) {
-
-            res.addErrorMessage("El usuario no existe.");
-        } else {
-            // Flag as deleted
-            persistedUser.setDeleted(true);
-            // We are changing the flag for an existing user so we don't
-            // need to provide the encoded password.
-            userDao.save(persistedUser, null);
-            res.setResult(getDto(persistedUser, true));
-        }
-
-        return res;
+        
+        return true;
     }
+    
+    
 
     @Override
     public Result<D> changePassword(PasswordChangeData changeData) {
