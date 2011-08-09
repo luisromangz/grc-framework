@@ -21,32 +21,6 @@ import java.util.List;
  */
 public class Lists {
 
-    /**
-     * Joins the elements of the list using the parameter glue as separator.
-     * The elements of the list are converted to string using the toString
-     * method.
-     * @param collection List whose elements are going to be joined.
-     * @param glue
-     * @return An string with all the elements of the first list converted to
-     * strings and using the glue as separator.
-     * @deprecated Use Strings.join, which operates over all kind of Collection.
-     */
-    @Deprecated
-    public static String join(List list, String glue) {
-        if (list == null || list.size() == 0) {
-            return "";
-        }
-
-        StringBuilder sb = new StringBuilder(list.size() * 4);
-
-        sb.append(list.get(0) + "");
-
-        for (int i = 1; i < list.size(); i++) {
-            sb.append(glue + list.get(i) + "");
-        }
-
-        return sb.toString();
-    }
 
     /**
      * Gets if a list is null or if it has zero elements.
