@@ -79,13 +79,14 @@ public class HibernateUserDao
         Integer count = (Integer) c.uniqueResult();
         return count;
     }
-
+    
     @Override
-    public void remove(User user) {
+    public void remove(Long id) {
         // Firstly, we remove the authorities.
+        User user = getById(id);
         removeAuthoritiesForUser(user);
-
-        getCurrentSession().delete(user);
+        user.setDeleted(true);
+        getCurrentSession().update(user);
     }
 
     private void removeAuthoritiesForUser(User user) {
@@ -94,13 +95,6 @@ public class HibernateUserDao
         q.setParameter("user", user);
 
         q.executeUpdate();
-    }
-
-    @Override
-    public User get(User user) {
-        User persistedUser = (User) getCurrentSession().get(User.class,
-                user.getId());
-        return persistedUser;
     }
 
     @Override
