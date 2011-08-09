@@ -631,7 +631,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         //use a dot as decimal separator (representation independent in javascript).
         String min = properties.minValue() + "";
         String max = properties.maxValue() + "";
-        String pattern = "#,##0." + Strings.repeat("#", properties.decimalPlaces());
+        String pattern = "#,##0." + Strings.repeat("0", properties.decimalPlaces());
 
         element.setAttribute(
                 "constraints",
