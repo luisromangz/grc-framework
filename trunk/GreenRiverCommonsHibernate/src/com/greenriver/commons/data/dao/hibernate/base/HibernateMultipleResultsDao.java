@@ -13,8 +13,8 @@ import org.hibernate.criterion.Order;
 public class HibernateMultipleResultsDao<T extends DataEntity>
         extends HibernateDaoBase<T> {    
     
-    public T get(T entity) {
-        return (T) getCurrentSession().get(this.getEntityClass(), entity.getId());
+    public final T get(T entity) {
+        return this.getById(entity.getId());
     }
 
     public T getById(Long entityId) {
@@ -51,7 +51,7 @@ public class HibernateMultipleResultsDao<T extends DataEntity>
         getCurrentSession().delete(this.getById(id));
     }
     
-    public void remove(T element) {
-        getCurrentSession().delete(element);
+    public final void remove(T element) {
+        this.remove(element.getId());
     }
 }
