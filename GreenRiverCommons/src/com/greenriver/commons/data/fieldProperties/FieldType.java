@@ -65,6 +65,11 @@ public enum FieldType {
      * A non exclusive selection.
      */
     MULTISELECTION,
+    
+    /**
+     * A fancy multiselect widget for use with big collections.
+     */
+    FILTER_MULTISELECT,
 
     /**
      * Shows a role selector.
