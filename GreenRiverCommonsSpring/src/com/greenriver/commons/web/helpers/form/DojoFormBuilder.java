@@ -580,6 +580,32 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
                     + element.getId() + ": " + ex.getMessage());
         }
     }
+    
+    private void setupFilterMultiSelect(HtmlFormElementInfo element,
+            Class fieldType, FieldProperties properties) {
+
+        assertNotNumber(properties);
+        assertNotText(properties);
+        assertNotFile(properties);
+
+        configuration.addDojoModule("grc.dijit.form.TooltipMultiSelect");
+        element.getAttributes().setProperty(
+                "dojoType","grc.dijit.form.TooltipMultiSelect");
+        element.getAttributes().setProperty("multiple", "true");
+        element.setElementType("select");
+
+        try {
+            element.setContents(createSelectionContents(
+                    fieldType, properties,
+                    properties.possibleValues(),
+                    properties.possibleValueLabels(),
+                    element.getId()));
+        } catch (Exception ex) {
+            throw new FormBuildingException(
+                    "Error creating selection contents for field "
+                    + element.getId() + ": " + ex.getMessage());
+        }
+    }
 
     private void setupColorField(HtmlFormElementInfo element,
             Class fieldType, FieldProperties properties) {
@@ -812,8 +838,10 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         currentForm.addField(field);
     }
 
-    private void setupFieldElement(HtmlFormElementInfo formFieldElement,
-            Class fieldType, FieldProperties properties) {
+    private void setupFieldElement(
+            HtmlFormElementInfo formFieldElement,
+            Class fieldType, 
+            FieldProperties properties) {
 
         switch (properties.type()) {
             case TEXT:
@@ -847,6 +875,9 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
             case MULTISELECTION:
                 setupMultiSelectionField(
                         formFieldElement, fieldType, properties);
+                break;
+            case FILTER_MULTISELECT:
+                setupFilterMultiSelect(formFieldElement, fieldType, properties);
                 break;
             case COLOR:
                 setupColorField(formFieldElement, fieldType, properties);
