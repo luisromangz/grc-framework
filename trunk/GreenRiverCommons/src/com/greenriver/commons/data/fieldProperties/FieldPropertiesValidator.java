@@ -402,6 +402,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
                 validateSelection(value, properties, validationMessages);
                 break;
             case MULTISELECTION:
+            case FILTER_MULTISELECT:
                 validateMultiSelection(value, properties, validationMessages);
                 break;
             case EMAIL:
