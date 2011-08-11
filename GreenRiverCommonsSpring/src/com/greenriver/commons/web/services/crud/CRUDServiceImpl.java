@@ -113,7 +113,7 @@ public abstract class CRUDServiceImpl<E extends DataEntity, D extends Dto, F ext
         }
 
         D dto = getDto(entity, true);
-        dto.setNewEntity(formDto.getId()==null);;
+        dto.setNewEntity(formDto.getId()==null);
         
         result.setResult(dto);
 
