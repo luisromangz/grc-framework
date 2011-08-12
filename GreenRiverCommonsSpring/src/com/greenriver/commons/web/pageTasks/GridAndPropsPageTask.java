@@ -23,6 +23,7 @@ public class GridAndPropsPageTask
     private String indefiniteElementLabel;
     private String selectedElementLabel;
     
+    private String customPropsViewJsp="";
     private String itemToolbarJspFile="itemToolbar.jsp";
     private List<String> extraJspFiles;
     
@@ -203,6 +204,22 @@ public class GridAndPropsPageTask
     public void setItemToolbarJspFile(String itemToolbarJspFile) {
         this.itemToolbarJspFile = itemToolbarJspFile;
     }
+
+    /**
+     * @return the customPropsViewJsp
+     */
+    public String getCustomPropsViewJsp() {
+        return customPropsViewJsp;
+    }
+
+    /**
+     * @param customPropsViewJsp the customPropsViewJsp to set
+     */
+    public void setCustomPropsViewJsp(String customPropsViewJsp) {
+        this.customPropsViewJsp = customPropsViewJsp;
+    }
+
+
 
    
 }
