@@ -16,6 +16,7 @@ public class DojoHandledPageController
     implements DojoHandled {
     
     private String dojoControllerModule = "grc.web.PageController";
+    private String controllerInitArgsJson="";
 
     @Override
     public void customHandleRequest(
@@ -32,12 +33,12 @@ public class DojoHandledPageController
 
     @Override
     public Properties getControllerInitArgs() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return new Properties();
     }
 
     @Override
     public final String getControllerInitArgsJson() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return controllerInitArgsJson;
     }
 
     

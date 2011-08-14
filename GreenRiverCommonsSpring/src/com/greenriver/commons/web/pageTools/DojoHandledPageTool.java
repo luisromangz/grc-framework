@@ -20,6 +20,7 @@ public class DojoHandledPageTool extends PageTool implements DojoHandled{
         
         Gson gson = new Gson();
         this.controllerInitArgsJson= gson.toJson(this.getControllerInitArgs());
+        this.controllerInitArgsJson = controllerInitArgsJson.replaceAll("\"", "'");
     }
     
     
