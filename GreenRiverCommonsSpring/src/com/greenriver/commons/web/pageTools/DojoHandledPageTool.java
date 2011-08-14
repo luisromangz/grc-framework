@@ -1,12 +1,10 @@
 package com.greenriver.commons.web.pageTools;
 
+import com.google.gson.Gson;
 import com.greenriver.commons.web.configuration.DojoHandled;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import org.directwebremoting.json.JsonUtil;
-
 /**
  *
  * @author luisro
@@ -20,11 +18,8 @@ public class DojoHandledPageTool extends PageTool implements DojoHandled{
         
         this.getDojoModules().add(dojoControllerModule);
         
-        try {
-            this.controllerInitArgsJson = JsonUtil.toJson(this.getControllerInitArgs()).replace("\"","'");
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
-        }
+        Gson gson = new Gson();
+        this.controllerInitArgsJson= gson.toJson(this.getControllerInitArgs());
     }
     
     
