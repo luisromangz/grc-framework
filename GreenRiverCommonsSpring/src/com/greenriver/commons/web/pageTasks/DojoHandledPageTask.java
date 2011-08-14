@@ -1,13 +1,9 @@
 package com.greenriver.commons.web.pageTasks;
 
+import com.google.gson.Gson;
 import com.greenriver.commons.web.configuration.DojoHandled;
 import com.greenriver.commons.web.configuration.PageConfig;
-import java.io.IOException;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.directwebremoting.json.JsonUtil;
-import org.directwebremoting.json.types.JsonString;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
@@ -36,13 +32,8 @@ public class DojoHandledPageTask
         super.initializeInternal();
         
         Properties props = getControllerInitArgs();
-         try {
-            
-            
-            controllerInitArgsJson=JsonUtil.toJson(props).replace("\"","'");
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
-        }
+        Gson gson = new Gson();
+        this.controllerInitArgsJson= gson.toJson(this.getControllerInitArgs());
     }
 
     
