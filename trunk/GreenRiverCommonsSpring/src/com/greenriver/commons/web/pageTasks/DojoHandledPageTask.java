@@ -30,10 +30,9 @@ public class DojoHandledPageTask
     @Override
     protected void initializeInternal() {
         super.initializeInternal();
-        
-        Properties props = getControllerInitArgs();
         Gson gson = new Gson();
         this.controllerInitArgsJson= gson.toJson(this.getControllerInitArgs());
+        this.controllerInitArgsJson = controllerInitArgsJson.replaceAll("\"", "'");
     }
 
     
