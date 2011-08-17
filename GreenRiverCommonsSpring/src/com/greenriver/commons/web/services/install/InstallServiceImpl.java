@@ -2,7 +2,7 @@ package com.greenriver.commons.web.services.install;
 
 import com.greenriver.commons.data.dao.UserDao;
 import com.greenriver.commons.data.model.User;
-import com.greenriver.commons.data.validation.FieldsValidationResult;
+import com.greenriver.commons.data.validation.ValidationResult;
 import com.greenriver.commons.data.validation.FieldsValidator;
 import com.greenriver.commons.web.helpers.session.InstallHelper;
 import com.greenriver.commons.web.services.Result;
@@ -82,7 +82,7 @@ public class InstallServiceImpl implements InstallService, Serializable {
 
             // Needed to bypass validation.
             //adminUser.setRoles(new String[]{"ROLE_USER"});
-            FieldsValidationResult validationResult =
+            ValidationResult validationResult =
                     fieldsValidator.validate(adminUser);
 
             // The user is an admin, and we ensure it is active;

@@ -6,7 +6,7 @@ import com.greenriver.commons.data.dao.UserDao;
 import com.greenriver.commons.data.mailing.Mail;
 import com.greenriver.commons.data.mailing.MailServerConfig;
 import com.greenriver.commons.data.model.User;
-import com.greenriver.commons.data.validation.FieldsValidationResult;
+import com.greenriver.commons.data.validation.ValidationResult;
 import com.greenriver.commons.mailing.MailSendingHelper;
 import com.greenriver.commons.roleManagement.RoleManager;
 import com.greenriver.commons.web.helpers.session.UserSessionInfo;
@@ -259,7 +259,7 @@ public abstract class UserManagementServiceImpl<D extends UserDto, F extends Use
     }
 
     private User validateUserSaving(UserFormDto userDto, Result result) {
-        FieldsValidationResult validationResult = 
+        ValidationResult validationResult = 
                 getFieldsValidator().validate(userDto);
 
         if (!validationResult.isValid()) {
