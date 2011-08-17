@@ -5,7 +5,7 @@ import com.greenriver.commons.collections.Lists;
 import com.greenriver.commons.data.DataEntity;
 import com.greenriver.commons.data.dao.CRUDDao;
 import com.greenriver.commons.data.dao.queryArgs.QueryArgs;
-import com.greenriver.commons.data.validation.FieldsValidationResult;
+import com.greenriver.commons.data.validation.ValidationResult;
 import com.greenriver.commons.data.validation.FieldsValidator;
 import com.greenriver.commons.web.services.Dto;
 import com.greenriver.commons.web.services.FormDto;
@@ -78,7 +78,7 @@ public abstract class CRUDServiceImpl<E extends DataEntity, D extends Dto, F ext
         Result<D> result = new Result<D>();
 
         // We validate the received data.
-        FieldsValidationResult validation = fieldsValidator.validate(formDto);
+        ValidationResult validation = fieldsValidator.validate(formDto);
         if (!validation.isValid()) {
             result.addErrorMessages(validation.getErrorMessages());
             return result;

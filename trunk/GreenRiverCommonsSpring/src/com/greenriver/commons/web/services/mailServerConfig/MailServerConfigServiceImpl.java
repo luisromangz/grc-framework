@@ -3,7 +3,7 @@ package com.greenriver.commons.web.services.mailServerConfig;
 import com.greenriver.commons.data.dao.MailServerConfigDao;
 import com.greenriver.commons.data.fieldProperties.FieldPropertiesValidator;
 import com.greenriver.commons.data.mailing.MailServerConfig;
-import com.greenriver.commons.data.validation.FieldsValidationResult;
+import com.greenriver.commons.data.validation.ValidationResult;
 import com.greenriver.commons.web.services.Result;
 import java.util.Properties;
 import javax.mail.AuthenticationFailedException;
@@ -47,7 +47,7 @@ public class MailServerConfigServiceImpl implements MailServerConfigService {
     public Result saveConfig(MailServerConfig newConfig) {
         Result result = new Result();
 
-        FieldsValidationResult validation = fieldPropertiesValidator.validate(newConfig);
+        ValidationResult validation = fieldPropertiesValidator.validate(newConfig);
         if (!validation.isValid()) {
             result.addErrorMessages(validation.getErrorMessages());
             return result;
