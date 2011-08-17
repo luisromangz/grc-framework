@@ -12,6 +12,6 @@ import com.greenriver.commons.roleManagement.RoleManagerClient;
  * @author luis
  */
 public interface FieldsValidator extends RoleManagerClient {
-    public FieldsValidationResult validate(Object object);
+    public ValidationResult validate(Object object);
     
 }

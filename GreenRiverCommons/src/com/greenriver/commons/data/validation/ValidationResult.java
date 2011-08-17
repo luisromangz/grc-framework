@@ -8,11 +8,11 @@ import java.util.List;
  *
  * @author luis
  */
-public class FieldsValidationResult {
+public class ValidationResult {
     private boolean valid;
     private List<String> errorMessages;
 
-    public FieldsValidationResult() {
+    public ValidationResult() {
         errorMessages = new ArrayList<String>();
         valid = true;
     }
