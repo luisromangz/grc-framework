@@ -1,7 +1,7 @@
 package com.greenriver.commons.data.fieldProperties;
 
 import com.greenriver.commons.Strings;
-import com.greenriver.commons.data.validation.FieldsValidationResult;
+import com.greenriver.commons.data.validation.ValidationResult;
 import com.greenriver.commons.data.validation.FieldsValidator;
 import com.greenriver.commons.data.validation.ValidationRegex;
 import com.greenriver.commons.roleManagement.RoleManager;
@@ -34,8 +34,8 @@ public class FieldPropertiesValidator implements FieldsValidator {
     private RoleManager roleManager;
 
     @Override
-    public FieldsValidationResult validate(Object object) {
-        FieldsValidationResult result = new FieldsValidationResult();
+    public ValidationResult validate(Object object) {
+        ValidationResult result = new ValidationResult();
 
         if (object == null) {
             result.addErrorMessage("El objeto recibido es nulo.");
@@ -51,7 +51,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
     private void validateFieldsByClass(
             Object object,
             Class validationClass,
-            FieldsValidationResult result) {
+            ValidationResult result) {
         // We want to validate the fields defined in a class superclass also.
         if (validationClass.getSuperclass() != null) {
             validateFieldsByClass(object, validationClass.getSuperclass(), result);
