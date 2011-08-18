@@ -15,6 +15,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.log4j.Logger;
 
 /**
  * Base class for CRUD-handling services.
@@ -296,6 +297,10 @@ public abstract class CRUDServiceImpl<E extends DataEntity, D extends Dto, F ext
         }
 
         return entity;
+    }
+    
+    protected Logger getLogger() {
+        return Logger.getLogger(this.getClass().getName());
     }
 
     //</editor-fold>
