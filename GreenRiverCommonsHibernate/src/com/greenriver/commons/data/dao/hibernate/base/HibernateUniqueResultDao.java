@@ -33,6 +33,6 @@ public class HibernateUniqueResultDao<T extends DataEntity>
             getCurrentSession().delete(existingEntity);
         }
         getCurrentSession().save(entity);
-
+        getCurrentSession().flush();
     }
 }
