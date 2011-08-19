@@ -53,7 +53,7 @@ public class PageConfiguration implements Serializable, Copieable<PageConfigurat
     private float pageWidth = 210;
     @FieldProperties(label = "Altura del papel", minValue = 0, type = FieldType.DECIMAL, unit = "mm")
     private float pageHeight = 297;
-    @FieldProperties(label = "Orientación del papel", type = FieldType.SELECTION,
+    @FieldProperties(label = "Orientación del papel", type = FieldType.SELECTION, externalValues=false,
     possibleValues={"false","true"},possibleValueLabels={"Vertical","Apaisado"}, getterPrefix="is")
     private boolean landscape;
 
