@@ -40,7 +40,7 @@ public class MailSendingHelperImpl implements MailSendingHelper {
             config = getMailServerConfigDao().get();
         } catch (RuntimeException e) {
             Logger.getLogger(MailSendingHelperImpl.class).error("Server config not found", e);
-            throw new ErrorMessagesException("No se configuró el servidor de correo.");
+            throw new ErrorMessagesException("El servidor de correo no está configurado.");
         }
 
         return config;
