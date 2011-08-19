@@ -26,8 +26,7 @@ public abstract class UserManagementServiceImpl<D extends UserDto, F extends Use
         implements UserManagementService<D, F> {
 
     // <editor-fold defaultstate="collapsed" desc="Fields">
-    private UserSessionInfo userSessionInfo;
-    private UserDao userDao;
+    private UserSessionInfo userSessionInfo;   
     private PasswordEncoder passwordEncoder;
     
     private RoleManager roleManager;
@@ -42,11 +41,6 @@ public abstract class UserManagementServiceImpl<D extends UserDto, F extends Use
         this.userSessionInfo = userSessionInfo;
     }
 
-    public void setUserDao(UserDao dao) {
-        // We set the general dao.
-        this.setDao(dao);
-        this.userDao = dao;
-    }
 
     public void setPasswordEncoder(PasswordEncoder encoder) {
         this.passwordEncoder = encoder;
@@ -119,8 +113,9 @@ public abstract class UserManagementServiceImpl<D extends UserDto, F extends Use
                         "La nueva contraseña debe tener 6 o más caracteres");
             } else {
                 currentUser.setPassword(newPassword);
-                userDao.save(currentUser, passwordEncoder.encodePassword(
-                        newPassword, null));
+                ((UserDao)getDao()).save(
+                        currentUser, 
+                        passwordEncoder.encodePassword(newPassword, null));
 
                 result.setResult(getDto(currentUser, false));
             }
@@ -172,7 +167,7 @@ public abstract class UserManagementServiceImpl<D extends UserDto, F extends Use
 
         String encodedPassword = passwordEncoder.encodePassword(user.getPassword(), null);
         try {
-            userDao.save(user, encodedPassword);
+            ((UserDao)getDao()).save(user, encodedPassword);
         } catch (RuntimeException re) {
             result.addErrorMessage("Ocurrió un error de base de datos.");
             return result;
@@ -268,7 +263,7 @@ public abstract class UserManagementServiceImpl<D extends UserDto, F extends Use
         }
 
 
-        User existingUser = this.userDao.getByUsername(userDto.getUsername());
+        User existingUser = ((UserDao)getDao()).getByUsername(userDto.getUsername());
 
         if (existingUser != null
                 && !existingUser.isDeleted()
@@ -282,7 +277,7 @@ public abstract class UserManagementServiceImpl<D extends UserDto, F extends Use
         if (userDto.getId() == null) {
             existingUser = new User();
         } else {
-            existingUser = userDao.getById(userDto.getId());
+            existingUser = getDao().getById(userDto.getId());
         }
 
         userDto.copyTo(existingUser);
@@ -312,7 +307,7 @@ public abstract class UserManagementServiceImpl<D extends UserDto, F extends Use
         }
 
         try {
-            userDao.save(user);
+            getDao().save(user);
         } catch (RuntimeException e) {
             result.addErrorMessage("Ocurrió un error de base de datos.");
             return result;
