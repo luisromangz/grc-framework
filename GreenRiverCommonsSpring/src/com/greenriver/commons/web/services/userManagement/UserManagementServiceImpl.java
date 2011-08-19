@@ -8,6 +8,7 @@ import com.greenriver.commons.data.mailing.MailServerConfig;
 import com.greenriver.commons.data.model.User;
 import com.greenriver.commons.data.validation.ValidationResult;
 import com.greenriver.commons.mailing.MailSendingHelper;
+import com.greenriver.commons.mailing.MailSendingHelper.BackgroundMailer;
 import com.greenriver.commons.roleManagement.RoleManager;
 import com.greenriver.commons.web.helpers.session.UserSessionInfo;
 import com.greenriver.commons.web.services.crud.CRUDServiceImpl;
@@ -216,7 +217,7 @@ public abstract class UserManagementServiceImpl<D extends UserDto, F extends Use
            return false;
         }
         
-        BackgroundMailer mailer = new BackgroundMailer(mail,config);
+        BackgroundMailer mailer = new BackgroundMailer(mail,config, getMailSendingHelper());
         Thread t = new Thread(mailer);
         t.start();
 
@@ -319,23 +320,5 @@ public abstract class UserManagementServiceImpl<D extends UserDto, F extends Use
     }
     // </editor-fold>
 
-    class BackgroundMailer implements Runnable {
-        Mail mail;
-        MailServerConfig config;
-        
-        public BackgroundMailer(Mail mail, MailServerConfig config) {
-            this.mail = mail;
-            this.config = config;
-        }
-
-        @Override
-        public void run() {
-            try {
-                mailSendingHelper.sendHtmlMail(this.mail,this.config);
-            } catch (ErrorMessagesException ex) {
-                // We dont log as we have logged the errors in the helper.
-            }
-        }
-        
-    }
+   
 }
