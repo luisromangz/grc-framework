@@ -87,7 +87,7 @@ public @interface FieldProperties {
      * retrieve the values.
      * @return
      */
-    boolean externalValues() default false;
+    boolean externalValues() default true;
 
     /**
      * A custom validation error message.

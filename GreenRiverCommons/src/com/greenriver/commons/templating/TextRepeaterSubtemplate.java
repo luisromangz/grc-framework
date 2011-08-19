@@ -40,7 +40,7 @@ public abstract class TextRepeaterSubtemplate<T extends TemplateReplacement, K e
     private String body;
     @FieldProperties(label = "Número de repeticiones horizontales", type = FieldType.NUMBER, minValue = 1)
     private int horizontalRepetitions = 1;
-    @FieldProperties(label = "Bordes de la tabla", type = FieldType.SELECTION, enumLabelMethod = "getLabel")
+    @FieldProperties(label = "Bordes de la tabla", type = FieldType.SELECTION, externalValues=false,enumLabelMethod = "getLabel")
     @FieldAction(triggerField = "horizontalRepetitions", triggerValue = "1", newValue = "'NONE'", deactivate=true)
     @Enumerated(EnumType.STRING)
     private BorderType borderType = BorderType.NONE;

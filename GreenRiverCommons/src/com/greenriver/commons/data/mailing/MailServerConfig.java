@@ -26,7 +26,7 @@ public class MailServerConfig implements DataEntity{
     private Long id;
     @FieldProperties(label = "Servidor de correo")
     private String hostName;
-    @FieldProperties(label = "Protocolo de envío", type = FieldType.SELECTION)
+    @FieldProperties(label = "Protocolo de envío", type = FieldType.SELECTION,externalValues=false)
     @Enumerated(EnumType.STRING)
     private MailSendingProtocol protocol= MailSendingProtocol.SMTP;
     @FieldProperties(label = "Puerto", type = FieldType.NUMBER)

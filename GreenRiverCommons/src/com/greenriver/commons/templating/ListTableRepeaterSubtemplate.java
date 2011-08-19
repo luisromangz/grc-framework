@@ -50,7 +50,7 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
     public static final String TABLE_CELL_SEPARATOR = "||";
     public static final String TABLE_CELL_SEPARATOR_REGEX = "\\|\\|";
     public static final String COLUMN_SORTING_SEPARATOR = ";";
-    @FieldProperties(label = "Tipo de repetición", type = FieldType.SELECTION,
+    @FieldProperties(label = "Tipo de repetición", type = FieldType.SELECTION, externalValues=false,
     possibleValues = {"true", "false"}, possibleValueLabels = {"Tabla", "Lista"})
     private boolean isTable = true;
     @FieldProperties(label = "Lista ordenada", type = FieldType.CHECKBOX, editable = false)
@@ -73,19 +73,19 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
     private String orderByColumns = "";
     @FieldProperties(label = "Formato del elemento", type = FieldType.LONGTEXT, widgetStyle = "width:98%")
     private String elementFormat;
-    @FieldProperties(label = "Estilo del elemento", type = FieldType.SELECTION,
+    @FieldProperties(label = "Estilo del elemento", type = FieldType.SELECTION, externalValues=false,
     possibleValueLabels = {"Normal", "Negrita", "Cursiva", "Negrita y cursiva"},
     possibleValues = {" ", "font-weight:bold", "font-style:italic", "font-weight:bold;font-style:italic"})
     private String fontStyle = " ";
     @FieldProperties(label = "Tamaño de la fuente", type = FieldType.NUMBER, minValue = 4, unit = "pt")
     private int fontSize = 9;
     @FieldProperties(label = "Alineación del texto en la celda", type = FieldType.SELECTION,
-    possibleValueLabels = {"Izquierda", "Centro", "Derecha"},
+    externalValues=false,possibleValueLabels = {"Izquierda", "Centro", "Derecha"},
     possibleValues = {"left", "center", "right"})
     @FieldAction(triggerField = "isTable", triggerValue = "'false'", newValue = "'left'", deactivate = true)
     private String textAlign = "center";
     @FieldProperties(label = "Bordes", type = FieldType.SELECTION,
-    possibleValueLabels = {"Todos", "Horizontales", "Verticales"},
+    externalValues=false,possibleValueLabels = {"Todos", "Horizontales", "Verticales"},
     possibleValues = {"border-top,border-bottom,border-left,border-right", "border-top,border-bottom", "border-left,border-right"})
     @FieldAction(triggerField = "isTable", triggerValue = "'false'", deactivate = true)
     private String borders = "border-top,border-bottom,border-left,border-right";
