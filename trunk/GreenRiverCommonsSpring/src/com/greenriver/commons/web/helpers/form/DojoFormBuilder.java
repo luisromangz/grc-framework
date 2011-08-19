@@ -246,13 +246,8 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         ArrayList<String> values = new ArrayList<String>();
         ArrayList<String> labels = new ArrayList<String>();
         
-        if (fieldType.isEnum()) {
-
-            if (properties.externalValues()) {
-                throw new FormBuildingException(
-                        "Error procesing element " + elementId + ". "
-                        + "Enum field type is incompatible with externalValues flag");
-            } else if (Strings.isNullOrEmpty(properties.enumLabelMethod())) {
+        if (!properties.externalValues() && fieldType.isEnum()) {
+            if (Strings.isNullOrEmpty(properties.enumLabelMethod())) {
                 throw new FormBuildingException(
                         "Error procesing element " + elementId + ". "
                         + "Enum method name required but not specified");
