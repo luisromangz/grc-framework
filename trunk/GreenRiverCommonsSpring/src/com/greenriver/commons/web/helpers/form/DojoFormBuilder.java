@@ -442,9 +442,9 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
 
         element.getAttributes().setProperty("dojoType", "dijit.Editor");
         element.setAttribute("plugins",
-                "[{name:'grc.dijit._editor.plugins.FontChoice', command:'formatBlock', generic:false},"
-                + "{name:'grc.dijit._editor.plugins.FontChoice', command:'fontName', generic:false},"
-                + "{name:'grc.dijit._editor.plugins.FontChoice', command:'fontSize'},"
+                "[{name:'grc.widget._editor.plugins.FontChoice', command:'formatBlock', generic:false},"
+                + "{name:'grc.widget._editor.plugins.FontChoice', command:'fontName', generic:false},"
+                + "{name:'grc.widget._editor.plugins.FontChoice', command:'fontSize'},"
                 + "'foreColor','hiliteColor',"
                 + "'|','undo','redo','|','bold','italic','underline','strikethrough',"
                 + "'|', 'indent', 'outdent', 'justifyLeft', 'justifyCenter', 'justifyRight',"
@@ -454,7 +454,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         configuration.addDojoModule("dijit.Editor");
         configuration.addDojoModule("dijit._editor.plugins.TextColor");
         configuration.addDojoModule("dijit._editor.plugins.LinkDialog");
-        configuration.addDojoModule("grc.dijit._editor.plugins.FontChoice");
+        configuration.addDojoModule("grc.widget._editor.plugins.FontChoice");
     }
 
     private void setupNumberField(HtmlFormElementInfo element,
@@ -583,9 +583,9 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         assertNotText(properties);
         assertNotFile(properties);
 
-        configuration.addDojoModule("grc.dijit.form.TooltipMultiSelect");
+        configuration.addDojoModule("grc.form.TooltipMultiSelect");
         element.getAttributes().setProperty(
-                "dojoType","grc.dijit.form.TooltipMultiSelect");
+                "dojoType","grc.form.TooltipMultiSelect");
         element.getAttributes().setProperty("multiple", "true");
         element.setElementType("select");
 
@@ -725,9 +725,9 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         String constraint = null;
 
         // We import dojo file input's replacement.
-        configuration.addDojoModule("grc.dijit.form.FileInput");
+        configuration.addDojoModule("grc.form.FileInput");
 
-        formFieldElement.setAttribute("dojoType", "grc.dijit.form.FileInput");
+        formFieldElement.setAttribute("dojoType", "grc.form.FileInput");
 
         if (properties.minSize() > 0) {
             constraints.add("minSize:" + properties.minSize());
@@ -919,9 +919,9 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
             HtmlFormElementInfo formFieldElement,
             Class fieldType,
             FieldProperties properties) {
-        configuration.addDojoModule("grc.dijit.form.YearDayTextBox");
+        configuration.addDojoModule("grc.form.YearDayTextBox");
         formFieldElement.setAttribute("dojoType",
-                "grc.dijit.form.YearDayTextBox");
+                "grc.form.YearDayTextBox");
     }
 
     private void setupTimeField(
@@ -951,10 +951,10 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         assertNotSelection(properties);
         assertNotFile(properties);
 
-        configuration.addDojoModule("grc.dijit.form.CustomValidationTextBox");
+        configuration.addDojoModule("grc.form.CustomValidationTextBox");
 
         formFieldElement.setAttribute("type", "text");
-        formFieldElement.setAttribute("dojoType", "grc.dijit.form.CustomValidationTextBox");
+        formFieldElement.setAttribute("dojoType", "grc.form.CustomValidationTextBox");
 
         // TODO: Add validation to OLD_NIF type
         formFieldElement.setAttribute("trim", "true");
@@ -975,10 +975,10 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         assertNotSelection(properties);
         assertNotFile(properties);
 
-        configuration.addDojoModule("grc.dijit.form.CustomValidationTextBox");
+        configuration.addDojoModule("grc.form.CustomValidationTextBox");
 
         formFieldElement.setAttribute("type", "text");
-        formFieldElement.setAttribute("dojoType", "grc.dijit.form.CustomValidationTextBox");
+        formFieldElement.setAttribute("dojoType", "grc.form.CustomValidationTextBox");
 
         // TODO: Add validation to OLD_NIF type
         formFieldElement.setAttribute("trim", "true");
