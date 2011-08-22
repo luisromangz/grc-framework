@@ -740,7 +740,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         if (properties.allowedFileTypes().length > 0) {
             constraint = Strings.join(Arrays.asList(
                     properties.allowedFileTypes()), ",");
-            constraints.add("types:'" + constraint + "'");
+            constraints.add("allowedExtensions:'" + constraint + "'");
         }
 
         constraint = "{" + Strings.join(constraints, ",") + "}";
