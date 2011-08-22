@@ -48,7 +48,8 @@ public class MailSendingHelperImpl implements MailSendingHelper {
 
     @Override
     @TransactionRollback
-    public boolean sendHtmlMail(Mail mail, MailServerConfig config) throws ErrorMessagesException {
+    public boolean sendHtmlMail(Mail mail, MailServerConfig config) 
+            throws ErrorMessagesException {
 
         buildAndSendMail(mail, config);
 
@@ -70,7 +71,8 @@ public class MailSendingHelperImpl implements MailSendingHelper {
 
     }
 
-    private void buildAndSendMail(Mail mail, MailServerConfig config) throws ErrorMessagesException {
+    private void buildAndSendMail(Mail mail, MailServerConfig config)
+            throws ErrorMessagesException {
         // Retrieve config from database
 
         Properties props = createPropertiesFromConfig(config);
@@ -128,8 +130,17 @@ public class MailSendingHelperImpl implements MailSendingHelper {
         htmlBodyPart.setContent(mail.getBody(), "text/html; charset=ISO-8859-1");
 
         multipart.addBodyPart(htmlBodyPart);
-
-
+        
+        
+        for(String identifier : mail.getAttachments().keySet()) {
+            MimeBodyPart attachmentPart = new MimeBodyPart();
+            attachmentPart.setHeader("Content-ID", identifier);
+            attachmentPart.setDataHandler(new DataHandler(mail.getAttachments().get(identifier)));
+            
+            multipart.addBodyPart(attachmentPart);
+            
+        }
+        
         message.setContent(multipart);
 
         message.setHeader("X-Mailer", "GRC Mailing Helper");
