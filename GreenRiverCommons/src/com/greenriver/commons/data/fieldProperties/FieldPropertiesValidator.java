@@ -7,6 +7,7 @@ import com.greenriver.commons.data.validation.ValidationRegex;
 import com.greenriver.commons.roleManagement.RoleManager;
 import com.greenriver.commons.validators.CIFOrNIFValidator;
 import com.greenriver.commons.validators.CIFValidator;
+import com.greenriver.commons.validators.EmailValidator;
 import com.greenriver.commons.validators.NIFValidator;
 import java.io.ByteArrayInputStream;
 import java.lang.reflect.Field;
@@ -26,12 +27,11 @@ public class FieldPropertiesValidator implements FieldsValidator {
     public static final Pattern COLOR_PATTERN = Pattern.compile(
             "^" + ValidationRegex.COLOR + "$",
             Pattern.CASE_INSENSITIVE);
-    public static final Pattern EMAIL_PATTERN = Pattern.compile(
-            "^" + ValidationRegex.EMAIL + "$",
-            Pattern.CASE_INSENSITIVE);
+  
     public static final Pattern PASSWORD_PATTERN =
             Pattern.compile("^" + ValidationRegex.PASSWORD_ALPHA_6 + "$");
     private RoleManager roleManager;
+    private EmailValidator emailValidator;
 
     @Override
     public ValidationResult validate(Object object) {
@@ -306,7 +306,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
             return;
         }
 
-        if (!EMAIL_PATTERN.matcher((CharSequence) email).matches()) {
+        if (!getEmailValidator().validate(email)) {
             // The passed value isn't an email.
             validationMessages.add(
                     "El valor del campo «"
@@ -693,4 +693,16 @@ public class FieldPropertiesValidator implements FieldsValidator {
                     properties.label()));
         }
     }
+
+    /**
+     * @return the emailValidator
+     */
+    public EmailValidator getEmailValidator() {
+        
+        if(emailValidator==null) {
+            emailValidator = new EmailValidator();
+        }
+        return emailValidator;
+    }
+
 }
