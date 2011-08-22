@@ -2,6 +2,9 @@ package com.greenriver.commons.data.mailing;
 
 import com.greenriver.commons.data.fieldProperties.FieldProperties;
 import com.greenriver.commons.data.fieldProperties.FieldType;
+import java.util.HashMap;
+import java.util.Map;
+import javax.activation.DataSource;
 
 /**
  *
@@ -19,7 +22,19 @@ public class Mail {
     private String body;
     @FieldProperties(label = "Envíar copia al remitente", type = FieldType.CHECKBOX, getterPrefix = "get")
     private boolean sendCopyToSender = false;
+    
+    private Map<String,DataSource> attachments;
 
+    public Mail() {
+        attachments = new HashMap<String, DataSource>();
+    }
+    
+    
+    public void addAttachment(String identifier, DataSource dataSource) {
+        this.attachments.put(identifier, dataSource);
+    }
+    
+    
     // <editor-fold defaultstate="collapsed" desc="Getters & setters">
     /**
      * @return the from
@@ -90,5 +105,21 @@ public class Mail {
     public void setSendCopyToSender(boolean sendCopyToSender) {
         this.sendCopyToSender = sendCopyToSender;
     }
+    /**
+     * @return the attachments
+     */
+    public Map<String,DataSource> getAttachments() {
+        return attachments;
+    }
+
+    /**
+     * @param attachments the attachments to set
+     */
+    public void setAttachments(Map<String,DataSource> attachments) {
+        this.attachments = attachments;
+    }
+    
     // </editor-fold>
+
+    
 }
