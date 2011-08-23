@@ -1464,7 +1464,7 @@ public class Base64
     throws java.io.IOException {
         
         byte[] decodedData = null;
-        Base64.InputStream bis = null;
+        Base64.Base64InputStream bis = null;
         try
         {
             // Set up some useful variables
@@ -1481,7 +1481,7 @@ public class Base64
             buffer = new byte[ (int)file.length() ];
             
             // Open a stream
-            bis = new Base64.InputStream( 
+            bis = new Base64.Base64InputStream( 
                       new java.io.BufferedInputStream( 
                       new java.io.FileInputStream( file ) ), Base64.DECODE );
             
@@ -1525,7 +1525,7 @@ public class Base64
     throws java.io.IOException {
         
         String encodedData = null;
-        Base64.InputStream bis = null;
+        Base64.Base64InputStream bis = null;
         try
         {
             // Set up some useful variables
@@ -1535,7 +1535,7 @@ public class Base64
             int numBytes = 0;
             
             // Open a stream
-            bis = new Base64.InputStream( 
+            bis = new Base64.Base64InputStream( 
                       new java.io.BufferedInputStream( 
                       new java.io.FileInputStream( file ) ), Base64.ENCODE );
             
@@ -1619,14 +1619,14 @@ public class Base64
     
     
     /**
-     * A {@link Base64.InputStream} will read data from another
-     * <tt>java.io.InputStream</tt>, given in the constructor,
+     * A {@link Base64.Base64InputStream} will read data from another
+     * <tt>java.io.Base64InputStream</tt>, given in the constructor,
      * and encode/decode to/from Base64 notation on the fly.
      *
      * @see Base64
      * @since 1.3
      */
-    public static class InputStream extends java.io.FilterInputStream {
+    public static class Base64InputStream extends java.io.FilterInputStream {
         
         private boolean encode;         // Encoding or decoding
         private int     position;       // Current position in the buffer
@@ -1640,18 +1640,18 @@ public class Base64
         
         
         /**
-         * Constructs a {@link Base64.InputStream} in DECODE mode.
+         * Constructs a {@link Base64.Base64InputStream} in DECODE mode.
          *
-         * @param in the <tt>java.io.InputStream</tt> from which to read data.
+         * @param in the <tt>java.io.Base64InputStream</tt> from which to read data.
          * @since 1.3
          */
-        public InputStream( java.io.InputStream in ) {
+        public Base64InputStream( java.io.InputStream in ) {
             this( in, DECODE );
         }   // end constructor
         
         
         /**
-         * Constructs a {@link Base64.InputStream} in
+         * Constructs a {@link Base64.Base64InputStream} in
          * either ENCODE or DECODE mode.
          * <p>
          * Valid options:<pre>
@@ -1660,17 +1660,17 @@ public class Base64
          *     (only meaningful when encoding)</i>
          * </pre>
          * <p>
-         * Example: <code>new Base64.InputStream( in, Base64.DECODE )</code>
+         * Example: <code>new Base64.Base64InputStream( in, Base64.DECODE )</code>
          *
          *
-         * @param in the <tt>java.io.InputStream</tt> from which to read data.
+         * @param in the <tt>java.io.Base64InputStream</tt> from which to read data.
          * @param options Specified options
          * @see Base64#ENCODE
          * @see Base64#DECODE
          * @see Base64#DO_BREAK_LINES
          * @since 2.0
          */
-        public InputStream( java.io.InputStream in, int options ) {
+        public Base64InputStream( java.io.InputStream in, int options ) {
             
             super( in );
             this.options      = options; // Record for later
@@ -1820,7 +1820,7 @@ public class Base64
             return i;
         }   // end read
         
-    }   // end inner class InputStream
+    }   // end inner class Base64InputStream
     
     
     

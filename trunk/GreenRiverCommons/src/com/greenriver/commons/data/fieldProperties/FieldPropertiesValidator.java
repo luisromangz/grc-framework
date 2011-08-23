@@ -9,7 +9,8 @@ import com.greenriver.commons.validators.CIFOrNIFValidator;
 import com.greenriver.commons.validators.CIFValidator;
 import com.greenriver.commons.validators.EmailValidator;
 import com.greenriver.commons.validators.NIFValidator;
-import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -526,7 +528,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
             FieldProperties properties,
             List<String> validationMessages) {
 
-        ByteArrayInputStream stream = (ByteArrayInputStream) value;
+        InputStream stream = (InputStream) value;
 
         if (properties.required() && value == null) {
             validationMessages.add(String.format(
@@ -536,7 +538,13 @@ public class FieldPropertiesValidator implements FieldsValidator {
         }
 
         if (properties.minSize() != 0 || properties.maxSize() != Integer.MAX_VALUE) {
-            int size = stream.available();
+            int size=0;
+            try {
+                size = stream.available();
+            } catch (IOException ex) {
+               Logger.getLogger(this.getClass()).error(ex);
+               return;
+            }
             boolean minSizeErr =
                     properties.minSize() > 0 && size < properties.minSize();
             boolean maxSizeErr =
@@ -559,6 +567,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
                 return;
             }
         }
+
 
         //TODO: check file type
     }
