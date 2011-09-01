@@ -186,6 +186,7 @@ public abstract class CRUDServiceImpl<E extends DataEntity, D extends Dto, F ext
         try {
             newEntity = getEntityClass().newInstance();
         } catch (Throwable e) {
+            getLogger().error("Error getting new entity", e);
             result.formatErrorMessage(
                     "Ocurrió un error al obtener %s %s.",
                     maleElement ? "un nuevo" : "una nueva",
