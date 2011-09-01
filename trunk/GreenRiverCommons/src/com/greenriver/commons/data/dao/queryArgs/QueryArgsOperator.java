@@ -14,6 +14,5 @@ public enum QueryArgsOperator {
     EQUALS,
     LOWER_EQUALS,
     LOWER_THAN,
-    LIKE,
-    IN_RANGE
+    LIKE
 }
