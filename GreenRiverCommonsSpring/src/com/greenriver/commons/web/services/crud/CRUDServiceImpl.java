@@ -21,14 +21,14 @@ import org.apache.log4j.Logger;
  * Base class for CRUD-handling services.
  * @author luisro
  */
-public abstract class CRUDServiceImpl<E extends DataEntity, D extends Dto, F extends FormDto>
-        implements CRUDService<D, F> {
+public abstract class CRUDServiceImpl<E extends DataEntity, D extends Dto, F extends FormDto, Q extends QueryArgs>
+        implements CRUDService<D, F,Q> {
 
     // Will be set as needed.
     private Class<E> entityClass = null;
     private Class<D> dtoClass = null;
     private Class<F> formDtoClass = null;
-    private CRUDDao<E, QueryArgs> dao;
+    private CRUDDao<E, Q> dao;
     private FieldsValidator fieldsValidator;
     private boolean maleElement = true;
     private String element = "elemento";
@@ -158,8 +158,7 @@ public abstract class CRUDServiceImpl<E extends DataEntity, D extends Dto, F ext
     }
 
 
-    @Override
-    public PagedResult<D> query(QueryArgs args) {
+    protected PagedResult<D> queryInternal(Q args) {
         PagedResult<D> result = new PagedResult<D>();
 
         List<E> entitities = new ArrayList<E>();
@@ -308,14 +307,14 @@ public abstract class CRUDServiceImpl<E extends DataEntity, D extends Dto, F ext
     /**
      * @return the dao
      */
-    public CRUDDao<E, QueryArgs> getDao() {
+    public CRUDDao<E, Q> getDao() {
         return dao;
     }
 
     /**
      * @param dao the dao to set
      */
-    public void setDao(CRUDDao<E, QueryArgs> dao) {
+    public void setDao(CRUDDao<E, Q> dao) {
         this.dao = dao;
     }
 

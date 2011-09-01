@@ -1,5 +1,6 @@
 package com.greenriver.commons.web.services.userManagement;
 
+import com.greenriver.commons.data.dao.queryArgs.QueryArgs;
 import com.greenriver.commons.web.services.crud.CRUDService;
 import com.greenriver.commons.web.services.Result;
 import java.util.Map;
@@ -9,7 +10,7 @@ import java.util.Map;
  * @author luis
  */
 public interface UserManagementService <D extends UserDto, F extends UserFormDto>
-    extends CRUDService<D, F>{
+    extends CRUDService<D, F, QueryArgs>{
 
     /**
      * Changes the password UserDtoor the user
