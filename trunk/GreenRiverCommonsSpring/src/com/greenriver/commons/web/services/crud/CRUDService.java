@@ -12,13 +12,13 @@ import com.greenriver.commons.web.services.Result;
  * 
  * @author luisro
  */
-public interface CRUDService <D extends Dto,F extends FormDto>{
+public interface CRUDService <D extends Dto,F extends FormDto, Q extends QueryArgs>{
     Result<F> getNew();
     Result<D> getForView(Long id);
     Result<F> getForEdit(Long id);
     
-    //Result<D> save(F item);
+    Result<D> save(F item);
     Result<D> remove(Long id);
     
-    PagedResult<D> query(QueryArgs args);
+    PagedResult<D> query(Q args);
 }

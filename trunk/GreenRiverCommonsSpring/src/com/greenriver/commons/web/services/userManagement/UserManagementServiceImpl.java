@@ -3,6 +3,7 @@ package com.greenriver.commons.web.services.userManagement;
 import com.greenriver.commons.ErrorMessagesException;
 import com.greenriver.commons.Strings;
 import com.greenriver.commons.data.dao.UserDao;
+import com.greenriver.commons.data.dao.queryArgs.QueryArgs;
 import com.greenriver.commons.data.mailing.Mail;
 import com.greenriver.commons.data.mailing.MailServerConfig;
 import com.greenriver.commons.data.model.User;
@@ -11,6 +12,7 @@ import com.greenriver.commons.mailing.MailSendingHelper;
 import com.greenriver.commons.mailing.MailSendingHelper.BackgroundMailer;
 import com.greenriver.commons.roleManagement.RoleManager;
 import com.greenriver.commons.web.helpers.session.UserSessionInfo;
+import com.greenriver.commons.web.services.PagedResult;
 import com.greenriver.commons.web.services.crud.CRUDServiceImpl;
 import com.greenriver.commons.web.services.Result;
 import java.io.IOException;
@@ -23,7 +25,7 @@ import org.springframework.security.authentication.encoding.PasswordEncoder;
  * @author luis
  */
 public abstract class UserManagementServiceImpl<D extends UserDto, F extends UserFormDto>
-        extends CRUDServiceImpl<User, D, F>
+        extends CRUDServiceImpl<User, D, F, QueryArgs>
         implements UserManagementService<D, F> {
 
     // <editor-fold defaultstate="collapsed" desc="Fields">
@@ -94,6 +96,11 @@ public abstract class UserManagementServiceImpl<D extends UserDto, F extends Use
         }
         
         return true;
+    }
+
+    @Override
+    public PagedResult<D> query(QueryArgs args) {
+        return queryInternal(args);
     }
     
     
