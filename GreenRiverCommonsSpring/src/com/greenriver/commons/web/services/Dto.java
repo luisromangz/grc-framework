@@ -6,12 +6,11 @@ import com.greenriver.commons.data.DataEntity;
  *
  * @author luisro
  */
-public abstract class Dto<T extends DataEntity> implements DataEntity {
+public abstract class Dto<T extends DataEntity>  {
 
     private Long id;
     private boolean newEntity = false;
 
-    @Override
     public Long getId() {
         return id;
     }
