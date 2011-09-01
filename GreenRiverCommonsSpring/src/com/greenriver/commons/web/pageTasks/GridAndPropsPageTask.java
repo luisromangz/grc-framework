@@ -24,6 +24,7 @@ public class GridAndPropsPageTask
     private String selectedElementLabel;
     
     private String customPropsViewJsp="";
+    private String customGridToolbarJsp="";
     private String itemToolbarJspFile="itemToolbar.jsp";
     private List<String> extraJspFiles;
     
@@ -175,9 +176,8 @@ public class GridAndPropsPageTask
     public void setExtraJspFiles(List<String> extraJspFiles) {
         this.extraJspFiles = extraJspFiles;
     }
-    //</editor-fold>
-
-    /**
+    
+        /**
      * @return the service
      */
     public String getService() {
@@ -219,7 +219,19 @@ public class GridAndPropsPageTask
         this.customPropsViewJsp = customPropsViewJsp;
     }
 
+    /**
+     * @return the customGridToolbarJsp
+     */
+    public String getCustomGridToolbarJsp() {
+        return customGridToolbarJsp;
+    }
 
-
-   
+    /**
+     * @param customGridToolbarJsp the customGridToolbarJsp to set
+     */
+    public void setCustomGridToolbarJsp(String customGridToolbarJsp) {
+        this.customGridToolbarJsp = customGridToolbarJsp;
+    }
+    
+    //</editor-fold>
 }
