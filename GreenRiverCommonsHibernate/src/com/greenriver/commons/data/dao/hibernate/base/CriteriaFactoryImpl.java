@@ -210,14 +210,14 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
             QueryArgsRestriction restriction) {
         
         String fieldName = restriction.getField();
-        Object value;
-        try {
-            value = getRestrictionValue(entityClass, fieldName,restriction.getValue());
-        } catch (NoSuchFieldException ex) {
-            throw new RuntimeException(ex);
-        } catch (ParseException ex) {
-            throw new RuntimeException(ex);
-        }
+        Object value = restriction.getValue();
+//        try {
+//            value = getRestrictionValue(entityClass, fieldName,restriction.getValue());
+//        } catch (NoSuchFieldException ex) {
+//            throw new RuntimeException(ex);
+//        } catch (ParseException ex) {
+//            throw new RuntimeException(ex);
+//        }
         if (value == null) {
             // We dont apply restrictions for null values.
             return;
@@ -303,7 +303,7 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
 
     }
 
-    private Object getRestrictionValue(
+    /*private Object getRestrictionValue(
             Class entityClass, String fieldName,String value)
             throws NoSuchFieldException, ParseException {
         
@@ -321,7 +321,7 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
            throw new IllegalArgumentException("Not handled field type.");
        }
            
-    }
+    }*/
 }
 // </editor-fold>
 
