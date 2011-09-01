@@ -6,11 +6,10 @@ import com.greenriver.commons.data.DataEntity;
  *
  * @author luisro
  */
-public abstract class FormDto<T extends DataEntity> implements DataEntity {
+public abstract class FormDto<T extends DataEntity>{
 
     private Long id;
 
-    @Override
     public Long getId() {
         return id;
     }
