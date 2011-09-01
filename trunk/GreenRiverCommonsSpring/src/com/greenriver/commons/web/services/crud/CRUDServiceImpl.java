@@ -22,7 +22,7 @@ import org.apache.log4j.Logger;
  * @author luisro
  */
 public abstract class CRUDServiceImpl<E extends DataEntity, D extends Dto, F extends FormDto, Q extends QueryArgs>
-        implements CRUDService<D, F,Q> {
+        implements CRUDService<D, F, Q> {
 
     // Will be set as needed.
     private Class<E> entityClass = null;
@@ -74,7 +74,6 @@ public abstract class CRUDServiceImpl<E extends DataEntity, D extends Dto, F ext
         return r;
     }
 
-    
     protected Result<D> saveInternal(F formDto) {
         Result<D> result = new Result<D>();
 
@@ -97,8 +96,8 @@ public abstract class CRUDServiceImpl<E extends DataEntity, D extends Dto, F ext
         if (!result.isSuccess()) {
             return result;
         }
-        
-        if(!validateSaving(formDto, entity,result)){
+
+        if (!validateSaving(formDto, entity, result)) {
             return result;
         }
 
@@ -114,8 +113,8 @@ public abstract class CRUDServiceImpl<E extends DataEntity, D extends Dto, F ext
         }
 
         D dto = getDto(entity, true);
-        dto.setNewEntity(formDto.getId()==null);
-        
+        dto.setNewEntity(formDto.getId() == null);
+
         result.setResult(dto);
 
         return result;
@@ -152,11 +151,10 @@ public abstract class CRUDServiceImpl<E extends DataEntity, D extends Dto, F ext
     protected boolean validateRemoval(E entity, Result res) {
         return true;
     }
-    
+
     protected boolean validateSaving(F item, E entity, Result result) {
         return true;
     }
-
 
     protected PagedResult<D> queryInternal(Q args) {
         PagedResult<D> result = new PagedResult<D>();
@@ -186,7 +184,7 @@ public abstract class CRUDServiceImpl<E extends DataEntity, D extends Dto, F ext
     protected E getNewEntity(Result result) {
         E newEntity = null;
         try {
-            newEntity = getEntityClass().newInstance();            
+            newEntity = getEntityClass().newInstance();
         } catch (Throwable e) {
             result.formatErrorMessage(
                     "Ocurrió un error al obtener %s %s.",
@@ -222,7 +220,7 @@ public abstract class CRUDServiceImpl<E extends DataEntity, D extends Dto, F ext
 
     private Class<F> getFormDtoClass() {
         if (this.formDtoClass == null) {
-            this.formDtoClass = getArgumentClass(2);
+            this.formDtoClass = getArgumentClass(FormDto.class);
         }
         return this.formDtoClass;
 
@@ -230,7 +228,7 @@ public abstract class CRUDServiceImpl<E extends DataEntity, D extends Dto, F ext
 
     private Class<E> getEntityClass() {
         if (this.entityClass == null) {
-            this.entityClass = getArgumentClass(0);
+            this.entityClass = getArgumentClass(DataEntity.class);
         }
 
         return this.entityClass;
@@ -238,19 +236,19 @@ public abstract class CRUDServiceImpl<E extends DataEntity, D extends Dto, F ext
 
     private Class<D> getDtoClass() {
         if (this.dtoClass == null) {
-            this.dtoClass = getArgumentClass(1);
+            this.dtoClass = getArgumentClass(Dto.class);
         }
 
         return this.dtoClass;
     }
 
-    protected Class getArgumentClass(int argumentIndex) {
+    protected Class getArgumentClass(Class baseClass) {
 
         Class type = this.getClass();
 
         List<Class> argumentClasses = new ArrayList<Class>();
 
-        while (type.getGenericSuperclass()!= Object.class) {
+        while (type.getGenericSuperclass() != Object.class) {
             Type superclass = type.getGenericSuperclass();
 
             if (!(superclass instanceof ParameterizedType)) {
@@ -259,24 +257,30 @@ public abstract class CRUDServiceImpl<E extends DataEntity, D extends Dto, F ext
             }
 
             ParameterizedType parameterizedType = (ParameterizedType) superclass;
-            
+
             List<Class> localArguments = new ArrayList<Class>();
-            for(Type t : parameterizedType.getActualTypeArguments()) {
-                if(t instanceof Class) {
-                    Class c = (Class) t;        
-                    localArguments.add(c);
+            for (Type t : parameterizedType.getActualTypeArguments()) {
+                if (t instanceof Class) {
+                    Class c = (Class) t;
+                    if (baseClass.isAssignableFrom(c)) {
+                        localArguments.add(c);
+                    }
                 }
-                
+
             }
-            
+
             argumentClasses.addAll(0, localArguments);
-            
+
             type = type.getSuperclass();
         }
 
+        if(argumentClasses.size()>1) {
+            throw new IllegalStateException(String.format("Class '%s' has more than two template parameters of type '%s'.",
+                    this.getClass().getName(),
+                    baseClass.getName()));
+        }
 
-
-       return argumentClasses.get(argumentIndex);
+        return argumentClasses.get(0);
     }
 
     protected E getById(Long id, Result r) {
@@ -297,7 +301,7 @@ public abstract class CRUDServiceImpl<E extends DataEntity, D extends Dto, F ext
 
         return entity;
     }
-    
+
     protected Logger getLogger() {
         return Logger.getLogger(this.getClass().getName());
     }
@@ -345,8 +349,7 @@ public abstract class CRUDServiceImpl<E extends DataEntity, D extends Dto, F ext
     public void setElement(String element) {
         this.element = element;
     }
-    
-    
+
     /**
      * @return the fieldsValidator
      */
@@ -361,6 +364,4 @@ public abstract class CRUDServiceImpl<E extends DataEntity, D extends Dto, F ext
         this.fieldsValidator = fieldsValidator;
     }
     //</editor-fold>
-
-  
 }
