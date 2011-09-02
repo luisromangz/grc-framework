@@ -10,6 +10,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
+import org.apache.log4j.Logger;
 import org.mozilla.javascript.EvaluatorException;
 import org.mozilla.javascript.tools.ToolErrorReporter;
 import org.springframework.security.authentication.encoding.PasswordEncoder;
@@ -60,11 +61,12 @@ public abstract class BaseBundlerPlugin implements ControllerPlugin {
        
 
         File bundleFile = new File(bundlePath);
-        if (bundleFile.exists() && !alwaysCreate) {
+        if (bundleFile.exists() && !alwaysCreate) {           
              addBundle(bundleName, configuration);
             return;
         }
 
+        Logger.getLogger(this.getClass()).info("Creating bundle!");
         File outFile = bundleFile;
         if(applyCompression) {
             // If we compress, the uncompressed bundle will be created to a temp file.
