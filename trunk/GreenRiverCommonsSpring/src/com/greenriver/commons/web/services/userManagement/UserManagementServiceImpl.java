@@ -258,7 +258,7 @@ public abstract class UserManagementServiceImpl<D extends UserDto, F extends Use
     }
 
     private String createRandomPassword() {
-        return RandomStringUtils.random(6, true, true);
+        return RandomStringUtils.random(6, true, true).toUpperCase();
     }
 
     private User validateUserSaving(UserFormDto userDto, Result result) {
