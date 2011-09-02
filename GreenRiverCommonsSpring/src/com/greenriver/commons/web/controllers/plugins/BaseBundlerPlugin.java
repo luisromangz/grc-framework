@@ -8,7 +8,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 import org.mozilla.javascript.EvaluatorException;
@@ -29,9 +31,11 @@ public abstract class BaseBundlerPlugin implements ControllerPlugin {
     private boolean applyCompression;
     private String pathPrefix = "js";
     private String bundlePrefix;
+    private Map<String, String> createdBundles;
     // </editor-fold>
 
     public BaseBundlerPlugin() {
+        createdBundles = new HashMap<String, String>();
     }
 
     @Override
@@ -43,60 +47,68 @@ public abstract class BaseBundlerPlugin implements ControllerPlugin {
                     request.getSession().getServletContext().getRealPath(""), getPathPrefix());
         }
 
-        List<String> fileNames = getFileNames(configuration);
+        String key = request.getRequestURI();
+        if (alwaysCreate || !createdBundles.containsKey(key)) {
+            // We need to create the bundle or we have to always create it.
+            Logger.getLogger(this.getClass()).info("Creating bundle!");
+            List<String> fileNames = getFileNames(configuration);
 
-        String bundleName = Strings.join(fileNames, ",");
+            String bundleName = Strings.join(fileNames, ",");
 
-        // We encode the bundle's name, so if modules change, the name
-        // of the bundled file will change too, and thus will force a new
-        // bundle generation.
-        bundleName = passwordEncoder.encodePassword(bundleName, null);
-        bundleName = this.getBundlePrefix() + "-" + bundleName;
+            // We encode the bundle's name, so if modules change, the name
+            // of the bundled file will change too, and thus will force a new
+            // bundle generation.
+            bundleName = passwordEncoder.encodePassword(bundleName, null);
+            bundleName = this.getBundlePrefix() + "-" + bundleName;
 
-        String bundlePath = String.format(
-                "%s/%s.js",
-                javascriptBasePath,
-                bundleName);
+            String bundlePath = String.format(
+                    "%s/%s.js",
+                    javascriptBasePath,
+                    bundleName);
+            
+            
 
-       
 
-        File bundleFile = new File(bundlePath);
-        if (bundleFile.exists() && !alwaysCreate) {           
-             addBundle(bundleName, configuration);
-            return;
-        }
-
-        Logger.getLogger(this.getClass()).info("Creating bundle!");
-        File outFile = bundleFile;
-        if(applyCompression) {
-            // If we compress, the uncompressed bundle will be created to a temp file.
-            try {
-                outFile = File.createTempFile("bundle", ".tmp");
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
+            File bundleFile = new File(bundlePath);
+           
+            File outFile = bundleFile;
+            if (applyCompression) {
+                // If we compress, the uncompressed bundle will be created to a temp file.
+                try {
+                    outFile = File.createTempFile("bundle", ".tmp");
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
-        }
 
-        bundleFiles(configuration, outFile);
-         addBundle(bundleName, configuration);
+            bundleFiles(configuration, outFile);
+            addBundle(bundleName, configuration);
 
-        if (applyCompression) {
-            FileReader reader;
-            try {
-                reader = new FileReader(outFile);
-                JavaScriptCompressor compressor = new JavaScriptCompressor(
-                        reader,
-                        new ToolErrorReporter(false));
-                FileWriter compressedWriter = new FileWriter(bundleFile);
-                compressor.compress(compressedWriter, 1000, false, false, false,false);
+            if (applyCompression) {
+                FileReader reader;
+                try {
+                    reader = new FileReader(outFile);
+                    JavaScriptCompressor compressor = new JavaScriptCompressor(
+                            reader,
+                            new ToolErrorReporter(false));
+                    FileWriter compressedWriter = new FileWriter(bundleFile);
+                    compressor.compress(compressedWriter, 1000, false, false, false, false);
 
-                compressedWriter.flush();
-                compressedWriter.close();
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            } catch (EvaluatorException ex) {
-                throw new RuntimeException(ex);
+                    compressedWriter.flush();
+                    compressedWriter.close();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                } catch (EvaluatorException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
+            
+            createdBundles.put(key, bundleName);
+            Logger.getLogger(this.getClass()).info("Bundle finished!");
+        } else {
+            Logger.getLogger(this.getClass()).info("Bundle reused!");
+            String bundleName = createdBundles.get(key);
+            addBundle(bundleName, configuration);
         }
     }
 
