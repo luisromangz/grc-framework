@@ -1,8 +1,6 @@
 package com.greenriver.commons.web.helpers.form;
 
-import com.greenriver.commons.data.fieldProperties.FieldProperties;
 import com.greenriver.commons.web.helpers.header.HeaderConfig;
-import java.lang.reflect.Field;
 import java.util.List;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -19,7 +17,7 @@ public interface FormBuilder {
      * @param configuration The configuration object used to hold javascript files etc.
      * @param modelAndView The <c>ModelAndView</c> object the form will be added to.
      */
-    public void addForm(
+    public Form addForm(
             String formId,
             HeaderConfig configuration,
             ModelAndView modelAndView);
