@@ -66,8 +66,6 @@ public abstract class BaseBundlerPlugin implements ControllerPlugin {
                     javascriptBasePath,
                     bundleName);
             
-            
-
 
             File bundleFile = new File(bundlePath);
            
