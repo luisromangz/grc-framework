@@ -31,11 +31,11 @@ public abstract class BaseBundlerPlugin implements ControllerPlugin {
     private boolean applyCompression;
     private String pathPrefix = "js";
     private String bundlePrefix;
-    private Map<String, String> createdBundles;
+    private Map<String, String> bundlesByURI;
     // </editor-fold>
 
     public BaseBundlerPlugin() {
-        createdBundles = new HashMap<String, String>();
+        bundlesByURI = new HashMap<String, String>();
     }
 
     @Override
@@ -47,8 +47,8 @@ public abstract class BaseBundlerPlugin implements ControllerPlugin {
                     request.getSession().getServletContext().getRealPath(""), getPathPrefix());
         }
 
-        String key = request.getRequestURI();
-        if (alwaysCreate || !createdBundles.containsKey(key)) {
+        String uri = request.getRequestURI();
+        if (alwaysCreate || !bundlesByURI.containsKey(uri)) {
             // We need to create the bundle or we have to always create it.
             Logger.getLogger(this.getClass()).info("Creating bundle!");
             List<String> fileNames = getFileNames(configuration);
@@ -103,11 +103,11 @@ public abstract class BaseBundlerPlugin implements ControllerPlugin {
                 }
             }
             
-            createdBundles.put(key, bundleName);
+            bundlesByURI.put(uri, bundleName);
             Logger.getLogger(this.getClass()).info("Bundle finished!");
         } else {
             Logger.getLogger(this.getClass()).info("Bundle reused!");
-            String bundleName = createdBundles.get(key);
+            String bundleName = bundlesByURI.get(uri);
             addBundle(bundleName, configuration);
         }
     }
