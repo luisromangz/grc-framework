@@ -198,7 +198,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
     }
 
     @Override
-    public void addForm(
+    public Form addForm(
             String formId,
             HeaderConfig configuration,
             ModelAndView modelAndView) {
@@ -211,6 +211,8 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
 
         forms.add(newForm);
         currentForm = newForm;
+        
+        return newForm;
     }
 
     @Override
