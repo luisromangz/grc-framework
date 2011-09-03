@@ -1,24 +1,30 @@
 package com.greenriver.commons.web.controllers;
 
 import com.greenriver.commons.Strings;
+import com.greenriver.commons.data.model.User;
 import com.greenriver.commons.web.configuration.PageConfig;
 import com.greenriver.commons.web.configuration.FormsContainer;
 import com.greenriver.commons.web.configuration.GridsContainer;
 import com.greenriver.commons.web.configuration.PageToolsContainer;
 import com.greenriver.commons.web.configuration.PropertiesViewsContainer;
 import com.greenriver.commons.web.controllers.plugins.ControllerPlugin;
+import com.greenriver.commons.web.helpers.form.Form;
 import com.greenriver.commons.web.helpers.header.HeaderConfig;
 import com.greenriver.commons.web.pageTools.PageTool;
 import com.greenriver.commons.web.helpers.form.FormBuilder;
 import com.greenriver.commons.web.helpers.grid.GridBuilder;
+import com.greenriver.commons.web.helpers.grid.GridInfo;
 import com.greenriver.commons.web.helpers.header.HeaderConfigurer;
+import com.greenriver.commons.web.helpers.propertiesView.PropertiesView;
 import com.greenriver.commons.web.helpers.propertiesView.PropertiesViewBuilder;
 import com.greenriver.commons.web.helpers.session.UserSessionInfo;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.log4j.Logger;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
@@ -34,7 +40,7 @@ import org.springframework.web.servlet.mvc.AbstractController;
  */
 public class ConfigurablePageController
         extends AbstractController
-        implements PropertiesViewsContainer, GridsContainer, FormsContainer,HeaderConfig,PageToolsContainer, CustomizableHandleRequest {
+        implements PropertiesViewsContainer, GridsContainer, FormsContainer, HeaderConfig, PageToolsContainer, CustomizableHandleRequest {
 
     // <editor-fold defaultstate="collapsed" desc="Fields">
     private HeaderConfigurer headerConfigurer;
@@ -46,41 +52,57 @@ public class ConfigurablePageController
     private UserSessionInfo userSessionInfo;
     private List<ControllerPlugin> plugins;
     private boolean toolsLoadDelayed = true;
-    // </editor-fold>
+    private boolean configuredAlways = false;
+    private Map<Integer, ModelAndView> mavsByHash;
 
+    // </editor-fold>
     public ConfigurablePageController() {
         // We intialize the pageConfiguration object;
         pageConfig = new PageConfig();
         plugins = new ArrayList<ControllerPlugin>();
+        mavsByHash = new HashMap<Integer, ModelAndView>();
     }
 
     @Override
-    public ModelAndView handleRequestInternal(HttpServletRequest request,
+    public ModelAndView handleRequestInternal(
+            HttpServletRequest request,
             HttpServletResponse response)
             throws Exception {
 
-        // We clone it so changes made by configuration process doesnt
-        // get stuck into the bean definition.
-        PageConfig configuration = (PageConfig) this.pageConfig.clone();
-
         ModelAndView mav = new ModelAndView(viewName);
-
-        configureForms(this.getForms(), mav,configuration, null);
-        configurePropertiesView(this.getPropertiesView(), mav, null);
-        configureGrids(this.getGrids(), mav,configuration, null);
-        configurePageTools(mav,configuration);
-
         if (this.userSessionInfo != null) {
             mav.addObject("userSessionInfo", this.userSessionInfo);
         }
 
-        customHandleRequest(request, response, configuration, mav);
+        int requestHash = createRequestHash(request.getParameterMap());
 
-        for (ControllerPlugin plugin : this.getPlugins()) {
-            plugin.doWork(request, configuration);
+        if (configuredAlways || !mavsByHash.containsKey(requestHash)) {
+            // We need to configure all.            
+            Logger.getLogger(getClass().getName()).info("Configuring!");
+
+            // We clone it so changes made by configuration process doesnt
+            // get stuck into the bean definition.
+            PageConfig configuration = (PageConfig) this.pageConfig.clone();
+
+            configureForms(this.getForms(), mav, configuration, null);
+            configurePropertiesView(this.getPropertiesView(), mav, null);
+            configureGrids(this.getGrids(), mav, configuration, null);
+            configurePageTools(mav, configuration);
+
+            customHandleRequest(request, response, configuration, mav);
+
+            for (ControllerPlugin plugin : this.getPlugins()) {
+                plugin.doWork(request, configuration);
+            }
+
+            headerConfigurer.configure(mav, configuration);
+
+            mavsByHash.put(requestHash, mav);
+
+        } else {
+            Logger.getLogger(getClass().getName()).info("Configuration reused!");
+            mav = mavsByHash.get(requestHash);
         }
-
-        headerConfigurer.configure(mav, configuration);
 
         return mav;
     }
@@ -101,7 +123,7 @@ public class ConfigurablePageController
      * @param prefix Prefix to append to the name of the form
      * @throws ClassNotFoundException
      */
-    protected void configureForms(
+    protected List<Form> configureForms(
             Map<String, String> forms,
             ModelAndView mav,
             PageConfig pageConfig,
@@ -117,12 +139,15 @@ public class ConfigurablePageController
             prefix = "";
         }
 
+        List<Form> createdForms = new ArrayList<Form>();
         for (String formId : forms.keySet()) {
             String className = forms.get(formId);
             Class entityClass = Class.forName(className);
-            formBuilder.addForm(prefix + formId, pageConfig, mav);
+            createdForms.add(formBuilder.addForm(prefix + formId, pageConfig, mav));
             formBuilder.addFieldsFromClass(entityClass);
         }
+
+        return createdForms;
     }
 
     /**
@@ -131,7 +156,7 @@ public class ConfigurablePageController
      * @param mav
      * @param prefix Name prefix for the generated elements
      */
-    protected void configurePropertiesView(
+    protected List<PropertiesView> configurePropertiesView(
             Map<String, String> propertiesViews,
             ModelAndView mav,
             String prefix) {
@@ -144,19 +169,23 @@ public class ConfigurablePageController
             prefix = "";
         }
 
+        List<PropertiesView> createdPropViews =
+                new ArrayList<PropertiesView>();
         for (String propsViewId : propertiesViews.keySet()) {
-            propertiesViewBuilder.addPropertiesView(prefix + propsViewId, mav);
+            createdPropViews.add(propertiesViewBuilder.addPropertiesView(prefix + propsViewId, mav));
             propertiesViewBuilder.addPropertiesViewFromClass(propertiesViews.get(propsViewId));
         }
+
+        return createdPropViews;
     }
-    
-     /**
+
+    /**
      * Configures grids from a map     
      * @param propertiesViews
      * @param mav
      * @param prefix Name prefix for the generated elements
      */
-    protected void configureGrids(
+    protected List<GridInfo> configureGrids(
             Map<String, String> grids,
             ModelAndView mav,
             PageConfig pageConfig,
@@ -170,14 +199,17 @@ public class ConfigurablePageController
             prefix = "";
         }
 
+        List<GridInfo> createdGrids = new ArrayList<GridInfo>();
         for (String gridId : grids.keySet()) {
-            getGridBuilder().addGridInfo(prefix + gridId, pageConfig,mav);
+            createdGrids.add(getGridBuilder().addGridInfo(prefix + gridId, pageConfig, mav));
             getGridBuilder().addGridInfoFromClass(grids.get(gridId));
         }
+
+        return createdGrids;
     }
 
     private void configurePageTools(
-            ModelAndView mav, 
+            ModelAndView mav,
             PageConfig configuration)
             throws ClassNotFoundException {
 
@@ -190,7 +222,7 @@ public class ConfigurablePageController
 
 
         for (PageTool pageTool : this.getPageTools()) {
-            if(!pageTool.isInitialized()) {
+            if (!pageTool.isInitialized()) {
                 pageTool.initialize();
             }
 
@@ -198,11 +230,11 @@ public class ConfigurablePageController
                 // We only load the jsp files if we are loading the
                 // tool with the page.
                 dialogJspFiles.addAll(Strings.addPrefix(
-                        "tools/" + pageTool.getName()+"/",
+                        "tools/" + pageTool.getName() + "/",
                         pageTool.getDialogJspFiles()));
 
                 dialogJspFiles.addAll(Strings.addPrefix(
-                        "tools/" + pageTool.getName()+"/",
+                        "tools/" + pageTool.getName() + "/",
                         pageTool.getSetupPaneJspFiles()));
 
 
@@ -210,7 +242,7 @@ public class ConfigurablePageController
                 configurePropertiesView(pageTool.getPropertiesView(), mav,
                         pageTool.getName() + "_");
 
-                
+
             }
 
             // We always process forms, even if loading on demand, so
@@ -220,18 +252,18 @@ public class ConfigurablePageController
             //Forms ids are prefixed with the task name
             configureForms(
                     pageTool.getForms(), mav, configuration, pageTool.getName() + "_");
-            
+
             // We always include the rest of things, so we are sure
             // we bundle (if bundling is activated) all the required modules
             // and js files.
 
             configuration.getJavaScriptFiles().addAll(Strings.addPrefix(
-                    "tools/" + pageTool.getName()+"/",
+                    "tools/" + pageTool.getName() + "/",
                     pageTool.getJavaScriptFiles()));
-            
-            
+
+
             configuration.getCssFiles().addAll(Strings.addPrefix(
-                    pageTool.getName()+"/",
+                    pageTool.getName() + "/",
                     pageTool.getCssFiles()));
 
             configuration.getDojoBundles().addAll(
@@ -243,9 +275,9 @@ public class ConfigurablePageController
                     pageTool.getDwrServices());
 
             configuration.getScripts().addAll(pageTool.getScripts());
-            
+
             configuration.getOnLoadScripts().addAll(
-                        pageTool.getOnLoadScripts());
+                    pageTool.getOnLoadScripts());
 
         }
 
@@ -256,9 +288,11 @@ public class ConfigurablePageController
             configuration.addOnLoadScript("window.onToolsLoaded()");
         }
 
-        mav.addObject("pageTools",this.getPageTools());
+        mav.addObject("pageTools", this.getPageTools());
         mav.addObject("toolsDialogJspFiles", dialogJspFiles);
         mav.addObject("toolsSetupJspFiles", setupJspFiles);
+
+
     }
     // </editor-fold>
 
@@ -340,8 +374,7 @@ public class ConfigurablePageController
     public void setForms(Map<String, String> formEntities) {
         getPageConfig().setForms(formEntities);
     }
-    
-    
+
     @Override
     public Map<String, String> getGrids() {
         return getPageConfig().getGrids();
@@ -633,7 +666,7 @@ public class ConfigurablePageController
         return pageConfig;
     }
 
-      @Override
+    @Override
     public List<PageTool> getPageTools() {
         return this.getPageConfig().getPageTools();
     }
@@ -642,27 +675,6 @@ public class ConfigurablePageController
     public void setPageTools(List<PageTool> pageTools) {
         this.getPageConfig().setPageTools(pageTools);
     }
-    
-
-    // </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="Auxiliary methods">
-    
-
-    /**
-     * @return the toolsLoadDelayed
-     */
-    public boolean isToolsLoadDelayed() {
-        return toolsLoadDelayed;
-    }
-
-    /**
-     * @param toolsLoadDelayed the toolsLoadDelayed to set
-     */
-    public void setToolsLoadDelayed(boolean toolsLoadDelayed) {
-        this.toolsLoadDelayed = toolsLoadDelayed;
-    }
-
-  // </editor-fold>
 
     /**
      * @return the gridBuilder
@@ -678,4 +690,58 @@ public class ConfigurablePageController
         this.gridBuilder = gridBuilder;
     }
 
+    /**
+     * @return the configuredAlways
+     */
+    public boolean isConfiguredAlways() {
+        return configuredAlways;
+    }
+
+    /**
+     * @param configuredAlways the configuredAlways to set
+     */
+    public void setConfiguredAlways(boolean configuredAlways) {
+        this.configuredAlways = configuredAlways;
+    }
+
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="Auxiliary methods">
+    /**
+     * @return the toolsLoadDelayed
+     */
+    public boolean isToolsLoadDelayed() {
+        return toolsLoadDelayed;
+    }
+
+    /**
+     * @param toolsLoadDelayed the toolsLoadDelayed to set
+     */
+    public void setToolsLoadDelayed(boolean toolsLoadDelayed) {
+        this.toolsLoadDelayed = toolsLoadDelayed;
+    }
+    // </editor-fold>
+
+    private int createRequestHash(Map parameterMap) {
+        int hash = 7;
+
+        for (Object key : parameterMap.keySet()) {
+            hash = 83 * hash + key.hashCode();
+
+            String[] parameters = (String[]) parameterMap.get(key);
+            for (int i = 0; i < parameters.length; i++) {
+                hash = 83 * hash + (parameters[i].hashCode());
+            }
+        }
+
+        if (this.userSessionInfo != null
+                && this.userSessionInfo.getCurrentUser() != null) {
+            for (String role : this.userSessionInfo.getCurrentUser().getRoles()) {
+                hash = 83 * hash + role.hashCode();
+            }
+        }
+
+
+
+        return hash;
+    }
 }
