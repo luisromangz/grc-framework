@@ -10,6 +10,8 @@ public abstract class Dto<T extends DataEntity>  {
 
     private Long id;
     private boolean newEntity = false;
+    
+    public abstract String getLabel();
 
     public Long getId() {
         return id;
