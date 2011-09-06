@@ -10,13 +10,13 @@ import java.util.List;
  * Dao operations for user entities
  * @author luis
  */
-public interface UserDao extends CRUDDao<User,QueryArgs>, Serializable {
+public interface UserDao<E extends User> extends CRUDDao<E,QueryArgs>, Serializable {
     /**
      * Gets an user by his name
      * @param username Name of the user
      * @return The user if it exists or null if not
      */
-    public User getByUsername(String username);
+    public E getByUsername(String username);
     
     /**
      * Gets the number of existing users
@@ -29,5 +29,5 @@ public interface UserDao extends CRUDDao<User,QueryArgs>, Serializable {
      * @param user Entity to save or update
      * @param encodedPassword String with the hash of the password to be stored.
      */
-    public void save(User user, String encodedPassword);
+    public void save(E user, String encodedPassword);
 }
