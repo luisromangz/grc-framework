@@ -9,6 +9,7 @@ import com.greenriver.commons.data.model.UserAuthority;
 import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
@@ -106,19 +107,6 @@ public class HibernateUserDao
         return user;
     }
 
-    @Override
-    public List<User> getAllNotDeletedUsers() {
-	String hql = "FROM " + User.class.getSimpleName() +
-                " WHERE deleted is null OR deleted = false";
-	Query query = getCurrentSession().createQuery(hql);
-	return query.list();
-    }
-
-    @Override
-    public List<User> getAllUsers() {
-        Criteria crit = getCurrentSession().createCriteria(User.class);
-        return crit.list();
-    }
 
     @Override
     public User getById(Long userId) {
@@ -130,4 +118,11 @@ public class HibernateUserDao
     public int query(QueryArgs qArgs, List<User> entities) {
        return query(qArgs, entities, Restrictions.eq("deleted", false));
     }
+
+    @Override
+    public List<User> getAll(String orderField) {
+        return super.getAll(Order.asc(orderField),Restrictions.eq("deleted", false));
+    }
+    
+    
 }
