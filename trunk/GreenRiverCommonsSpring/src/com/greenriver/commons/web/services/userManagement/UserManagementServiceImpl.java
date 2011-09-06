@@ -24,14 +24,13 @@ import org.springframework.security.authentication.encoding.PasswordEncoder;
  * This class implements <c>UserManagementService</c> .
  * @author luis
  */
-public abstract class UserManagementServiceImpl<D extends UserDto, F extends UserFormDto>
-        extends CRUDServiceImpl<User, D, F, QueryArgs>
+public abstract class UserManagementServiceImpl<E extends User, D extends UserDto, F extends UserFormDto>
+        extends CRUDServiceImpl<E, D, F, QueryArgs>
         implements UserManagementService<D, F> {
 
     // <editor-fold defaultstate="collapsed" desc="Fields">
-    private UserSessionInfo userSessionInfo;   
+    private UserSessionInfo userSessionInfo;
     private PasswordEncoder passwordEncoder;
-    
     private RoleManager roleManager;
     private MailSendingHelper mailSendingHelper;
     private String appTitle;
@@ -44,14 +43,14 @@ public abstract class UserManagementServiceImpl<D extends UserDto, F extends Use
         this.userSessionInfo = userSessionInfo;
     }
 
-
     public void setPasswordEncoder(PasswordEncoder encoder) {
         this.passwordEncoder = encoder;
     }
 
     public void setRoleManager(RoleManager roleManager) {
         this.roleManager = roleManager;
-    }    
+    }
+
     /**
      * @return the mailSendingHelper
      */
@@ -65,7 +64,7 @@ public abstract class UserManagementServiceImpl<D extends UserDto, F extends Use
     public void setMailSendingHelper(MailSendingHelper mailSendingHelper) {
         this.mailSendingHelper = mailSendingHelper;
     }
-    
+
     /**
      * @return the appTitle
      */
@@ -81,20 +80,20 @@ public abstract class UserManagementServiceImpl<D extends UserDto, F extends Use
     }
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Service methods">
-   
-       @Override
-    protected boolean validateRemoval(User entity, Result res) {
-        if(!super.validateRemoval(entity, res)){
+
+    @Override
+    protected boolean validateRemoval(E entity, Result res) {
+        if (!super.validateRemoval(entity, res)) {
             return false;
-        }    
-        
+        }
+
         //Don't let a user to be removed if it is the current user
         if (entity.getId().equals(userSessionInfo.getCurrentUser().getId())) {
             res.setSuccess(false);
             res.formatErrorMessage("El usuario no puede borrarse a si mismo.");
             return false;
         }
-        
+
         return true;
     }
 
@@ -102,8 +101,6 @@ public abstract class UserManagementServiceImpl<D extends UserDto, F extends Use
     public PagedResult<D> query(QueryArgs args) {
         return queryInternal(args);
     }
-    
-    
 
     @Override
     public Result<D> changePassword(PasswordChangeData changeData) {
@@ -121,11 +118,11 @@ public abstract class UserManagementServiceImpl<D extends UserDto, F extends Use
                         "La nueva contraseña debe tener 6 o más caracteres");
             } else {
                 currentUser.setPassword(newPassword);
-                ((UserDao)getDao()).save(
-                        currentUser, 
+                ((UserDao) getDao()).save(
+                        currentUser,
                         passwordEncoder.encodePassword(newPassword, null));
 
-                result.setResult(getDto(currentUser, false));
+                result.setResult(getDto((E)currentUser, false));
             }
 
         } else {
@@ -138,8 +135,6 @@ public abstract class UserManagementServiceImpl<D extends UserDto, F extends Use
 
         return result;
     }
-
-    
 
     @Override
     public Result<Map<String, String>> getRolesMap() {
@@ -156,7 +151,7 @@ public abstract class UserManagementServiceImpl<D extends UserDto, F extends Use
 
         Result<D> result = new Result<D>();
 
-        User user = validateUserSaving(userDto, result);
+        E user = validateUserSaving(userDto, result);
         if (!result.isSuccess()) {
             return result;
         }
@@ -175,13 +170,13 @@ public abstract class UserManagementServiceImpl<D extends UserDto, F extends Use
 
         String encodedPassword = passwordEncoder.encodePassword(user.getPassword(), null);
         try {
-            ((UserDao)getDao()).save(user, encodedPassword);
+            ((UserDao) getDao()).save(user, encodedPassword);
         } catch (RuntimeException re) {
             result.addErrorMessage("Ocurrió un error de base de datos.");
             return result;
         }
-        
-        if(newPassword!=null && !sendPasswordEmail(user, newPassword, false, result)){
+
+        if (newPassword != null && !sendPasswordEmail(user, newPassword, false, result)) {
             return result;
         }
 
@@ -193,8 +188,8 @@ public abstract class UserManagementServiceImpl<D extends UserDto, F extends Use
     }
 
     private boolean sendPasswordEmail(
-            User user, String password,  boolean changePassword, Result result) {
-        
+            User user, String password, boolean changePassword, Result result) {
+
         String templateName = changePassword
                 ? PASSWORD_CHANGE_MAIL_TEMPLATE
                 : NEW_USER_MAIL_TEMPLATE;
@@ -214,17 +209,17 @@ public abstract class UserManagementServiceImpl<D extends UserDto, F extends Use
         mail.setBody(mailTemplate);
         mail.setSubject("Información de acceso a " + this.getAppTitle());
         mail.setTo(user.getEmailAddress());
-        
+
         // We retrive the config here so we have an active transaction.
-        MailServerConfig config=null;
+        MailServerConfig config = null;
         try {
             config = mailSendingHelper.getMailServerConfig();
         } catch (ErrorMessagesException ex) {
-           result.addErrorMessages(ex.getMessages());
-           return false;
+            result.addErrorMessages(ex.getMessages());
+            return false;
         }
-        
-        BackgroundMailer mailer = new BackgroundMailer(mail,config, getMailSendingHelper());
+
+        BackgroundMailer mailer = new BackgroundMailer(mail, config, getMailSendingHelper());
         Thread t = new Thread(mailer);
         t.start();
 
@@ -235,13 +230,13 @@ public abstract class UserManagementServiceImpl<D extends UserDto, F extends Use
     public Result generateNewPassword(Long id) {
         Result result = new Result();
 
-        User user = getById(id, result);
+        E user = getById(id, result);
         if (!result.isSuccess()) {
             return result;
         }
 
         String newPassword = createRandomPassword();
-        
+
         user.setPassword(passwordEncoder.encodePassword(newPassword, null));
 
         try {
@@ -250,10 +245,10 @@ public abstract class UserManagementServiceImpl<D extends UserDto, F extends Use
             result.addErrorMessage("Ocurrió un error de base de datos.");
             return result;
         }
-        
+
         sendPasswordEmail(user, newPassword, false, result);
-        
-        
+
+
         return result;
     }
 
@@ -261,8 +256,8 @@ public abstract class UserManagementServiceImpl<D extends UserDto, F extends Use
         return RandomStringUtils.random(6, true, true).toLowerCase();
     }
 
-    private User validateUserSaving(UserFormDto userDto, Result result) {
-        ValidationResult validationResult = 
+    private E validateUserSaving(UserFormDto userDto, Result result) {
+        ValidationResult validationResult =
                 getFieldsValidator().validate(userDto);
 
         if (!validationResult.isValid()) {
@@ -271,7 +266,7 @@ public abstract class UserManagementServiceImpl<D extends UserDto, F extends Use
         }
 
 
-        User existingUser = ((UserDao)getDao()).getByUsername(userDto.getUsername());
+        User existingUser = ((UserDao) getDao()).getByUsername(userDto.getUsername());
 
         if (existingUser != null
                 && !existingUser.isDeleted()
@@ -283,21 +278,24 @@ public abstract class UserManagementServiceImpl<D extends UserDto, F extends Use
 
 
         if (userDto.getId() == null) {
-            existingUser = new User();
+            existingUser = getNewEntity(result);
+            if(!result.isSuccess()) {
+                return null;
+            }
         } else {
             existingUser = getDao().getById(userDto.getId());
         }
 
         userDto.copyTo(existingUser);
 
-        return existingUser;
+        return (E)existingUser;
     }
 
     @Override
     public Result<D> toggleAccess(Long id) {
         Result<D> result = new Result<D>();
 
-        User user = getById(id, result);
+        E user = getById(id, result);
         if (!result.isSuccess()) {
             return result;
         }
@@ -326,6 +324,4 @@ public abstract class UserManagementServiceImpl<D extends UserDto, F extends Use
         return result;
     }
     // </editor-fold>
-
-   
 }
