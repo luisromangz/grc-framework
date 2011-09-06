@@ -30,16 +30,4 @@ public interface UserDao extends CRUDDao<User,QueryArgs>, Serializable {
      * @param encodedPassword String with the hash of the password to be stored.
      */
     public void save(User user, String encodedPassword);
-
-    /**
-     * Gets all the users that are not marked as deleted
-     * @return a list of users not deleted
-     */
-    public List<User> getAllNotDeletedUsers();
-
-    /**
-     * Gets all the users (including those marked as deleted).
-     * @return a list of users
-     */
-    public List<User> getAllUsers();
 }
