@@ -1,5 +1,6 @@
 package com.greenriver.commons.data.dao.hibernate;
 
+import com.greenriver.commons.data.DataEntity;
 import com.greenriver.commons.data.dao.hibernate.base.HibernatePagedResultsDao;
 import com.greenriver.commons.Strings;
 import com.greenriver.commons.data.dao.UserDao;
@@ -19,7 +20,14 @@ import org.hibernate.criterion.Restrictions;
  */
 public class HibernateUserDao 
     extends HibernatePagedResultsDao<User, QueryArgs> 
-    implements UserDao {
+    implements UserDao<User> {
+
+    @Override
+    public void save(User entity) {
+        this.save(entity, null);
+    }
+    
+    
 
     @Override
     public void save(User user, String encodedPassword) {
@@ -123,6 +131,4 @@ public class HibernateUserDao
     public List<User> getAll(String orderField) {
         return super.getAll(Order.asc(orderField),Restrictions.eq("deleted", false));
     }
-    
-    
 }
