@@ -1,7 +1,6 @@
 package com.greenriver.commons.web.pageTasks;
 
 import com.greenriver.commons.web.configuration.PageTasksContainer;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,11 +17,9 @@ public class SubtaskedPageTask
         super();
 
         taskManager = new PageTaskManager();
-    }
-
-    @Override
-    public String getContainerFile() {
-        return "subtaskedPageTask.jsp";
+        
+        this.setMainJspFileName("../../subtaskedPageTask.jsp");
+        this.setDojoControllerModule("grc.web.tasks.SubtaskedPageTaskController");
     }
     
 
