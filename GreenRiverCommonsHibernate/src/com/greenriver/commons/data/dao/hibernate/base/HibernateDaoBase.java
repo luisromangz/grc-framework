@@ -4,6 +4,7 @@ import com.greenriver.commons.data.DataEntity;
 import com.greenriver.commons.data.dao.queryArgs.QueryArgs;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -39,27 +40,60 @@ public abstract class HibernateDaoBase<T extends DataEntity> {
         crit.setProjection(Projections.groupProperty(fieldName).as("groupedName"));
         crit.addOrder(Order.asc("groupedName"));
 
-        for(Criterion r : criterions) {
+        for (Criterion r : criterions) {
             crit.add(r);
         }
 
         return crit.list();
     }
 
-    protected Class getEntityClass () {
-        if(entityClass!=null) {
+    protected Class getEntityClass() {
+        if (entityClass != null) {
             return entityClass;
         }
 
-        Type superclass = getClass().getGenericSuperclass();
-        if(superclass == null
-                || !(superclass instanceof ParameterizedType)) {
-                throw new IllegalStateException("Entity template class needs to be specified when extending HibernateDaoBase.");
+        entityClass = getArgumentClass(DataEntity.class);
+        return entityClass;
+    }
+
+    protected Class getArgumentClass(Class baseClass) {
+
+        Class type = this.getClass();
+
+        List<Class> argumentClasses = new ArrayList<Class>();
+
+        while (type.getGenericSuperclass() != Object.class) {
+            Type superclass = type.getGenericSuperclass();
+
+            if (superclass instanceof ParameterizedType) {
+                ParameterizedType parameterizedType = (ParameterizedType) superclass;
+
+                List<Class> localArguments = new ArrayList<Class>();
+                for (Type t : parameterizedType.getActualTypeArguments()) {
+                    if (t instanceof Class) {
+                        Class c = (Class) t;
+                        if (baseClass.isAssignableFrom(c)) {
+                            localArguments.add(c);
+                        }
+                    }
+
+                }
+
+                argumentClasses.addAll(0, localArguments);
+            }
+
+
+
+            type = type.getSuperclass();
         }
 
-        ParameterizedType parameterizedType = (ParameterizedType) superclass;
-        entityClass= (Class)parameterizedType.getActualTypeArguments()[0];
-        return entityClass;
+        if (argumentClasses.size() > 1) {
+            throw new IllegalStateException(String.format("Class '%s' has more than two template parameters of type '%s'.",
+                    this.getClass().getName(),
+                    baseClass.getName()));
+        }
+
+        return argumentClasses.get(0);
     }
 
     // <editor-fold defaultstate="collapsed" desc="Criteria factory related methods">
@@ -70,18 +104,17 @@ public abstract class HibernateDaoBase<T extends DataEntity> {
 
     protected Criteria createCriteria(QueryArgs entityQueryArguments, Criterion... restrictions) {
         return getCriteriaFactory().createCriteria(
-                getEntityClass(),entityQueryArguments, restrictions);
+                getEntityClass(), entityQueryArguments, restrictions);
     }
 
     protected Criteria createPagedCriteria(QueryArgs queryArgs, Criterion... restrictions) {
         return getCriteriaFactory().createPagedCriteria(
-                getEntityClass(),queryArgs, restrictions);
+                getEntityClass(), queryArgs, restrictions);
     }
-    
+
     protected Criteria createCountingCriteria(QueryArgs queryArgs, Criterion... restrictions) {
         return getCriteriaFactory().createCountingCriteria(
-                getEntityClass(),queryArgs,restrictions);
+                getEntityClass(), queryArgs, restrictions);
     }
     // </editor-fold>
-
 }
