@@ -12,7 +12,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 public class UserSessionInfoImpl implements UserSessionInfo {
 
     private UserDao userDao;
-    private User currentUser;
 
     /**
      * Retrieves the current User objecte for the session.
@@ -21,20 +20,20 @@ public class UserSessionInfoImpl implements UserSessionInfo {
     @Override
     public User getCurrentUser() {
 
-        if (currentUser == null) {
-            String username =
-                    SecurityContextHolder.getContext().getAuthentication().getName();
-            currentUser = userDao.getByUsername(username);
 
-            // If the user still is null, it wasn't in the database, so it MUST be
-            // the anonimous user.
-            if (currentUser == null) {
-                currentUser = new User();
-                currentUser.setUsername("anonymous");
-            }
+        String username =
+                SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userDao.getByUsername(username);
+
+        // If the user still is null, it wasn't in the database, so it MUST be
+        // the anonimous user.
+        if (user == null) {
+            user = new User();
+            user.setUsername("anonymous");
         }
+        return user;
 
-        return currentUser;
+
     }
 
     /**
