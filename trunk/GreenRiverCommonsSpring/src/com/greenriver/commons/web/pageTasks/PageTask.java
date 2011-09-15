@@ -46,12 +46,14 @@ public class PageTask
             return false;
         }
 
-        PageTask oTask = (PageTask) o;
-        if (getTaskName() == null || oTask.getTaskName() == null) {
-            return false;
-        }
+        return this.hashCode() == o.hashCode();
+    }
 
-        return getTaskName().equals(oTask.getTaskName());
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 53 * hash + (this.taskName != null ? this.taskName.hashCode() : 0);
+        return hash;
     }
 
     public boolean isAllowedForUser(User user) {
