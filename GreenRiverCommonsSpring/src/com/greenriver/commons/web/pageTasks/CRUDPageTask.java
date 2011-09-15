@@ -1,6 +1,7 @@
 
 package com.greenriver.commons.web.pageTasks;
 
+import com.greenriver.commons.Strings;
 import java.util.Properties;
 
 /**
@@ -24,9 +25,21 @@ public class CRUDPageTask extends GridAndPropsPageTask {
     public Properties getControllerInitArgs() {
         Properties p = super.getControllerInitArgs();
         
+        if (Strings.isNullOrEmpty(getForEditMethod)) {
+            throw new IllegalStateException("Task " + this.getTaskName() + " doesn't specify its getForEditMethod property");
+        }
         p.put("getForEditMethod",getForEditMethod);
+        if (Strings.isNullOrEmpty(removeMethod)) {
+            throw new IllegalStateException("Task " + this.getTaskName() + " doesn't specify its removeMethod property");
+        }
         p.put("removeMethod",removeMethod);
+        if (Strings.isNullOrEmpty(getNewMethod)) {
+            throw new IllegalStateException("Task " + this.getTaskName() + " doesn't specify its getNewMethod property");
+        }
         p.put("getNewMethod",getNewMethod);
+        if (Strings.isNullOrEmpty(saveMethod)) {
+            throw new IllegalStateException("Task " + this.getTaskName() + " doesn't specify its saveMethod property");
+        }
         p.put("saveMethod",saveMethod);
         
         return p;
@@ -35,6 +48,10 @@ public class CRUDPageTask extends GridAndPropsPageTask {
     @Override
     protected void initializeInternal() {
         super.initializeInternal();
+        
+        if(Strings.isNullOrEmpty(formClass)) {
+            throw new IllegalStateException("Task "+this.getTaskName()+" doesn't speficy its formClass field");
+        }
         
         this.addForm("form", formClass);
     }
@@ -68,8 +85,6 @@ public class CRUDPageTask extends GridAndPropsPageTask {
         this.getForEditMethod = getForEditMethod;
     }
     
-    //</editor-fold>
-
     /**
      * @return the saveMethod
      */
@@ -83,4 +98,7 @@ public class CRUDPageTask extends GridAndPropsPageTask {
     public void setSaveMethod(String saveMethod) {
         this.saveMethod = saveMethod;
     }
+    //</editor-fold>
+
+    
 }
