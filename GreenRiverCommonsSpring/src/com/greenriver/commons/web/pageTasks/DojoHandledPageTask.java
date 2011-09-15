@@ -1,6 +1,7 @@
 package com.greenriver.commons.web.pageTasks;
 
 import com.google.gson.Gson;
+import com.greenriver.commons.Strings;
 import com.greenriver.commons.web.configuration.DojoHandled;
 import com.greenriver.commons.web.configuration.PageConfig;
 import java.util.Properties;
@@ -52,8 +53,19 @@ public class DojoHandledPageTask
     @Override
     public Properties getControllerInitArgs() {
         Properties props = new Properties();
+        if(Strings.isNullOrEmpty(this.getTaskName())) {
+            throw new IllegalStateException("Task doesn't define its taskName");
+        }
         props.put("taskName", this.getTaskName());
+        
+        if(Strings.isNullOrEmpty(this.getTitle())) {
+            throw new IllegalStateException("Task "+this.getTaskName()+" doesn't specify its title property");
+        }
         props.put("taskTitle", this.getTitle());
+        
+        if(Strings.isNullOrEmpty(dojoControllerModule)) {
+            throw new IllegalStateException("Task "+this.getTaskName()+" doesn't specify its dojoControllerModule property");
+        }
         props.put("dojoControllerModule", dojoControllerModule);
         
         return props;
