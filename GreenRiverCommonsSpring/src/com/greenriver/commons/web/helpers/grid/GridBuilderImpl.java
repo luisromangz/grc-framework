@@ -184,6 +184,10 @@ public class GridBuilderImpl implements GridBuilder {
     }
 
     private Class getClassFromName(String classFullName) {
+        if(Strings.isNullOrEmpty(classFullName)) {
+            throw new IllegalArgumentException("A non-empty classFullName is required.");
+        }
+        
         if (classCache.containsKey(classFullName)) {
             return classCache.get(classFullName);
         }
