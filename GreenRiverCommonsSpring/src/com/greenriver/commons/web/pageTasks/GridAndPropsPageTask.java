@@ -32,6 +32,7 @@ public class GridAndPropsPageTask
 
     public GridAndPropsPageTask() {
         this.setMainJspFileName("../../gridAndPropsPageTask.jsp");
+        this.setDojoControllerModule("grc.web.tasks.GridAndPropsPageTaskController");
 
         this.setElement("elemento");
         this.setMaleElement(true);
