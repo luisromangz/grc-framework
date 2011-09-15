@@ -9,7 +9,7 @@ import java.util.List;
  * @param <T> The type of the contained payload.
  * @author luis
  */
-public class PagedResult<T> extends Result<List<T>>{
+public class PagedResult<T> extends ListResult<T> {
 
     private int total;
     
