@@ -1,5 +1,6 @@
 package com.greenriver.commons.web.pageTasks;
 
+import com.greenriver.commons.Strings;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,61 +16,71 @@ public class GridAndPropsPageTask
 
     private String propsViewClass;
     private String gridClass;
-  
     // The label to be used for the element.
     private String element;
     // A boolean marking the gender of the element.
     private boolean maleElement;
     private String indefiniteElementLabel;
     private String selectedElementLabel;
-    
-    private String customPropsViewJsp="";
-    private String customGridToolbarJsp="";
-    private String itemToolbarJspFile="itemToolbar.jsp";
+    private String customPropsViewJsp = "";
+    private String customGridToolbarJsp = "";
+    private String itemToolbarJspFile = "itemToolbar.jsp";
     private List<String> extraJspFiles;
-    
     private String service;
-    
-    private String getForViewMethod ="getForView";
+    private String getForViewMethod = "getForView";
     private String queryMethod = "query";
-    
 
     public GridAndPropsPageTask() {
         this.setMainJspFileName("../../gridAndPropsPageTask.jsp");
 
         this.setElement("elemento");
         this.setMaleElement(true);
-        
+
         this.extraJspFiles = new ArrayList<String>();
     }
 
     @Override
     public Properties getControllerInitArgs() {
         Properties props = super.getControllerInitArgs();
-        props.put("service", getService());
-        props.put("element",element);
+
+        if (Strings.isNullOrEmpty(service)) {
+            throw new IllegalStateException("Task " + this.getTaskName() + " doesn't specify its service property");
+        }
+        props.put("service", service);
+        if (Strings.isNullOrEmpty(element)) {
+            throw new IllegalStateException("Task " + this.getTaskName() + " doesn't specify its element property");
+        }
+        props.put("element", element);
+
         props.put("maleElement", maleElement);
         props.put("indefiniteElement", indefiniteElementLabel);
-        props.put("selectedElement",selectedElementLabel);
-        props.put("queryMethod",queryMethod);
-        props.put("getForViewMethod", getForViewMethod);
+        props.put("selectedElement", selectedElementLabel);
+
+        if (Strings.isNullOrEmpty(getQueryMethod())) {
+            throw new IllegalStateException("Task " + this.getTaskName() + " doesn't specify its queryMethod property");
+        }
+        props.put("queryMethod", getQueryMethod());
+        if (Strings.isNullOrEmpty(getGetForViewMethod())) {
+            throw new IllegalStateException("Task " + this.getTaskName() + " doesn't specify its getForViewMethod property");
+        }
+        props.put("getForViewMethod", getGetForViewMethod());
         return props;
     }
-    
+
     private void createElementLabels() {
-         this.selectedElementLabel = String.format("%s %s %s",
+        this.selectedElementLabel = String.format("%s %s %s",
                 maleElement ? "el" : "la",
                 element,
                 maleElement ? "seleccionado" : "seleccionada");
 
-        this.indefiniteElementLabel=String.format("%s %s",
+        this.indefiniteElementLabel = String.format("%s %s",
                 maleElement ? "un" : "una",
                 element);
     }
 
     @Override
     public List<String> getDwrServices() {
-        List<String> services=new ArrayList<String>(super.getDwrServices());
+        List<String> services = new ArrayList<String>(super.getDwrServices());
         services.add(this.service);;
         return services;
     }
@@ -77,7 +88,7 @@ public class GridAndPropsPageTask
     @Override
     public Map<String, String> getPropertiesView() {
         // New map required so we dont override config.
-        Map<String, String> propsViews=  new HashMap<String,String>(super.getPropertiesView());
+        Map<String, String> propsViews = new HashMap<String, String>(super.getPropertiesView());
         propsViews.put("propsView", propsViewClass);
         return propsViews;
     }
@@ -85,11 +96,11 @@ public class GridAndPropsPageTask
     @Override
     public Map<String, String> getGrids() {
         // New map required so we dont override config.
-        Map<String,String> grids= new HashMap<String,String>(super.getGrids());
-        grids.put("grid",gridClass);
+        Map<String, String> grids = new HashMap<String, String>(super.getGrids());
+        grids.put("grid", gridClass);
         return grids;
     }
-    
+
     //<editor-fold defaultstate="collapsed" desc="Getters and setters">
     /**
      * @return the element
@@ -161,9 +172,9 @@ public class GridAndPropsPageTask
      */
     public void setGridClass(String gridClass) {
         this.gridClass = gridClass;
-    }   
-    
-      /**
+    }
+
+    /**
      * @return the extraJspFiles
      */
     public List<String> getExtraJspFiles() {
@@ -176,8 +187,8 @@ public class GridAndPropsPageTask
     public void setExtraJspFiles(List<String> extraJspFiles) {
         this.extraJspFiles = extraJspFiles;
     }
-    
-        /**
+
+    /**
      * @return the service
      */
     public String getService() {
@@ -233,5 +244,34 @@ public class GridAndPropsPageTask
         this.customGridToolbarJsp = customGridToolbarJsp;
     }
     
+    
+    /**
+     * @return the getForViewMethod
+     */
+    public String getGetForViewMethod() {
+        return getForViewMethod;
+    }
+
+    /**
+     * @param getForViewMethod the getForViewMethod to set
+     */
+    public void setGetForViewMethod(String getForViewMethod) {
+        this.getForViewMethod = getForViewMethod;
+    }
+
+    /**
+     * @return the queryMethod
+     */
+    public String getQueryMethod() {
+        return queryMethod;
+    }
+
+    /**
+     * @param queryMethod the queryMethod to set
+     */
+    public void setQueryMethod(String queryMethod) {
+        this.queryMethod = queryMethod;
+    }
     //</editor-fold>
+
 }
