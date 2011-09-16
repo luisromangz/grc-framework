@@ -42,12 +42,12 @@ public class InstallController
      * @throws Exception
      */
     @Override
-    public void customHandleRequest(
+    public void customConfiguration(
             HttpServletRequest request,
             HttpServletResponse response,
             PageConfig configuration,
             ModelAndView mav) throws Exception {
-        super.customHandleRequest(request, response, configuration, mav);
+        super.customConfiguration(request, response, configuration, mav);
 
         if (userDao.getUserCount() > 0) {
             response.sendRedirect(this.pageToRedirectIfInstalled);

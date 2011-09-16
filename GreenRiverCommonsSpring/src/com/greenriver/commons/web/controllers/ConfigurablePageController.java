@@ -40,7 +40,7 @@ import org.springframework.web.servlet.mvc.AbstractController;
  */
 public class ConfigurablePageController
         extends AbstractController
-        implements PropertiesViewsContainer, GridsContainer, FormsContainer, HeaderConfig, PageToolsContainer, CustomizableHandleRequest {
+        implements PropertiesViewsContainer, GridsContainer, FormsContainer, HeaderConfig, PageToolsContainer {
 
     // <editor-fold defaultstate="collapsed" desc="Fields">
     private HeaderConfigurer headerConfigurer;
@@ -89,7 +89,7 @@ public class ConfigurablePageController
             configureGrids(this.getGrids(), mav, configuration, null);
             configurePageTools(mav, configuration);
 
-            customHandleRequest(request, response, configuration, mav);
+            customConfiguration(request, response, configuration, mav);
 
             for (ControllerPlugin plugin : this.getPlugins()) {
                 plugin.doWork(request, configuration);
@@ -103,12 +103,38 @@ public class ConfigurablePageController
             Logger.getLogger(getClass().getName()).info("Configuration reused!");
             mav = mavsByHash.get(requestHash);
         }
+        
+        customHandleRequest(request, response, pageConfig, mav);
 
         return mav;
     }
 
-    @Override
-    public void customHandleRequest(
+    /**
+     * This method, when overriden in an extending class, gets called
+     * only when we need to configure.
+     * 
+     * @param request
+     * @param response
+     * @param configuration
+     * @param mav
+     * @throws Exception 
+     */
+    protected void customConfiguration(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            PageConfig configuration,
+            ModelAndView mav) throws Exception {
+    }
+    
+    /**
+     * This method, when overriden, gets called on each request.
+     * @param request
+     * @param response
+     * @param configuration
+     * @param mav
+     * @throws Exception 
+     */
+    protected void customHandleRequest(
             HttpServletRequest request,
             HttpServletResponse response,
             PageConfig configuration,
