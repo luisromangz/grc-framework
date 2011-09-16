@@ -19,7 +19,7 @@ public class PageToolsController extends ConfigurablePageController {
     private PageToolsContainer pageToolsContainer;
     
     @Override
-    public void customHandleRequest(
+    public void customConfiguration(
             HttpServletRequest request,
             HttpServletResponse response,
             PageConfig configuration,

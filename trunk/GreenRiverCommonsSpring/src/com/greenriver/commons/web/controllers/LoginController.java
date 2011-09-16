@@ -10,21 +10,20 @@ import org.springframework.web.servlet.ModelAndView;
  * @author luis
  */
 public class LoginController 
-        extends DojoHandledPageController
-        implements CustomizableHandleRequest {
+        extends DojoHandledPageController {
 
     public LoginController() {
         this.setDojoControllerModule("grc.web.LoginPageController");
     }
 
     @Override
-    public void customHandleRequest(
+    public void customConfiguration(
             HttpServletRequest request,
             HttpServletResponse response,
             PageConfig configuration,
             ModelAndView mav) throws Exception {
 
-        super.customHandleRequest(request, response, configuration, mav);
+        super.customConfiguration(request, response, configuration, mav);
         
         boolean authError = String.valueOf(
                 request.getParameter("login_error")).equals("1");
@@ -37,4 +36,5 @@ public class LoginController
         mav.addObject("accessDenied", accessDenied);
         mav.addObject("sessionExpired", sessionExpired);
     }
+
 }

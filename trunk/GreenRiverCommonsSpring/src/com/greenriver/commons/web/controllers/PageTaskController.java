@@ -21,12 +21,12 @@ public class PageTaskController
     private PageTasksContainer tasksContainer;
 
     @Override
-    public void customHandleRequest(
+    public void customConfiguration(
             HttpServletRequest request,
             HttpServletResponse response,
             PageConfig configuration,
             ModelAndView mav) throws Exception {
-        super.customHandleRequest(request, response, configuration, mav);
+        super.customConfiguration(request, response, configuration, mav);
 
         String taskName = request.getParameter("taskName");
         if(Strings.isNullOrEmpty(taskName)) {

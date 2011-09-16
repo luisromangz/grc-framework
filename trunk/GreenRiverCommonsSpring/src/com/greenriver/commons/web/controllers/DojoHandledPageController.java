@@ -19,12 +19,12 @@ public class DojoHandledPageController
     private String controllerInitArgsJson="";
 
     @Override
-    public void customHandleRequest(
+    protected void customConfiguration(
             HttpServletRequest request,
             HttpServletResponse response,
             PageConfig configuration,
             ModelAndView mav) throws Exception {
-        super.customHandleRequest(request, response, configuration, mav);
+        super.customConfiguration(request, response, configuration, mav);
 
         configuration.addDojoModule(dojoControllerModule);
 
