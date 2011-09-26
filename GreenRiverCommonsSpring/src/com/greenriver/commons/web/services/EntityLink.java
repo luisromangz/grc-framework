@@ -8,13 +8,18 @@ import com.greenriver.commons.data.DataEntity;
  * 
  * @author luisro
  */
-public class EntityLink {
+public class EntityLink implements Comparable<EntityLink> {
     private Long id;
     private String label;
     
     public EntityLink(DataEntity entity) {
         this.id=entity.getId();
         this.label=entity.getLabel();
+    }
+    
+     @Override
+    public int compareTo(EntityLink t) {
+         return label.compareTo(t.getLabel());
     }
 
     //<editor-fold defaultstate="collapsed" desc="Getters and setters">
@@ -46,4 +51,6 @@ public class EntityLink {
         this.label = label;
     }
     //</editor-fold>
+
+   
 }
