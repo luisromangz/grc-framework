@@ -3,7 +3,7 @@ package com.greenriver.commons.web.pageTools;
 import com.greenriver.commons.data.model.User;
 import com.greenriver.commons.web.configuration.FormsContainer;
 import com.greenriver.commons.web.configuration.PageConfig;
-import com.greenriver.commons.web.configuration.PropertiesViewsContainer;
+import com.greenriver.commons.web.configuration.PropsViewsContainer;
 import com.greenriver.commons.web.helpers.header.HeaderConfig;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.Map;
  * @author luis
  */
 public class PageTool
-        implements FormsContainer, PropertiesViewsContainer, HeaderConfig {
+        implements FormsContainer, PropsViewsContainer, HeaderConfig {
 
     // <editor-fold defaultstate="collapsed" desc="Attributes">
     private String[] allowedRoles = {"ROLE_USER"};
@@ -145,18 +145,18 @@ public class PageTool
     }
 
     @Override
-    public void addPropertiesView(String id, String className) {
-        pageConfiguration.addPropertiesView(id, className);
+    public void addPropsView(String id, String className) {
+        pageConfiguration.addPropsView(id, className);
     }
 
     @Override
-    public void setPropertiesView(Map<String, String> className) {
-        pageConfiguration.setPropertiesView(className);
+    public void setPropsViews(Map<String, String> className) {
+        pageConfiguration.setPropsViews(className);
     }
 
     @Override
-    public Map<String, String> getPropertiesView() {
-        return pageConfiguration.getPropertiesView();
+    public Map<String, String> getPropsViews() {
+        return pageConfiguration.getPropsViews();
     }
 
     @Override

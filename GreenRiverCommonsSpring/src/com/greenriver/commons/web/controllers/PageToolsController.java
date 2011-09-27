@@ -54,7 +54,7 @@ public class PageToolsController extends ConfigurablePageController {
                     pageTool.getForms(), mav, configuration,pageTool.getName() + "_");
 
             configurePropertiesView(
-                    pageTool.getPropertiesView(), mav,pageTool.getName() + "_");
+                    pageTool.getPropsViews(), mav,pageTool.getName() + "_");
 
         }
 
