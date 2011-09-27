@@ -1,7 +1,7 @@
 
 package com.greenriver.commons.templating;
 
-import com.greenriver.commons.data.fieldProperties.FieldProperties;
+import com.greenriver.commons.data.fieldProperties.WidgetProps;
 import com.greenriver.commons.data.fieldProperties.FieldType;
 import java.io.Serializable;
 import java.util.Map;
@@ -28,7 +28,7 @@ public abstract class PrintingTemplate<T extends TemplateReplacement, K>
 
     public static final String PAGE_BREAK="<div style=\"page-break-after:always\"><!-- Non empty --></div>";
 
-    @FieldProperties(label = "Cuerpo del documento", type = FieldType.RICHTEXT)
+    @WidgetProps(label = "Cuerpo del documento", type = FieldType.RICHTEXT)
     @Column(length = 10240)
     private String body;
     @Column(length = 10240)

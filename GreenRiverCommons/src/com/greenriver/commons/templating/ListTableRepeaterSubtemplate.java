@@ -4,7 +4,7 @@ import com.greenriver.commons.Strings;
 import com.greenriver.commons.collections.SortedArrayList;
 import com.greenriver.commons.data.fieldProperties.FieldAction;
 import com.greenriver.commons.data.fieldProperties.FieldActions;
-import com.greenriver.commons.data.fieldProperties.FieldProperties;
+import com.greenriver.commons.data.fieldProperties.WidgetProps;
 import com.greenriver.commons.data.fieldProperties.FieldType;
 import java.text.DateFormat;
 import java.text.NumberFormat;
@@ -50,46 +50,46 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
     public static final String TABLE_CELL_SEPARATOR = "||";
     public static final String TABLE_CELL_SEPARATOR_REGEX = "\\|\\|";
     public static final String COLUMN_SORTING_SEPARATOR = ";";
-    @FieldProperties(label = "Tipo de repetición", type = FieldType.SELECTION, externalValues=false,
+    @WidgetProps(label = "Tipo de repetición", type = FieldType.SELECTION, externalValues=false,
     possibleValues = {"true", "false"}, possibleValueLabels = {"Tabla", "Lista"})
     private boolean isTable = true;
-    @FieldProperties(label = "Lista ordenada", type = FieldType.CHECKBOX, editable = false)
+    @WidgetProps(label = "Lista ordenada", type = FieldType.CHECKBOX, editable = false)
     @FieldAction(triggerValue = "'true'", newValue = "false", triggerField = "isTable", deactivate = true)
     private boolean isOrderedList;
-    @FieldProperties(label = "Mostrar encabezados de la tabla", type = FieldType.CHECKBOX)
+    @WidgetProps(label = "Mostrar encabezados de la tabla", type = FieldType.CHECKBOX)
     @FieldAction(triggerValue = "'false'", triggerField = "isTable", newValue = "false")  
     private boolean showTableHeaders = true;
-    @FieldProperties(label = "Encabezados de la tabla", type = FieldType.LONGTEXT, required = false, widgetStyle = "width:98%")
+    @WidgetProps(label = "Encabezados de la tabla", type = FieldType.LONGTEXT, required = false, widgetStyle = "width:98%")
     @FieldActions({
         @FieldAction(triggerValue = "'false'", triggerField = "isTable", deactivate = true),
         @FieldAction(triggerValue = "false", triggerField = "showTableHeaders", deactivate = true)
     })
     private String tableHeader = "";
-    @FieldProperties(label = "Anchuras de las columnas", type = FieldType.LONGTEXT, required = false, widgetStyle = "width:98%")
+    @WidgetProps(label = "Anchuras de las columnas", type = FieldType.LONGTEXT, required = false, widgetStyle = "width:98%")
     @FieldAction(triggerValue = "'false'", triggerField = "isTable", deactivate = true)
     private String columnSizes = "";
-    @FieldProperties(label = "Columnas por las que se ordena", customRegExp = "\\d+(;\\d+)*", required = false)
+    @WidgetProps(label = "Columnas por las que se ordena", customRegExp = "\\d+(;\\d+)*", required = false)
     @FieldAction(triggerValue = "'false'", triggerField = "isTable", deactivate = true)
     private String orderByColumns = "";
-    @FieldProperties(label = "Formato del elemento", type = FieldType.LONGTEXT, widgetStyle = "width:98%")
+    @WidgetProps(label = "Formato del elemento", type = FieldType.LONGTEXT, widgetStyle = "width:98%")
     private String elementFormat;
-    @FieldProperties(label = "Estilo del elemento", type = FieldType.SELECTION, externalValues=false,
+    @WidgetProps(label = "Estilo del elemento", type = FieldType.SELECTION, externalValues=false,
     possibleValueLabels = {"Normal", "Negrita", "Cursiva", "Negrita y cursiva"},
     possibleValues = {" ", "font-weight:bold", "font-style:italic", "font-weight:bold;font-style:italic"})
     private String fontStyle = " ";
-    @FieldProperties(label = "Tamaño de la fuente", type = FieldType.NUMBER, minValue = 4, unit = "pt")
+    @WidgetProps(label = "Tamaño de la fuente", type = FieldType.NUMBER, minValue = 4, unit = "pt")
     private int fontSize = 9;
-    @FieldProperties(label = "Alineación del texto en la celda", type = FieldType.SELECTION,
+    @WidgetProps(label = "Alineación del texto en la celda", type = FieldType.SELECTION,
     externalValues=false,possibleValueLabels = {"Izquierda", "Centro", "Derecha"},
     possibleValues = {"left", "center", "right"})
     @FieldAction(triggerField = "isTable", triggerValue = "'false'", newValue = "'left'", deactivate = true)
     private String textAlign = "center";
-    @FieldProperties(label = "Bordes", type = FieldType.SELECTION,
+    @WidgetProps(label = "Bordes", type = FieldType.SELECTION,
     externalValues=false,possibleValueLabels = {"Todos", "Horizontales", "Verticales"},
     possibleValues = {"border-top,border-bottom,border-left,border-right", "border-top,border-bottom", "border-left,border-right"})
     @FieldAction(triggerField = "isTable", triggerValue = "'false'", deactivate = true)
     private String borders = "border-top,border-bottom,border-left,border-right";
-    @FieldProperties(label = "Filas vacías a añadir al final", type = FieldType.NUMBER, minValue = 0)
+    @WidgetProps(label = "Filas vacías a añadir al final", type = FieldType.NUMBER, minValue = 0)
     @FieldAction(triggerField = "isTable", triggerValue = "'false'", deactivate = true)
     private int emptyRowsAppended = 0;
     // </editor-fold>

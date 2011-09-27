@@ -1,7 +1,7 @@
 package com.greenriver.commons.templating;
 
 import com.greenriver.commons.Strings;
-import com.greenriver.commons.data.fieldProperties.FieldProperties;
+import com.greenriver.commons.data.fieldProperties.WidgetProps;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
@@ -21,7 +21,7 @@ import javax.persistence.MappedSuperclass;
 public abstract class RepeaterSubtemplate<T extends TemplateReplacement, K extends Collection<?>>
             implements Subtemplate<T, String, K>, Serializable {
 
-    @FieldProperties(label = "Mensaje a mostrar si no hay elementos", widgetStyle = "width:89%", required = false)
+    @WidgetProps(label = "Mensaje a mostrar si no hay elementos", widgetStyle = "width:89%", required = false)
     private String noElementsMessage;
 
     @Override

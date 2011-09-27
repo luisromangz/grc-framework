@@ -3,7 +3,7 @@ package com.greenriver.commons.data.model;
 import com.greenriver.commons.Strings;
 import com.greenriver.commons.data.DataEntity;
 import com.greenriver.commons.data.dao.queryArgs.QueryArgsProps;
-import com.greenriver.commons.data.fieldProperties.FieldProperties;
+import com.greenriver.commons.data.fieldProperties.WidgetProps;
 import com.greenriver.commons.data.fieldProperties.FieldType;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,19 +32,19 @@ public class User implements Comparable<User>, DataEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @FieldProperties(label = "Nombre y apellidos")
+    @WidgetProps(label = "Nombre y apellidos")
     private String name;
-    @FieldProperties(label = "Nombre de usuario",
+    @WidgetProps(label = "Nombre de usuario",
     customRegExp = "[\\w]{6,}",
     invalidMessage = "El nombre de usuario debe tener al menos 6 carácteres y "
     + "sólo carácteres alfabéticos.")
     @Column()
     private String username;
-    @FieldProperties(label = "Correo electrónico", type = FieldType.EMAIL, required = false)
+    @WidgetProps(label = "Correo electrónico", type = FieldType.EMAIL, required = false)
     private String emailAddress;
-    @FieldProperties(label = "Contraseña", type = FieldType.PASSWORDEDITOR)
+    @WidgetProps(label = "Contraseña", type = FieldType.PASSWORDEDITOR)
     private String password;
-    @FieldProperties(label = "Permisos", type = FieldType.ROLESELECTOR, required = false)
+    @WidgetProps(label = "Permisos", type = FieldType.ROLESELECTOR, required = false)
     private String[] roles;
     // This flag tells if the user have been deleted or not. A deleted user
     // is kept for history purposses in the system but is not shown nor allowed

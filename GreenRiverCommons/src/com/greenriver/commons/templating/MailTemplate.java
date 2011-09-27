@@ -2,7 +2,7 @@
 package com.greenriver.commons.templating;
 
 import com.greenriver.commons.data.mailing.Mail;
-import com.greenriver.commons.data.fieldProperties.FieldProperties;
+import com.greenriver.commons.data.fieldProperties.WidgetProps;
 import com.greenriver.commons.data.fieldProperties.FieldType;
 import java.io.Serializable;
 import java.util.HashMap;
@@ -30,9 +30,9 @@ public abstract class MailTemplate<T extends TemplateReplacement,K>
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @FieldProperties(label="Asunto del correo", widgetStyle="width:30em")
+    @WidgetProps(label="Asunto del correo", widgetStyle="width:30em")
     private String subject;
-    @FieldProperties(label="Cuerpo del correo",type=FieldType.RICHTEXT)
+    @WidgetProps(label="Cuerpo del correo",type=FieldType.RICHTEXT)
     @Column(length=10240)
     private String body;
 

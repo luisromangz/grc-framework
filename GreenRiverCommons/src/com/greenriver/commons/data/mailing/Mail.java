@@ -1,6 +1,6 @@
 package com.greenriver.commons.data.mailing;
 
-import com.greenriver.commons.data.fieldProperties.FieldProperties;
+import com.greenriver.commons.data.fieldProperties.WidgetProps;
 import com.greenriver.commons.data.fieldProperties.FieldType;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,15 +12,15 @@ import javax.activation.DataSource;
  */
 public class Mail {
 
-    @FieldProperties(label = "De", type = FieldType.EMAIL)
+    @WidgetProps(label = "De", type = FieldType.EMAIL)
     private String from;
-    @FieldProperties(label = "Para", type = FieldType.EMAIL)
+    @WidgetProps(label = "Para", type = FieldType.EMAIL)
     private String to;
-    @FieldProperties(label = "Asunto", widgetStyle = "width:30em")
+    @WidgetProps(label = "Asunto", widgetStyle = "width:30em")
     private String subject;
-    @FieldProperties(label = "Cuerpo del correo", type = FieldType.RICHTEXT)
+    @WidgetProps(label = "Cuerpo del correo", type = FieldType.RICHTEXT)
     private String body;
-    @FieldProperties(label = "Envíar copia al remitente", type = FieldType.CHECKBOX, getterPrefix = "get")
+    @WidgetProps(label = "Envíar copia al remitente", type = FieldType.CHECKBOX, getterPrefix = "get")
     private boolean sendCopyToSender = false;
     
     private Map<String,DataSource> attachments;
