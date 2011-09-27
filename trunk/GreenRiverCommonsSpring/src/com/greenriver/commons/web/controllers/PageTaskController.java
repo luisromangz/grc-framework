@@ -5,7 +5,6 @@ package com.greenriver.commons.web.controllers;
 import com.greenriver.commons.Strings;
 import com.greenriver.commons.web.configuration.PageConfig;
 import com.greenriver.commons.web.configuration.PageTasksContainer;
-import com.greenriver.commons.web.helpers.session.UserSessionInfo;
 import com.greenriver.commons.web.pageTasks.PageTask;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -45,7 +44,7 @@ public class PageTaskController
         }
 
         this.configureForms(pageTask.getForms(), mav, configuration, taskName+"_");
-        this.configurePropertiesView(pageTask.getPropertiesView(), mav, taskName+"_");
+        this.configurePropertiesView(pageTask.getPropsViews(), mav, taskName+"_");
         this.configureGrids(pageTask.getGrids(), mav, configuration, taskName+"_");
 
         mav.addObject("usedByTaskController",true);

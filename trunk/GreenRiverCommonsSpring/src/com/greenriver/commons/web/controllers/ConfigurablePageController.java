@@ -6,7 +6,7 @@ import com.greenriver.commons.web.configuration.PageConfig;
 import com.greenriver.commons.web.configuration.FormsContainer;
 import com.greenriver.commons.web.configuration.GridsContainer;
 import com.greenriver.commons.web.configuration.PageToolsContainer;
-import com.greenriver.commons.web.configuration.PropertiesViewsContainer;
+import com.greenriver.commons.web.configuration.PropsViewsContainer;
 import com.greenriver.commons.web.controllers.plugins.ControllerPlugin;
 import com.greenriver.commons.web.helpers.form.Form;
 import com.greenriver.commons.web.helpers.header.HeaderConfig;
@@ -40,7 +40,7 @@ import org.springframework.web.servlet.mvc.AbstractController;
  */
 public class ConfigurablePageController
         extends AbstractController
-        implements PropertiesViewsContainer, GridsContainer, FormsContainer, HeaderConfig, PageToolsContainer {
+        implements PropsViewsContainer, GridsContainer, FormsContainer, HeaderConfig, PageToolsContainer {
 
     // <editor-fold defaultstate="collapsed" desc="Fields">
     private HeaderConfigurer headerConfigurer;
@@ -85,7 +85,7 @@ public class ConfigurablePageController
             PageConfig configuration = (PageConfig) this.pageConfig.clone();
 
             configureForms(this.getForms(), mav, configuration, null);
-            configurePropertiesView(this.getPropertiesView(), mav, null);
+            configurePropertiesView(this.getPropsViews(), mav, null);
             configureGrids(this.getGrids(), mav, configuration, null);
             configurePageTools(mav, configuration);
 
@@ -265,7 +265,7 @@ public class ConfigurablePageController
 
 
 
-                configurePropertiesView(pageTool.getPropertiesView(), mav,
+                configurePropertiesView(pageTool.getPropsViews(), mav,
                         pageTool.getName() + "_");
 
 
@@ -647,18 +647,18 @@ public class ConfigurablePageController
     }
 
     @Override
-    public void addPropertiesView(String id, String configuration) {
-        this.getPageConfig().addPropertiesView(id, configuration);
+    public void addPropsView(String id, String configuration) {
+        this.getPageConfig().addPropsView(id, configuration);
     }
 
     @Override
-    public void setPropertiesView(Map<String, String> configuration) {
-        this.getPageConfig().setPropertiesView(configuration);
+    public void setPropsViews(Map<String, String> configuration) {
+        this.getPageConfig().setPropsViews(configuration);
     }
 
     @Override
-    public Map<String, String> getPropertiesView() {
-        return getPageConfig().getPropertiesView();
+    public Map<String, String> getPropsViews() {
+        return getPageConfig().getPropsViews();
     }
 
     @Override

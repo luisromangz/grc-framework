@@ -87,13 +87,13 @@ public class GridAndPropsPageTask
     }
 
     @Override
-    public Map<String, String> getPropertiesView() {
+    public Map<String, String> getPropsViews() {
         if(Strings.isNullOrEmpty(propsViewClass)) {
             throw new IllegalStateException("Task "+this.getTaskName()+" doesn't specify propsViewClass field");
         }
         
         // New map required so we dont override config.
-        Map<String, String> propsViews = new HashMap<String, String>(super.getPropertiesView());
+        Map<String, String> propsViews = new HashMap<String, String>(super.getPropsViews());
         propsViews.put("propsView", propsViewClass);
         return propsViews;
     }
