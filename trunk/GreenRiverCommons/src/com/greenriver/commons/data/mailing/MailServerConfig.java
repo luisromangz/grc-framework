@@ -3,7 +3,7 @@ package com.greenriver.commons.data.mailing;
 import com.greenriver.commons.data.DataEntity;
 import com.greenriver.commons.data.fieldProperties.FieldAction;
 import com.greenriver.commons.data.fieldProperties.FieldActions;
-import com.greenriver.commons.data.fieldProperties.FieldProperties;
+import com.greenriver.commons.data.fieldProperties.WidgetProps;
 import com.greenriver.commons.data.fieldProperties.FieldType;
 import java.io.Serializable;
 import javax.persistence.Entity;
@@ -24,25 +24,25 @@ public class MailServerConfig implements DataEntity{
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
-    @FieldProperties(label = "Servidor de correo")
+    @WidgetProps(label = "Servidor de correo")
     private String hostName;
-    @FieldProperties(label = "Protocolo de envío", type = FieldType.SELECTION,externalValues=false)
+    @WidgetProps(label = "Protocolo de envío", type = FieldType.SELECTION,externalValues=false)
     @Enumerated(EnumType.STRING)
     private MailSendingProtocol protocol= MailSendingProtocol.SMTP;
-    @FieldProperties(label = "Puerto", type = FieldType.NUMBER)
+    @WidgetProps(label = "Puerto", type = FieldType.NUMBER)
     @FieldActions({
         @FieldAction(triggerField = "protocol", triggerValue = "'SMTP'", newValue = "25"),
         @FieldAction(triggerField = "protocol", triggerValue = "'SMTPS'", newValue = "465")})
     private int portNumber=25;
-    @FieldProperties(label = "Requiere autenticación", type = FieldType.CHECKBOX, getterPrefix="get")
+    @WidgetProps(label = "Requiere autenticación", type = FieldType.CHECKBOX, getterPrefix="get")
     private boolean requiresAuthentication;
-    @FieldProperties(label = "Nombre de usuario", required = false, getterPrefix="get")
+    @WidgetProps(label = "Nombre de usuario", required = false, getterPrefix="get")
     @FieldAction(triggerField = "requiresAuthentication", triggerValue = "false", newValue = "''", deactivate = true)
     private String userName;
-    @FieldProperties(label = "Contraseña", required = false, type = FieldType.PASSWORDEDITOR)
+    @WidgetProps(label = "Contraseña", required = false, type = FieldType.PASSWORDEDITOR)
     @FieldAction(triggerField = "requiresAuthentication", triggerValue = "false", newValue = "''", deactivate = true)
     private String password;
-    @FieldProperties(label = "Usar StartTTLS (requerido por GMail)", type = FieldType.CHECKBOX,getterPrefix="get")
+    @WidgetProps(label = "Usar StartTTLS (requerido por GMail)", type = FieldType.CHECKBOX,getterPrefix="get")
     private boolean useStartTtls;
     // </editor-fold>
 

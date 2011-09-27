@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
  *
  * @author luis
  */
-public class FieldPropertiesValidator implements FieldsValidator {
+public class WidgetValidator implements FieldsValidator {
 
     public static final Pattern COLOR_PATTERN = Pattern.compile(
             "^" + ValidationRegex.COLOR + "$",
@@ -61,10 +61,10 @@ public class FieldPropertiesValidator implements FieldsValidator {
 
         Field[] fields = validationClass.getDeclaredFields();
         for (Field field : fields) {
-            FieldProperties properties = field.getAnnotation(
-                    FieldProperties.class);
+            WidgetProps properties = field.getAnnotation(
+                    WidgetProps.class);
             if (properties != null) {
-                // The field has FieldProperties annotation, so it can be validated.
+                // The field has WidgetProps annotation, so it can be validated.
 
                 List<String> fieldErrorMessages = this.validateField(
                         field,
@@ -79,7 +79,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
 
     private List<String> validateField(
             Field field,
-            FieldProperties properties,
+            WidgetProps properties,
             Object object) {
         List<String> validationMessages = new ArrayList<String>();
 
@@ -137,7 +137,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
 
     private void validateMultiSelection(
             Object value,
-            FieldProperties properties,
+            WidgetProps properties,
             List<String> validationMessages) {
         validateMultiSelectorHelper(value, properties, validationMessages,
                 properties.possibleValues());
@@ -146,7 +146,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
 
     private void validateText(
             Object value,
-            FieldProperties properties,
+            WidgetProps properties,
             List<String> validationMessages) {
         String text = (String) value;
         if (properties.required() && Strings.isNullOrEmpty(text)) {
@@ -193,7 +193,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
 
     private void validateColor(
             Object value,
-            FieldProperties properties,
+            WidgetProps properties,
             List<String> validationMessages) {
 
         String colorValue = (String) value;
@@ -217,7 +217,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
 
     private void validateNumber(
             Object value,
-            FieldProperties properties,
+            WidgetProps properties,
             List<String> validationMessages) {
         // We parse the number so we don't need to deal with
         // diferent integer types.
@@ -237,7 +237,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
 
     private void validatePassword(
             Object value,
-            FieldProperties properties,
+            WidgetProps properties,
             List<String> validationMessages) {
 
         String password = value.toString();
@@ -257,7 +257,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
 
     private void validateIpAddress(
             Object value,
-            FieldProperties properties,
+            WidgetProps properties,
             List<String> validationMessages) {
         String ipAddress = value.toString();
         if (properties.required() && ipAddress.isEmpty()) {
@@ -292,7 +292,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
 
     private void validateEmail(
             Object value,
-            FieldProperties properties,
+            WidgetProps properties,
             List<String> validationMessages) {
 
         String email = value.toString();
@@ -319,7 +319,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
 
     private void validateSelection(
             Object value,
-            FieldProperties properties,
+            WidgetProps properties,
             List<String> validationMessages) {
         if (!value.getClass().isEnum()) {
             String selection = value.toString();
@@ -349,7 +349,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
 
     private void validateDecimal(
             Object value,
-            FieldProperties properties,
+            WidgetProps properties,
             List<String> validationMessages) {
         String valStr = value + "";
         double decimal = Double.parseDouble(valStr);
@@ -375,7 +375,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
         }
     }
 
-    private void validateAutocompletion(Object value, FieldProperties properties, List<String> validationMessages) {
+    private void validateAutocompletion(Object value, WidgetProps properties, List<String> validationMessages) {
         //This field works like a combobox for autocompletion but allow the
         //user to input anything they want so it also works as a textbox.
         //Then the validation applied is the one supported by the textbox
@@ -384,7 +384,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
 
     private void validateFieldType(
             Object value,
-            FieldProperties properties,
+            WidgetProps properties,
             List<String> validationMessages) {
 
         switch (properties.type()) {
@@ -452,7 +452,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
         }
     }
 
-    private void validateMultiSelectorHelper(Object value, FieldProperties properties,
+    private void validateMultiSelectorHelper(Object value, WidgetProps properties,
             List<String> validationMessages, String[] possibleValues) {
         String[] selections = null;
 
@@ -513,7 +513,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
 
     private void validateRoleSelector(
             Object value,
-            FieldProperties properties,
+            WidgetProps properties,
             List<String> validationMessages) {
 
         validateMultiSelectorHelper(
@@ -525,7 +525,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
 
     private void validateFile(
             Object value,
-            FieldProperties properties,
+            WidgetProps properties,
             List<String> validationMessages) {
 
         InputStream stream = (InputStream) value;
@@ -574,7 +574,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
 
     private void validateYearDay(
             Object value,
-            FieldProperties properties,
+            WidgetProps properties,
             List<String> validationMessages) {
 
         if (value == null) {
@@ -605,7 +605,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
 
     private void validateTime(
             Object value,
-            FieldProperties properties,
+            WidgetProps properties,
             List<String> validationMessages) {
         if (properties.required()) {
             if (value == null) {
@@ -620,7 +620,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
 
     private void validateDate(
             Object value,
-            FieldProperties properties,
+            WidgetProps properties,
             List<String> validationMessages) {
 
         if (properties.required()) {
@@ -635,7 +635,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
     }
 
     private void validateNIF(Object value,
-            FieldProperties properties,
+            WidgetProps properties,
             List<String> validationMessages) {
 
         if (properties.required() && value == null) {
@@ -659,7 +659,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
         }
     }
 
-    private void validateCIF(Object value, FieldProperties properties,
+    private void validateCIF(Object value, WidgetProps properties,
             List<String> validationMessages) {
 
         if (properties.required() && value == null) {
@@ -683,7 +683,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
         }
     }
 
-    private void validateCIFOrNIF(Object value, FieldProperties properties,
+    private void validateCIFOrNIF(Object value, WidgetProps properties,
             List<String> validationMessages) {
 
         String cifOrNif = (String) value;

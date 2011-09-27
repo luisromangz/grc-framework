@@ -15,7 +15,7 @@ import java.lang.annotation.Target;
 @Documented
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface FieldProperties {
+public @interface WidgetProps {
 
     /**
      * Is the field visible in the edit form?

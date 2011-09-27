@@ -4,7 +4,7 @@ package com.greenriver.commons.templating;
 
 import com.greenriver.commons.Copieable;
 import com.greenriver.commons.Strings;
-import com.greenriver.commons.data.fieldProperties.FieldProperties;
+import com.greenriver.commons.data.fieldProperties.WidgetProps;
 import com.greenriver.commons.data.fieldProperties.FieldType;
 import java.io.Serializable;
 import java.util.Map;
@@ -41,27 +41,27 @@ public class PageConfiguration implements Serializable, Copieable<PageConfigurat
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     // All margins are measured in mm.
-    @FieldProperties(label = "Margen superior", minValue = 0, type = FieldType.DECIMAL, unit = "cm")
+    @WidgetProps(label = "Margen superior", minValue = 0, type = FieldType.DECIMAL, unit = "cm")
     private float topMargin = 2;
-    @FieldProperties(label = "Margen inferior", minValue = 0, type = FieldType.DECIMAL, unit = "cm")
+    @WidgetProps(label = "Margen inferior", minValue = 0, type = FieldType.DECIMAL, unit = "cm")
     private float bottomMargin = 2;
-    @FieldProperties(label = "Margen izquierdo", minValue = 0, type = FieldType.DECIMAL, unit = "cm")
+    @WidgetProps(label = "Margen izquierdo", minValue = 0, type = FieldType.DECIMAL, unit = "cm")
     private float leftMargin = 2;
-    @FieldProperties(label = "Margen derecho", minValue = 0, type = FieldType.DECIMAL, unit = "cm")
+    @WidgetProps(label = "Margen derecho", minValue = 0, type = FieldType.DECIMAL, unit = "cm")
     private float rightMargin = 2;
-    @FieldProperties(label = "Anchura del papel", minValue = 0, type = FieldType.DECIMAL, unit = "mm")
+    @WidgetProps(label = "Anchura del papel", minValue = 0, type = FieldType.DECIMAL, unit = "mm")
     private float pageWidth = 210;
-    @FieldProperties(label = "Altura del papel", minValue = 0, type = FieldType.DECIMAL, unit = "mm")
+    @WidgetProps(label = "Altura del papel", minValue = 0, type = FieldType.DECIMAL, unit = "mm")
     private float pageHeight = 297;
-    @FieldProperties(label = "Orientación del papel", type = FieldType.SELECTION, externalValues=false,
+    @WidgetProps(label = "Orientación del papel", type = FieldType.SELECTION, externalValues=false,
     possibleValues={"false","true"},possibleValueLabels={"Vertical","Apaisado"}, getterPrefix="is")
     private boolean landscape;
 
-    @FieldProperties(label="Pie de página (izquierda)", required=false)
+    @WidgetProps(label="Pie de página (izquierda)", required=false)
     private String footerLeft;
-    @FieldProperties(label="Pie de página (centro)", required=false)
+    @WidgetProps(label="Pie de página (centro)", required=false)
     private String footerCenter;
-    @FieldProperties(label="Pie de página (derecha)", required=false)
+    @WidgetProps(label="Pie de página (derecha)", required=false)
     private String footerRight="&PT";
     // </editor-fold>
 

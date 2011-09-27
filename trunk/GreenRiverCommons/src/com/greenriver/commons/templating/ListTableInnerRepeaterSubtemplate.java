@@ -3,7 +3,7 @@ package com.greenriver.commons.templating;
 import com.greenriver.commons.Strings;
 import com.greenriver.commons.collections.Applicable;
 import com.greenriver.commons.collections.Lists;
-import com.greenriver.commons.data.fieldProperties.FieldProperties;
+import com.greenriver.commons.data.fieldProperties.WidgetProps;
 import com.greenriver.commons.data.fieldProperties.FieldType;
 import java.io.Serializable;
 import java.util.Collection;
@@ -33,7 +33,7 @@ public abstract class ListTableInnerRepeaterSubtemplate<T extends TemplateReplac
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @FieldProperties(label = "Formato del elemento",type=FieldType.LONGTEXT)
+    @WidgetProps(label = "Formato del elemento",type=FieldType.LONGTEXT)
     private String elementFormat = "";
     @OneToOne
     // This must be set in the setter method for this template in the parent template.

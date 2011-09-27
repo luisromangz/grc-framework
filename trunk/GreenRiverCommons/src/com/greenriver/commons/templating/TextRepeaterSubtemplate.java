@@ -2,7 +2,7 @@ package com.greenriver.commons.templating;
 
 import com.greenriver.commons.Strings;
 import com.greenriver.commons.data.fieldProperties.FieldAction;
-import com.greenriver.commons.data.fieldProperties.FieldProperties;
+import com.greenriver.commons.data.fieldProperties.WidgetProps;
 import com.greenriver.commons.data.fieldProperties.FieldType;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -35,18 +35,18 @@ public abstract class TextRepeaterSubtemplate<T extends TemplateReplacement, K e
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @FieldProperties(label = "Texto que se repite", type = FieldType.RICHTEXT)
+    @WidgetProps(label = "Texto que se repite", type = FieldType.RICHTEXT)
     @Column(length = 10240)
     private String body;
-    @FieldProperties(label = "Número de repeticiones horizontales", type = FieldType.NUMBER, minValue = 1)
+    @WidgetProps(label = "Número de repeticiones horizontales", type = FieldType.NUMBER, minValue = 1)
     private int horizontalRepetitions = 1;
-    @FieldProperties(label = "Bordes de la tabla", type = FieldType.SELECTION, externalValues=false,enumLabelMethod = "getLabel")
+    @WidgetProps(label = "Bordes de la tabla", type = FieldType.SELECTION, externalValues=false,enumLabelMethod = "getLabel")
     @FieldAction(triggerField = "horizontalRepetitions", triggerValue = "1", newValue = "'NONE'", deactivate=true)
     @Enumerated(EnumType.STRING)
     private BorderType borderType = BorderType.NONE;
-    @FieldProperties(label = "Página nueva tras el texto", type = FieldType.CHECKBOX)
+    @WidgetProps(label = "Página nueva tras el texto", type = FieldType.CHECKBOX)
     private boolean newPageAfterText = false;
-    @FieldProperties(label = "Añadir nueva línea tras el texto", type = FieldType.CHECKBOX)        
+    @WidgetProps(label = "Añadir nueva línea tras el texto", type = FieldType.CHECKBOX)        
     @FieldAction(triggerField = "newPageAfterText", triggerValue = "'on'", deactivate=true)
     private boolean newLineAfterText = true;
 
