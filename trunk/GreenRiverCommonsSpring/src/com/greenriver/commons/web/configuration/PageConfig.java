@@ -96,7 +96,7 @@ public class PageConfig
     }
 
     @Override
-    public Map<String, String> getPropsView() {
+    public Map<String, String> getPropsViews() {
         return this.propertiesViews;
     }
     
