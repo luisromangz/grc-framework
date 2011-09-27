@@ -14,7 +14,7 @@ import java.util.Map;
  */
 public class PageConfig
         extends PageHeaderConfig
-        implements FormsContainer, PropertiesViewsContainer, GridsContainer, PageToolsContainer, Cloneable {
+        implements FormsContainer, PropsViewsContainer, GridsContainer, PageToolsContainer, Cloneable {
 
     private Map<String, String> forms;
     private Map<String, String> propertiesViews;
@@ -36,7 +36,7 @@ public class PageConfig
         // We just do a superficial copy.
         PageConfig newConfiguration = new PageConfig();
         newConfiguration.setForms(forms);
-        newConfiguration.setPropertiesView(propertiesViews);
+        newConfiguration.setPropsViews(propertiesViews);
         newConfiguration.setPageTools(pageTools);
 
         newConfiguration.setCssFiles(this.getCssFiles());
@@ -86,19 +86,21 @@ public class PageConfig
 
     // <editor-fold defaultstate="collapsed" desc="Properties view">
     @Override
-    public void addPropertiesView(String id, String className) {
+    public void addPropsView(String id, String className) {
         this.propertiesViews.put(id, className);
     }
 
     @Override
-    public void setPropertiesView(Map<String, String> propertiesView) {
+    public void setPropsViews(Map<String, String> propertiesView) {
         this.propertiesViews =new HashMap<String, String>(propertiesView);
     }
 
     @Override
-    public Map<String, String> getPropertiesView() {
+    public Map<String, String> getPropsView() {
         return this.propertiesViews;
-    }// </editor-fold>
+    }
+    
+    // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Page tools">
     @Override
