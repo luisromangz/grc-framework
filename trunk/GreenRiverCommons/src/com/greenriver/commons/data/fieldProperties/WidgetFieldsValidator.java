@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
  *
  * @author luis
  */
-public class WidgetValidator implements FieldsValidator {
+public class WidgetFieldsValidator implements FieldsValidator {
 
     public static final Pattern COLOR_PATTERN = Pattern.compile(
             "^" + ValidationRegex.COLOR + "$",
