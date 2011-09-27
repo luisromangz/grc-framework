@@ -3,7 +3,7 @@ package com.greenriver.commons.web.helpers.form;
 import com.greenriver.commons.Strings;
 import com.greenriver.commons.data.fieldProperties.FieldAction;
 import com.greenriver.commons.data.fieldProperties.FieldActions;
-import com.greenriver.commons.data.fieldProperties.FieldProperties;
+import com.greenriver.commons.data.fieldProperties.WidgetProps;
 import com.greenriver.commons.data.fieldProperties.FieldType;
 import com.greenriver.commons.data.fieldProperties.FieldsInsertionMode;
 import com.greenriver.commons.data.fieldProperties.FieldsProps;
@@ -42,7 +42,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         currentForm.addField(field);
     }
 
-    public void addField(String id, FieldProperties properties, Field field) {
+    public void addField(String id, WidgetProps properties, Field field) {
         String fieldId = currentForm.getId() + "_" + id;
 
         HtmlFormElementInfo formFieldElement = new HtmlFormElementInfo(fieldId);
@@ -68,7 +68,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         }
     }
 
-    private void setFieldActions(String fieldId, FieldProperties properties, Field field) {
+    private void setFieldActions(String fieldId, WidgetProps properties, Field field) {
 
         FieldActions actions = (FieldActions) field.getAnnotation(FieldActions.class);
         if (actions != null) {
@@ -172,7 +172,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         Field[] classFields = modelClass.getDeclaredFields();
 
         for (Field field : classFields) {
-            FieldProperties props = field.getAnnotation(FieldProperties.class);
+            WidgetProps props = field.getAnnotation(WidgetProps.class);
             if (props != null && props.visible()) {
                 String fieldName =
                         Strings.isNullOrEmpty(props.accesorFieldName())
@@ -241,7 +241,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         this.roleManager = roleManager;
     }
 
-    private String createSelectionContents(Class fieldType, FieldProperties properties,
+    private String createSelectionContents(Class fieldType, WidgetProps properties,
             String[] possibleValues, String[] possibleValueLabels, String elementId) {
 
         String contents = "";
@@ -316,7 +316,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
      * Asserts that no numeric-related parameters are changed from default
      * values. These parameters are minValue, maxValue and decimalPlaces.
      */
-    private void assertNotNumber(FieldProperties properties) {
+    private void assertNotNumber(WidgetProps properties) {
         if (properties.minValue() != Integer.MIN_VALUE) {
             throw new FormBuildingException(
                     "Min value specified but property is not a number.");
@@ -338,7 +338,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
      * The only parameter is customRegExp.
      * @param properties
      */
-    private void assertNotText(FieldProperties properties) {
+    private void assertNotText(WidgetProps properties) {
         if (!"".equals(properties.customRegExp())) {
             throw new FormBuildingException(
                     "Custom regular expression specified but property is not a text.");
@@ -351,7 +351,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
      * possibleValues.
      * @param properties
      */
-    private void assertNotSelection(FieldProperties properties) {
+    private void assertNotSelection(WidgetProps properties) {
         if (!"getName".equals(properties.enumLabelMethod())) {
             throw new FormBuildingException(
                     "Enum method name specified but property is not a selection.");
@@ -373,7 +373,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
      * other types of properties.
      * @param properties
      */
-    private void assertNotFile(FieldProperties properties) {
+    private void assertNotFile(WidgetProps properties) {
         if (properties.allowedFileTypes().length != 0) {
             throw new FormBuildingException(
                     "Allowed file types specified but property is not a file.");
@@ -391,7 +391,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
     }
 
     private void setupTextField(HtmlFormElementInfo element,
-            Class fieldType, FieldProperties properties) {
+            Class fieldType, WidgetProps properties) {
 
         assertNotNumber(properties);
         assertNotSelection(properties);
@@ -404,7 +404,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
     }
 
     private void setupPasswordField(HtmlFormElementInfo element,
-            Class fieldType, FieldProperties properties) {
+            Class fieldType, WidgetProps properties) {
 
         assertNotNumber(properties);
         assertNotSelection(properties);
@@ -422,7 +422,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
     }
 
     private void setupLongTextField(HtmlFormElementInfo element,
-            Class fieldType, FieldProperties properties) {
+            Class fieldType, WidgetProps properties) {
 
         assertNotNumber(properties);
         assertNotSelection(properties);
@@ -436,7 +436,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
     }
 
     private void setupRichTextField(HtmlFormElementInfo element,
-            Class fieldType, FieldProperties properties) {
+            Class fieldType, WidgetProps properties) {
 
         assertNotNumber(properties);
         assertNotSelection(properties);
@@ -460,7 +460,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
     }
 
     private void setupNumberField(HtmlFormElementInfo element,
-            Class fieldType, FieldProperties properties) {
+            Class fieldType, WidgetProps properties) {
 
         assertNotText(properties);
         assertNotSelection(properties);
@@ -479,7 +479,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
     }
 
     private void setupBooleanField(HtmlFormElementInfo element,
-            Class fieldType, FieldProperties properties) {
+            Class fieldType, WidgetProps properties) {
 
         assertNotNumber(properties);
         assertNotSelection(properties);
@@ -492,7 +492,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
     }
 
     private void setupEmailField(HtmlFormElementInfo element,
-            Class fieldType, FieldProperties properties) {
+            Class fieldType, WidgetProps properties) {
 
         assertNotNumber(properties);
         assertNotSelection(properties);
@@ -512,7 +512,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
     }
 
     private void setupIpAddressField(HtmlFormElementInfo element,
-            Class fieldType, FieldProperties properties) {
+            Class fieldType, WidgetProps properties) {
 
         assertNotNumber(properties);
         assertNotSelection(properties);
@@ -533,7 +533,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
     }
 
     private void setupSelectionField(HtmlFormElementInfo element,
-            Class fieldType, FieldProperties properties) {
+            Class fieldType, WidgetProps properties) {
 
         configuration.addDojoModule("dijit.form.FilteringSelect");
         assertNotNumber(properties);
@@ -553,7 +553,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
     }
 
     private void setupMultiSelectionField(HtmlFormElementInfo element,
-            Class fieldType, FieldProperties properties) {
+            Class fieldType, WidgetProps properties) {
 
         assertNotNumber(properties);
         assertNotText(properties);
@@ -579,7 +579,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
     }
     
     private void setupFilterMultiSelect(HtmlFormElementInfo element,
-            Class fieldType, FieldProperties properties) {
+            Class fieldType, WidgetProps properties) {
 
         assertNotNumber(properties);
         assertNotText(properties);
@@ -605,7 +605,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
     }
 
     private void setupColorField(HtmlFormElementInfo element,
-            Class fieldType, FieldProperties properties) {
+            Class fieldType, WidgetProps properties) {
 
         assertNotNumber(properties);
         assertNotText(properties);
@@ -639,7 +639,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
     }
 
     private void setupDecimalField(HtmlFormElementInfo element,
-            Class FieldType, FieldProperties properties) {
+            Class FieldType, WidgetProps properties) {
 
         assertNotText(properties);
         assertNotSelection(properties);
@@ -662,7 +662,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
     }
 
     private void setupAutocompletionField(HtmlFormElementInfo element,
-            Class fieldType, FieldProperties properties) {
+            Class fieldType, WidgetProps properties) {
 
         assertNotNumber(properties);
         assertNotFile(properties);
@@ -690,7 +690,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
     }
 
     private void setupRoleSelectionField(HtmlFormElementInfo element,
-            Class fieldType, FieldProperties properties) {
+            Class fieldType, WidgetProps properties) {
 
         assertNotNumber(properties);
         assertNotText(properties);
@@ -717,7 +717,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
     private void setupFileInputField(
             HtmlFormElementInfo formFieldElement,
             Class fieldType,
-            FieldProperties properties) {
+            WidgetProps properties) {
 
         assertNotNumber(properties);
         assertNotSelection(properties);
@@ -756,7 +756,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
      * @param properties
      * @param element
      */
-    private void setFieldProperties(FieldProperties properties,
+    private void setFieldProperties(WidgetProps properties,
             HtmlFormElementInfo element) {
 
         element.getAttributes().setProperty("required", properties.required() ? "true" : "false");
@@ -838,7 +838,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
     private void setupFieldElement(
             HtmlFormElementInfo formFieldElement,
             Class fieldType, 
-            FieldProperties properties) {
+            WidgetProps properties) {
 
         switch (properties.type()) {
             case TEXT:
@@ -920,7 +920,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
     private void setupYearDayField(
             HtmlFormElementInfo formFieldElement,
             Class fieldType,
-            FieldProperties properties) {
+            WidgetProps properties) {
         configuration.addDojoModule("grc.form.YearDayTextBox");
         formFieldElement.setAttribute("dojoType",
                 "grc.form.YearDayTextBox");
@@ -929,7 +929,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
     private void setupTimeField(
             HtmlFormElementInfo formFieldElement,
             Class fieldType,
-            FieldProperties properties) {
+            WidgetProps properties) {
         configuration.addDojoModule("dijit.form.TimeTextBox");
         formFieldElement.setAttribute("dojoType", "dijit.form.TimeTextBox");
     }
@@ -937,7 +937,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
     private void setupDateField(
             HtmlFormElementInfo formFieldElement,
             Class fieldType,
-            FieldProperties properties) {
+            WidgetProps properties) {
 
         configuration.addDojoModule("dojox.form.DateTextBox");
         formFieldElement.setAttribute("dojoType", "dojox.form.DateTextBox");
@@ -948,7 +948,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
     private void setupNifField(
             HtmlFormElementInfo formFieldElement,
             Class fieldType,
-            FieldProperties properties) {
+            WidgetProps properties) {
         assertNotNumber(properties);
         assertNotSelection(properties);
         assertNotFile(properties);
@@ -972,7 +972,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
     private void setupCifOrNifField(
             HtmlFormElementInfo formFieldElement,
             Class fieldType,
-            FieldProperties properties) {
+            WidgetProps properties) {
         assertNotNumber(properties);
         assertNotSelection(properties);
         assertNotFile(properties);

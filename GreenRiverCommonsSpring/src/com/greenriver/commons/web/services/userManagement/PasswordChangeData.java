@@ -1,6 +1,6 @@
 package com.greenriver.commons.web.services.userManagement;
 
-import com.greenriver.commons.data.fieldProperties.FieldProperties;
+import com.greenriver.commons.data.fieldProperties.WidgetProps;
 import com.greenriver.commons.data.fieldProperties.FieldType;
 
 /**
@@ -8,10 +8,10 @@ import com.greenriver.commons.data.fieldProperties.FieldType;
  * @author luis
  */
 public class PasswordChangeData {
-    @FieldProperties(label="Contraseña actual", type=FieldType.PASSWORD)
+    @WidgetProps(label="Contraseña actual", type=FieldType.PASSWORD)
     private String currentPassword;
 
-    @FieldProperties(label="Nueva contraseña", type=FieldType.PASSWORDEDITOR)
+    @WidgetProps(label="Nueva contraseña", type=FieldType.PASSWORDEDITOR)
     private String newPassword;
 
     /**
