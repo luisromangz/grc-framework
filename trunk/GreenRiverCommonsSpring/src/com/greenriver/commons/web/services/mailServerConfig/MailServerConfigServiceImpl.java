@@ -1,7 +1,7 @@
 package com.greenriver.commons.web.services.mailServerConfig;
 
 import com.greenriver.commons.data.dao.MailServerConfigDao;
-import com.greenriver.commons.data.fieldProperties.WidgetValidator;
+import com.greenriver.commons.data.fieldProperties.WidgetFieldsValidator;
 import com.greenriver.commons.data.mailing.MailServerConfig;
 import com.greenriver.commons.data.validation.ValidationResult;
 import com.greenriver.commons.web.services.Result;
@@ -19,7 +19,7 @@ import javax.mail.Transport;
 public class MailServerConfigServiceImpl implements MailServerConfigService {
 
     private MailServerConfigDao mailServerConfigDao;
-    private WidgetValidator fieldPropertiesValidator;
+    private WidgetFieldsValidator fieldPropertiesValidator;
 
     //<editor-fold defaultstate="collapsed" desc="Service methods">
     @Override
@@ -126,14 +126,14 @@ public class MailServerConfigServiceImpl implements MailServerConfigService {
     /**
      * @return the fieldPropertiesValidator
      */
-    public WidgetValidator getFieldPropertiesValidator() {
+    public WidgetFieldsValidator getFieldPropertiesValidator() {
         return fieldPropertiesValidator;
     }
 
     /**
      * @param fieldPropertiesValidator the fieldPropertiesValidator to set
      */
-    public void setFieldPropertiesValidator(WidgetValidator fieldPropertiesValidator) {
+    public void setFieldPropertiesValidator(WidgetFieldsValidator fieldPropertiesValidator) {
         this.fieldPropertiesValidator = fieldPropertiesValidator;
     }
     //</editor-fold>
