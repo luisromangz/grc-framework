@@ -1,9 +1,12 @@
 package com.greenriver.commons.web.pageTasks;
 
+import com.greenriver.commons.web.configuration.PageConfig;
 import com.greenriver.commons.web.configuration.PageTasksContainer;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  * This class represents a PageTask that will be formed by several subtasks.
@@ -23,6 +26,38 @@ public class SubtaskedPageTask
         this.setMainJspFileName("../../subtaskedPageTask.jsp");
         this.setDojoControllerModule("grc.web.tasks.SubtaskedPageTaskController");
     }
+
+    @Override
+    public void configurePage(PageConfig configuration, ModelAndView mav) {
+        super.configurePage(configuration, mav);
+        
+        for(PageTask t : taskManager.getTasks()) {
+            t.configurePage(configuration, mav);
+        }
+    }
+    
+    
+
+    @Override
+    public Properties getControllerInitArgs() {
+        Properties props =  super.getControllerInitArgs();
+        
+        Properties tasksProps = new Properties();
+        props.put("tasksInitArgs", tasksProps);
+        
+        for(PageTask t : taskManager.getTasks()) {
+            if(t instanceof DojoHandledPageTask) {
+                Properties subTaskArgs = ((DojoHandledPageTask)t).getControllerInitArgs();
+                tasksProps.put(t.getTaskName(), subTaskArgs);
+            } else {
+                tasksProps.put(t.getTaskName(),null);
+            }            
+        }
+        
+        return props;
+    }
+    
+    
 
     @Override
     public Map<String, String> getGrids() {
@@ -70,7 +105,10 @@ public class SubtaskedPageTask
     }
     
 
-    private void addAndPrefixKeys(String prefix, Map<String, String> source, Map<String, String> result) {
+    private void addAndPrefixKeys(
+            String prefix,
+            Map<String, String> source, 
+            Map<String, String> result) {
         for (String key : source.keySet()) {
             result.put(prefix + "_" + key, source.get(key));
         }
