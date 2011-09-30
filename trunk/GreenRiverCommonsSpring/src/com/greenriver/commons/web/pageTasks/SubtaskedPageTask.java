@@ -35,8 +35,14 @@ public class SubtaskedPageTask
             t.configurePage(configuration, mav);
         }
     }
-    
-    
+
+    @Override
+    protected void initializeInternal() {
+        super.initializeInternal();
+        for(PageTask t : taskManager.getTasks()) {
+            t.initialize();
+        }
+    }
 
     @Override
     public Properties getControllerInitArgs() {
