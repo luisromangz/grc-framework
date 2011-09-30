@@ -16,6 +16,7 @@ public class CRUDPageTask extends GridAndPropsPageTask {
     private String saveMethod = "save";
 
     public CRUDPageTask() {
+        this.setDojoControllerModule("grc.web.tasks.CRUDPageTaskController");
         this.setMainJspFileName("../../crudPageTask.jsp");
     }
     
