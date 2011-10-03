@@ -1,8 +1,8 @@
 package com.greenriver.commons.web.helpers.form;
 
 import com.greenriver.commons.Strings;
-import com.greenriver.commons.data.fieldProperties.FieldAction;
-import com.greenriver.commons.data.fieldProperties.FieldActions;
+import com.greenriver.commons.data.fieldProperties.WidgetAction;
+import com.greenriver.commons.data.fieldProperties.WidgetActions;
 import com.greenriver.commons.data.fieldProperties.WidgetProps;
 import com.greenriver.commons.data.fieldProperties.FieldType;
 import com.greenriver.commons.data.fieldProperties.FieldsInsertionMode;
@@ -70,9 +70,9 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
 
     private void setFieldActions(String fieldId, WidgetProps properties, Field field) {
 
-        FieldActions actions = (FieldActions) field.getAnnotation(FieldActions.class);
+        WidgetActions actions = (WidgetActions) field.getAnnotation(WidgetActions.class);
         if (actions != null) {
-            for (FieldAction action : actions.value()) {
+            for (WidgetAction action : actions.value()) {
                 this.addAction(fieldId, action);
                 if (properties.type() == FieldType.PASSWORDEDITOR) {
                     this.addAction(fieldId + PASSWORD_CONFIRM_SUFFIX, action);
@@ -80,7 +80,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
             }
         }
 
-        FieldAction action = (FieldAction) field.getAnnotation(FieldAction.class);
+        WidgetAction action = (WidgetAction) field.getAnnotation(WidgetAction.class);
         if (action != null) {
             this.addAction(fieldId, action);
             if (properties.type() == FieldType.PASSWORDEDITOR) {
@@ -91,7 +91,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
 
     public void addAction(
             String fieldIdentifier,
-            FieldAction action) {
+            WidgetAction action) {
 
         String fieldId = null;
         if (!Strings.isNullOrEmpty(fieldIdentifier)) {
@@ -155,7 +155,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
                 (FieldsProps) modelClass.getAnnotation(FieldsProps.class);
 
         if (entityProperties != null) {
-            for (FieldAction action : entityProperties.actions()) {
+            for (WidgetAction action : entityProperties.actions()) {
                 addAction(null, action);
             }
         }
