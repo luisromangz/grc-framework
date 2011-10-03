@@ -14,6 +14,7 @@ public class CRUDPageTask extends GridAndPropsPageTask {
     private String removeMethod="remove";
     private String getNewMethod="getNew";
     private String saveMethod = "save";
+    private String formDialogControllerModule="grc.web.dialog.FormDialogController";
 
     public CRUDPageTask() {
         this.setDojoControllerModule("grc.web.tasks.CRUDPageTaskController");
@@ -43,6 +44,8 @@ public class CRUDPageTask extends GridAndPropsPageTask {
         }
         p.put("saveMethod",saveMethod);
         
+        p.put("formDialogController", this.formDialogControllerModule);
+        
         return p;
     }
 
@@ -55,6 +58,8 @@ public class CRUDPageTask extends GridAndPropsPageTask {
         }
         
         this.addForm("form", formClass);
+        
+        this.addDojoModule(formDialogControllerModule);
     }
 
     //<editor-fold defaultstate="collapsed" desc="Getters and setters">
@@ -99,7 +104,23 @@ public class CRUDPageTask extends GridAndPropsPageTask {
     public void setSaveMethod(String saveMethod) {
         this.saveMethod = saveMethod;
     }
+    
+    /**
+     * @return the formDialogControllerModule
+     */
+    public String getFormDialogControllerModule() {
+        return formDialogControllerModule;
+    }
+
+    /**
+     * @param formDialogControllerModule the formDialogControllerModule to set
+     */
+    public void setFormDialogControllerModule(String formDialogControllerModule) {
+        this.formDialogControllerModule = formDialogControllerModule;
+    }
+
     //</editor-fold>
 
+    
     
 }
