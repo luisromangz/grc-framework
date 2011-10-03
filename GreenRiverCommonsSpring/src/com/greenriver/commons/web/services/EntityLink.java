@@ -21,7 +21,7 @@ public class EntityLink implements Comparable<EntityLink> {
     public int compareTo(EntityLink t) {
          return label.compareTo(t.getLabel());
     }
-
+     
     //<editor-fold defaultstate="collapsed" desc="Getters and setters">
     /**
      * @return the id
