@@ -21,5 +21,5 @@ public @interface FieldsProps {
      * A list of deactivation conditions for the fields.
      * @return
      */
-    FieldAction[] actions() default {};
+    WidgetAction[] actions() default {};
 }

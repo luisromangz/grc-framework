@@ -1,8 +1,8 @@
 package com.greenriver.commons.data.mailing;
 
 import com.greenriver.commons.data.DataEntity;
-import com.greenriver.commons.data.fieldProperties.FieldAction;
-import com.greenriver.commons.data.fieldProperties.FieldActions;
+import com.greenriver.commons.data.fieldProperties.WidgetAction;
+import com.greenriver.commons.data.fieldProperties.WidgetActions;
 import com.greenriver.commons.data.fieldProperties.WidgetProps;
 import com.greenriver.commons.data.fieldProperties.FieldType;
 import java.io.Serializable;
@@ -30,17 +30,17 @@ public class MailServerConfig implements DataEntity{
     @Enumerated(EnumType.STRING)
     private MailSendingProtocol protocol= MailSendingProtocol.SMTP;
     @WidgetProps(label = "Puerto", type = FieldType.NUMBER)
-    @FieldActions({
-        @FieldAction(triggerField = "protocol", triggerValue = "'SMTP'", newValue = "25"),
-        @FieldAction(triggerField = "protocol", triggerValue = "'SMTPS'", newValue = "465")})
+    @WidgetActions({
+        @WidgetAction(triggerField = "protocol", triggerValue = "'SMTP'", newValue = "25"),
+        @WidgetAction(triggerField = "protocol", triggerValue = "'SMTPS'", newValue = "465")})
     private int portNumber=25;
     @WidgetProps(label = "Requiere autenticación", type = FieldType.CHECKBOX, getterPrefix="get")
     private boolean requiresAuthentication;
     @WidgetProps(label = "Nombre de usuario", required = false, getterPrefix="get")
-    @FieldAction(triggerField = "requiresAuthentication", triggerValue = "false", newValue = "''", deactivate = true)
+    @WidgetAction(triggerField = "requiresAuthentication", triggerValue = "false", newValue = "''", deactivate = true)
     private String userName;
     @WidgetProps(label = "Contraseña", required = false, type = FieldType.PASSWORDEDITOR)
-    @FieldAction(triggerField = "requiresAuthentication", triggerValue = "false", newValue = "''", deactivate = true)
+    @WidgetAction(triggerField = "requiresAuthentication", triggerValue = "false", newValue = "''", deactivate = true)
     private String password;
     @WidgetProps(label = "Usar StartTTLS (requerido por GMail)", type = FieldType.CHECKBOX,getterPrefix="get")
     private boolean useStartTtls;

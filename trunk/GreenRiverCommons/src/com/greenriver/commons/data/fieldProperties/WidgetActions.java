@@ -7,12 +7,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * This annotation allows the use of various @FieldAction in a field.
+ * This annotation allows the use of various @WidgetAction in a field.
  * @author luisro
  */
 @Documented
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface FieldActions {
-    FieldAction[] value();
+public @interface WidgetActions {
+    WidgetAction[] value();
 }

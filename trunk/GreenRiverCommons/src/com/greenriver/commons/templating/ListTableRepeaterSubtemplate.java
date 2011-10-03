@@ -2,8 +2,8 @@ package com.greenriver.commons.templating;
 
 import com.greenriver.commons.Strings;
 import com.greenriver.commons.collections.SortedArrayList;
-import com.greenriver.commons.data.fieldProperties.FieldAction;
-import com.greenriver.commons.data.fieldProperties.FieldActions;
+import com.greenriver.commons.data.fieldProperties.WidgetAction;
+import com.greenriver.commons.data.fieldProperties.WidgetActions;
 import com.greenriver.commons.data.fieldProperties.WidgetProps;
 import com.greenriver.commons.data.fieldProperties.FieldType;
 import java.text.DateFormat;
@@ -54,22 +54,22 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
     possibleValues = {"true", "false"}, possibleValueLabels = {"Tabla", "Lista"})
     private boolean isTable = true;
     @WidgetProps(label = "Lista ordenada", type = FieldType.CHECKBOX, editable = false)
-    @FieldAction(triggerValue = "'true'", newValue = "false", triggerField = "isTable", deactivate = true)
+    @WidgetAction(triggerValue = "'true'", newValue = "false", triggerField = "isTable", deactivate = true)
     private boolean isOrderedList;
     @WidgetProps(label = "Mostrar encabezados de la tabla", type = FieldType.CHECKBOX)
-    @FieldAction(triggerValue = "'false'", triggerField = "isTable", newValue = "false")  
+    @WidgetAction(triggerValue = "'false'", triggerField = "isTable", newValue = "false")  
     private boolean showTableHeaders = true;
     @WidgetProps(label = "Encabezados de la tabla", type = FieldType.LONGTEXT, required = false, widgetStyle = "width:98%")
-    @FieldActions({
-        @FieldAction(triggerValue = "'false'", triggerField = "isTable", deactivate = true),
-        @FieldAction(triggerValue = "false", triggerField = "showTableHeaders", deactivate = true)
+    @WidgetActions({
+        @WidgetAction(triggerValue = "'false'", triggerField = "isTable", deactivate = true),
+        @WidgetAction(triggerValue = "false", triggerField = "showTableHeaders", deactivate = true)
     })
     private String tableHeader = "";
     @WidgetProps(label = "Anchuras de las columnas", type = FieldType.LONGTEXT, required = false, widgetStyle = "width:98%")
-    @FieldAction(triggerValue = "'false'", triggerField = "isTable", deactivate = true)
+    @WidgetAction(triggerValue = "'false'", triggerField = "isTable", deactivate = true)
     private String columnSizes = "";
     @WidgetProps(label = "Columnas por las que se ordena", customRegExp = "\\d+(;\\d+)*", required = false)
-    @FieldAction(triggerValue = "'false'", triggerField = "isTable", deactivate = true)
+    @WidgetAction(triggerValue = "'false'", triggerField = "isTable", deactivate = true)
     private String orderByColumns = "";
     @WidgetProps(label = "Formato del elemento", type = FieldType.LONGTEXT, widgetStyle = "width:98%")
     private String elementFormat;
@@ -82,15 +82,15 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
     @WidgetProps(label = "Alineación del texto en la celda", type = FieldType.SELECTION,
     externalValues=false,possibleValueLabels = {"Izquierda", "Centro", "Derecha"},
     possibleValues = {"left", "center", "right"})
-    @FieldAction(triggerField = "isTable", triggerValue = "'false'", newValue = "'left'", deactivate = true)
+    @WidgetAction(triggerField = "isTable", triggerValue = "'false'", newValue = "'left'", deactivate = true)
     private String textAlign = "center";
     @WidgetProps(label = "Bordes", type = FieldType.SELECTION,
     externalValues=false,possibleValueLabels = {"Todos", "Horizontales", "Verticales"},
     possibleValues = {"border-top,border-bottom,border-left,border-right", "border-top,border-bottom", "border-left,border-right"})
-    @FieldAction(triggerField = "isTable", triggerValue = "'false'", deactivate = true)
+    @WidgetAction(triggerField = "isTable", triggerValue = "'false'", deactivate = true)
     private String borders = "border-top,border-bottom,border-left,border-right";
     @WidgetProps(label = "Filas vacías a añadir al final", type = FieldType.NUMBER, minValue = 0)
-    @FieldAction(triggerField = "isTable", triggerValue = "'false'", deactivate = true)
+    @WidgetAction(triggerField = "isTable", triggerValue = "'false'", deactivate = true)
     private int emptyRowsAppended = 0;
     // </editor-fold>
 
