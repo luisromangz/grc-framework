@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.greenriver.commons.data.fieldProperties;
 
 import java.lang.annotation.Documented;
@@ -11,7 +7,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- *
+ * This annotation allows the use of various @FieldAction in a field.
  * @author luisro
  */
 @Documented
