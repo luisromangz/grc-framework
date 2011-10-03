@@ -211,7 +211,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
 
         forms.add(newForm);
         currentForm = newForm;
-        
+
         return newForm;
     }
 
@@ -247,46 +247,39 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         String contents = "";
         ArrayList<String> values = new ArrayList<String>();
         ArrayList<String> labels = new ArrayList<String>();
-        
-        if (!properties.externalValues() && fieldType.isEnum()) {
-            if (Strings.isNullOrEmpty(properties.enumLabelMethod())) {
-                throw new FormBuildingException(
-                        "Error procesing element " + elementId + ". "
-                        + "Enum method name required but not specified");
-            } else if (possibleValues.length != 0) {
-                throw new FormBuildingException(
-                        "Error procesing element " + elementId + ". "
-                        + "Enum field type is incompatible with a list of possible values");
-            } else if (possibleValueLabels.length != 0) {
-                throw new FormBuildingException(
-                        "Error procesing element " + elementId + ". "
-                        + "Enum field type is incompatible with a list of possible value labels");
-            }
+        if (!properties.externalValues()) {
+            if (possibleValues.length > 0) {
 
-            // We have to extract the values from the Enum;
-            for (Object constant : fieldType.getEnumConstants()) {
-                try {
-                    String name = (String) constant.getClass().getDeclaredMethod(
-                            properties.enumLabelMethod()).invoke(constant);
+                values.addAll(Arrays.asList(possibleValues));
+                labels.addAll(Arrays.asList(possibleValueLabels));
 
-                    values.add(constant.toString());
-                    labels.add(name);
-                } catch (Exception ex) {
-                    Logger.getLogger(DojoFormBuilder.class.getName()).log(
-                            Level.SEVERE,
-                            null, ex);
+                if (values.size() != labels.size()) {
+                    values = labels;
+                }
+            } else if (fieldType.isEnum()) {
+                if (Strings.isNullOrEmpty(properties.enumLabelMethod())) {
+                    throw new FormBuildingException(
+                            "Error procesing element " + elementId + ". "
+                            + "Enum method name required but not specified");
+                }
+
+                // We have to extract the values from the Enum;
+                for (Object constant : fieldType.getEnumConstants()) {
+                    try {
+                        String name = (String) constant.getClass().getDeclaredMethod(
+                                properties.enumLabelMethod()).invoke(constant);
+
+                        values.add(constant.toString());
+                        labels.add(name);
+                    } catch (Exception ex) {
+                        Logger.getLogger(DojoFormBuilder.class.getName()).log(
+                                Level.SEVERE,
+                                null, ex);
+                    }
                 }
             }
-
-        } else if (!properties.externalValues()) {
-
-            values.addAll(Arrays.asList(possibleValues));
-            labels.addAll(Arrays.asList(possibleValueLabels));
-
-            if (values.size() != labels.size()) {
-                values = labels;
-            }
         }
+
 
         if (!properties.externalValues() && (labels.isEmpty() || values.isEmpty())) {
 
@@ -429,7 +422,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         assertNotFile(properties);
         configuration.addDojoModule("dijit.form.Textarea");
         element.setAttribute(
-                "dojoType","dijit.form.Textarea");
+                "dojoType", "dijit.form.Textarea");
         element.setAttribute("trim", "true");
         //element.setAttribute("style", "width:98%");
         element.setElementType("textarea");
@@ -577,7 +570,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
                     + element.getId() + ": " + ex.getMessage());
         }
     }
-    
+
     private void setupFilterMultiSelect(HtmlFormElementInfo element,
             Class fieldType, WidgetProps properties) {
 
@@ -587,7 +580,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
 
         configuration.addDojoModule("grc.form.TooltipMultiSelect");
         element.getAttributes().setProperty(
-                "dojoType","grc.form.TooltipMultiSelect");
+                "dojoType", "grc.form.TooltipMultiSelect");
         element.getAttributes().setProperty("multiple", "true");
         element.setElementType("select");
 
@@ -837,7 +830,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
 
     private void setupFieldElement(
             HtmlFormElementInfo formFieldElement,
-            Class fieldType, 
+            Class fieldType,
             WidgetProps properties) {
 
         switch (properties.type()) {
