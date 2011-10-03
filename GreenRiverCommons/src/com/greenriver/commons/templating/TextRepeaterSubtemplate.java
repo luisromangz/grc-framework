@@ -1,7 +1,7 @@
 package com.greenriver.commons.templating;
 
 import com.greenriver.commons.Strings;
-import com.greenriver.commons.data.fieldProperties.FieldAction;
+import com.greenriver.commons.data.fieldProperties.WidgetAction;
 import com.greenriver.commons.data.fieldProperties.WidgetProps;
 import com.greenriver.commons.data.fieldProperties.FieldType;
 import java.io.Serializable;
@@ -41,13 +41,13 @@ public abstract class TextRepeaterSubtemplate<T extends TemplateReplacement, K e
     @WidgetProps(label = "Número de repeticiones horizontales", type = FieldType.NUMBER, minValue = 1)
     private int horizontalRepetitions = 1;
     @WidgetProps(label = "Bordes de la tabla", type = FieldType.SELECTION, externalValues=false,enumLabelMethod = "getLabel")
-    @FieldAction(triggerField = "horizontalRepetitions", triggerValue = "1", newValue = "'NONE'", deactivate=true)
+    @WidgetAction(triggerField = "horizontalRepetitions", triggerValue = "1", newValue = "'NONE'", deactivate=true)
     @Enumerated(EnumType.STRING)
     private BorderType borderType = BorderType.NONE;
     @WidgetProps(label = "Página nueva tras el texto", type = FieldType.CHECKBOX)
     private boolean newPageAfterText = false;
     @WidgetProps(label = "Añadir nueva línea tras el texto", type = FieldType.CHECKBOX)        
-    @FieldAction(triggerField = "newPageAfterText", triggerValue = "'on'", deactivate=true)
+    @WidgetAction(triggerField = "newPageAfterText", triggerValue = "'on'", deactivate=true)
     private boolean newLineAfterText = true;
 
     @Override

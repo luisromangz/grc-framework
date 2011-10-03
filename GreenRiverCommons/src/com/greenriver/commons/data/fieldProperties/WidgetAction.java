@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
 @Documented
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface FieldAction {
+public @interface WidgetAction {
     /**
      * The name of the field that will be modified.
      * @return 
