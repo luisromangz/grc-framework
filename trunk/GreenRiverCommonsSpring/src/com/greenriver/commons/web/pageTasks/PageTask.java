@@ -14,26 +14,24 @@ import org.springframework.web.servlet.ModelAndView;
  * @author luis
  */
 public class PageTask
-       extends PageConfig
-       implements PageToolsContainer, Comparable<PageTask> {
+        extends PageConfig
+        implements PageToolsContainer, Comparable<PageTask> {
 
     // <editor-fold defaultstate="collapsed" desc="Fields">
     // The roles that are required to show the task.
     private String[] allowedRoles = {"ROLE_USER"};
     // The name of the main JSP file.
-    private String mainJspFileName="task.jsp";
+    private String mainJspFileName = "task.jsp";
     // The name's task;
     private String taskName;
     // The JSP file used to render the contents of the tasks contextual toolbar.
-    private String toolbarJspFileName="toolbar.jsp";
+    private String toolbarJspFileName = "toolbar.jsp";
     // The image that is shown as icon for the task in the taskSelector.
     private String imageFileName;
-
-    private boolean initialized=false;
+    private boolean initialized = false;
     // </editor-fold>
 
     public PageTask() {
-      
     }
 
     public String getContainerFile() {
@@ -74,20 +72,20 @@ public class PageTask
     }
 
     public void configurePage(PageConfig configuration, ModelAndView mav) {
-         // The properties that are files need to have their path relative
+        // The properties that are files need to have their path relative
         // to the task's name, and inside a "js" folder.
         configuration.getJavaScriptFiles().addAll(Strings.addPrefix(
-                "tasks/" + taskName+"/",
+                "tasks/" + taskName + "/",
                 this.getJavaScriptFiles()));
 
         configuration.getCssFiles().addAll(
-                Strings.addPrefix(taskName+"/", this.getCssFiles()));
+                Strings.addPrefix(taskName + "/", this.getCssFiles()));
 
         configuration.getDojoBundles().addAll(this.getDojoBundles());
         configuration.getDojoModules().addAll(this.getDojoModules());
 
         configuration.getDwrServices().addAll(this.getDwrServices());
-        
+
 
         configuration.getScripts().addAll(this.getScripts());
     }
@@ -161,8 +159,9 @@ public class PageTask
      */
     public void setImageFileName(String imageFileName) {
         this.imageFileName = imageFileName;
-    }      
-      /**
+    }
+
+    /**
      * @return the initialized
      */
     public boolean isInitialized() {
@@ -175,17 +174,15 @@ public class PageTask
     public void setInitialized(boolean initialized) {
         this.initialized = initialized;
     }
-    
+
     // </editor-fold>
-    
     public final void initialize() {
-        this.initialized =true;
-        initializeInternal();
-    }
-    
-    protected void initializeInternal() {
-        
+        if (!this.initialized) {
+            this.initialized = true;
+            initializeInternal();
+        }
     }
 
-  
+    protected void initializeInternal() {
+    }
 }
