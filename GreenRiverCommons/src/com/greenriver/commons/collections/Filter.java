@@ -4,7 +4,7 @@ package com.greenriver.commons.collections;
  * This interface defines conditions applicable to collections.
  * @author luis
  */
-public interface FilteringCondition<T> {
+public interface Filter<T> {
     /**
      * The condition method applied to an element.
      * @param element The element being tested.

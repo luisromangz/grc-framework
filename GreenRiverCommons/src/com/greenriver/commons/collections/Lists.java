@@ -162,7 +162,7 @@ public class Lists {
     }
 
     public static <T, R> List<R> apply(Collection collection, Applicable<T, R> command) {
-        return applyIf(collection, command, new FilteringCondition<T>() {
+        return applyIf(collection, command, new Filter<T>() {
 
             @Override
             public boolean condition(T element, int index) {
@@ -174,7 +174,7 @@ public class Lists {
     public static <T, R> List<R> applyIf(
             Collection<T> list,
             Applicable<T, R> applicableCommand,
-            FilteringCondition<T> filteringCondition) {
+            Filter<T> filteringCondition) {
         List<R> resultList = new ArrayList<R>();
 
         int index = 0;
@@ -189,7 +189,7 @@ public class Lists {
         return resultList;
     }
 
-    public static <T> List<T> filter(Collection collection, FilteringCondition<T> condition) {
+    public static <T> List<T> filter(Collection collection, Filter<T> condition) {
         return applyIf(collection, new Applicable<T, T>() {
 
             @Override
@@ -207,7 +207,7 @@ public class Lists {
      * @param filteringCondition The condition that will be applied to the elements.
      * @return True, if for at least one element in the list the condition is true.
      */
-    public static <T> boolean  forAny(Collection<T> collection, FilteringCondition<T> filteringCondition) {
+    public static <T> boolean  forAny(Collection<T> collection, Filter<T> filteringCondition) {
         
        int index = 0;
         for(T element : collection) {
