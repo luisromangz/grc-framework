@@ -39,7 +39,8 @@ public class TaskedPageController
             HttpServletResponse response,
             PageConfig configuration,
             ModelAndView modelAndView) throws Exception {
-        
+
+        List<PageTask> allowedTasks = new ArrayList<PageTask>();
         super.customConfiguration(request, response, configuration, modelAndView);
         // We add all the included elements in the header configurer.
         User user = getUserSessionInfo().getCurrentUser();
@@ -47,21 +48,26 @@ public class TaskedPageController
             // We need to check if the current user has permissions to see the
             // task, if not we will not configure it. If allowed is added to
             // the list of tasks
+            pageTask.initialize();
             if (pageTask.isAllowedForUser(user)) {
-
+                allowedTasks.add(pageTask);
                 // We have to add to the previously configured properties,
                 // that had been configured in the page level, not the task level
                 // as we are doing it now.
                 configurePageTask(pageTask, configuration, modelAndView);
             }
+
+
         }
+
+        modelAndView.addObject("pageTasksInfo", allowedTasks);
     }
 
     private void configurePageTask(
             PageTask pageTask,
             PageConfig configuration,
             ModelAndView mav) throws ClassNotFoundException {
-    
+
         pageTask.configurePage(configuration, mav);
 
         // We add global functions intended for loading this.
@@ -78,39 +84,6 @@ public class TaskedPageController
         configuration.addOnLoadScript(String.format(
                 "} // End of %s.onLoad function",
                 pageTask.getTaskName()));
-    }
-
-    @Override
-    protected void customHandleRequest(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            PageConfig configuration,
-            ModelAndView mav) throws Exception {
-        super.customHandleRequest(request, response, configuration, mav);
-
-        List<PageTask> allowedTasks = new ArrayList<PageTask>();
-
-        // Configuration at the header level and the form level is done here,
-        // but inclussion of the required jsp templates and other things must
-        // be done in a page-task-oriented jsp file defined in the app.
-
-
-        // We add all the included elements in the header configurer.
-        User user = getUserSessionInfo().getCurrentUser();
-        for (PageTask pageTask : this.getPageTasks()) {
-            // We need to check if the current user has permissions to see the
-            // task, if not we will not configure it. If allowed is added to
-            // the list of tasks
-            if (pageTask.isAllowedForUser(user)) {
-                allowedTasks.add(pageTask);
-                pageTask.initialize();
-            }
-        }
-
-        // We add the tasks info to the ModelAndView object so we can access
-        // it in the view so the tasks and toolbar can be rendered.
-        // Be careful
-        mav.addObject("pageTasksInfo", allowedTasks);
     }
 
     @Override
