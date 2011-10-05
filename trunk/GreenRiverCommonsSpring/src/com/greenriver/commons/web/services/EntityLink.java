@@ -52,5 +52,11 @@ public class EntityLink implements Comparable<EntityLink> {
     }
     //</editor-fold>
 
-   
+    @Override
+    public String toString() {
+       return label;
+    }
+
+ 
+    
 }
