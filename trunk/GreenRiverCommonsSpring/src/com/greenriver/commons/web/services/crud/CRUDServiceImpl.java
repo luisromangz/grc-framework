@@ -64,6 +64,10 @@ public abstract class CRUDServiceImpl<E extends DataEntity, D extends Dto, F ext
     @Override
     public Result<F> getForEdit(Long id) {
         Result<F> r = new Result<F>();
+        
+        if(id==null || id==0) {
+            throw new IllegalArgumentException("Not received a valid id");
+        }
 
         E entity = getById(id, r);
         if (!r.isSuccess()) {
