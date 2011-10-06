@@ -106,28 +106,32 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
 
         String condition = "";
         if (!Strings.isNullOrEmpty(action.triggerValue())) {
-            condition = String.format("value%s%s", action.equals() ? "==" : "!=", action.triggerValue());
+            condition = String.format("v%s%s", action.equals() ? "==" : "!=", action.triggerValue());
         }
 
         String asignationStatement = "";
         if (!action.newValue().equals("\0")) {
             asignationStatement = String.format(
-                    "if(%s){widget.attr('value',%s);}",
+                    "if(%s){w.attr('value',%s);}",
                     condition,
                     action.newValue());
         }
 
         String deactivationStatement = "";
 
-        if (action.deactivate()) {
+        if (action.deactivate() && action.reactivate()) {
             deactivationStatement = String.format(
-                    "widget.setDisabled(%s);",
+                    "w.setDisabled(%s);",
+                    condition);
+        } else if(action.deactivate()) {
+            deactivationStatement = String.format(
+                    "if(%s){w.setDisabled(true);}",
                     condition);
         }
 
         String function = String.format("function(){"
-                + "var value=dijit.byId('%s').attr('value');"
-                + "var widget = dijit.byId('%s');"
+                + "var v=dijit.byId('%s').attr('value');"
+                + "var w = dijit.byId('%s');"
                 + "%s%s}",
                 currentForm.getId() + "_" + action.triggerField(),
                 currentForm.getId() + "_" + fieldId,
