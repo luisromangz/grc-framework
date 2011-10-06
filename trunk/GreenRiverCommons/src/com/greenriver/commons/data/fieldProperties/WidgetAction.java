@@ -41,10 +41,15 @@ public @interface WidgetAction {
      */
     public String newValue() default  "\0";
     /**
-     * If the field must be deactivated when the condition is true. It will be
-     * activated when the condition is false.
+     * If the field must be deactivated when the condition is true. 
      * 
      * @return 
      */
     public boolean deactivate() default false;
+    
+    /**
+     * If the field will be reactivated when the condition is false.
+     * @return 
+     */
+    public boolean reactivate() default true;
 }
