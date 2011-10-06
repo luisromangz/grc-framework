@@ -938,8 +938,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
 
         configuration.addDojoModule("dojox.form.DateTextBox");
         formFieldElement.setAttribute("dojoType", "dojox.form.DateTextBox");
-        // TODO: mmm, what is this for?
-        formFieldElement.setAttribute("class", "dijitDateTextBox");
+       
     }
 
     private void setupNifField(
