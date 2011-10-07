@@ -936,8 +936,8 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
             Class fieldType,
             WidgetProps properties) {
 
-        configuration.addDojoModule("dojox.form.DateTextBox");
-        formFieldElement.setAttribute("dojoType", "dojox.form.DateTextBox");
+        configuration.addDojoModule("dijit.form.DateTextBox");
+        formFieldElement.setAttribute("dojoType", "dijit.form.DateTextBox");
        
     }
 
