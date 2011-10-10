@@ -21,5 +21,13 @@ public class MapResult<K,V> extends Result<Map<K,V>> {
     public void putAll(Map<K,V> values) {
         this.getResult().putAll(values);
     }
+
+    public boolean containsKey(K key) {
+        return this.getResult().containsKey(key);
+    }
+
+    public V get(K key) {
+        return getResult().get(key);
+    }
     
 }
