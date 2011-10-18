@@ -17,6 +17,20 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface GridColumn {
+    /**
+     * The width of the grid column.
+     * @return 
+     */
     String width() default "auto";
+    
+    /**
+     * If true, we will be able to sort by this column.
+     * @return 
+     */
     boolean canSort() default true;
+
+    /**
+     * Allows overriding of the label defined in the FieldProps annotation.
+     */
+    public String label() default "";
 }
