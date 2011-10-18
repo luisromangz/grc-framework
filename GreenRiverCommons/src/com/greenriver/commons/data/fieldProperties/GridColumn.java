@@ -28,9 +28,4 @@ public @interface GridColumn {
      * @return 
      */
     boolean canSort() default true;
-
-    /**
-     * Allows overriding of the label defined in the FieldProps annotation.
-     */
-    public String label() default "";
 }
