@@ -7,6 +7,7 @@ import com.greenriver.commons.data.fieldProperties.WidgetProps;
 import com.greenriver.commons.data.fieldProperties.FieldType;
 import com.greenriver.commons.data.fieldProperties.FieldsInsertionMode;
 import com.greenriver.commons.data.fieldProperties.FieldsProps;
+import com.greenriver.commons.data.fieldProperties.WidgetGroup;
 import com.greenriver.commons.data.validation.ValidationRegex;
 import com.greenriver.commons.web.helpers.header.HeaderConfig;
 import com.greenriver.commons.roleManagement.RoleManager;
@@ -29,6 +30,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
 
     private List<Form> forms;
     private Form currentForm;
+    private FormGroup currentGroup;
     private RoleManager roleManager;
     private HeaderConfig configuration;
     private static final String PASSWORD_CONFIRM_SUFFIX = "_confirm";
@@ -39,7 +41,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
 
     @Override
     public void addField(FormField field) {
-        currentForm.addField(field);
+        currentGroup.addFormField(field);
     }
 
     public void addField(String id, WidgetProps properties, Field field) {
@@ -58,7 +60,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
                 formFieldElement.getContents(),
                 formFieldElement.getAttributes());
 
-        currentForm.addField(formField);
+        currentGroup.addFormField(formField);
 
         if (properties.type() == FieldType.PASSWORDEDITOR) {
             // If the field is a password editor, then we need to add a second
@@ -176,6 +178,12 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         Field[] classFields = modelClass.getDeclaredFields();
 
         for (Field field : classFields) {
+            WidgetGroup group = field.getAnnotation(WidgetGroup.class);
+            if(group!=null) {
+                this.addGroup(group.value());
+            }
+            
+            
             WidgetProps props = field.getAnnotation(WidgetProps.class);
             if (props != null && props.visible()) {
                 String fieldName =
@@ -195,6 +203,15 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         }
 
     }
+    
+    
+    private void addGroup(String groupLabel) {
+        FormGroup group = new FormGroup(currentForm, groupLabel);
+        this.currentForm.addFieldGroup(group);
+        
+        this.currentGroup = group;
+    }
+    
 
     @Override
     public void setAction(String action) {
@@ -215,6 +232,8 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
 
         forms.add(newForm);
         currentForm = newForm;
+        
+        this.addGroup("");
 
         return newForm;
     }
@@ -226,7 +245,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
 
     @Override
     public void removeField(String fieldId) {
-        currentForm.removeField(fieldId);
+        currentForm.removeFormField(fieldId);
     }
 
     /**
@@ -829,7 +848,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
                 "Repetir " + label.toLowerCase(),
                 "", formFieldElement.getAttributes());
 
-        currentForm.addField(field);
+        currentGroup.addFormField(field);
     }
 
     private void setupFieldElement(

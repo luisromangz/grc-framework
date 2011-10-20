@@ -11,35 +11,11 @@ import java.util.List;
 public class Form {
     private String id;
     private String action;
-
-    private List<FormField> fields;
+    
+    private List<FormGroup> fieldGroups;
 
     public Form() {
-        fields = new ArrayList<FormField>();
-    }
-
-    /**
-     * Gets the form fields.
-     * @return The form fields.
-     */
-    public List<FormField> getFields() {
-        return fields;
-    }
-
-    /**
-     * Sets the for's fields.
-     * @param fields The fields to set.
-     */
-    public void setFields(List<FormField> fields) {
-        this.fields = fields;
-    }
-
-    /**
-     * Adds a field to the form.
-     * @param field The field to be added.
-     */
-    public void addField(FormField field) {
-        this.fields.add(field);
+        fieldGroups = new ArrayList<FormGroup>();
     }
 
     /**
@@ -74,9 +50,27 @@ public class Form {
         this.action = action;
     }
 
-    void removeField(String fieldId) {
-        FormField field = new FormField(this.id+"_"+fieldId, "", "", "", null);
-        this.fields.remove(field);
+    /**
+     * @return the fieldGroups
+     */
+    public List<FormGroup> getFieldGroups() {
+        return fieldGroups;
+    }
+
+    /**
+     * @param fieldGroups the fieldGroups to set
+     */
+    public void setFieldGroups(List<FormGroup> fieldGroups) {
+        this.fieldGroups = fieldGroups;
     }
     
+    public void addFieldGroup(FormGroup group) {
+        fieldGroups.add(group);
+    }
+
+    void removeFormField(String fieldId) {
+        for(FormGroup group : fieldGroups) {
+            group.removeFormField(fieldId);
+        }
+    }
 }
