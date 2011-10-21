@@ -26,7 +26,7 @@ public class MailServerConfig implements DataEntity{
     private Long id;
     @WidgetProps(label = "Servidor de correo")
     private String hostName;
-    @WidgetProps(label = "Protocolo de envío", type = FieldType.SELECTION,externalValues=false)
+    @WidgetProps(label = "Protocolo de envío", type = FieldType.SELECTION,externalValues=false,enumLabelMethod="getName")
     @Enumerated(EnumType.STRING)
     private MailSendingProtocol protocol= MailSendingProtocol.SMTP;
     @WidgetProps(label = "Puerto", type = FieldType.NUMBER)
