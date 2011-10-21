@@ -13,9 +13,12 @@ import com.greenriver.commons.web.helpers.header.HeaderConfig;
 import com.greenriver.commons.roleManagement.RoleManager;
 import com.greenriver.commons.roleManagement.RoleManagerClient;
 import java.lang.reflect.Field;
+import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.springframework.web.servlet.ModelAndView;
@@ -125,7 +128,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
             deactivationStatement = String.format(
                     "w.setDisabled(%s);",
                     condition);
-        } else if(action.deactivate()) {
+        } else if (action.deactivate()) {
             deactivationStatement = String.format(
                     "if(%s){w.setDisabled(true);}",
                     condition);
@@ -179,11 +182,11 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
 
         for (Field field : classFields) {
             WidgetGroup group = field.getAnnotation(WidgetGroup.class);
-            if(group!=null) {
+            if (group != null) {
                 this.addGroup(group.value());
             }
-            
-            
+
+
             WidgetProps props = field.getAnnotation(WidgetProps.class);
             if (props != null && props.visible()) {
                 String fieldName =
@@ -203,15 +206,13 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         }
 
     }
-    
-    
+
     private void addGroup(String groupLabel) {
         FormGroup group = new FormGroup(currentForm, groupLabel);
         this.currentForm.addFieldGroup(group);
-        
+
         this.currentGroup = group;
     }
-    
 
     @Override
     public void setAction(String action) {
@@ -232,7 +233,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
 
         forms.add(newForm);
         currentForm = newForm;
-        
+
         this.addGroup("");
 
         return newForm;
@@ -279,7 +280,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
                 if (values.size() != labels.size()) {
                     values = labels;
                 }
-            } else if (fieldType.isEnum()) {
+            } else if (fieldType.isEnum() || !Strings.isNullOrEmpty(properties.enumLabelMethod())) {
                 if (Strings.isNullOrEmpty(properties.enumLabelMethod())) {
                     throw new FormBuildingException(
                             "Error procesing element " + elementId + ". "
@@ -368,7 +369,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
      * @param properties
      */
     private void assertNotSelection(WidgetProps properties) {
-        if (!"getName".equals(properties.enumLabelMethod())) {
+        if (!"".equals(properties.enumLabelMethod())) {
             throw new FormBuildingException(
                     "Enum method name specified but property is not a selection.");
         }
@@ -920,6 +921,12 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
             case DATE:
                 setupDateField(formFieldElement, fieldType, properties);
                 break;
+            case MONTH:
+                setupMonthField(formFieldElement, fieldType, properties);
+                break;
+            case YEAR:
+                setupYearField(formFieldElement, fieldType, properties);
+                break;
             case OLD_NIF:
                 setupNifField(formFieldElement, fieldType, properties);
                 break;
@@ -957,7 +964,60 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
 
         configuration.addDojoModule("dijit.form.DateTextBox");
         formFieldElement.setAttribute("dojoType", "dijit.form.DateTextBox");
-       
+
+    }
+
+    private void setupMonthField(
+            HtmlFormElementInfo formFieldElement,
+            Class fieldType,
+            WidgetProps properties) {
+
+        configuration.addDojoModule("dijit.form.FilteringSelect");
+        formFieldElement.setAttribute("dojoType", "dijit.form.FilteringSelect");
+        formFieldElement.setElementType("select");
+
+        String options = "";
+
+        DateFormatSymbols symbols = DateFormatSymbols.getInstance();
+        String[] monthNames = symbols.getMonths();
+        for (int i = 0; i < 12; i++) {
+            options += String.format("<option value=\"%s\">%s</option>", i, monthNames[i]);
+        }
+
+        formFieldElement.setContents(options);
+
+    }
+
+    private void setupYearField(
+            HtmlFormElementInfo formFieldElement,
+            Class fieldType,
+            WidgetProps properties) {
+
+         configuration.addDojoModule("dijit.form.FilteringSelect");
+        formFieldElement.setAttribute("dojoType", "dijit.form.FilteringSelect");
+        formFieldElement.setElementType("select");
+
+        String options = "";
+
+        DateFormatSymbols symbols = DateFormatSymbols.getInstance();
+        
+        int maxYear = (int) properties.maxValue();
+        if(maxYear == Integer.MAX_VALUE) {
+            maxYear = Calendar.getInstance().get(Calendar.YEAR);
+        }
+        
+        int minYear= (int)properties.minValue();
+        if(minYear ==Integer.MIN_VALUE ) {
+            minYear = maxYear-20;
+        }
+        
+        while(maxYear >= minYear) {
+            options += String.format("<option value=\"%s\">%s</option>", maxYear, maxYear);
+            maxYear--;
+        }
+
+        formFieldElement.setContents(options);
+
     }
 
     private void setupNifField(
