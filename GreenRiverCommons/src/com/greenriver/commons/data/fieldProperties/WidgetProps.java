@@ -118,7 +118,7 @@ public @interface WidgetProps {
      * used to allow editing of a field with enum type.
      * @return the name of the method
      */
-    public String enumLabelMethod() default "getName";
+    public String enumLabelMethod() default "";
 
     /**
      * Number of decimal places to be shown if the field is of type DECIMAL.
