@@ -438,6 +438,8 @@ public class WidgetFieldsValidator implements FieldsValidator {
                 validateTime(value, properties, validationMessages);
                 break;
             case DATE:
+            case MONTH:
+            case YEAR:
                 validateDate(value, properties, validationMessages);
                 break;
             case OLD_NIF:

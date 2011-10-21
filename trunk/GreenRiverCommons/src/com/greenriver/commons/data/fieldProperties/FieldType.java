@@ -111,6 +111,10 @@ public enum FieldType {
      * A field holding a date.
      */
     DATE,
+    
+    MONTH,
+    
+    YEAR,
 
     /**
      * Spanish OLD_NIF id code
