@@ -15,6 +15,14 @@ public class QueryArgsRestriction {
     public QueryArgsRestriction() {
     }
 
+    public QueryArgsRestriction(String field, QueryArgsOperator operator, Object value) {
+        this.field = field;
+        this.operator = operator;
+        this.value = value;
+    }
+    
+    
+
     //<editor-fold defaultstate="collapsed" desc="Getters and setters">
     /**
      * @return the operator
