@@ -35,12 +35,11 @@ public class HibernateUserDao
         if (user.getId() != null) {
             // If the received objecte says it was persisted previously we
             // try to load it.
-            existingUser = (User) getCurrentSession().get(User.class,
-                    user.getId());
+            existingUser = (User) getCurrentSession().get(
+                    User.class,user.getId());
         }
 
-        if (existingUser == null
-            || !existingUser.getPassword().equals(user.getPassword())) {
+        if (existingUser == null || encodedPassword!=null) {
             // If the user is a new one or the password has changed,
             // we have to set the encoded password.
 
