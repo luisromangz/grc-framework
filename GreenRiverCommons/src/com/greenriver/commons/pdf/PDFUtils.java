@@ -9,13 +9,23 @@ import org.im4java.core.IMOperation;
  */
 public class PDFUtils {
 
-    public static void pdfToImages(String filePath, String resultPath) throws Exception{
+    /**
+     * Converts a PDF pages into images.
+     * @param filePath the input pdf path.
+     * @param resultPath the output images path.
+     * @param appendImages If true, the multiple pdf images will be merged into just one big vertical image.
+     */
+    public static void pdfToImages(String filePath, String resultPath, boolean appendImages) throws Exception{
          ConvertCmd cmd = new ConvertCmd();
          
          IMOperation op = new IMOperation();
          
          op.density(120);
          op.addImage(filePath);
+         if(appendImages) {
+             op.append();
+         }
+         
          op.addImage(resultPath);
          
          cmd.run(op);
