@@ -40,7 +40,7 @@ public class HibernateUserDao
         }
 
         if (existingUser == null 
-                || encodedPassword!=null && !user.getPassword().equals(existingUser.getPassword())) {
+                || encodedPassword!=null) {
             // If the user is a new one or the password has changed,
             // we have to set the encoded password.
 
