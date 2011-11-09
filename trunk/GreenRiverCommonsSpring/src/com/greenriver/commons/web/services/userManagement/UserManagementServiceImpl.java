@@ -117,7 +117,6 @@ public abstract class UserManagementServiceImpl<E extends User, D extends UserDt
                 result.formatErrorMessage(
                         "La nueva contraseña debe tener 6 o más caracteres");
             } else {
-                currentUser.setPassword(newPassword);
                 ((UserDao) getDao()).save(
                         currentUser,
                         passwordEncoder.encodePassword(newPassword, null));
@@ -162,15 +161,15 @@ public abstract class UserManagementServiceImpl<E extends User, D extends UserDt
         String newPassword = null;
         if (isNewWithoutPwd) {
             // We create a new password
-            newPassword = createRandomPassword();
-            user.setPassword(createRandomPassword());
+            newPassword = createRandomPassword();            
             // New users can access the app by default.
             user.addRole("ROLE_USER");
+            
+            newPassword =  passwordEncoder.encodePassword(newPassword, null);
         }
-
-        String encodedPassword = passwordEncoder.encodePassword(user.getPassword(), null);
+        
         try {
-            ((UserDao) getDao()).save(user, encodedPassword);
+            ((UserDao) getDao()).save(user, newPassword);
         } catch (RuntimeException re) {
             result.addErrorMessage("Ocurrió un error de base de datos.");
             return result;
@@ -256,7 +255,7 @@ public abstract class UserManagementServiceImpl<E extends User, D extends UserDt
         return RandomStringUtils.random(6, true, true).toLowerCase();
     }
 
-    private E validateUserSaving(UserFormDto userDto, Result result) {
+    private E validateUserSaving(F userDto, Result result) {
         ValidationResult validationResult =
                 getFieldsValidator().validate(userDto);
 
