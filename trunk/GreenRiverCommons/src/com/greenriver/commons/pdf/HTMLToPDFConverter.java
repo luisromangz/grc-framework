@@ -12,7 +12,8 @@ import java.io.OutputStream;
  */
 public class HTMLToPDFConverter {
 
-    public void convertToPDF(InputStream htmlStream, OutputStream pdfOutput) throws IOException {        
+    public static void convertToPDF(InputStream htmlStream, OutputStream pdfOutput) 
+            throws IOException {        
 
         convertXMLToFop(
                 htmlStream,
@@ -20,7 +21,8 @@ public class HTMLToPDFConverter {
         
     }
 
-    void convertXMLToFop(InputStream xml, OutputStream fopOutput) throws IOException {
+    public static void  convertXMLToFop(InputStream xml, OutputStream fopOutput) 
+            throws IOException {
         try {
             CSSToFOPNew.convert(xml, fopOutput,"application/pdf");
         } catch (CSSToXSLFOException ex) {
@@ -29,6 +31,5 @@ public class HTMLToPDFConverter {
             fopOutput.close();
         }
     }
-
   
 }
