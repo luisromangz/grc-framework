@@ -62,7 +62,7 @@ public class PageConfiguration implements Serializable, Copieable<PageConfigurat
     @WidgetProps(label="Pie de página (centro)", required=false)
     private String footerCenter;
     @WidgetProps(label="Pie de página (derecha)", required=false)
-    private String footerRight="&PT";
+    private String footerRight="Página %PAGINA% de %TOTAL_PAGINAS%";
     // </editor-fold>
 
     public Long getId() {
