@@ -20,6 +20,7 @@ import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.transform.ResultTransformer;
 
 /**
  * Criteria factory impl that references the dao that is using it.
@@ -88,7 +89,9 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
             Criterion... restrictions) {
         Criteria crit = internalCreateCriteria(
                 entityClass, entityQueryArguments, false,restrictions);
-        crit.setProjection(Projections.rowCount());
+        
+        crit.setProjection(Projections.countDistinct("id"));
+        
 
         return crit;
     }
@@ -111,6 +114,7 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
 
         // The criteria for the target class is created
         Criteria crit = getSession().createCriteria(entityClass);
+        crit.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 
         setTextFilter(crit, queryArguments, queryProperties);
         setRestrictions(entityClass, crit, queryArguments);
@@ -182,7 +186,8 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
 
                     for (String property : properties) {
 
-                        disjunction.add(Restrictions.ilike(field + "." + property,
+                        disjunction.add(Restrictions.ilike(
+                                field + "." + property,
                                 queryArguments.getTextFilter(),
                                 MatchMode.ANYWHERE));
                     }
