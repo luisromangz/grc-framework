@@ -23,6 +23,22 @@ public class SelectOption implements Comparable<SelectOption> {
     public int compareTo(SelectOption t) {
         return this.label.compareTo(t.getLabel());
     }
+
+    @Override
+    public boolean equals(Object o) {
+        
+        if(!(o instanceof SelectOption)) {
+            return false;
+        }
+        return this.hashCode() == o.hashCode();
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 59 * hash + (this.value != null ? this.value.hashCode() : 0);
+        return hash;
+    }
     
     
 
