@@ -183,7 +183,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         for (Field field : classFields) {
             WidgetGroup group = field.getAnnotation(WidgetGroup.class);
             if (group != null) {
-                this.addGroup(group.value());
+                this.addGroup(group.value(),group.cssClass());
             }
 
 
@@ -207,8 +207,8 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
 
     }
 
-    private void addGroup(String groupLabel) {
-        FormGroup group = new FormGroup(currentForm, groupLabel);
+    private void addGroup(String groupLabel, String cssClass) {
+        FormGroup group = new FormGroup(currentForm, groupLabel, cssClass);
         this.currentForm.addFieldGroup(group);
 
         this.currentGroup = group;
@@ -234,7 +234,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         forms.add(newForm);
         currentForm = newForm;
 
-        this.addGroup("");
+        this.addGroup("","");
 
         return newForm;
     }
