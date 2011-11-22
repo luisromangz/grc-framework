@@ -18,4 +18,5 @@ import java.lang.annotation.Target;
 public @interface WidgetGroup {
 
     public String value() default "";
+    public String cssClass() default "";
 }
