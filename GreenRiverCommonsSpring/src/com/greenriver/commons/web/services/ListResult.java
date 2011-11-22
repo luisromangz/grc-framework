@@ -22,4 +22,8 @@ public class ListResult <T> extends Result<List<T>>{
     public void addAll(Collection<T> collection) {
         this.getResult().addAll(collection);
     }
+
+    public boolean contains(SelectOption o) {
+        return getResult().contains(o);
+    }
 }
