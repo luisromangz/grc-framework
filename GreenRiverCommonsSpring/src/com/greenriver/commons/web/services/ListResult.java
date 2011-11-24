@@ -1,6 +1,5 @@
 package com.greenriver.commons.web.services;
 
-import com.greenriver.commons.data.SelectOption;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -24,7 +23,7 @@ public class ListResult <T> extends Result<List<T>>{
         this.getResult().addAll(collection);
     }
 
-    public boolean contains(SelectOption o) {
+    public boolean contains(T o) {
         return getResult().contains(o);
     }
 }
