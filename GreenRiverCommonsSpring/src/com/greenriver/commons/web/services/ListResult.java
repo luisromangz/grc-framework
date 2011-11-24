@@ -1,5 +1,6 @@
 package com.greenriver.commons.web.services;
 
+import com.greenriver.commons.data.SelectOption;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
