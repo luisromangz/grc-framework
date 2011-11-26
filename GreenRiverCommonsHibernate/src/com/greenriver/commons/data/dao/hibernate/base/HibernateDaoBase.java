@@ -33,6 +33,10 @@ public abstract class HibernateDaoBase<T extends DataEntity> {
     protected Session getCurrentSession() {
         return sessionFactory.getCurrentSession();
     }
+    
+    protected Criteria createCriteria(Class entityClass) {
+        return getCurrentSession().createCriteria(entityClass);
+    }
 
     public <T> List<T> getFieldValues(String fieldName, Criterion... criterions) {
 
