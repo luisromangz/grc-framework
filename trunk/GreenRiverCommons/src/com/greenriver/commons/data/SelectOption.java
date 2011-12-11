@@ -30,7 +30,7 @@ public class SelectOption implements Comparable<SelectOption> {
         if(!(o instanceof SelectOption)) {
             return false;
         }
-        return this.hashCode() == o.hashCode();
+        return value.equals(((SelectOption)o).value);
     }
 
     @Override
