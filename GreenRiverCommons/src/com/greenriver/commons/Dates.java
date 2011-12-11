@@ -563,10 +563,24 @@ public class Dates {
      * @param toDate The date we want to obtain a Calendar for.
      * @return The Calendar object with set to represent the given date.
      */
-    public static Calendar getCalendar(Date date) {
+    public static Calendar toCalendar(Date date) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
 
         return cal;
+    }
+    
+    
+    public static Calendar firstDayOfDateMonth(Date date) {
+        if( date ==null) {
+            date = new Date();
+        }
+        
+        Calendar nowCal = Dates.toCalendar(date);
+
+        // The first day.
+        nowCal.set(Calendar.DAY_OF_MONTH, 1);
+
+        return nowCal;
     }
 }
