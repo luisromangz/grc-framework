@@ -55,6 +55,8 @@ public class PageToolsController extends ConfigurablePageController {
 
             configurePropertiesView(
                     pageTool.getPropsViews(), mav,pageTool.getName() + "_");
+            
+            configureGrids(pageTool.getGrids(), mav, configuration, pageTool.getName() + "_");
 
         }
 
