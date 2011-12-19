@@ -73,9 +73,18 @@ public abstract class CRUDServiceImpl<E extends DataEntity, D extends Dto, F ext
         if (!r.isSuccess()) {
             return r;
         }
+        
+        if(!validateEdition(entity, r)) {
+            return r;
+        }
 
         r.setResult(getFormDto(entity));
         return r;
+    }
+    
+    
+    protected boolean validateEdition(E entity, Result<F> r) {
+       return true;
     }
 
     protected Result<D> saveInternal(F formDto) {
@@ -369,4 +378,5 @@ public abstract class CRUDServiceImpl<E extends DataEntity, D extends Dto, F ext
         this.fieldsValidator = fieldsValidator;
     }
     //</editor-fold>
+
 }
