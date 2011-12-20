@@ -121,7 +121,7 @@ public abstract class UserManagementServiceImpl<E extends User, D extends UserDt
                         currentUser,
                         passwordEncoder.encodePassword(newPassword, null));
 
-                result.setResult(getDto((E)currentUser, false));
+                result.setResult(getDto((E) currentUser, false));
             }
 
         } else {
@@ -161,13 +161,18 @@ public abstract class UserManagementServiceImpl<E extends User, D extends UserDt
         String newPassword = null;
         if (isNewWithoutPwd) {
             // We create a new password
-            newPassword = createRandomPassword();            
+            newPassword = createRandomPassword();
             // New users can access the app by default.
             user.addRole("ROLE_USER");
-            
-            newPassword =  passwordEncoder.encodePassword(newPassword, null);
+
+
+            if (!sendPasswordEmail(user, newPassword, false, result)) {
+                return result;
+            }
+
+            newPassword = passwordEncoder.encodePassword(newPassword, null);
         }
-        
+
         try {
             ((UserDao) getDao()).save(user, newPassword);
         } catch (RuntimeException re) {
@@ -175,9 +180,6 @@ public abstract class UserManagementServiceImpl<E extends User, D extends UserDt
             return result;
         }
 
-        if (newPassword != null && !sendPasswordEmail(user, newPassword, false, result)) {
-            return result;
-        }
 
         D dUser = getDto(user, true);
         dUser.setNewEntity(userDto.getId() == null);
@@ -278,7 +280,7 @@ public abstract class UserManagementServiceImpl<E extends User, D extends UserDt
 
         if (userDto.getId() == null) {
             existingUser = getNewEntity(result);
-            if(!result.isSuccess()) {
+            if (!result.isSuccess()) {
                 return null;
             }
         } else {
@@ -287,7 +289,7 @@ public abstract class UserManagementServiceImpl<E extends User, D extends UserDt
 
         userDto.copyTo(existingUser);
 
-        return (E)existingUser;
+        return (E) existingUser;
     }
 
     @Override
