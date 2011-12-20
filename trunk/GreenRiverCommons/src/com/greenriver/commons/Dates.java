@@ -51,8 +51,7 @@ public class Dates {
      * @param nanos Number of nanoseconds to deviate the stamp.
      * @return the timestamp with the amount of nanos added.
      */
-    public static final Timestamp addNanos(
-            Timestamp stamp, int nanos) {
+    public static Timestamp addNanos(Timestamp stamp, int nanos) {
         if (nanos > MAX_NANOS || nanos < -MAX_NANOS) {
             throw new IllegalArgumentException(
                     "Deviation is limited to up to (+/-)999999999 "
@@ -582,5 +581,21 @@ public class Dates {
         nowCal.set(Calendar.DAY_OF_MONTH, 1);
 
         return nowCal;
+    }
+
+    /**
+     * Checks if a date is a saturday or sunday.
+     * @param date
+     * @return 
+     */
+    public static boolean isWeekend(Date date) {
+        Calendar cal = Dates.toCalendar(date);
+        
+        int weekDay =cal.get(Calendar.DAY_OF_WEEK);
+        if(weekDay==Calendar.SATURDAY || weekDay==Calendar.SUNDAY) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
