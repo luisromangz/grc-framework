@@ -248,7 +248,12 @@ public class ConfigurablePageController
 
 
         for (PageTool pageTool : this.getPageTools()) {
-            if (!pageTool.isInitialized()) {
+            
+            if(!pageTool.isAllowedForUser(this.userSessionInfo.getCurrentUser())) {
+                continue;
+            }
+            
+            if (!pageTool.isInitialized() ) {
                 pageTool.initialize();
             }
 
