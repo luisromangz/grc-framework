@@ -1,9 +1,9 @@
-
 package com.greenriver.commons.templating;
 
 import com.greenriver.commons.data.fieldProperties.WidgetProps;
 import com.greenriver.commons.data.fieldProperties.FieldType;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -26,8 +26,7 @@ import javax.persistence.OneToOne;
 public abstract class PrintingTemplate<T extends TemplateReplacement, K>
         implements Serializable, Template<T, PrintableDocument, K>, Subtemplateable {
 
-    public static final String PAGE_BREAK="<div style=\"page-break-after:always\"><!-- Non empty --></div>";
-
+    public static final String PAGE_BREAK = "<div style=\"page-break-after:always\"><!-- Non empty --></div>";
     @WidgetProps(label = "Cuerpo del documento", type = FieldType.RICHTEXT)
     @Column(length = 10240)
     private String body;
@@ -43,10 +42,15 @@ public abstract class PrintingTemplate<T extends TemplateReplacement, K>
     @Override
     public final PrintableDocument fillTemplate(K source, Map<T, String> externalReplacements) {
         return this.fillTemplate("", source, externalReplacements);
-    }   
+    }
 
-    public final PrintableDocument fillTemplate(String documentTitle,K source, Map<T, String> externalReplacements) {
-        Map<T, String> replacements = this.createReplacements(source);
+    public final PrintableDocument fillTemplate(
+            String documentTitle, K source,
+            Map<T, String> externalReplacements) {
+
+        Map<T, String> replacements = new HashMap<T, String>();
+
+        this.createReplacements(replacements, source);
 
         if (externalReplacements != null) {
             replacements.putAll(externalReplacements);
@@ -57,7 +61,7 @@ public abstract class PrintingTemplate<T extends TemplateReplacement, K>
         return document;
     }
 
-    protected abstract Map<T, String> createReplacements(K source);
+    protected abstract void createReplacements(Map<T, String> replacements, K source);
 
     private void fillTemplateAux(
             PrintableDocument document,
@@ -67,7 +71,7 @@ public abstract class PrintingTemplate<T extends TemplateReplacement, K>
             String replacementValue = TemplatingUtils.formatTemplateReplacement(
                     replacement,
                     replacements.get(replacement));
-            
+
             documentBody = documentBody.replace(
                     replacement.getDecoratedPlaceholder(),
                     replacementValue);
