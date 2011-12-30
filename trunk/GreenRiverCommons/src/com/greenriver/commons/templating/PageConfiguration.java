@@ -1,5 +1,3 @@
-
-
 package com.greenriver.commons.templating;
 
 import com.greenriver.commons.Copieable;
@@ -20,8 +18,8 @@ import javax.persistence.Id;
 @Entity
 public class PageConfiguration implements Serializable, Copieable<PageConfiguration> {
     // <editor-fold defaultstate="collapsed" desc="Fields">
-    private static long serialVersionUID = 1L;
 
+    private static long serialVersionUID = 1L;
     private static final float INCH_IN_MM = 25.4f;
 
     /**
@@ -53,16 +51,21 @@ public class PageConfiguration implements Serializable, Copieable<PageConfigurat
     private float pageWidth = 210;
     @WidgetProps(label = "Altura del papel", minValue = 0, type = FieldType.DECIMAL, unit = "mm")
     private float pageHeight = 297;
-    @WidgetProps(label = "Orientación del papel", type = FieldType.SELECTION, externalValues=false,
-    possibleValues={"false","true"},possibleValueLabels={"Vertical","Apaisado"}, getterPrefix="is")
+    @WidgetProps(label = "Orientación del papel", type = FieldType.SELECTION, externalValues = false,
+    possibleValues = {"false", "true"}, possibleValueLabels = {"Vertical", "Apaisado"}, getterPrefix = "is")
     private boolean landscape;
-
-    @WidgetProps(label="Pie de página (izquierda)", required=false)
-    private String footerLeft;
-    @WidgetProps(label="Pie de página (centro)", required=false)
-    private String footerCenter;
-    @WidgetProps(label="Pie de página (derecha)", required=false)
-    private String footerRight="Página %PAGINA% de %TOTAL_PAGINAS%";
+    @WidgetProps(label = "Cabecera de página (izquierda)", required = false)
+    private String headerLeft="";
+    @WidgetProps(label = "Cabecera de página (centro)", required = false)
+    private String headerCenter="";
+    @WidgetProps(label = "Cabecera de página (derecha)", required = false)
+    private String headerRight = "";
+    @WidgetProps(label = "Pie de página (izquierda)", required = false)
+    private String footerLeft="";
+    @WidgetProps(label = "Pie de página (centro)", required = false)
+    private String footerCenter="";
+    @WidgetProps(label = "Pie de página (derecha)", required = false)
+    private String footerRight = "Página %PAGINA% de %TOTAL_PAGINAS%";
     // </editor-fold>
 
     public Long getId() {
@@ -86,34 +89,45 @@ public class PageConfiguration implements Serializable, Copieable<PageConfigurat
         copyTarget.setFooterCenter(footerCenter);
         copyTarget.setFooterLeft(footerLeft);
         copyTarget.setFooterRight(footerRight);
+        copyTarget.setHeaderCenter(headerCenter);
+        copyTarget.setHeaderLeft(headerLeft);
+        copyTarget.setHeaderRight(headerRight);
     }
 
     public <T extends TemplateReplacement> PageConfiguration fillTemplate(Map<T, String> replacements) {
         PageConfiguration pageConfiguration = new PageConfiguration();
         this.copyTo(pageConfiguration);
 
-        for(T replacement : replacements.keySet()) {
-            pageConfiguration.setFooterLeft(pageConfiguration.getFooterLeft().replace(
+        for (T replacement : replacements.keySet()) {
+            pageConfiguration.setFooterLeft(pageConfiguration.getFooterLeft().replaceAll(
                     replacement.getDecoratedPlaceholder(),
                     replacements.get(replacement)));
 
-            pageConfiguration.setFooterCenter(pageConfiguration.getFooterCenter().replace(
+            pageConfiguration.setFooterCenter(pageConfiguration.getFooterCenter().replaceAll(
                     replacement.getDecoratedPlaceholder(),
                     replacements.get(replacement)));
 
-            pageConfiguration.setFooterRight(pageConfiguration.getFooterRight().replace(
+            pageConfiguration.setFooterRight(pageConfiguration.getFooterRight().replaceAll(
+                    replacement.getDecoratedPlaceholder(),
+                    replacements.get(replacement)));
+
+            pageConfiguration.setHeaderLeft(pageConfiguration.getHeaderLeft().replaceAll(
+                    replacement.getDecoratedPlaceholder(),
+                    replacements.get(replacement)));
+
+            pageConfiguration.setHeaderRight(pageConfiguration.getHeaderRight().replaceAll(
+                    replacement.getDecoratedPlaceholder(),
+                    replacements.get(replacement)));
+
+            pageConfiguration.setHeaderCenter(pageConfiguration.getHeaderCenter().replaceAll(
                     replacement.getDecoratedPlaceholder(),
                     replacements.get(replacement)));
         }
 
-        pageConfiguration.setFooterLeft(pageConfiguration.getFooterLeft());
-        pageConfiguration.setFooterCenter(pageConfiguration.getFooterCenter());
-        pageConfiguration.setFooterRight(pageConfiguration.getFooterRight());
+
 
         return pageConfiguration;
     }
-
-
 
     // <editor-fold defaultstate="collapsed" desc="Auto-generated methods">
     @Override
@@ -243,7 +257,7 @@ public class PageConfiguration implements Serializable, Copieable<PageConfigurat
      * @return the footerLeft
      */
     public String getFooterLeft() {
-        return footerLeft==null?"":footerLeft;
+        return footerLeft == null ? "" : footerLeft;
     }
 
     /**
@@ -257,7 +271,7 @@ public class PageConfiguration implements Serializable, Copieable<PageConfigurat
      * @return the footerCenter
      */
     public String getFooterCenter() {
-        return footerCenter==null?"":footerCenter;
+        return footerCenter == null ? "" : footerCenter;
     }
 
     /**
@@ -271,7 +285,7 @@ public class PageConfiguration implements Serializable, Copieable<PageConfigurat
      * @return the footerRight
      */
     public String getFooterRight() {
-        return footerRight==null?"":footerRight;
+        return footerRight == null ? "" : footerRight;
     }
 
     /**
@@ -281,9 +295,58 @@ public class PageConfiguration implements Serializable, Copieable<PageConfigurat
         this.footerRight = footerRight;
     }
 
-    public boolean hasFooter() {
-        return !(Strings.isNullOrEmpty(footerLeft) && Strings.isNullOrEmpty(footerCenter)
-                && Strings.isNullOrEmpty(footerRight));
+    /**
+     * @return the headerLeft
+     */
+    public String getHeaderLeft() {
+        return headerLeft;
+    }
+
+    /**
+     * @param headerLeft the headerLeft to set
+     */
+    public void setHeaderLeft(String headerLeft) {
+        this.headerLeft = headerLeft;
+    }
+
+    /**
+     * @return the headerCenter
+     */
+    public String getHeaderCenter() {
+        return headerCenter;
+    }
+
+    /**
+     * @param headerCenter the headerCenter to set
+     */
+    public void setHeaderCenter(String headerCenter) {
+        this.headerCenter = headerCenter;
+    }
+
+    /**
+     * @return the headerRight
+     */
+    public String getHeaderRight() {
+        return headerRight;
+    }
+
+    /**
+     * @param headerRight the headerRight to set
+     */
+    public void setHeaderRight(String headerRight) {
+        this.headerRight = headerRight;
     }
     // </editor-fold>
+
+    public boolean hasFooter() {
+        return !(Strings.isNullOrEmpty(footerLeft)
+                && Strings.isNullOrEmpty(footerCenter)
+                && Strings.isNullOrEmpty(footerRight));
+    }
+
+    public boolean hasHeader() {
+        return !(Strings.isNullOrEmpty(headerLeft)
+                && Strings.isNullOrEmpty(headerCenter)
+                && Strings.isNullOrEmpty(headerRight));
+    }
 }
