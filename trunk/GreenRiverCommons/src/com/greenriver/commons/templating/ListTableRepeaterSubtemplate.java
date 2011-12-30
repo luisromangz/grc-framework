@@ -157,14 +157,6 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
             try {
                 // We have to sort the table rows before creating the table.
                 tableRows = new SortedArrayList<TableRow>(new TableRowComparator(this.getOrderByColumns()));
-
-
-
-
-
-
-
-
             } catch (ParseException ex) {
                 // This shouldnt happen, as the order string was validated before saving.
                 Logger.getLogger(ListTableRepeaterSubtemplate.class.getName()).log(Level.SEVERE, null, ex);
@@ -172,6 +164,7 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
         }
 
         // We walk the replacements for the table rows.
+        int rowIndex=0;
         for (Map<T, String> elementReplacements : replacements) {
 
             String elementString = this.fillTemplateAux(elementFormat, elementReplacements);
@@ -183,23 +176,25 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
                 sizes.add("auto");
             }
 
-            TableRow row = new TableRow();
+            TableRow row = new TableRow(rowIndex);
             for (int i = 0; i < columnElements.length; i++) {
                 String size = sizes.get(i);
                 row.addCell(columnElements[i], size, elementStyle);
             }
 
             tableRows.add(row);
+            rowIndex++;
         }
 
         for (int i = 0; i < emptyRowsAppended; i++) {
             // Then we add blanki lines.
-            TableRow emptyRow = new TableRow();
+            TableRow emptyRow = new TableRow(rowIndex);
             for (int j = 0; j < sizes.size(); j++) {
                 emptyRow.addCell("<span style=\"color:white\">empty</span>", sizes.get(j), elementStyle);
             }
 
             tableRows.add(emptyRow);
+            rowIndex++;
         }
 
 
@@ -539,10 +534,13 @@ class TableRow {
 
     List<String> cellStyles;
     List<String> cellContents;
-
-    public TableRow() {
+    boolean odd;
+    
+    public TableRow(int index) {
         cellContents = new ArrayList<String>();
         cellStyles = new ArrayList<String>();
+        
+        odd = index%2!=0;        
     }
 
     public void addCell(String content, String width, String style) {
@@ -559,7 +557,7 @@ class TableRow {
     }
 
     public String getRow() {
-        String row = "<tr>";
+        String row = "<tr class=\""+ (odd?"odd":"even") +"\">";
 
         for (int i = 0; i < cellContents.size(); i++) {
             row += String.format("<td style=\"%s\">%s</td>",
