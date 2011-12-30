@@ -11,7 +11,6 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +23,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+
 
 /**
  * This subtemplate base class allows creation of tables or lists from
@@ -38,7 +38,7 @@ import javax.persistence.InheritanceType;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(length = 255)
-public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement, K extends Collection<?>>
+public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement, K>
         extends RepeaterSubtemplate<T, K>
         implements Subtemplateable {
 
@@ -93,7 +93,7 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
     @WidgetAction(triggerField = "isTable", triggerValue = "'false'", deactivate = true)
     private int emptyRowsAppended = 0;
     // </editor-fold>
-
+    
     @Override
     protected String fillTemplatesInternal(List<Map<T, String>> replacements) {
 
@@ -266,6 +266,7 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
         targetTemplate.setOrderByColumns(orderByColumns);
         targetTemplate.setEmptyRowsAppended(emptyRowsAppended);
     }
+    
 
     // <editor-fold defaultstate="collapsed" desc="Getters & setters">
     public Long getId() {
@@ -453,7 +454,6 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
     }
     // </editor-fold>
 }
-
 class TableRowComparator implements Comparator<TableRow> {
 
     private int[] columnIndexes;
