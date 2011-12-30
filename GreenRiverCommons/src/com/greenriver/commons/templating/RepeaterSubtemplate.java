@@ -3,7 +3,9 @@ package com.greenriver.commons.templating;
 import com.greenriver.commons.Strings;
 import com.greenriver.commons.data.fieldProperties.WidgetProps;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.MappedSuperclass;
@@ -18,14 +20,14 @@ import javax.persistence.MappedSuperclass;
  * @author luis
  */
 @MappedSuperclass
-public abstract class RepeaterSubtemplate<T extends TemplateReplacement, K extends Collection<?>>
-            implements Subtemplate<T, String, K>, Serializable {
+public abstract class RepeaterSubtemplate<T extends TemplateReplacement, K>
+            implements Subtemplate<T, String, Collection<K>>, Serializable {
 
     @WidgetProps(label = "Mensaje a mostrar si no hay elementos", widgetStyle = "width:89%", required = false)
     private String noElementsMessage;
 
     @Override
-    public String fillTemplate(K source) {       
+    public String fillTemplate(Collection<K> source) {       
 
 
         List<Map<T, String>> replacements = this.createReplacements(source);
@@ -40,7 +42,8 @@ public abstract class RepeaterSubtemplate<T extends TemplateReplacement, K exten
 
         return this.fillTemplatesInternal(replacements);
     }
-
+    
+    
     /**
      * Renders the subtemplate puting in place the replacements. This method must be able to
      * use the result of <b>List&lt;Map&lt;T, String&gt;&gt; createReplacements(K source)</b>.
@@ -58,7 +61,20 @@ public abstract class RepeaterSubtemplate<T extends TemplateReplacement, K exten
      * each item.
      * @return A list of maps for replacements. One map per item to draw.
      */
-    protected abstract List<Map<T, String>> createReplacements(K source);
+    private List<Map<T, String>> createReplacements(Collection<K> source) {
+        List<Map<T,String>> replacements= new ArrayList<Map<T,String>>();
+        
+        for(K item :source) {
+            Map<T,String> map = new HashMap<T,String>();
+            createItemReplacements(map, item);
+           replacements.add(map);
+        }
+        
+        return replacements;
+                
+    }
+    
+    protected abstract void createItemReplacements(Map<T,String> replacements, K item);
 
     @Override
     public void copyTo(Subtemplate copyTarget) {

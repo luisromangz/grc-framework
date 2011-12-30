@@ -27,7 +27,7 @@ import javax.persistence.InheritanceType;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(length = 255)
-public abstract class TextRepeaterSubtemplate<T extends TemplateReplacement, K extends Collection<?>>
+public abstract class TextRepeaterSubtemplate<T extends TemplateReplacement, K>
         extends RepeaterSubtemplate<T, K>
         implements Serializable, Subtemplateable {
 
