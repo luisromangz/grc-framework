@@ -67,6 +67,8 @@ public abstract class PrintingTemplate<T extends TemplateReplacement, K>
             PrintableDocument document,
             Map<T, String> replacements) {
         String documentBody = new String(body);
+
+        String styles = this.getCssStyles();
         for (T replacement : replacements.keySet()) {
             String replacementValue = TemplatingUtils.formatTemplateReplacement(
                     replacement,
@@ -75,10 +77,17 @@ public abstract class PrintingTemplate<T extends TemplateReplacement, K>
             documentBody = documentBody.replace(
                     replacement.getDecoratedPlaceholder(),
                     replacementValue);
+
+
+            styles = styles.replaceAll(replacement.getDecoratedPlaceholder(), replacementValue);
         }
 
         document.setBody(documentBody);
-        document.setCssStyles(this.getCssStyles());
+
+
+
+
+        document.setCssStyles(styles);
         document.setPageConfiguration(getPageConfiguration().fillTemplate(replacements));
     }
 
