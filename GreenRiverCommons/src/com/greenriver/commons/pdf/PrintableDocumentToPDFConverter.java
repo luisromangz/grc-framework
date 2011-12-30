@@ -10,7 +10,6 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.crypto.dsig.spec.HMACParameterSpec;
 import org.apache.log4j.Logger;
 import org.w3c.tidy.Tidy;
 
@@ -74,16 +73,27 @@ public class PrintableDocumentToPDFConverter {
         html = html.replace("%MARGIN_LEFT%", String.valueOf(pageConfig.getLeftMargin()));
         html = html.replace("%MARGIN_RIGHT%", String.valueOf(pageConfig.getRightMargin()));
 
+        String footer="";
         if (pageConfig.hasFooter()) {
-            String footer = footerAndHeaderTemplate.replace("%REGION_CLASS%", "footer");
+            footer = footerAndHeaderTemplate.replace("%REGION_CLASS%", "footer");
             footer = footer.replace("%REGION_LEFT%", replaceFooter(pageConfig.getFooterLeft()));
             footer = footer.replace("%REGION_CENTER%", replaceFooter(pageConfig.getFooterCenter()));
             footer = footer.replace("%REGION_RIGHT%", replaceFooter(pageConfig.getFooterRight()));
 
-            html = html.replace("%FOOTER%", footer);
-        } else {
-            html = html.replace("%FOOTER%", "");
+            
+        } 
+        
+        html = html.replace("%FOOTER%", footer);
+        
+        String header = "";
+        if(pageConfig.hasHeader()) {
+            header = footerAndHeaderTemplate.replace("%REGION_CLASS%", "header");
+            header = header.replace("%REGION_LEFT%", replaceFooter(pageConfig.getHeaderLeft()));
+            header = header.replace("%REGION_CENTER%", replaceFooter(pageConfig.getHeaderCenter()));
+            header = header.replace("%REGION_RIGHT%", replaceFooter(pageConfig.getHeaderRight()));
         }
+        
+        html = html.replace("%HEADER", header);
 
         Tidy tidier = new Tidy();
         tidier.setXHTML(true);
