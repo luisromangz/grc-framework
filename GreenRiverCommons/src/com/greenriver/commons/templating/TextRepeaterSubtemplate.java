@@ -6,7 +6,6 @@ import com.greenriver.commons.data.fieldProperties.WidgetProps;
 import com.greenriver.commons.data.fieldProperties.FieldType;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.Column;
@@ -38,8 +37,8 @@ public abstract class TextRepeaterSubtemplate<T extends TemplateReplacement, K>
     @WidgetProps(label = "Texto que se repite", type = FieldType.RICHTEXT)
     @Column(length = 10240)
     private String body;
-    @WidgetProps(label = "Número de repeticiones horizontales", type = FieldType.NUMBER, minValue = 1)
-    private int horizontalRepetitions = 1;
+    @WidgetProps(label = "Tamaño de fila", type = FieldType.NUMBER, minValue = 1)
+    private int rowSize = 1;
     @WidgetProps(label = "Bordes de la tabla", type = FieldType.SELECTION, externalValues=false,enumLabelMethod = "getLabel")
     @WidgetAction(triggerField = "horizontalRepetitions", triggerValue = "1", newValue = "'NONE'", deactivate=true)
     @Enumerated(EnumType.STRING)
@@ -52,8 +51,10 @@ public abstract class TextRepeaterSubtemplate<T extends TemplateReplacement, K>
 
     @Override
     protected String fillTemplatesInternal(List<Map<T, String>> replacements) {
+        
+        // We create the text inside each repetition.
         List<String> texts = new ArrayList<String>();
-
+        
         for (Map<T, String> elementReplacements : replacements) {
             String elementResult = body;
 
@@ -68,27 +69,48 @@ public abstract class TextRepeaterSubtemplate<T extends TemplateReplacement, K>
             texts.add(elementResult);
         }
 
-        if (horizontalRepetitions > 1) {
+        if (rowSize > 1) {
             List<String> tables = new ArrayList<String>();
 
             int counter = 0;
             List<String> currentTableCells = new ArrayList<String>();
-
-
+            
+            int rows = (int) Math.ceil((texts.size()+0.0)/rowSize);
+            int rowIndex = 0;
             for (String text : texts) {
                 currentTableCells.add(text);
-                counter++;
+                counter++;                
 
-                if (counter == horizontalRepetitions) {
-                    // We reached the end of a row, so we format a table...
-                    String formattedTable = String.format("<table style=\"%s;\"><tbody><tr>",
+                if (counter == rowSize) {
+                    // We reached the end of a row, so we create a table...
+                    
+                    String rowClass="";
+                    if(rowIndex==0) {
+                        rowClass="firstRow";
+                    } else if(rowIndex == rows-1) {
+                        rowClass="lastRow";
+                    }
+                    String formattedTable = String.format(
+                            "<table class=\"%s\" style=\"%s;\"><tbody><tr>",                            
+                            rowClass,                            
                             this.borderType.getTableStyle());
 
+                    int cellIndex =0;
                     for (String cell : currentTableCells) {
+                        
+                        String cellClass = rowClass;
+                        if(cellIndex ==0) {
+                            cellClass+=" firstCell";
+                        } else if(cellIndex == rowSize-1) {
+                            cellClass+=" lastCell";
+                        }
+                        
                         formattedTable += String.format(
-                                "<td style=\"%s;text-align:left\">%s</td>",
-                                this.borderType.getCellStyle(),
+                                "<td class=\"repeaterCell %s\" style=\"text-align:left\">%s</td>",
+                                cellClass,
                                 cell);
+                        
+                        cellIndex ++;
                     }
 
                     formattedTable += "</tr></tbody></table>";
@@ -98,21 +120,24 @@ public abstract class TextRepeaterSubtemplate<T extends TemplateReplacement, K>
                     // And reset the row.
                     currentTableCells = new ArrayList<String>();
                     counter = 0;
+                    rowIndex++;
                 }
             }
 
             if (counter > 0) {
-                // We have an extra row with cellNumber < horizontalrepetitions.
-                String tableWidth = 100.0 * currentTableCells.size() / horizontalRepetitions + "%";
-                String formattedTable = String.format("<table style=\"%s;width:%s\"><tbody><tr>",
+                // We have an extra row with cellNumber < rowSize.
+                String tableWidth = 100.0 * currentTableCells.size() / rowSize + "%";
+                String formattedTable = String.format("<table class=\"lastRow\" style=\"%s;width:%s\"><tbody><tr>",
                         this.borderType.getTableStyle(),
                         tableWidth);
 
+                int cellIndex =0;
                 for (String cell : currentTableCells) {
                     formattedTable += String.format(
-                            "<td style=\"%s;text-align:left\">%s</td>",
-                            this.borderType.getCellStyle(),
+                            "<td class=\"lastRow repeaterCell %s\" style=\"text-align:left\">%s</td>",
+                            cellIndex==0?"firstCell":(cellIndex==rowSize-1?"lastCell":""),                            
                             cell);
+                    cellIndex++;
                 }
 
                 formattedTable += "</tr></tbody></table>";
@@ -144,7 +169,7 @@ public abstract class TextRepeaterSubtemplate<T extends TemplateReplacement, K>
         templateTarget.body = this.body;
         templateTarget.newLineAfterText = this.newLineAfterText;
         templateTarget.newPageAfterText = this.newPageAfterText;
-        templateTarget.horizontalRepetitions = horizontalRepetitions;
+        templateTarget.rowSize = rowSize;
         templateTarget.borderType = borderType;
 
     }
@@ -203,15 +228,15 @@ public abstract class TextRepeaterSubtemplate<T extends TemplateReplacement, K>
     /**
      * @return the horizontalRepetitions
      */
-    public int getHorizontalRepetitions() {
-        return horizontalRepetitions;
+    public int getRowSize() {
+        return rowSize;
     }
 
     /**
      * @param horizontalRepetitions the horizontalRepetitions to set
      */
-    public void setHorizontalRepetitions(int horizontalRepetitions) {
-        this.horizontalRepetitions = horizontalRepetitions;
+    public void setRowSize(int horizontalRepetitions) {
+        this.rowSize = horizontalRepetitions;
     }
 
     /**
