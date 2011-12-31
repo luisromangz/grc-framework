@@ -201,7 +201,7 @@ public abstract class ListTableRepeaterSubtemplate<T extends TemplateReplacement
         result += "<tbody>";
 
         for (TableRow row : tableRows) {
-            result += row.getRow();
+            result += row.getRow(tableRows.size());
         }
 
         result += "</tbody></table>";
@@ -534,13 +534,15 @@ class TableRow {
 
     List<String> cellStyles;
     List<String> cellContents;
-    boolean odd;
+    
+    int index;
+    int total;
     
     public TableRow(int index) {
         cellContents = new ArrayList<String>();
         cellStyles = new ArrayList<String>();
         
-        odd = index%2!=0;        
+        this.index = index;      
     }
 
     public void addCell(String content, String width, String style) {
@@ -556,8 +558,20 @@ class TableRow {
         return cellStyles.get(cellIndex);
     }
 
-    public String getRow() {
-        String row = "<tr class=\""+ (odd?"odd":"even") +"\">";
+    public String getRow(int totalRows) {
+        
+        String rowClass="odd";
+        if(index%2==0) {
+            rowClass="even";
+        }
+        
+        if(index ==0) {
+            rowClass+=" firstRow";
+        } else if (index == totalRows-1){
+            rowClass+= " lastRow";
+        }
+        
+        String row = "<tr class=\""+ rowClass +"\">";
 
         for (int i = 0; i < cellContents.size(); i++) {
             row += String.format("<td style=\"%s\">%s</td>",
