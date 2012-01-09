@@ -39,7 +39,7 @@ public class CIFOrNIFValidatorTest {
     @Test
     public void testValidate() {
         System.out.println("validate");
-        String[] validOnes = new String[]{"Q2818002D", "B91789214", "12345678Z"};
+        String[] validOnes = new String[]{"Q2818002D", "B91789214", "12345678Z","B81053530","B91876284"};
         String[] invalidOnes = new String[]{"B91789215", "Q3818002D", "2342345J"};
         CIFOrNIFValidator instance = new CIFOrNIFValidator();
         boolean expResult = true;
@@ -47,7 +47,7 @@ public class CIFOrNIFValidatorTest {
 
         for (int i=0; i < validOnes.length ; i++) {
             result = instance.validate(validOnes[i]);
-            assertEquals(expResult, result);
+            assertEquals(validOnes[i], expResult, result);
         }
         
         expResult = false;
