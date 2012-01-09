@@ -111,7 +111,7 @@ public class CIFValidator implements DataValidator<String> {
         } else {
             // Numeric
             cStr = "" + c;
-            return (Character) cStr.charAt(0);
+            return (Character) cStr.charAt(cStr.length()-1);
         }
     }
 }
