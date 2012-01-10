@@ -69,6 +69,9 @@ public abstract class PrintingTemplate<T extends TemplateReplacement, K>
         String documentBody = new String(body);
 
         String styles = this.getCssStyles();
+        if(styles==null) {
+            styles="";
+        }
         for (T replacement : replacements.keySet()) {
             String replacementValue = TemplatingUtils.formatTemplateReplacement(
                     replacement,
@@ -77,7 +80,6 @@ public abstract class PrintingTemplate<T extends TemplateReplacement, K>
             documentBody = documentBody.replace(
                     replacement.getDecoratedPlaceholder(),
                     replacementValue);
-
 
             styles = styles.replaceAll(replacement.getDecoratedPlaceholder(), replacementValue);
         }
