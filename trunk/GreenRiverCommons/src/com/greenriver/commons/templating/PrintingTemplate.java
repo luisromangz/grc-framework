@@ -29,9 +29,9 @@ public abstract class PrintingTemplate<T extends TemplateReplacement, K>
     public static final String PAGE_BREAK = "<div style=\"page-break-after:always\"><!-- Non empty --></div>";
     @WidgetProps(label = "Cuerpo del documento", type = FieldType.RICHTEXT)
     @Column(length = 10240)
-    private String body;
+    private String body="";
     @Column(length = 10240)
-    private String cssStyles;
+    private String cssStyles="";
     @OneToOne(cascade = CascadeType.ALL)
     private PageConfiguration pageConfiguration;
     private static final long serialVersionUID = 1L;
