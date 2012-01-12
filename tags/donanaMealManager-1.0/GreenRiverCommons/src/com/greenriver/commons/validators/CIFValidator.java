@@ -102,6 +102,7 @@ public class CIFValidator implements DataValidator<String> {
 
         String cStr = "" + (a + b);
         c = 10 - (int)Integer.parseInt(cStr.charAt(cStr.length() - 1) + "");
+        c=c%10;
 
         // Calculate the control char of the cif
 
