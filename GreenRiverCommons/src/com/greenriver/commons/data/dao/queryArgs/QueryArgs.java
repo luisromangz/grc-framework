@@ -20,7 +20,15 @@ public class QueryArgs {
 
     public QueryArgs() {
         restrictions = new ArrayList<QueryArgsRestriction>();
-    }        
+    }    
+    
+    public void addRestriction(QueryArgsRestriction queryArgsRestriction) {
+        restrictions.add(queryArgsRestriction);
+    }
+    
+    public void addRestriction(String field, QueryArgsOperator op, Object value) {
+        restrictions.add(new QueryArgsRestriction(field,op, value));
+    }
 
     //<editor-fold defaultstate="collapsed" desc="Getters and setters">
     /**
