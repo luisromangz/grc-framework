@@ -113,11 +113,12 @@ public class MailSendingHelperImpl implements MailSendingHelper {
         message.setRecipients(Message.RecipientType.TO,
                 InternetAddress.parse(mail.getTo(), false));
 
-        Multipart multipart = new MimeMultipart("alternative");
+        Multipart multipart = new MimeMultipart();
 
-        MimeBodyPart plainBodyPart = new MimeBodyPart();
-        plainBodyPart.setText(Strings.stripTags(mail.getBody()));
-        multipart.addBodyPart(plainBodyPart);
+//        MimeBodyPart plainBodyPart = new MimeBodyPart();
+//        plainBodyPart.addHeader("Content-Type", "text/text; charset=ISO-8859-1");
+//        plainBodyPart.setText(Strings.stripTags(mail.getBody()));
+//        multipart.addBodyPart(plainBodyPart);
 
         MimeBodyPart htmlBodyPart = new MimeBodyPart();
         htmlBodyPart.setContent(mail.getBody(), "text/html; charset=ISO-8859-1");
@@ -127,8 +128,16 @@ public class MailSendingHelperImpl implements MailSendingHelper {
         
         for(String identifier : mail.getAttachments().keySet()) {
             MimeBodyPart attachmentPart = new MimeBodyPart();
-            attachmentPart.setHeader("Content-ID", identifier);
+            
             attachmentPart.setDataHandler(new DataHandler(mail.getAttachments().get(identifier)));
+            
+            if(identifier.contains(".")) {
+                // Is a file name! xD
+                attachmentPart.setDisposition(MimeBodyPart.ATTACHMENT);
+                attachmentPart.setFileName(identifier);                     
+            } else {
+                attachmentPart.setContentID(identifier);
+            }
             
             multipart.addBodyPart(attachmentPart);
             
