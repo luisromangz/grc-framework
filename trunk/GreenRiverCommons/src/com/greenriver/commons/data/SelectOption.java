@@ -39,9 +39,13 @@ public class SelectOption implements Comparable<SelectOption> {
         hash = 59 * hash + (this.value != null ? this.value.hashCode() : 0);
         return hash;
     }
-    
-    
 
+    @Override
+    public String toString() {
+        return value+ " ("+label+")";
+    }
+    
+    
     //<editor-fold defaultstate="collapsed" desc="Getters and setters">
     /**
      * @return the label
