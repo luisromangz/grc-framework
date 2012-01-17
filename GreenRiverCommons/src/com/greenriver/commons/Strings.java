@@ -486,4 +486,8 @@ public class Strings {
 
         return prefixedFileNames;
     }
+
+    public static String capitalize(String word) {
+        return Strings.toUpperCase(word.toLowerCase(),0,1);
+    }
 }
