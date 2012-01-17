@@ -1,14 +1,14 @@
 /*#################################################################
-(c)2008/2009 Greenriver Consulting SL. All rights reserved.
+ (c)2008/2009 Greenriver Consulting SL. All rights reserved.
 
-This project and all subsequent files are licensed under the terms
-and conditions of the GreenRiverLicense.
+ This project and all subsequent files are licensed under the terms
+ and conditions of the GreenRiverLicense.
 
-If you haven't received a copy of the license you can obtain it at
-http://www.greenriverconsulting.es/licensing/greenriverlicense
+ If you haven't received a copy of the license you can obtain it at
+ http://www.greenriverconsulting.es/licensing/greenriverlicense
 
-Author: Miguel Angel
-###################################################################*/
+ Author: Miguel Angel
+ ###################################################################*/
 package com.greenriver.commons;
 
 import java.io.ByteArrayInputStream;
@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.regex.Pattern;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.w3c.tidy.Tidy;
 
 /**
@@ -50,6 +51,7 @@ public class Strings {
 
     /**
      * Formats an integer as hex
+     *
      * @param value
      * @return
      */
@@ -65,6 +67,7 @@ public class Strings {
     /**
      * Formats a string as the hex string resulting of converting the input
      * string to byte array and then formatting that as hex.
+     *
      * @param str string to format
      * @return a string with the array formatted as hex
      */
@@ -75,6 +78,7 @@ public class Strings {
 
     /**
      * Formats an byte array as hex into a string.
+     *
      * @param data array to format
      * @return a string with the array formatted as hex
      */
@@ -94,6 +98,7 @@ public class Strings {
 
     /**
      * Formats an byte array as hex into a string.
+     *
      * @param data array to format
      * @return a string with the array formatted as hex
      */
@@ -109,8 +114,8 @@ public class Strings {
     }
 
     /**
-     * Calculates the checksum of an string and then returns it as a hex
-     * string.
+     * Calculates the checksum of an string and then returns it as a hex string.
+     *
      * @param str string to get the checksum from
      * @return the checksum as a hex string or null if MD5 is not supported
      * @throws NullPointerException if the input string is null
@@ -135,6 +140,7 @@ public class Strings {
     /**
      * Gets if a string is null or empty. Usefull for those lazy developers that
      * apreciates saving some keystrokes.
+     *
      * @param str String to check
      * @return if the string is null reference or if it is empty string.
      */
@@ -143,8 +149,9 @@ public class Strings {
     }
 
     /**
-     * Compares two strings and returns true if both are null references or
-     * they are the same string. In any other case returns false.
+     * Compares two strings and returns true if both are null references or they
+     * are the same string. In any other case returns false.
+     *
      * @param oneStr
      * @param otherStr
      * @return true if they are the same or false if not
@@ -162,9 +169,9 @@ public class Strings {
     }
 
     /**
-     * Compares two strings and returns true if both are null references or
-     * they are the same case insensitive string. In any other case returns
-     * false.
+     * Compares two strings and returns true if both are null references or they
+     * are the same case insensitive string. In any other case returns false.
+     *
      * @param oneStr
      * @param otherStr
      * @return true if they are the same or false if not
@@ -184,6 +191,7 @@ public class Strings {
     /**
      * Converts a byte array that represents an string in ascii charset to an
      * utf-8 java string.
+     *
      * @param array
      * @param offset
      * @param length
@@ -196,8 +204,9 @@ public class Strings {
     }
 
     /**
-     * Converts an utf-8 string into a byte array that represents the string
-     * in ascii charset.
+     * Converts an utf-8 string into a byte array that represents the string in
+     * ascii charset.
+     *
      * @param str
      * @return
      */
@@ -285,10 +294,11 @@ public class Strings {
      * Returns a lowercased version of a given string, in which the only
      * lowercased chars are the ones between startIndex (included) and endIndex
      * (not included).
-     * @param value 
+     *
+     * @param value
      * @param startIndex
      * @param endIndex
-     * @return 
+     * @return
      */
     public static String toLowerCase(String value, int startIndex, int endIndex) {
         String lowercased = value.substring(startIndex, endIndex);
@@ -349,6 +359,7 @@ public class Strings {
 
     /**
      * Creates a String formed by repeating a given string a number of times.
+     *
      * @param string The string to be repeated.
      * @param count The number of times the string must be repeated.
      * @return
@@ -365,9 +376,10 @@ public class Strings {
 
     /**
      * Joins a series of strings passed as an array.
+     *
      * @param elements
      * @param glue
-     * @return 
+     * @return
      */
     public static String join(String[] elements, String glue) {
         return Strings.join(Arrays.asList(elements), glue);
@@ -375,6 +387,7 @@ public class Strings {
 
     /**
      * Checks if the string represents an integer value
+     *
      * @param str
      * @return
      */
@@ -390,6 +403,7 @@ public class Strings {
      * Sums all the digits of a number and the digits of the result until only
      * one number of a single digit is left. If the input argument is negative
      * the sign is changed to positive.
+     *
      * @param digits String with the digits to convert
      * @return the recurrent sum of digits until only one digit is left
      */
@@ -414,6 +428,7 @@ public class Strings {
 
     /**
      * Checks if a string contains only ASCII characters.
+     *
      * @param input The string to be checked.
      * @return True if input contains only ASCII characters.
      */
@@ -424,7 +439,7 @@ public class Strings {
     }
 
     /**
-     * 
+     *
      * @param input
      * @return
      */
@@ -447,9 +462,9 @@ public class Strings {
         return outputStream.toString();
     }
 
-
     /**
      * Uses JTidy to remove non-kosher html.
+     *
      * @param input
      * @return
      */
@@ -466,11 +481,12 @@ public class Strings {
 
     /**
      * Strips html tags in a rather rude and imprecise way.
+     *
      * @param cellContent
      * @return
      */
     public static String stripTags(String cellContent) {
-        
+
         return cellContent.replaceAll("<.+?>", "");
     }
 
@@ -487,7 +503,40 @@ public class Strings {
         return prefixedFileNames;
     }
 
+    /**
+     * Returns a String where all its characters are lowercase but the first.
+     */
     public static String capitalize(String word) {
-        return Strings.toUpperCase(word.toLowerCase(),0,1);
+        return Strings.toUpperCase(word.toLowerCase(), 0, 1);
+    }
+
+    /**
+     * Returns a String where some "conflictive" characters in the input String are
+     * replaced by its HTML entities equivalent.
+     *
+     * @param body
+     * @return
+     */
+    public static String escapeHTML(String input) {
+        String result = input.replaceAll("á", "&aacute;");
+        result = result.replaceAll("é", "&eacute;");
+        result = result.replaceAll("í", "&iacute;");
+        result = result.replaceAll("ó", "&oacute;");
+        result = result.replaceAll("ú", "&uacute;");
+        result = result.replaceAll("ü", "&uuml;");
+
+        result = result.replaceAll("Á", "&Aacute;");
+        result = result.replaceAll("É", "&Eacute;");
+        result = result.replaceAll("Í", "&Iacute;");
+        result = result.replaceAll("Ó", "&Oacute;");
+        result = result.replaceAll("Ú", "&Uacute;");
+        result = result.replaceAll("Ü", "&Uuml;");
+
+        result = result.replaceAll("ñ", "&ntilde;");
+        result = result.replaceAll("Ñ", "&Ntilde;");
+
+        result = result.replaceAll("º", "&ordm;");
+        result = result.replaceAll("ª", "&ordf;");
+        return result;
     }
 }
