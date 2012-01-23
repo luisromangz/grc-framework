@@ -70,10 +70,10 @@ public class HibernateUserDao
         removeAuthoritiesForUser(existingUser);
 
         // We add the new authorities.
-        for (String role : existingUser.getRoles()) {
+        for (UserAuthority auth : existingUser.getRoles()) {
             UserAuthority authority = new UserAuthority();
             authority.setUser(existingUser);
-            authority.setAuthority(role);
+            authority.setAuthority(auth.getAuthority());
             getCurrentSession().save(authority);
         }
     }
@@ -94,6 +94,7 @@ public class HibernateUserDao
         User user = getById(id);
         removeAuthoritiesForUser(user);
         user.setDeleted(true);
+        removeAuthoritiesForUser(user);
         getCurrentSession().update(user);
     }
 
