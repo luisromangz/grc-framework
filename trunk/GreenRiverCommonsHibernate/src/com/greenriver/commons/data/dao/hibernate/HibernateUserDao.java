@@ -1,8 +1,8 @@
 package com.greenriver.commons.data.dao.hibernate;
 
-import com.greenriver.commons.data.dao.hibernate.base.HibernatePagedResultsDao;
 import com.greenriver.commons.Strings;
 import com.greenriver.commons.data.dao.UserDao;
+import com.greenriver.commons.data.dao.hibernate.base.HibernatePagedResultsDao;
 import com.greenriver.commons.data.dao.queryArgs.QueryArgs;
 import com.greenriver.commons.data.model.User;
 import com.greenriver.commons.data.model.UserAuthority;
@@ -70,10 +70,10 @@ public class HibernateUserDao
         removeAuthoritiesForUser(existingUser);
 
         // We add the new authorities.
-        for (UserAuthority auth : existingUser.getRoles()) {
+        for (String role : existingUser.getRoles()) {
             UserAuthority authority = new UserAuthority();
             authority.setUser(existingUser);
-            authority.setAuthority(auth.getAuthority());
+            authority.setAuthority(role);
             getCurrentSession().save(authority);
         }
     }
@@ -94,7 +94,6 @@ public class HibernateUserDao
         User user = getById(id);
         removeAuthoritiesForUser(user);
         user.setDeleted(true);
-        removeAuthoritiesForUser(user);
         getCurrentSession().update(user);
     }
 
