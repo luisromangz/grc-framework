@@ -173,8 +173,9 @@ public abstract class UserManagementServiceImpl<E extends User, D extends UserDt
             newPassword = passwordEncoder.encodePassword(newPassword, null);
         }
 
+        UserDao userDao =(UserDao) getDao();
         try {
-            ((UserDao) getDao()).save(user, newPassword);
+            userDao.save(user, newPassword);            
         } catch (RuntimeException re) {
             result.addErrorMessage("Ocurrió un error de base de datos.");
             return result;
@@ -314,7 +315,7 @@ public abstract class UserManagementServiceImpl<E extends User, D extends UserDt
         }
 
         try {
-            getDao().save(user);
+            ((UserDao)getDao()).save(user);
         } catch (RuntimeException e) {
             result.addErrorMessage("Ocurrió un error de base de datos.");
             return result;

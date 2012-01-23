@@ -1,19 +1,23 @@
 package com.greenriver.commons.web.controllers;
 
 import com.greenriver.commons.Strings;
-import com.greenriver.commons.data.model.UserAuthority;
-import com.greenriver.commons.web.configuration.*;
+import com.greenriver.commons.data.model.User;
+import com.greenriver.commons.web.configuration.PageConfig;
+import com.greenriver.commons.web.configuration.FormsContainer;
+import com.greenriver.commons.web.configuration.GridsContainer;
+import com.greenriver.commons.web.configuration.PageToolsContainer;
+import com.greenriver.commons.web.configuration.PropsViewsContainer;
 import com.greenriver.commons.web.controllers.plugins.ControllerPlugin;
 import com.greenriver.commons.web.helpers.form.Form;
+import com.greenriver.commons.web.helpers.header.HeaderConfig;
+import com.greenriver.commons.web.pageTools.PageTool;
 import com.greenriver.commons.web.helpers.form.FormBuilder;
 import com.greenriver.commons.web.helpers.grid.GridBuilder;
 import com.greenriver.commons.web.helpers.grid.GridInfo;
-import com.greenriver.commons.web.helpers.header.HeaderConfig;
 import com.greenriver.commons.web.helpers.header.HeaderConfigurer;
 import com.greenriver.commons.web.helpers.propertiesView.PropertiesView;
 import com.greenriver.commons.web.helpers.propertiesView.PropertiesViewBuilder;
 import com.greenriver.commons.web.helpers.session.UserSessionInfo;
-import com.greenriver.commons.web.pageTools.PageTool;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -762,8 +766,7 @@ public class ConfigurablePageController
 
         if (this.userSessionInfo != null
                 && this.userSessionInfo.getCurrentUser() != null) {
-            for (UserAuthority auth : this.userSessionInfo.getCurrentUser().getRoles()) {
-                String role = auth.getAuthority();
+            for (String role : this.userSessionInfo.getCurrentUser().getRoles()) {
                 hash = 83 * hash + role.hashCode();
             }
         }
