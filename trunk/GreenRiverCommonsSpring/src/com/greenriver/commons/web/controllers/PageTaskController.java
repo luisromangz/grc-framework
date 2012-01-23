@@ -3,6 +3,7 @@
 package com.greenriver.commons.web.controllers;
 
 import com.greenriver.commons.Strings;
+import com.greenriver.commons.data.model.User;
 import com.greenriver.commons.web.configuration.PageConfig;
 import com.greenriver.commons.web.configuration.PageTasksContainer;
 import com.greenriver.commons.web.pageTasks.PageTask;
@@ -39,8 +40,12 @@ public class PageTaskController
             return;
         }
         
-        if(!pageTask.isAllowedForUser(this.getUserSessionInfo().getCurrentUser())) {
-            throw new IllegalAccessException("User is not authorized for the task "+pageTask.getTaskName());
+        User user = this.getUserSessionInfo().getCurrentUser();
+        if(!pageTask.isAllowedForUser(user)) {
+            throw new IllegalAccessException(String.format(
+                    "User %s is not authorized for the task %s",
+                    user.getUsername(),
+                    pageTask.getTaskName()));
         }
 
         this.configureForms(pageTask.getForms(), mav, configuration, taskName+"_");
