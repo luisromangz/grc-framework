@@ -3,18 +3,11 @@ package com.greenriver.commons.data.model;
 import com.greenriver.commons.Strings;
 import com.greenriver.commons.data.DataEntity;
 import com.greenriver.commons.data.dao.queryArgs.QueryArgsProps;
-import com.greenriver.commons.data.fieldProperties.WidgetProps;
 import com.greenriver.commons.data.fieldProperties.FieldType;
+import com.greenriver.commons.data.fieldProperties.WidgetProps;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
+import javax.persistence.*;
 
 /**
  * Common user entity.
@@ -44,8 +37,9 @@ public class User implements Comparable<User>, DataEntity {
     private String emailAddress;
     @WidgetProps(label = "Contraseña", type = FieldType.PASSWORDEDITOR)
     private String password;
-    @WidgetProps(label = "Permisos", type = FieldType.ROLESELECTOR, required = false)
-    private String[] roles;
+    @WidgetProps(label = "Permisos", type = FieldType.ROLESELECTOR, required = false)        
+    @OneToMany(mappedBy="user", cascade= CascadeType.ALL)
+    private List<UserAuthority> roles;
     // This flag tells if the user have been deleted or not. A deleted user
     // is kept for history purposses in the system but is not shown nor allowed
     // to log in.
@@ -53,22 +47,54 @@ public class User implements Comparable<User>, DataEntity {
     // </editor-fold>
 
     public User() {
-        roles = new String[]{};
+        roles = new ArrayList<UserAuthority>();
     }
 
     public boolean hasRole(String role) {
-        return getRoles().contains(role);
+        UserAuthority auth = new UserAuthority();
+        auth.setUser(this);
+        auth.setAuthority(role);
+        return getRoles().contains(auth);
     }
 
     public boolean hasAnyRole(String[] roles) {
 	
 	for (String role : roles) {
-	    if (this.getRoles().contains(role)) {
+	    if (hasRole(role)) {
                 return true;
             }
         }
 
 	return false;
+    }
+    
+    
+    public void addRole(String role) {
+      
+        UserAuthority newAuth = new UserAuthority();
+        newAuth.setUser(this);
+        newAuth.setAuthority(role);
+        
+        if(!roles.contains(newAuth)) {
+            roles.add(newAuth);
+        }
+        
+    }
+
+    public void removeRole(String role) {
+        UserAuthority oldAuth=  new UserAuthority();
+        oldAuth.setUser(this);
+        oldAuth.setAuthority(role);
+        
+        roles.remove(oldAuth);
+    }
+    
+    public void setRoles(String [] roles) {
+        this.roles = new ArrayList<UserAuthority>();
+        
+        for(String role : roles) {
+            this.addRole(role);
+        }
     }
 
     @Override
@@ -162,22 +188,15 @@ public class User implements Comparable<User>, DataEntity {
     /**
      * @return the roles
      */
-    public List<String> getRoles() {
-        if(roles == null) {
-            return new ArrayList<String>();
-        }
-        return Arrays.asList(roles);
+    public List<UserAuthority> getRoles() {
+        return roles;
     }
 
     /**
      * @param roles the roles to set
      */
-    public void setRoles(List<String> roles) {
-        this.roles = roles.toArray(new String[]{});
-    }
-    
-    public void setRoles(String[] roles) {
-        this.roles= roles;
+    public void setRoles(List<UserAuthority> roles) {
+        this.roles = roles;
     }
 
     public Boolean isDeleted() {
@@ -203,19 +222,4 @@ public class User implements Comparable<User>, DataEntity {
     }
     // </editor-fold>
 
-    public void addRole(String role) {
-        List<String> rolesList =new ArrayList<String>(getRoles());
-        if(!rolesList.contains(role)) {
-            rolesList.add(role);
-        }
-        setRoles(rolesList);
-    }
-
-    public void removeRole(String role) {
-         List<String> rolesList = new ArrayList<String>(getRoles());
-        if(rolesList.contains(role)) {
-            rolesList.remove(role);
-        }
-        setRoles(rolesList);
-    }
 }
