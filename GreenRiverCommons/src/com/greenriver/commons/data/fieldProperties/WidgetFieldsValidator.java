@@ -1,9 +1,9 @@
 package com.greenriver.commons.data.fieldProperties;
 
 import com.greenriver.commons.Strings;
-import com.greenriver.commons.data.validation.ValidationResult;
 import com.greenriver.commons.data.validation.FieldsValidator;
 import com.greenriver.commons.data.validation.ValidationRegex;
+import com.greenriver.commons.data.validation.ValidationResult;
 import com.greenriver.commons.roleManagement.RoleManager;
 import com.greenriver.commons.validators.CIFOrNIFValidator;
 import com.greenriver.commons.validators.CIFValidator;
@@ -21,6 +21,7 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 
 /**
+ * Validates widget fields.
  *
  * @author luis
  */
@@ -29,7 +30,6 @@ public class WidgetFieldsValidator implements FieldsValidator {
     public static final Pattern COLOR_PATTERN = Pattern.compile(
             "^" + ValidationRegex.COLOR + "$",
             Pattern.CASE_INSENSITIVE);
-  
     public static final Pattern PASSWORD_PATTERN =
             Pattern.compile("^" + ValidationRegex.PASSWORD_ALPHA_6 + "$");
     private RoleManager roleManager;
@@ -177,7 +177,6 @@ public class WidgetFieldsValidator implements FieldsValidator {
                     properties.label(),
                     properties.minSize(),
                     properties.maxSize()));
-            return;
         } else if (properties.minSize() > text.length()) {
             validationMessages.add(String.format(
                     "El campo «%0$s» tiene que tener un tamaño mayor o igual a %1$d caracteres.",
@@ -479,7 +478,7 @@ public class WidgetFieldsValidator implements FieldsValidator {
             selections = (String[]) value;
             if (selections.length == 0 && properties.required()) {
                 validationMessages.add(String.format(
-                        "Es necesario seleccionar una opción el campo «%s».",
+                        "Es necesario seleccionar una opción para el campo «%s».",
                         properties.label()));
                 return;
             } else if (selections.length == 0 && !properties.required()) {
@@ -489,7 +488,7 @@ public class WidgetFieldsValidator implements FieldsValidator {
             List list = (List) value;
             if (list.isEmpty() && properties.required()) {
                 validationMessages.add(String.format(
-                        "Es necesario seleccionar una opción el campo «%s».",
+                        "Es necesario seleccionar una opción para el campo «%s».",
                         properties.label()));
             }
             return;
@@ -540,12 +539,12 @@ public class WidgetFieldsValidator implements FieldsValidator {
         }
 
         if (properties.minSize() != 0 || properties.maxSize() != Integer.MAX_VALUE) {
-            int size=0;
+            int size = 0;
             try {
                 size = stream.available();
             } catch (IOException ex) {
-               Logger.getLogger(this.getClass()).error(ex);
-               return;
+                Logger.getLogger(this.getClass()).error(ex);
+                return;
             }
             boolean minSizeErr =
                     properties.minSize() > 0 && size < properties.minSize();
@@ -556,17 +555,14 @@ public class WidgetFieldsValidator implements FieldsValidator {
                 validationMessages.add(String.format(
                         "El tamaño del archivo tiene que estar entre «%s» y «%s» bytes inclusives.",
                         properties.minSize(), properties.maxSize()));
-                return;
             } else if (minSizeErr) {
                 validationMessages.add(String.format(
                         "El tamaño del archivo tiene que ser superior a «%s» bytes.",
                         properties.minSize()));
-                return;
             } else {
                 validationMessages.add(String.format(
                         "El tamaño del archivo tiene que ser inferior a «%s» bytes.",
                         properties.maxSize()));
-                return;
             }
         }
 
@@ -609,13 +605,12 @@ public class WidgetFieldsValidator implements FieldsValidator {
             Object value,
             WidgetProps properties,
             List<String> validationMessages) {
-        if (properties.required()) {
-            if (value == null) {
-                validationMessages.add(String.format(
-                        "El valor del campo «%s» es requerido.",
-                        properties.label()));
-            }
-            return;
+        if (properties.required() && value != null) {
+
+            validationMessages.add(String.format(
+                    "El valor del campo «%s» es necesario.",
+                    properties.label()));
+
         }
 
     }
@@ -625,14 +620,10 @@ public class WidgetFieldsValidator implements FieldsValidator {
             WidgetProps properties,
             List<String> validationMessages) {
 
-        if (properties.required()) {
-            if (value == null) {
-                validationMessages.add(String.format(
-                        "El valor del campo «%s» es requerido.",
-                        properties.label()));
-            }
-
-            return;
+        if (properties.required() && value == null) {
+            validationMessages.add(String.format(
+                    "El valor del campo «%s» es necesario.",
+                    properties.label()));
         }
     }
 
@@ -642,7 +633,7 @@ public class WidgetFieldsValidator implements FieldsValidator {
 
         if (properties.required() && value == null) {
             validationMessages.add(String.format(
-                    "El valor del campo «%s» es requerido.",
+                    "El valor del campo «%s» es necesario.",
                     properties.label()));
             return;
         } else if (!properties.required() && value == null) {
@@ -666,7 +657,7 @@ public class WidgetFieldsValidator implements FieldsValidator {
 
         if (properties.required() && value == null) {
             validationMessages.add(String.format(
-                    "El valor del campo «%s» es requerido.",
+                    "El valor del campo «%s» es necesario.",
                     properties.label()));
             return;
         } else if (!properties.required() && value == null) {
@@ -709,11 +700,10 @@ public class WidgetFieldsValidator implements FieldsValidator {
      * @return the emailValidator
      */
     public EmailValidator getEmailValidator() {
-        
-        if(emailValidator==null) {
+
+        if (emailValidator == null) {
             emailValidator = new EmailValidator();
         }
         return emailValidator;
     }
-
 }
