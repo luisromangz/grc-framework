@@ -2,11 +2,7 @@
 package com.greenriver.commons.data.model;
 
 import java.io.Serializable;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 /**
  * User role entity.
@@ -18,17 +14,12 @@ public class UserAuthority implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne    
     private User user;
 
     private String authority;
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
-    }
+  
 
     @Override
     public boolean equals(Object object) {
@@ -37,10 +28,18 @@ public class UserAuthority implements Serializable {
             return false;
         }
         UserAuthority other = (UserAuthority) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if (!user.equals(other.user) || !authority.equals(other.authority)) {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 67 * hash + (this.user != null ? this.user.hashCode() : 0);
+        hash = 67 * hash + (this.authority != null ? this.authority.hashCode() : 0);
+        return hash;
     }
 
     @Override
