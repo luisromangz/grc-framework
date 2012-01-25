@@ -95,7 +95,8 @@ public class MailSendingHelperImpl implements MailSendingHelper {
         }
         try {
             transport.connect(config.getHostName(), config.getPortNumber(), config.getUserName(), config.getPassword());
-            transport.sendMessage(message, message.getAllRecipients());
+            Address[] allRecipients = message.getAllRecipients();
+            transport.sendMessage(message, allRecipients);
             transport.close();
         } catch (MessagingException ex) {
             Logger.getLogger(MailSendingHelperImpl.class).error("Couldn't send message!", ex);
