@@ -5,8 +5,8 @@ import com.greenriver.commons.collections.Lists;
 import com.greenriver.commons.data.DataEntity;
 import com.greenriver.commons.data.dao.CRUDDao;
 import com.greenriver.commons.data.dao.queryArgs.QueryArgs;
-import com.greenriver.commons.data.validation.ValidationResult;
 import com.greenriver.commons.data.validation.FieldsValidator;
+import com.greenriver.commons.data.validation.ValidationResult;
 import com.greenriver.commons.web.services.Dto;
 import com.greenriver.commons.web.services.FormDto;
 import com.greenriver.commons.web.services.PagedResult;
@@ -51,6 +51,12 @@ public abstract class CRUDServiceImpl<E extends DataEntity, D extends Dto, F ext
     @Override
     public Result<D> getForView(Long id) {
         Result<D> r = new Result<D>();
+        
+        if(id==null) {
+            getLogger().error("Null id provided!");
+            r.addErrorMessage("El identificador es nulo.");
+            return r;
+        }
 
         E entity = getById(id, r);
         if (!r.isSuccess()) {
@@ -64,6 +70,12 @@ public abstract class CRUDServiceImpl<E extends DataEntity, D extends Dto, F ext
     @Override
     public Result<F> getForEdit(Long id) {
         Result<F> r = new Result<F>();
+        
+        if(id==null) {
+            getLogger().error("Null id provided!");
+            r.addErrorMessage("El identificador es nulo.");
+            return r;
+        }
         
         if(id==null || id==0) {
             throw new IllegalArgumentException("Not received a valid id");
