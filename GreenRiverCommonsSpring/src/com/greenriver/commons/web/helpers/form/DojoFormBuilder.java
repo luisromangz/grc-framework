@@ -444,9 +444,9 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         assertNotNumber(properties);
         assertNotSelection(properties);
         assertNotFile(properties);
-        configuration.addDojoModule("dijit.form.Textarea");
+        configuration.addDojoModule("dijit.form.SimpleTextarea");
         element.setAttribute(
-                "dojoType", "dijit.form.Textarea");
+                "dojoType", "dijit.form.SimpleTextarea");
         element.setAttribute("trim", "true");
         //element.setAttribute("style", "width:98%");
         element.setElementType("textarea");
