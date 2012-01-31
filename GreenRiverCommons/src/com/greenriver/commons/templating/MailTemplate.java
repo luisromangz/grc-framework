@@ -1,19 +1,12 @@
 
 package com.greenriver.commons.templating;
 
-import com.greenriver.commons.data.mailing.Mail;
 import com.greenriver.commons.data.fieldProperties.FieldProperties;
 import com.greenriver.commons.data.fieldProperties.FieldType;
+import com.greenriver.commons.data.mailing.Mail;
 import java.io.Serializable;
 import java.util.Map;
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
+import javax.persistence.*;
 
 /**
  *
