@@ -49,6 +49,7 @@ public class Strings {
     private static Charset asciiCharset = Charset.forName("US-ASCII");
     private static Pattern digitsRegex = Pattern.compile("^\\d+$");
 
+    // As a member so we dont have to test everytime.
     private static Boolean cleanHTMLNeedsUTF8=null;
 
     /**
@@ -473,9 +474,9 @@ public class Strings {
         Tidy tidier = new Tidy();
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-//        if(cleanHTMLNeedsUTF8){
-//            tidier.setInputEncoding("utf-8");
-//        }
+        if(cleanHTMLNeedsUTF8){
+            tidier.setInputEncoding("utf-8");
+        }
         tidier.setEncloseText(false);
         tidier.parse(new ByteArrayInputStream(input.getBytes()), output);
 
