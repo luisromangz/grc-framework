@@ -114,12 +114,10 @@ public class MailSendingHelperImpl implements MailSendingHelper {
         message.setRecipients(Message.RecipientType.TO,
                 InternetAddress.parse(mail.getTo(), false));
 
-        Multipart multipart = new MimeMultipart();
+        // Related so embedded atachments are correctly embedded in all
+        // mail clients.
+        Multipart multipart = new MimeMultipart("related");
 
-//        MimeBodyPart plainBodyPart = new MimeBodyPart();
-//        plainBodyPart.addHeader("Content-Type", "text/text; charset=ISO-8859-1");
-//        plainBodyPart.setText(Strings.stripTags(mail.getBody()));
-//        multipart.addBodyPart(plainBodyPart);
 
         MimeBodyPart htmlBodyPart = new MimeBodyPart();
         htmlBodyPart.setContent(
