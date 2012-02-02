@@ -20,6 +20,8 @@ public class LoginController extends ConfigurablePageController
             HttpServletResponse response,
             ModelAndView modelAndView) throws Exception {
         
+        super.customHandleRequest(request, response, modelAndView);
+        
 
         boolean authError =  String.valueOf(
                 request.getParameter("login_error")).equals("1");

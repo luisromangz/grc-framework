@@ -1,7 +1,7 @@
 package com.greenriver.commons.mvc.controllers;
 
-import com.greenriver.commons.mvc.configuration.PageConfiguration;
 import com.greenriver.commons.mvc.configuration.FormsConfiguration;
+import com.greenriver.commons.mvc.configuration.PageConfiguration;
 import com.greenriver.commons.mvc.configuration.PageToolsConfiguration;
 import com.greenriver.commons.mvc.configuration.PropertiesViewConfiguration;
 import com.greenriver.commons.mvc.controllers.plugins.ControllerPlugin;
@@ -297,6 +297,7 @@ public class ConfigurablePageController extends AbstractController
      * automagically.
      * @param entityName The name of the entity the form will be created for.
      */
+    @Override
     public void addFormEntity(String id, String entityName) {
         getPageConfiguration().addFormEntity(id, entityName);
     }
@@ -305,6 +306,7 @@ public class ConfigurablePageController extends AbstractController
      * Gets the names of the entities that will have editing forms created for.
      * @return A list containing the entity names.
      */
+    @Override
     public Map<String, String> getFormEntities() {
         return getPageConfiguration().getFormEntities();
     }
@@ -313,6 +315,7 @@ public class ConfigurablePageController extends AbstractController
      * Sets the list of entity names for which forms are going to be created.
      * @param formEntities A list of entity names.
      */
+    @Override
     public void setFormEntities(Map<String, String> formEntities) {
         getPageConfiguration().setFormEntities(formEntities);
     }
@@ -321,6 +324,7 @@ public class ConfigurablePageController extends AbstractController
      * Adds a CSS file name so the header is configured to include it.
      * @param cssFilename The name (without the extension) of the CSS file.
      */
+    @Override
     public void addCssFile(String cssFilename) {
         getPageConfiguration().addCssFile(cssFilename);
     }
@@ -330,6 +334,7 @@ public class ConfigurablePageController extends AbstractController
      * the page.
      * @param name The name of the service.
      */
+    @Override
     public void addDwrService(String name) {
         getPageConfiguration().addDwrService(name);
     }
@@ -338,6 +343,7 @@ public class ConfigurablePageController extends AbstractController
      * Adds a Dojo JavaScript bundle file so its loaded by the page.
      * @param bundleName The bundle file name (without its extension).
      */
+    @Override
     public void addDojoBundle(String bundleName) {
         getPageConfiguration().addDojoBundle(bundleName);
     }
@@ -348,6 +354,7 @@ public class ConfigurablePageController extends AbstractController
      * @param dojoModule The full name (including path) of the Dojo module
      * being loaded (e.g. dijit.form.Button).
      */
+    @Override
     public void addDojoModule(String dojoModule) {
         getPageConfiguration().addDojoModule(dojoModule);
     }
@@ -356,6 +363,7 @@ public class ConfigurablePageController extends AbstractController
      * Adds a JavaScript file name so the file is loaded by the page.
      * @param jsFilename The name of the Javascript file, without extension.
      */
+    @Override
     public void addJavaScriptFile(String jsFilename) {
         getPageConfiguration().addJavaScriptFile(jsFilename);
     }
@@ -364,6 +372,7 @@ public class ConfigurablePageController extends AbstractController
      * Adds a piece of Javascript code so its executed after the page is loaded.
      * @param code The piece of code to be executed.
      */
+    @Override
     public void addOnLoadScript(String code) {
         getPageConfiguration().addOnLoadScript(code);
     }
@@ -372,6 +381,7 @@ public class ConfigurablePageController extends AbstractController
      * Adds a piece of JavaScript code so its inclued. in the page.
      * @param script The piece of code to be included.
      */
+    @Override
     public void addScript(String script) {
         getPageConfiguration().addScript(script);
     }
@@ -380,6 +390,7 @@ public class ConfigurablePageController extends AbstractController
      * Gets the names of the CSS files considered for use in the page.
      * @return A list of the names of the CSS files, without extensions.
      */
+    @Override
     public List<String> getCssFiles() {
         return getPageConfiguration().getCssFiles();
     }
@@ -388,6 +399,7 @@ public class ConfigurablePageController extends AbstractController
      * Gets the Dojo modules that will be loaded.
      * @return A list with the names of the Dojo modules to be 'required'.
      */
+    @Override
     public List<String> getDojoModules() {
         return getPageConfiguration().getDojoModules();
     }
@@ -396,6 +408,7 @@ public class ConfigurablePageController extends AbstractController
      * Gets the names of the Dojo Javascript bundle files used in the page.
      * @return A list with the names of the Javascript files, without the extension.
      */
+    @Override
     public List<String> getDojoBundles() {
         return getPageConfiguration().getDojoBundles();
     }
@@ -404,6 +417,7 @@ public class ConfigurablePageController extends AbstractController
      * Gets the names of the DWR services that will be used by the page.
      * @return A list with the services' names.
      */
+    @Override
     public List<String> getDwrServices() {
         return getPageConfiguration().getDwrServices();
     }
@@ -412,6 +426,7 @@ public class ConfigurablePageController extends AbstractController
      * Gets the names of the JavaScript files included in the page.
      * @return A list with the names of the files, without the extension.
      */
+    @Override
     public List<String> getJavaScriptFiles() {
         return getPageConfiguration().getJavaScriptFiles();
     }
@@ -421,6 +436,7 @@ public class ConfigurablePageController extends AbstractController
      * finishes loading.
      * @return A list with the pieces of code.
      */
+    @Override
     public List<String> getOnLoadScripts() {
         return getPageConfiguration().getOnLoadScripts();
     }
@@ -429,6 +445,7 @@ public class ConfigurablePageController extends AbstractController
      * Gets the pieces of Javascript code included in the page.
      * @return A list with the pieces of code.
      */
+    @Override
     public List<String> getScripts() {
         return getPageConfiguration().getScripts();
     }
@@ -437,6 +454,7 @@ public class ConfigurablePageController extends AbstractController
      * Gets the title of the page.
      * @return The page's title.
      */
+    @Override
     public String getTitle() {
         return getPageConfiguration().getTitle();
     }
@@ -445,6 +463,7 @@ public class ConfigurablePageController extends AbstractController
      * Sets the title of the page.
      * @param title The page's title.
      */
+    @Override
     public void setTitle(String title) {
         getPageConfiguration().setTitle(title);
     }
@@ -453,6 +472,7 @@ public class ConfigurablePageController extends AbstractController
      * Sets the names of the CSS files to be loaded by the page.
      * @param cssFiles A list with the CSS filenames, without extensions.
      */
+    @Override
     public void setCssFiles(List<String> cssFiles) {
         getPageConfiguration().setCssFiles(cssFiles);
     }
@@ -461,6 +481,7 @@ public class ConfigurablePageController extends AbstractController
      * Sets the names of the DWR services to be used by the page.
      * @param dwrServices A list of the DWR service names.
      */
+    @Override
     public void setDwrServices(List<String> dwrServices) {
         getPageConfiguration().setDwrServices(dwrServices);
     }
@@ -471,6 +492,7 @@ public class ConfigurablePageController extends AbstractController
      * @param dojoBundles The name of the javascript bundle files, without
      * extensions.
      */
+    @Override
     public void setDojoBundles(List<String> dojoBundles) {
         getPageConfiguration().setDojoBundles(dojoBundles);
     }
@@ -480,6 +502,7 @@ public class ConfigurablePageController extends AbstractController
      * @param dojoModules A list containing the Dojo module names
      * (e.g. dijit.form.Button) required by the page.
      */
+    @Override
     public void setDojoModules(List<String> dojoModules) {
         getPageConfiguration().setDojoModules(dojoModules);
     }
@@ -488,6 +511,7 @@ public class ConfigurablePageController extends AbstractController
      * Sets the JavaScript files names to be loaded by the page.
      * @param javascriptFiles A list with the names of the files (without extensions).
      */
+    @Override
     public void setJavaScriptFiles(List<String> javascriptFiles) {
         getPageConfiguration().setJavaScriptFiles(javascriptFiles);
     }
@@ -498,6 +522,7 @@ public class ConfigurablePageController extends AbstractController
      * @param onLoadScripts The pieces of code to be run after the page finishes
      * loading.
      */
+    @Override
     public void setOnLoadScripts(List<String> onLoadScripts) {
         getPageConfiguration().setOnLoadScripts(onLoadScripts);
     }
@@ -506,6 +531,7 @@ public class ConfigurablePageController extends AbstractController
      * Sets the pieces of JavaScript code that will be include in the page.
      * @param scripts A list of pieces of JavaScript code.
      */
+    @Override
     public void setScripts(List<String> scripts) {
         getPageConfiguration().setScripts(scripts);
     }
@@ -524,14 +550,17 @@ public class ConfigurablePageController extends AbstractController
         this.userSessionInfo = userSessionInfo;
     }
 
+    @Override
     public void addPropertiesView(String id, Object configuration) {
         this.getPageConfiguration().addPropertiesView(id, configuration);
     }
 
+    @Override
     public void setPropertiesView(Map<String, Object> configuration) {
         this.getPageConfiguration().setPropertiesView(configuration);
     }
 
+    @Override
     public Map<String, Object> getPropertiesView() {
         return getPageConfiguration().getPropertiesView();
     }
@@ -539,6 +568,7 @@ public class ConfigurablePageController extends AbstractController
     /**
      * @return the pageToolManager
      */
+    @Override
     public PageToolManager getPageToolManager() {
         return pageToolManager;
     }
@@ -546,14 +576,17 @@ public class ConfigurablePageController extends AbstractController
     /**
      * @param pageToolManager the pageToolManager to set
      */
+    @Override
     public void setPageToolManager(PageToolManager pageToolManager) {
         this.pageToolManager = pageToolManager;
     }
 
+    @Override
     public void addDojoBundles(List<String> dojoBundles) {
         getPageConfiguration().addDojoBundles(dojoBundles);
     }
 
+    @Override
     public void addDojoModules(List<String> dojoModules) {
         getPageConfiguration().addDojoModules(dojoModules);
     }
