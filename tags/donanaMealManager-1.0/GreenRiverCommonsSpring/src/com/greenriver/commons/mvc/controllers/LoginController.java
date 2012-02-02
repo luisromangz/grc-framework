@@ -8,8 +8,7 @@ import org.springframework.web.servlet.ModelAndView;
  *
  * @author luis
  */
-public class LoginController extends ConfigurablePageController
-        implements CustomizableHandleRequest {
+public class LoginController extends ConfigurablePageController{
 
     public LoginController() {
     }
