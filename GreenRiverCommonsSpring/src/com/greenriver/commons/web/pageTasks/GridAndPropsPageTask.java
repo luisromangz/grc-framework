@@ -9,6 +9,7 @@ import java.util.Properties;
 
 /**
  * A page task including a Dojo DataGrid and a properties view.
+ *
  * @author luisro
  */
 public class GridAndPropsPageTask
@@ -18,6 +19,7 @@ public class GridAndPropsPageTask
     private String gridClass;
     // The label to be used for the element.
     private String element;
+    private String elementPlural;
     // A boolean marking the gender of the element.
     private boolean maleElement;
     private String indefiniteElementLabel;
@@ -52,6 +54,7 @@ public class GridAndPropsPageTask
             throw new IllegalStateException("Task " + this.getTaskName() + " doesn't specify its element property");
         }
         props.put("element", element);
+        props.put("elementPlural", this.getElementPlural());
 
         props.put("maleElement", maleElement);
         props.put("indefiniteElement", indefiniteElementLabel);
@@ -88,10 +91,10 @@ public class GridAndPropsPageTask
 
     @Override
     public Map<String, String> getPropsViews() {
-        if(Strings.isNullOrEmpty(propsViewClass)) {
-            throw new IllegalStateException("Task "+this.getTaskName()+" doesn't specify propsViewClass field");
+        if (Strings.isNullOrEmpty(propsViewClass)) {
+            throw new IllegalStateException("Task " + this.getTaskName() + " doesn't specify propsViewClass field");
         }
-        
+
         // New map required so we dont override config.
         Map<String, String> propsViews = new HashMap<String, String>(super.getPropsViews());
         propsViews.put("propsView", propsViewClass);
@@ -100,14 +103,23 @@ public class GridAndPropsPageTask
 
     @Override
     public Map<String, String> getGrids() {
-         if(Strings.isNullOrEmpty(gridClass)) {
-            throw new IllegalStateException("Task "+this.getTaskName()+" doesn't specify gridClass field");
+        if (Strings.isNullOrEmpty(gridClass)) {
+            throw new IllegalStateException("Task " + this.getTaskName() + " doesn't specify gridClass field");
         }
-        
+
         // New map required so we dont override config.
         Map<String, String> grids = new HashMap<String, String>(super.getGrids());
         grids.put("grid", gridClass);
         return grids;
+    }
+
+    public String getElementPlural() {
+        // We support the simle case without anybody telling us.
+        if (Strings.isNullOrEmpty(elementPlural)) {
+            return element + "s";
+        }
+
+        return elementPlural;
     }
 
     //<editor-fold defaultstate="collapsed" desc="Getters and setters">
@@ -252,8 +264,7 @@ public class GridAndPropsPageTask
     public void setCustomGridToolbarJsp(String customGridToolbarJsp) {
         this.customGridToolbarJsp = customGridToolbarJsp;
     }
-    
-    
+
     /**
      * @return the getForViewMethod
      */
@@ -281,6 +292,12 @@ public class GridAndPropsPageTask
     public void setQueryMethod(String queryMethod) {
         this.queryMethod = queryMethod;
     }
-    //</editor-fold>
 
+    /**
+     * @param elementPlural the elementPlural to set
+     */
+    public void setElementPlural(String elementPlural) {
+        this.elementPlural = elementPlural;
+    }
+    //</editor-fold>
 }
