@@ -598,4 +598,14 @@ public class Dates {
             return false;
         }
     }
+
+    /**
+     * Formats a date with the short format.
+     * 
+     * @param date
+     * @return 
+     */
+    public static String shortFormat(Date date) {
+        return DateFormat.getDateInstance(DateFormat.SHORT).format(date);
+    }
 }
