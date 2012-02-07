@@ -4,7 +4,9 @@ import com.greenriver.commons.data.fieldProperties.FieldProperties;
 import com.greenriver.commons.data.fieldProperties.FieldType;
 
 /**
- *
+ * This class represents a simple electronic mail message with just one target
+ * adress.
+ * 
  * @author luis
  */
 public class Mail {
