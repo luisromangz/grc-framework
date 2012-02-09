@@ -20,7 +20,7 @@ public class PDFUtils {
          
          IMOperation op = new IMOperation();
          
-         op.density(120);
+         op.density(200);
          op.addImage(filePath);
          if(appendImages) {
              op.append();
