@@ -66,7 +66,7 @@ public @interface WidgetProps {
      * performed.
      * @return
      */
-    FieldType type() default FieldType.TEXT;
+    FieldType type() default FieldType.TEXTBOX;
     
     /**
      * The possible options that should accept the field.

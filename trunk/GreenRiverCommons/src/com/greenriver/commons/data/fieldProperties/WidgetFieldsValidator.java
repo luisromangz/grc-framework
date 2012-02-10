@@ -389,7 +389,7 @@ public class WidgetFieldsValidator implements FieldsValidator {
         switch (properties.type()) {
             case CHECKBOX:
                 break;
-            case TEXT:
+            case TEXTBOX:
             case LONGTEXT:
                 validateText(value, properties, validationMessages);
                 break;
