@@ -14,7 +14,7 @@ public enum FieldType {
     /**
      * A single line of text.
      */
-    TEXT,
+    TEXTBOX,
 
     /**
      * A password input field.
