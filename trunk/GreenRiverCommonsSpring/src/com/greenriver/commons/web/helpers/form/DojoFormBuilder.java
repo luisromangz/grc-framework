@@ -858,7 +858,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
             WidgetProps properties) {
 
         switch (properties.type()) {
-            case TEXT:
+            case TEXTBOX:
                 setupTextField(formFieldElement, fieldType, properties);
                 break;
             case PASSWORD:
