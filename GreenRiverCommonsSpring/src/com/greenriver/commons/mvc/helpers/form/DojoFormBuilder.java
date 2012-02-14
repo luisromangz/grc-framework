@@ -865,6 +865,9 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
             case NIF:
                 setupCifOrNifField(formFieldElement, fieldType, properties);
                 break;
+            case CAPTCHA:
+                setupCapchaField(formFieldElement,fieldType,properties);
+                break;
             default:
                 throw new java.lang.UnsupportedOperationException(String.format(
                         "Field tipe '%s' not supported by DojoFormBuilder",
@@ -944,5 +947,14 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         // In client-side the validation is done by a custom validator 
         formFieldElement.setAttribute("validation", "nif");
         formFieldElement.setAttribute("style", "width:12em");
+    }
+
+    private void setupCapchaField(
+            HtmlFormElementInfo element, Class fieldType, FieldProperties properties) {
+        
+        element.setElementType("input");
+        element.setAttribute("dojoType", "grc.dijit.form.Captcha");
+        
+        configuration.addDojoModule("grc.dijit.form.Captcha");
     }
 }
