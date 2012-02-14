@@ -32,6 +32,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
     public static final Pattern PASSWORD_PATTERN =
             Pattern.compile("^" + ValidationRegex.PASSWORD_ALPHA_6 + "$");
     private RoleManager roleManager;
+    private CaptchaValidationHelper captchaHelper;
 
     @Override
     public FieldsValidationResult validate(Object object) {
@@ -117,16 +118,6 @@ public class FieldPropertiesValidator implements FieldsValidator {
         }
 
         return validationMessages;
-    }
-
-    @Override
-    public void setRoleManager(RoleManager roleManager) {
-        this.roleManager = roleManager;
-    }
-
-    @Override
-    public RoleManager getRoleManager() {
-        return this.roleManager;
     }
 
     private void validateMultiSelection(
@@ -442,6 +433,12 @@ public class FieldPropertiesValidator implements FieldsValidator {
             case NIF:
                 validateCIFOrNIF(value, properties, validationMessages);
                 break;
+            case CAPTCHA:
+                validateCaptcha(value, properties, validationMessages);
+                break;
+            default:
+                throw new IllegalArgumentException(String.format(
+                        "%s field type validation not handled.", properties.type().name()));
         }
     }
 
@@ -672,7 +669,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
     private void validateCIFOrNIF(Object value, FieldProperties properties,
             List<String> validationMessages) {
         String cifOrNif = (String) value;
-        if (!properties.required() && Strings.isNullOrEmpty(cifOrNif))  {
+        if (!properties.required() && Strings.isNullOrEmpty(cifOrNif)) {
             return;
         }
 
@@ -687,4 +684,54 @@ public class FieldPropertiesValidator implements FieldsValidator {
                     properties.label()));
         }
     }
+
+    private void validateCaptcha(
+            Object value,
+            FieldProperties properties,
+            List<String> validationMessages) {
+
+
+        CaptchaValidationHelper helper = getCaptchaHelper();
+        if (helper == null) {
+            throw new IllegalStateException("Forms have captchas but no CaptchaValidationHelper was set!");
+        }
+
+        String captchaValue = helper.getCaptchaValue();
+        if (Strings.isNullOrEmpty(captchaValue)) {
+            throw new IllegalStateException("No capcha value was stored in the helper!");
+
+        }
+
+        if (!captchaValue.equalsIgnoreCase(value.toString())) {
+            validationMessages.add(String.format(
+                    "El valor del campo «%s» no corresponde con el texto de la imagen.",
+                    properties.label()));
+        }
+    }
+
+    //<editor-fold defaultstate="collapsed" desc="Getters and setters">
+    /**
+     * @return the captchaHelper
+     */
+    public CaptchaValidationHelper getCaptchaHelper() {
+        return captchaHelper;
+    }
+
+    /**
+     * @param captchaHelper the captchaHelper to set
+     */
+    public void setCaptchaHelper(CaptchaValidationHelper captchaHelper) {
+        this.captchaHelper = captchaHelper;
+    }
+
+    @Override
+    public void setRoleManager(RoleManager roleManager) {
+        this.roleManager = roleManager;
+    }
+
+    @Override
+    public RoleManager getRoleManager() {
+        return this.roleManager;
+    }
+    //</editor-fold>
 }
