@@ -122,5 +122,10 @@ public enum FieldType {
      * fiscal entities. This one mixes OLD_NIF and OLD_CIF formats and 
      * validations.
      */
-    NIF;
+    NIF,
+    
+    /**
+     * A field representing a captcha string for checking a user is human.
+     */
+    CAPTCHA;
 }
