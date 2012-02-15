@@ -1,6 +1,7 @@
 package com.greenriver.commons.data.transactions.hibernate;
 
 import com.greenriver.commons.data.transactions.TransactionManager;
+import org.apache.log4j.Logger;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.TransactionException;
@@ -42,6 +43,7 @@ public class HibernateTransactionManager implements TransactionManager {
 
     @Override
     public void rollback() {
+        Logger.getLogger(this.getClass()).info("Transaction rollback!");
         Transaction tran = sessionFactory.getCurrentSession().getTransaction();
         
         if (tran.isActive()) {
