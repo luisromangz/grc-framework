@@ -26,7 +26,7 @@ public class QueryArgs {
         restrictions.add(queryArgsRestriction);
     }
     
-    public void addRestriction(String field, QueryArgsOperator op, Object value) {
+    public void addRestriction(String field, QueryArgsOp op, Object value) {
         restrictions.add(new QueryArgsRestriction(field,op, value));
     }
 

@@ -7,11 +7,12 @@ package com.greenriver.commons.data.dao.queryArgs;
  *
  * @author luis
  */
-public enum QueryArgsOperator {
+public enum QueryArgsOp {
 
     GREATER_THAN,
     GREATER_EQUALS,
     EQUALS,
+    NOT_EQUALS,
     LOWER_EQUALS,
     LOWER_THAN,
     LIKE
