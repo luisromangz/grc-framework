@@ -238,8 +238,20 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
         // We add a condition based on the field specified comparison type.
         switch (restriction.getOperator()) {
             case EQUALS:
-                crit.add(Restrictions.eq(fieldName, value));
+                if(value!=null){
+                    crit.add(Restrictions.eq(fieldName, value));
+                }else{
+                    crit.add(Restrictions.isNull(fieldName));
+                }
+                
                 break;
+            case NOT_EQUALS:
+                 if(value!=null){
+                    crit.add(Restrictions.ne(fieldName, value));
+                }else{
+                    crit.add(Restrictions.isNotNull(fieldName));
+                }
+                break;                        
             case GREATER_EQUALS:
                 crit.add(Restrictions.ge(fieldName, value));
                 break;
