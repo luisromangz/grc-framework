@@ -9,13 +9,13 @@ package com.greenriver.commons.data.dao.queryArgs;
 public class QueryArgsRestriction {
 
     private String field;
-    private QueryArgsOperator operator;
+    private QueryArgsOp operator;
     private Object value;
 
     public QueryArgsRestriction() {
     }
 
-    public QueryArgsRestriction(String field, QueryArgsOperator operator, Object value) {
+    public QueryArgsRestriction(String field, QueryArgsOp operator, Object value) {
         this.field = field;
         this.operator = operator;
         this.value = value;
@@ -27,14 +27,14 @@ public class QueryArgsRestriction {
     /**
      * @return the operator
      */
-    public QueryArgsOperator getOperator() {
+    public QueryArgsOp getOperator() {
         return operator;
     }
 
     /**
      * @param operator the operator to set
      */
-    public void setOperator(QueryArgsOperator operator) {
+    public void setOperator(QueryArgsOp operator) {
         this.operator = operator;
     }
 
