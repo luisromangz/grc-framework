@@ -159,6 +159,10 @@ public class Numbers {
     }
 
     public static double ceilingToSteps(double number, int roundingSteps, int maxPlaces) {
+        if(roundingSteps==0){
+            return number;
+        }
+                
         int integerPart = new Float(number).intValue();
 
         double decimalPart = Math.abs(number - integerPart);
