@@ -24,4 +24,9 @@ public class SessionHelper {
         HttpSession session = getSession();
         return session.getAttribute(attrName);
     }
+
+    public static void setSessionAttr(String attr, Object object) {
+        HttpSession session = getSession();
+        session.setAttribute(attr, object);
+    }
 }
