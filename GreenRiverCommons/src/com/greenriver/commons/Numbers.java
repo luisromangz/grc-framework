@@ -160,7 +160,7 @@ public class Numbers {
 
     public static double ceilingToSteps(double number, int roundingSteps, int maxPlaces) {
         if(roundingSteps==0){
-            return number;
+            return round(number,maxPlaces);
         }
                 
         int integerPart = new Float(number).intValue();
