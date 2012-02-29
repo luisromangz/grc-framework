@@ -577,4 +577,8 @@ public class Dates {
     public static Date getToday() {
         return Dates.getDatePart(new Date());
     }
+
+    public static String format(String format, Date date) {
+        return (new SimpleDateFormat(format)).format(date);
+    }
 }
