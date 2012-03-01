@@ -377,6 +377,7 @@ public class FieldPropertiesValidator implements FieldsValidator {
                 break;
             case TEXT:
             case LONGTEXT:
+            case RICHTEXT:
                 validateText(value, properties, validationMessages);
                 break;
             case COLOR:
