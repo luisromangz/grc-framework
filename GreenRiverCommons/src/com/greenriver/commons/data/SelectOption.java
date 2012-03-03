@@ -21,7 +21,7 @@ public class SelectOption implements Comparable<SelectOption> {
 
     @Override
     public int compareTo(SelectOption t) {
-        return this.label.compareTo(t.getLabel());
+        return this.label.compareToIgnoreCase(t.getLabel());
     }
 
     @Override
