@@ -1,24 +1,17 @@
 package com.greenriver.commons.web.helpers.form;
 
 import com.greenriver.commons.Strings;
-import com.greenriver.commons.data.fieldProperties.WidgetAction;
-import com.greenriver.commons.data.fieldProperties.WidgetActions;
-import com.greenriver.commons.data.fieldProperties.WidgetProps;
-import com.greenriver.commons.data.fieldProperties.FieldType;
-import com.greenriver.commons.data.fieldProperties.FieldsInsertionMode;
-import com.greenriver.commons.data.fieldProperties.FieldsProps;
-import com.greenriver.commons.data.fieldProperties.WidgetGroup;
+import com.greenriver.commons.data.fieldProperties.*;
 import com.greenriver.commons.data.validation.ValidationRegex;
-import com.greenriver.commons.web.helpers.header.HeaderConfig;
 import com.greenriver.commons.roleManagement.RoleManager;
 import com.greenriver.commons.roleManagement.RoleManagerClient;
+import com.greenriver.commons.web.helpers.header.HeaderConfig;
 import java.lang.reflect.Field;
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.springframework.web.servlet.ModelAndView;
@@ -859,6 +852,8 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
 
         switch (properties.type()) {
             case TEXTBOX:
+            case NIF:
+            case OLD_NIF:
                 setupTextField(formFieldElement, fieldType, properties);
                 break;
             case PASSWORD:
@@ -926,12 +921,6 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
                 break;
             case YEAR:
                 setupYearField(formFieldElement, fieldType, properties);
-                break;
-            case OLD_NIF:
-                setupNifField(formFieldElement, fieldType, properties);
-                break;
-            case NIF:
-                setupCifOrNifField(formFieldElement, fieldType, properties);
                 break;
             default:
                 throw new java.lang.UnsupportedOperationException(String.format(
@@ -1020,49 +1009,5 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
 
     }
 
-    private void setupNifField(
-            HtmlFormElementInfo formFieldElement,
-            Class fieldType,
-            WidgetProps properties) {
-        assertNotNumber(properties);
-        assertNotSelection(properties);
-        assertNotFile(properties);
-
-        configuration.addDojoModule("grc.form.CustomValidationTextBox");
-
-        formFieldElement.setAttribute("type", "text");
-        formFieldElement.setAttribute("dojoType", "grc.form.CustomValidationTextBox");
-
-        // TODO: Add validation to OLD_NIF type
-        formFieldElement.setAttribute("trim", "true");
-        formFieldElement.setAttribute("promptMessage", "Introduzca un NIF sin espacios u otros caracteres.");
-        formFieldElement.setAttribute("invalidMessage", "NIF incorrecto.");
-        // regexp to validate a nif in the form 123456789A with adition of a
-        // separator (blank, - or _) between the numbers and the letter for 
-        // flexibility in the input
-        formFieldElement.setAttribute("validation", "nif");
-        formFieldElement.setAttribute("style", "width:12em");
-    }
-
-    private void setupCifOrNifField(
-            HtmlFormElementInfo formFieldElement,
-            Class fieldType,
-            WidgetProps properties) {
-        assertNotNumber(properties);
-        assertNotSelection(properties);
-        assertNotFile(properties);
-
-        configuration.addDojoModule("grc.form.CustomValidationTextBox");
-
-        formFieldElement.setAttribute("type", "text");
-        formFieldElement.setAttribute("dojoType", "grc.form.CustomValidationTextBox");
-
-        // TODO: Add validation to OLD_NIF type
-        formFieldElement.setAttribute("trim", "true");
-        formFieldElement.setAttribute("promptMessage", "Introduzca un NIF.");
-        formFieldElement.setAttribute("invalidMessage", "NIF incorrecto.");
-        // In client-side the validation is done by a custom validator 
-        formFieldElement.setAttribute("validation", "nif");
-        formFieldElement.setAttribute("style", "width:12em");
-    }
+   
 }
