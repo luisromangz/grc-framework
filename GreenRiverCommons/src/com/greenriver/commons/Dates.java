@@ -575,7 +575,7 @@ public class Dates {
             date = new Date();
         }
         
-        Calendar nowCal = Dates.toCalendar(date);
+        Calendar nowCal = Dates.toCalendar(Dates.getDatePart(date));
 
         // The first day.
         nowCal.set(Calendar.DAY_OF_MONTH, 1);
