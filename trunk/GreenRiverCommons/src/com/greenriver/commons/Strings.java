@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Random;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.w3c.tidy.Tidy;
@@ -538,5 +539,37 @@ public class Strings {
         result = result.replaceAll("º", "&ordm;");
         result = result.replaceAll("ª", "&ordf;");
         return result;
+    }
+
+    /**
+     * Creates ahtml text from a Wiki like format.
+     * 
+     * E.g.: *bold*, 'italic' [www.google.com]
+     * @param  the wiki-like text to be converted to html.
+     */
+    public static String toHTMLFromMiniWiki(String text) {
+        // We convert line breaks to html line breaks
+        text = text.replaceAll("\n", "<br>");
+        
+        // We replace wiki style links with html links
+        text = text.replaceAll("\\*(.+)\\*", "<b>$1</b>");
+        text = text.replaceAll("'(.+)'", "<i>$1</i>");
+        
+        Pattern regex = Pattern.compile("\\[(.+?)\\]");
+        Matcher matcher = regex.matcher(text);
+        
+        
+        while(matcher.find()) {            
+            
+            String url = matcher.group(1);
+            if(!url.startsWith("http://")) {
+                url = "http://"+url;
+            }
+            text = matcher.replaceFirst(String.format("<a href=\"%s\">%s</a>", url, url));
+            
+            matcher=regex.matcher(text);
+        }
+        
+        return text;
     }
 }
