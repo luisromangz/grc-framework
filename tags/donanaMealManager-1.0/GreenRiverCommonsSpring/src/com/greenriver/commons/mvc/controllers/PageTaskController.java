@@ -29,7 +29,7 @@ public class PageTaskController extends ConfigurablePageController{
 
         PageTask pageTask = taskManager.getTasks(taskName);
         if(pageTask==null){
-            mav.addObject("errorMessage","La tarea indicada no esta registrada en el gestor.");
+            mav.addObject("errorMessage","La tarea indicada no está registrada en el gestor.");
             return;
         }
 
