@@ -406,8 +406,7 @@ public class DojoFormBuilder implements FormBuilder, RoleManagerClient {
         element.getAttributes().setProperty("regExp",
                 ValidationRegex.PASSWORD_ALPHA_6);
         element.getAttributes().setProperty("invalidMessage",
-                "La contraseña debe tener al menos 6 caracteres y "
-                + "sólo caracteres alfabéticos.");
+                "La contraseña debe tener al menos 6 caracteres y sólo caracteres alfanuméricos.");
     }
 
     private void setupLongTextField(HtmlFormElementInfo element,
