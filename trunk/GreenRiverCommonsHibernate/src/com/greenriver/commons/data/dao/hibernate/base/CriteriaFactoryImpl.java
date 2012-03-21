@@ -23,17 +23,17 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.ResultTransformer;
 
 /**
- * Criteria factory impl that references the dao that is using it.
- * <br/>
- * This factory uses criteria api to build the queries to run, but an error have
- * been detected when running these in hsqldb. The error is thrown when having
- * a count along with order by clauses in the same query.<br/>
- * This happens only in hsqldb as mysql runs them fine, and may be related due
- * to a bug in hsqldb or in hibernate hsqldb dialect's implementation. The
- * solution for this was to add a flag so when the total count of query results
- * is required we don't add sorting and otherwise we do it.
- * This stack overflow's thread may be related as well:
+ * Criteria factory impl that references the dao that is using it. <br/> This
+ * factory uses criteria api to build the queries to run, but an error have been
+ * detected when running these in hsqldb. The error is thrown when having a
+ * count along with order by clauses in the same query.<br/> This happens only
+ * in hsqldb as mysql runs them fine, and may be related due to a bug in hsqldb
+ * or in hibernate hsqldb dialect's implementation. The solution for this was to
+ * add a flag so when the total count of query results is required we don't add
+ * sorting and otherwise we do it. This stack overflow's thread may be related
+ * as well:
  * http://stackoverflow.com/questions/581043/sql-query-throws-not-in-aggregate-function-or-group-by-clause-exception
+ *
  * @author Miguel Angel
  */
 public class CriteriaFactoryImpl implements CriteriaFactory {
@@ -56,14 +56,15 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
         this.session = session;
     }
 
-    
     @Override
     public Criteria createCriteria(
-            Class<? extends DataEntity> entityClass, 
+            Class<? extends DataEntity> entityClass,
             QueryArgs queryArguments,
             Criterion... restrictions) {
 
-        return internalCreateCriteria(entityClass, queryArguments, true,restrictions);
+        Criteria crit = internalCreateCriteria(entityClass, queryArguments, true, restrictions);
+        crit.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+        return crit;
     }
 
     @Override
@@ -73,37 +74,37 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
             Criterion... restrictions) {
 
         Criteria crit = internalCreateCriteria(
-                entityClass, queryArguments, true,restrictions);
+                entityClass, queryArguments, true, restrictions);
+
+        crit.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         // We set the pagination values
-        crit.setFirstResult(queryArguments.getFirst());        
+        crit.setFirstResult(queryArguments.getFirst());
         crit.setMaxResults(queryArguments.getCount());
 
         return crit;
     }
-    
-    
+
     @Override
     public Criteria createCountingCriteria(
-            Class<? extends DataEntity> entityClass, 
+            Class<? extends DataEntity> entityClass,
             QueryArgs entityQueryArguments,
             Criterion... restrictions) {
         Criteria crit = internalCreateCriteria(
-                entityClass, entityQueryArguments, false,restrictions);
-        
+                entityClass, entityQueryArguments, false, restrictions);
+
         crit.setProjection(Projections.countDistinct("id"));
-        
+
 
         return crit;
     }
 
-    
     // <editor-fold defaultstate="collapsed" desc="Auxiliary methods">
     private Criteria internalCreateCriteria(
             Class entityClass,
             QueryArgs queryArguments,
             boolean doSorting,
             Criterion... restrictions) {
-       
+
         QueryArgsProps queryProperties =
                 (QueryArgsProps) entityClass.getAnnotation(QueryArgsProps.class);
 
@@ -114,7 +115,7 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
 
         // The criteria for the target class is created
         Criteria crit = getSession().createCriteria(entityClass);
-        crit.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+
 
         setTextFilter(crit, queryArguments, queryProperties);
         setRestrictions(entityClass, crit, queryArguments);
@@ -122,8 +123,8 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
         if (doSorting) {
             setSorting(crit, queryArguments, queryProperties);
         }
-        
-        for (Criterion c: restrictions) {
+
+        for (Criterion c : restrictions) {
             crit.add(c);
         }
 
@@ -134,10 +135,9 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
             Criteria crit,
             QueryArgs queryArguments,
             QueryArgsProps queryProperties) {
-        
+
         // We add a disjuntion of likes for the fields affected by the text filter.
         if (!Strings.isNullOrEmpty(queryArguments.getTextFilter())) {
-            Disjunction disjunction = Restrictions.disjunction();
 
             // We create a mapping to avoid serveral retrievals for the same field
             // which hibernate despises.
@@ -173,21 +173,28 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
                 }
             }
 
+            // We create restrictions for the 
+            Disjunction disjunction = Restrictions.disjunction();
             for (String field : queryMappings.keySet()) {
                 List<String> properties = queryMappings.get(field);
 
                 if (properties.isEmpty()) {
+                    // Its a simple property, so it acts directly on the
+                    // main entity.
                     disjunction.add(Restrictions.ilike(field,
                             queryArguments.getTextFilter(),
                             MatchMode.ANYWHERE));
                 } else {
 
-                    crit.createAlias(field, field);
+                    String aliasedField = field + "Alias";
+                    // We create an alias for the field
+                    crit.createAlias(field, aliasedField);
 
+                    // We add a restriction for each considered aliased field property.
                     for (String property : properties) {
 
                         disjunction.add(Restrictions.ilike(
-                                field + "." + property,
+                                aliasedField + "." + property,
                                 queryArguments.getTextFilter(),
                                 MatchMode.ANYWHERE));
                     }
@@ -213,7 +220,7 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
             Class entityClass,
             Criteria crit,
             QueryArgsRestriction restriction) {
-        
+
         String fieldName = restriction.getField();
         Object value = restriction.getValue();
 //        try {
@@ -238,20 +245,20 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
         // We add a condition based on the field specified comparison type.
         switch (restriction.getOperator()) {
             case EQUALS:
-                if(value!=null){
+                if (value != null) {
                     crit.add(Restrictions.eq(fieldName, value));
-                }else{
+                } else {
                     crit.add(Restrictions.isNull(fieldName));
                 }
-                
+
                 break;
             case NOT_EQUALS:
-                 if(value!=null){
+                if (value != null) {
                     crit.add(Restrictions.ne(fieldName, value));
-                }else{
+                } else {
                     crit.add(Restrictions.isNotNull(fieldName));
                 }
-                break;                        
+                break;
             case GREATER_EQUALS:
                 crit.add(Restrictions.ge(fieldName, value));
                 break;
@@ -270,11 +277,9 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
                 break;
             default:
                 throw new IllegalStateException(
-                        "Operator "+ restriction.getOperator() + " not handled properly.");
+                        "Operator " + restriction.getOperator() + " not handled properly.");
         }
     }
-
-
 
     private void addSorting(Criteria crit, String fieldName, boolean ascending) {
         if (ascending) {
@@ -290,7 +295,7 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
             QueryArgsProps queryProperties) {
 
         boolean sortingSpecified = !Strings.isNullOrEmpty(queryArgs.getSortFieldName());
-        if(sortingSpecified) {
+        if (sortingSpecified) {
             addSorting(crit, queryArgs.getSortFieldName(), queryArgs.isSortAscending());
         } else {
             // If no sorting was specified we try the default sorting stuff
@@ -320,26 +325,23 @@ public class CriteriaFactoryImpl implements CriteriaFactory {
 
     }
 
-    /*private Object getRestrictionValue(
-            Class entityClass, String fieldName,String value)
-            throws NoSuchFieldException, ParseException {
-        
-       Class fieldClass=entityClass.getDeclaredField(fieldName).getType();
-       
-       if(fieldClass.isAssignableFrom(String.class)) {
-           return value;
-       } else if(fieldClass.isAssignableFrom(Long.class)){
-           return Long.parseLong(value);
-       } else if(fieldClass.isAssignableFrom(Double.class)) {
-           return Double.parseDouble(value);
-       } else if(fieldClass.isAssignableFrom(Date.class)) {
-           return DateFormat.getInstance().parse(value);
-       } else {
-           throw new IllegalArgumentException("Not handled field type.");
-       }
-           
-    }*/
+    /*
+     * private Object getRestrictionValue( Class entityClass, String
+     * fieldName,String value) throws NoSuchFieldException, ParseException {
+     *
+     * Class fieldClass=entityClass.getDeclaredField(fieldName).getType();
+     *
+     * if(fieldClass.isAssignableFrom(String.class)) { return value; } else
+     * if(fieldClass.isAssignableFrom(Long.class)){ return
+     * Long.parseLong(value); } else
+     * if(fieldClass.isAssignableFrom(Double.class)) { return
+     * Double.parseDouble(value); } else
+     * if(fieldClass.isAssignableFrom(Date.class)) { return
+     * DateFormat.getInstance().parse(value); } else { throw new
+     * IllegalArgumentException("Not handled field type."); }
+     *
+     * }
+     */
 }
 // </editor-fold>
 
- 
