@@ -1,7 +1,5 @@
 package com.greenriver.commons.data;
 
-import com.greenriver.commons.data.DataEntity;
-
 /**
  * This class is used to return to the client an entity's label together with
  * its identifier, for use in dto's that show properties of related entities.
