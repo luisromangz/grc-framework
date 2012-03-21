@@ -2,7 +2,6 @@ package com.greenriver.commons.data.dao.hibernate.base;
 
 import com.greenriver.commons.data.DataEntity;
 import com.greenriver.commons.data.dao.queryArgs.QueryArgs;
-import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Criterion;
