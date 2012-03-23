@@ -563,7 +563,7 @@ public class Dates {
      * @param toDate The date we want to obtain a Calendar for.
      * @return The Calendar object with set to represent the given date.
      */
-    public static Calendar getCalendar(Date date) {
+    public static Calendar toCalendar(Date date) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
 
@@ -578,7 +578,44 @@ public class Dates {
         return Dates.getDatePart(new Date());
     }
 
+    /**
+     * Formats a date with the given format string.
+     * 
+     * @param format
+     * @param date
+     * @return 
+     */
     public static String format(String format, Date date) {
         return (new SimpleDateFormat(format)).format(date);
     }
+
+    /**
+     * Returns the max date of the given two.
+     * @param date1
+     * @param date2
+     * @return 
+     */
+    public static Date max(Date date1, Date date2) {
+        if(date1.after(date2)) {
+            return date1;
+        } else {
+            return date2;
+        }
+    }
+    
+     /**
+     * Returns the min date of the given two.
+     * @param date1
+     * @param date2
+     * @return 
+     */
+    public static Date min(Date date1, Date date2) {
+        if(date1.after(date2)) {
+            return date2;
+        } else {
+            return date1;
+        }
+    }
+
+    
 }
