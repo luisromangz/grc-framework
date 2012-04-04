@@ -15,12 +15,20 @@ public class PDFUtils {
      * @param resultPath the output images path.
      * @param appendImages If true, the multiple pdf images will be merged into just one big vertical image.
      */
-    public static void pdfToImages(String filePath, String resultPath, boolean appendImages) throws Exception{
+    public static void pdfToImages(
+            String filePath, String resultPath, 
+            int imgWidth,
+            boolean appendImages) throws Exception{
          ConvertCmd cmd = new ConvertCmd();
          
          IMOperation op = new IMOperation();
+         op.density(300);
+         //op.filter("Mitchell");
+         op.resize(imgWidth);
+         op.unsharp(0.0,.5);        
          
-         op.density(200);
+         
+         
          op.addImage(filePath);
          if(appendImages) {
              op.append();
