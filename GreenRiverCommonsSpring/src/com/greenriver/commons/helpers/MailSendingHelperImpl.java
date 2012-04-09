@@ -64,6 +64,7 @@ public class MailSendingHelperImpl implements MailSendingHelper {
         } catch (Throwable e) {
             Logger.getLogger(this.getClass()).error(e);
             serviceResult.formatErrorMessage("Ocurrió un error enviando el correo.");
+            serviceResult.setSuccess(false);
             return false;
         }
 
