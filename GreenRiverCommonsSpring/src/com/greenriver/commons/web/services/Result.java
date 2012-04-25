@@ -16,6 +16,8 @@ public class Result<T> {
     private boolean success = true;
     private List<String> messages;
     
+    private String status;
+    
     public Result() {
         messages = new ArrayList<String>();
     }
@@ -127,6 +129,20 @@ public class Result<T> {
     public void addErrorMessage(String message) {
         this.success = false;
         this.addMessage(message);
+    }
+
+    /**
+     * @return the status
+     */
+    public String getStatus() {
+        return status;
+    }
+
+    /**
+     * @param status the status to set
+     */
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     
