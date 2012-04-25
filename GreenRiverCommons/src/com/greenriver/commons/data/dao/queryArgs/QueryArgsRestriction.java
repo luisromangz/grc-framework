@@ -20,6 +20,25 @@ public class QueryArgsRestriction {
         this.operator = operator;
         this.value = value;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if(!(o instanceof QueryArgsRestriction)) {
+            return false;
+        }
+        
+        QueryArgsRestriction oQAR = (QueryArgsRestriction)o;
+        
+        return field.equals(oQAR.field) && operator==oQAR.operator;        
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 97 * hash + (this.field != null ? this.field.hashCode() : 0);
+        hash = 97 * hash + (this.operator != null ? this.operator.hashCode() : 0);
+        return hash;
+    }
     
     
 
