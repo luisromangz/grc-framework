@@ -23,11 +23,17 @@ public class QueryArgs {
     }    
     
     public void addRestriction(QueryArgsRestriction queryArgsRestriction) {
+        // So we can change existing restrictions for the operator and the value
+        // for other values.
+        if(restrictions.contains(queryArgsRestriction)) {
+            restrictions.remove(queryArgsRestriction);
+        }
+        
         restrictions.add(queryArgsRestriction);
     }
     
     public void addRestriction(String field, QueryArgsOp op, Object value) {
-        restrictions.add(new QueryArgsRestriction(field,op, value));
+        this.addRestriction(new QueryArgsRestriction(field,op, value));
     }
 
     //<editor-fold defaultstate="collapsed" desc="Getters and setters">
