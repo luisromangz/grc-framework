@@ -610,10 +610,10 @@ public class Dates {
     }
     
     /**
-     * Formats a date with the given format.
+     * Formats a date with the given pattern.
      * 
      */
     public static String format(String pattern, Date date) {
-        return (new SimpleDateFormat()).format(date);
+        return (new SimpleDateFormat(pattern)).format(date);
     }
 }
