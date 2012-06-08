@@ -608,4 +608,12 @@ public class Dates {
     public static String shortFormat(Date date) {
         return DateFormat.getDateInstance(DateFormat.SHORT).format(date);
     }
+    
+    /**
+     * Formats a date with the given format.
+     * 
+     */
+    public static String format(String pattern, Date date) {
+        return (new SimpleDateFormat()).format(date);
+    }
 }
