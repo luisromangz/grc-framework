@@ -23,7 +23,9 @@ import org.apache.log4j.Logger;
  */
 public abstract class CRUDServiceImpl<E extends DataEntity, D extends Dto, F extends FormDto, Q extends QueryArgs>
         implements CRUDService<D, F, Q> {
-
+    protected static final String DB_ERROR_MSG=
+            "Ocurrió un error de base de datos.";
+    
     // Will be set as needed.
     private Class<E> entityClass = null;
     private Class<D> dtoClass = null;
