@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
@@ -26,6 +28,19 @@ public class SubtaskedPageTask
         this.setMainJspFileName("../../subtaskedPageTask.jsp");
         this.setDojoControllerModule("grc.web.tasks.SubtaskedPageTaskController");
     }
+
+    @Override
+    public void handleRequest(
+            HttpServletRequest request, HttpServletResponse response, 
+            PageConfig configuration, ModelAndView mav) {
+        super.handleRequest(request, response, configuration, mav);
+        
+        for(PageTask t:taskManager.getTasks()) {
+            t.handleRequest(request, response, configuration, mav);
+        }
+    }
+    
+    
 
     @Override
     public void configurePage(PageConfig configuration, ModelAndView mav) {
