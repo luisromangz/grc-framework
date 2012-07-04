@@ -4,6 +4,8 @@ import com.greenriver.commons.Strings;
 import com.greenriver.commons.data.model.User;
 import com.greenriver.commons.web.configuration.PageConfig;
 import com.greenriver.commons.web.configuration.PageToolsContainer;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
@@ -71,6 +73,13 @@ public class PageTask
         return this.getTaskName().compareTo(o.getTaskName());
     }
 
+    /**
+     * Called by the TaskedPageController so it can process all
+     * PageTask related configuration that can its request independent.     * 
+     * 
+     * @param configuration
+     * @param mav 
+     */
     public void configurePage(PageConfig configuration, ModelAndView mav) {
         // The properties that are files need to have their path relative
         // to the task's name, and inside a "js" folder.
@@ -88,6 +97,22 @@ public class PageTask
 
 
         configuration.getScripts().addAll(this.getScripts());
+    }
+    
+    /**
+     * Called by the PageTaskController to allow the task to customize
+     * the request.     * 
+     * 
+     * @param request
+     * @param response
+     * @param configuration
+     * @param mav 
+     */
+    public void handleRequest(
+            HttpServletRequest request, 
+            HttpServletResponse response, 
+            PageConfig configuration, 
+            ModelAndView mav) {        
     }
 
     // <editor-fold defaultstate="collapsed" desc="Getters and setters">
@@ -185,4 +210,6 @@ public class PageTask
 
     protected void initializeInternal() {
     }
+
+    
 }
