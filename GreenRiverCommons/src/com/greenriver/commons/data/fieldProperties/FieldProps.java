@@ -18,4 +18,5 @@ import java.lang.annotation.Target;
 public @interface FieldProps {
     String label();
     String description() default  "";
+    boolean propsViewExcluded() default false;
 }
