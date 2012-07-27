@@ -195,10 +195,10 @@ public class PropertiesViewBuilderImpl implements PropertiesViewBuilder {
             // will throw an exception.
             Field classField = ClassFields.get(propName, viewClass, true, true);
 
-            FieldProps fieldProps = classField.getAnnotation(FieldProps.class);
+            FieldProps fieldProps = classField.getAnnotation(FieldProps.class);            
 
             //Only go ahead if there is a field property
-            if (fieldProps != null) {
+            if (fieldProps != null && !fieldProps.propsViewExcluded()) {
                 addPropertyView(propName, fieldProps, classField.getType());
             }
         }
