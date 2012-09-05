@@ -31,6 +31,7 @@ public abstract class BaseBundlerPlugin implements ControllerPlugin {
     private boolean applyCompression;
     private String pathPrefix = "js";
     private String bundlePrefix;
+    private String appVersion=null;
     // </editor-fold>
 
     public BaseBundlerPlugin() {
@@ -46,7 +47,7 @@ public abstract class BaseBundlerPlugin implements ControllerPlugin {
         }
 
         List<String> fileNames = getFileNames(configuration);
-
+        
         String bundleName = Strings.join(fileNames, ",");
 
         // We encode the bundle's name, so if modules change, the name
@@ -54,13 +55,16 @@ public abstract class BaseBundlerPlugin implements ControllerPlugin {
         // bundle generation.
         bundleName = passwordEncoder.encodePassword(bundleName, null);
         bundleName = this.getBundlePrefix() + "-" + bundleName;
+        if(!Strings.isNullOrEmpty(appVersion)) {
+            bundleName+="-"+appVersion;
+        }
 
         String bundlePath = String.format(
                 "%s/%s.js",
                 javascriptBasePath,
                 bundleName);
 
-       
+        
 
         File bundleFile = new File(bundlePath);
         if (bundleFile.exists() && !alwaysCreate) {
@@ -183,5 +187,20 @@ public abstract class BaseBundlerPlugin implements ControllerPlugin {
     public void setBundlePrefix(String bundlePrefix) {
         this.bundlePrefix = bundlePrefix;
     }
-    // </editor-fold>
+  
+
+    /**
+     * @return the appVersion
+     */
+    public String getAppVersion() {
+        return appVersion;
+    }
+
+    /**
+     * @param appVersion the appVersion to set
+     */
+    public void setAppVersion(String appVersion) {
+        this.appVersion = appVersion;
+    }
+      // </editor-fold>
 }
