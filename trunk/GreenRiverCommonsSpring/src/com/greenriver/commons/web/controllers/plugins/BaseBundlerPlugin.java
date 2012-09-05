@@ -19,7 +19,9 @@ import org.springframework.security.authentication.encoding.PasswordEncoder;
 // </editor-fold>
 
 /**
- *
+ * This class defines the base functionality for resource file bundling 
+ * controller plugins.
+ * 
  * @author luis
  */
 public abstract class BaseBundlerPlugin implements ControllerPlugin {
@@ -31,6 +33,7 @@ public abstract class BaseBundlerPlugin implements ControllerPlugin {
     private boolean applyCompression;
     private String pathPrefix = "js";
     private String bundlePrefix;
+    private String appBuild;
     private Map<String, String> bundlesByURI;
     // </editor-fold>
 
@@ -60,6 +63,10 @@ public abstract class BaseBundlerPlugin implements ControllerPlugin {
             // bundle generation.
             bundleName = passwordEncoder.encodePassword(bundleName, null);
             bundleName = this.getBundlePrefix() + "-" + bundleName;
+            
+            if(!Strings.isNullOrEmpty(appBuild)) {
+                bundleName+="-"+getAppBuild();
+            }
 
             String bundlePath = String.format(
                     "%s/%s.js",
@@ -191,6 +198,21 @@ public abstract class BaseBundlerPlugin implements ControllerPlugin {
      */
     public void setBundlePrefix(String bundlePrefix) {
         this.bundlePrefix = bundlePrefix;
+    }
+    
+
+    /**
+     * @return the appBuild
+     */
+    public String getAppBuild() {
+        return appBuild;
+    }
+
+    /**
+     * @param appBuild the appBuild to set
+     */
+    public void setAppBuild(String appBuild) {
+        this.appBuild = appBuild;
     }
     // </editor-fold>
 }
